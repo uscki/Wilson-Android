@@ -27,3 +27,4 @@ proguard/
 *.log
 
 app/src/main/res/values/api.xml
+.idea/
