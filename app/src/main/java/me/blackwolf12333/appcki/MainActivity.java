@@ -1,5 +1,6 @@
 package me.blackwolf12333.appcki;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,9 +13,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final String PREFS_NAME = "preferences";
+    public static final int LOGIN_REQUEST = 1;
+    User user = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +80,19 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == LOGIN_REQUEST) {
+            if(resultCode == RESULT_OK) {
+                user = (User) data.getSerializableExtra("me.blackwolf12333.appcki.LOGIN_REQUEST");
+
+                TextView view = (TextView) findViewById(R.id.textView);
+                view.setText("Je bent nu ingelogt als " + user.getFirstName());
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -92,6 +111,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
+        } else if (id == R.id.nav_login) {
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            startActivityForResult(loginIntent, LOGIN_REQUEST);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
