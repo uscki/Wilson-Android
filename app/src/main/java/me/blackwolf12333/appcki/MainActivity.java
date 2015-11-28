@@ -88,6 +88,11 @@ public class MainActivity extends AppCompatActivity
 
                 TextView view = (TextView) findViewById(R.id.textView);
                 view.setText("Je bent nu ingelogt als " + user.getFirstName());
+
+                MenuItem login = (MenuItem) findViewById(R.id.nav_login);
+                login.setTitle(getString(R.string.logout));
+
+                user.loggedIn = true;
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -110,8 +115,12 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_gol) {
 
         } else if (id == R.id.nav_login) {
-            Intent loginIntent = new Intent(this, LoginActivity.class);
-            startActivityForResult(loginIntent, LOGIN_REQUEST);
+            if(user == null || !user.loggedIn) {
+                Intent loginIntent = new Intent(this, LoginActivity.class);
+                startActivityForResult(loginIntent, LOGIN_REQUEST);
+            } else {
+                user = null; // just forget about the user to log out
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -282,26 +282,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 String token = connection.getHeaderField("X-AUTH-TOKEN");
                 User user = new User(token);
-                System.out.println(token);
-                String userInfo = token.split("\\.")[1];
-                String userInfoDecoded = new String(Base64.decode(userInfo, Base64.DEFAULT), "UTF-8");
-                System.out.println(userInfoDecoded);
 
-                JSONObject jsonObject = new JSONObject(userInfoDecoded);
+                JSONObject jsonObject = new JSONObject(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
                 user.setFirstName(jsonObject.getString("firstname"));
                 user.setLastName(jsonObject.getString("lastname"));
 
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra("me.blackwolf12333.appcki.LOGIN_REQUEST", user);
+                resultIntent.putExtra(getString(R.string.login_request), user);
                 setResult(Activity.RESULT_OK, resultIntent);
 
                 connection.disconnect();
                 finish();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 connection.disconnect();

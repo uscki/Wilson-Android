@@ -16,4 +16,7 @@
     <string name="error_invalid_username">This username address is invalid</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+
+    <string name="login_request">me.blackwolf12333.appcki.LOGIN_REQUEST</string>
+    <string name="logout">Logout</string>
 </resources>

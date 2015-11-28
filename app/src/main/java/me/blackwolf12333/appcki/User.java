@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class User implements Serializable {
 
     public String TOKEN;
+    public boolean loggedIn;
 
     String firstName;
     String lastName;
