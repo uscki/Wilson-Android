@@ -1,5 +1,7 @@
 package me.blackwolf12333.appcki;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import me.blackwolf12333.appcki.activities.news.NewsItemFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -105,7 +109,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_news) {
-            // Handle the camera action
+            Fragment fragment = new NewsItemFragment();
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content, fragment)
+                    .commit();
         } else if (id == R.id.nav_agenda) {
 
         } else if (id == R.id.nav_poll) {
