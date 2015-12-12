@@ -11,10 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import me.blackwolf12333.appcki.R;
+import me.blackwolf12333.appcki.User;
 import me.blackwolf12333.appcki.activities.news.dummy.DummyContent;
 import me.blackwolf12333.appcki.activities.news.dummy.DummyContent.DummyItem;
-
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -26,9 +25,11 @@ public class NewsItemFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
+    private static final String ARG_USER = "user";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private User user;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -39,10 +40,11 @@ public class NewsItemFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static NewsItemFragment newInstance(int columnCount) {
+    public static NewsItemFragment newInstance(User user, int columnCount) {
         NewsItemFragment fragment = new NewsItemFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putSerializable(ARG_USER, user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,6 +55,7 @@ public class NewsItemFragment extends Fragment {
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            user = (User) getArguments().getSerializable(ARG_USER);
         }
     }
 
@@ -72,6 +75,7 @@ public class NewsItemFragment extends Fragment {
             }
             recyclerView.setAdapter(new MyNewsItemRecyclerViewAdapter(DummyContent.ITEMS, mListener));
         }
+
         return view;
     }
 

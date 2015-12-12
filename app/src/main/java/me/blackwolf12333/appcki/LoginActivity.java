@@ -43,6 +43,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.blackwolf12333.appcki.api.Person;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**

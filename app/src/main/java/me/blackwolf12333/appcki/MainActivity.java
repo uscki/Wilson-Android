@@ -5,9 +5,8 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,16 +14,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import me.blackwolf12333.appcki.activities.news.NewsItemFragment;
+import me.blackwolf12333.appcki.activities.news.dummy.DummyContent;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, NewsItemFragment.OnListFragmentInteractionListener {
 
     public static final String PREFS_NAME = "preferences";
     public static final int LOGIN_REQUEST = 1;
-    User user = null;
+    User user = new User(null);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +94,8 @@ public class MainActivity extends AppCompatActivity
                 TextView view = (TextView) findViewById(R.id.textView);
                 view.setText("Je bent nu ingelogt als " + user.getFirstName());
 
-                MenuItem login = (MenuItem) findViewById(R.id.nav_login);
-                login.setTitle(getString(R.string.logout));
+                //MenuItem login = (MenuItem) findViewById(R.id.nav_login);
+                //login.setTitle(getString(R.string.logout));
 
                 user.loggedIn = true;
             }
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_news) {
-            Fragment fragment = new NewsItemFragment();
+            Fragment fragment = NewsItemFragment.newInstance(user, 5);
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.content, fragment)
@@ -134,5 +135,10 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+        return;
     }
 }
