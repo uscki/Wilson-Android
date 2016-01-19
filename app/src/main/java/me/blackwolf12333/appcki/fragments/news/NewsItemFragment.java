@@ -1,6 +1,5 @@
-package me.blackwolf12333.appcki.activities.news;
+package me.blackwolf12333.appcki.fragments.news;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -9,11 +8,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
+import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.User;
-import me.blackwolf12333.appcki.activities.news.dummy.DummyContent;
-import me.blackwolf12333.appcki.activities.news.dummy.DummyContent.DummyItem;
+import me.blackwolf12333.appcki.api.NewsAPI;
+import me.blackwolf12333.appcki.events.NewNewsItemEvent;
+import me.blackwolf12333.appcki.events.NewNewsOverviewEvent;
+import me.blackwolf12333.appcki.events.NewNewsTypesEvent;
+import me.blackwolf12333.appcki.fragments.APIFragment;
 
 /**
  * A fragment representing a list of Items.
@@ -21,29 +25,32 @@ import me.blackwolf12333.appcki.activities.news.dummy.DummyContent.DummyItem;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class NewsItemFragment extends Fragment {
+public class NewsItemFragment extends APIFragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
     private static final String ARG_USER = "user";
-    // TODO: Customize parameters
+
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private User user;
+    private NewsAPI newsAPI;
+    private NewsAPI.NewsOverview newsOverview = null;
+    private NewsAPI.NewsItem newsItem = null;
+
+    private RecyclerView recyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public NewsItemFragment() {
+
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static NewsItemFragment newInstance(User user, int columnCount) {
+    public static NewsItemFragment newInstance(User user) {
         NewsItemFragment fragment = new NewsItemFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
         args.putSerializable(ARG_USER, user);
         fragment.setArguments(args);
         return fragment;
@@ -54,27 +61,46 @@ public class NewsItemFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
             user = (User) getArguments().getSerializable(ARG_USER);
+            newsAPI = new NewsAPI(user);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_newsitem_list, container, false);
+        this.progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyNewsItemRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            if(newsOverview != null) {
+                recyclerView.setAdapter(new MyNewsItemRecyclerViewAdapter(newsOverview.getContent(), mListener));
+            }
+            this.content = recyclerView;
         }
+
+        showProgress(true);
+        newsAPI.getOverview();
 
         return view;
     }
@@ -97,18 +123,29 @@ public class NewsItemFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    public void onEventMainThread(NewNewsOverviewEvent event) {
+        showProgress(false);
+        if(event.newsOverview != null) {
+            recyclerView.setAdapter(new MyNewsItemRecyclerViewAdapter(event.newsOverview.getContent(), mListener));
+        }
+    }
+
+    public void onEventMainThread(NewNewsItemEvent event) {
+        showProgress(false);
+        if(event.newsItem != null) {
+            // TODO
+            //recyclerView.setAdapter(new MyNewsItemRecyclerViewAdapter(event.newsOverview.getContent(), mListener));
+        }
+    }
+
+    public void onEventMainThread(NewNewsTypesEvent event) {
+        showProgress(false);
+        if(event.newsTypes != null) {
+            //TODO whatever hiermee gedaan moet worden...
+        }
+    }
+
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(NewsAPI.NewsItem item);
     }
 }

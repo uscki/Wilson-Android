@@ -12,14 +12,16 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.App;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.User;
+import me.blackwolf12333.appcki.events.JSONReadyEvent;
 
 /**
  * Created by peter on 12/9/15.
  */
-public class APICall extends AsyncTask<String, Void, JsonElement> {
+public class APICall extends AsyncTask<String, Void, Void> {
 
     String apiCall;
     User user;
@@ -30,7 +32,12 @@ public class APICall extends AsyncTask<String, Void, JsonElement> {
     }
 
     @Override
-    protected JsonElement doInBackground(String... params) {
+    protected void onPreExecute() {
+        super.onPreExecute();
+    }
+
+    @Override
+    protected Void doInBackground(String... params) {
         URL api = null;
         HttpURLConnection connection = null;
         JsonElement elem = null;
@@ -53,10 +60,14 @@ public class APICall extends AsyncTask<String, Void, JsonElement> {
 
             if(connection.getResponseCode() == 200) {
                 String response = readStream(connection.getInputStream());
-                System.out.println(response);
-
                 elem = new JsonParser().parse(response);
             } else {
+                elem = new JsonParser().parse(readStream(connection.getErrorStream()));
+                int code = (int)elem.getAsJsonObject().get("status").getAsInt();
+                if(code == 403) {
+                    // TODO: 12/18/15 handle errors properly
+                }
+
                 System.out.println(readStream(connection.getErrorStream()));
             }
 
@@ -67,7 +78,8 @@ public class APICall extends AsyncTask<String, Void, JsonElement> {
             connection.disconnect();
         }
 
-        return elem;
+        EventBus.getDefault().post(new JSONReadyEvent(elem));
+        return null;
     }
 
     private String readStream(InputStream stream) {
@@ -87,10 +99,5 @@ public class APICall extends AsyncTask<String, Void, JsonElement> {
             e.printStackTrace();
         }
         return out.toString();
-    }
-
-    @Override
-    protected void onPostExecute(JsonElement obj) {
-        super.onPostExecute(obj);
     }
 }

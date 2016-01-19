@@ -1,4 +1,4 @@
-package me.blackwolf12333.appcki.activities.news;
+package me.blackwolf12333.appcki.fragments.news;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,24 +6,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.activities.news.NewsItemFragment.OnListFragmentInteractionListener;
-import me.blackwolf12333.appcki.activities.news.dummy.DummyContent;
-import me.blackwolf12333.appcki.activities.news.dummy.DummyContent.DummyItem;
-
 import java.util.List;
 
+import me.blackwolf12333.appcki.R;
+import me.blackwolf12333.appcki.api.NewsAPI;
+
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link me.blackwolf12333.appcki.activities.news.NewsItemFragment.OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ * {@link RecyclerView.Adapter} that can display a {@link NewsAPI.NewsItem} and makes a call to the
+ * specified {@link me.blackwolf12333.appcki.fragments.news.NewsItemFragment.OnListFragmentInteractionListener}.
  */
 public class MyNewsItemRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsItemRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<NewsAPI.NewsItem> mValues;
     private final NewsItemFragment.OnListFragmentInteractionListener mListener;
 
-    public MyNewsItemRecyclerViewAdapter(List<DummyItem> items, NewsItemFragment.OnListFragmentInteractionListener listener) {
+    public MyNewsItemRecyclerViewAdapter(List<NewsAPI.NewsItem> items, NewsItemFragment.OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -38,8 +35,7 @@ public class MyNewsItemRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsIt
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mContentView.setText(mValues.get(position).title);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,14 +56,12 @@ public class MyNewsItemRecyclerViewAdapter extends RecyclerView.Adapter<MyNewsIt
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public NewsAPI.NewsItem mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
         }
 

@@ -17,8 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import me.blackwolf12333.appcki.activities.news.NewsItemFragment;
-import me.blackwolf12333.appcki.activities.news.dummy.DummyContent;
+import me.blackwolf12333.appcki.api.NewsAPI;
+import me.blackwolf12333.appcki.fragments.NotLoggedInFragment;
+import me.blackwolf12333.appcki.fragments.news.NewsItemFragment;
+import me.blackwolf12333.appcki.fragments.poll.PollFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, NewsItemFragment.OnListFragmentInteractionListener {
@@ -51,6 +53,21 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        if(!user.loggedIn) {
+            NotLoggedInFragment fragment = NotLoggedInFragment.newInstance();
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content, fragment)
+                    .commit();
+        } else { // ga als default naar news
+            navigationView.setCheckedItem(R.id.nav_news);
+            Fragment fragment = NewsItemFragment.newInstance(user);
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content, fragment)
+                    .commit();
+        }
     }
 
     @Override
@@ -94,10 +111,13 @@ public class MainActivity extends AppCompatActivity
                 TextView view = (TextView) findViewById(R.id.textView);
                 view.setText("Je bent nu ingelogt als " + user.getFirstName());
 
-                //MenuItem login = (MenuItem) findViewById(R.id.nav_login);
-                //login.setTitle(getString(R.string.logout));
-
                 user.loggedIn = true;
+
+                Fragment fragment = NewsItemFragment.newInstance(user);
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content, fragment)
+                        .commit();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -109,26 +129,39 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        //TODO debug code
         if (id == R.id.nav_news) {
-            Fragment fragment = NewsItemFragment.newInstance(user, 5);
+            Fragment fragment = NewsItemFragment.newInstance(user);
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.content, fragment)
                     .commit();
-        } else if (id == R.id.nav_agenda) {
+        }
 
-        } else if (id == R.id.nav_poll) {
+        if(user.loggedIn) {
+            if (id == R.id.nav_news) {
+                Fragment fragment = NewsItemFragment.newInstance(user);
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content, fragment)
+                        .commit();
+            } else if (id == R.id.nav_agenda) {
 
-        } else if (id == R.id.nav_roephoek) {
-
-        } else if (id == R.id.nav_gol) {
-
-        } else if (id == R.id.nav_login) {
-            if(user == null || !user.loggedIn) {
+            } else if (id == R.id.nav_poll) {
+                Fragment fragment = PollFragment.newInstance(user);
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content, fragment)
+                        .commit();
+            } else if (id == R.id.nav_login) {
+                item.setTitle(getString(R.string.login));
+                user = null; // just forget about the user to log out
+            }
+        } else {
+            if (id == R.id.nav_login) {
                 Intent loginIntent = new Intent(this, LoginActivity.class);
                 startActivityForResult(loginIntent, LOGIN_REQUEST);
-            } else {
-                user = null; // just forget about the user to log out
+                item.setTitle(getString(R.string.logout));
             }
         }
 
@@ -138,7 +171,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onListFragmentInteraction(NewsAPI.NewsItem item) {
+        //TODO: Show news item with long text
         return;
     }
 }

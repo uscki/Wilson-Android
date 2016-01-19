@@ -19,4 +19,7 @@
 
     <string name="login_request">me.blackwolf12333.appcki.LOGIN_REQUEST</string>
     <string name="logout">Logout</string>
+    <string name="login">Login</string>
+
+    <string name="notloggedin">Je bent niet ingelogd.</string>
 </resources>
