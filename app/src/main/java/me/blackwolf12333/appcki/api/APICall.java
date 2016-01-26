@@ -5,10 +5,8 @@ import android.os.AsyncTask;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import org.apache.commons.io.IOUtils;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -59,16 +57,17 @@ public class APICall extends AsyncTask<String, Void, Void> {
             connection.setRequestMethod("GET");
 
             if(connection.getResponseCode() == 200) {
-                String response = readStream(connection.getInputStream());
+                String response = IOUtils.toString(connection.getInputStream());
+                System.out.println(response);
                 elem = new JsonParser().parse(response);
             } else {
-                elem = new JsonParser().parse(readStream(connection.getErrorStream()));
+                elem = new JsonParser().parse(IOUtils.toString(connection.getErrorStream()));
                 int code = (int)elem.getAsJsonObject().get("status").getAsInt();
                 if(code == 403) {
                     // TODO: 12/18/15 handle errors properly
                 }
 
-                System.out.println(readStream(connection.getErrorStream()));
+                System.out.println(IOUtils.toString(connection.getErrorStream()));
             }
 
             connection.disconnect();
@@ -78,26 +77,7 @@ public class APICall extends AsyncTask<String, Void, Void> {
             connection.disconnect();
         }
 
-        EventBus.getDefault().post(new JSONReadyEvent(elem));
+        EventBus.getDefault().post(new JSONReadyEvent(elem, apiCall));
         return null;
-    }
-
-    private String readStream(InputStream stream) {
-        if(stream == null) {
-            return null;
-        }
-        StringBuilder out = new StringBuilder();
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                out.append(line);
-            }
-
-            reader.close();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-        return out.toString();
     }
 }

@@ -1,14 +1,14 @@
 package me.blackwolf12333.appcki.events;
 
-import me.blackwolf12333.appcki.api.NewsAPI;
+import me.blackwolf12333.appcki.generated.NewsType;
 
 /**
  * Created by peter on 12/30/15.
  */
 public class NewNewsTypesEvent {
-    public NewsAPI.NewsType[] newsTypes;
+    public NewsType[] newsTypes;
 
-    public NewNewsTypesEvent(NewsAPI.NewsType[] newsTypes) {
+    public NewNewsTypesEvent(NewsType[] newsTypes) {
         this.newsTypes = newsTypes;
     }
 }

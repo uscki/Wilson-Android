@@ -7,8 +7,10 @@ import com.google.gson.JsonElement;
  */
 public class JSONReadyEvent {
     public JsonElement json;
+    public String call;
 
-    public JSONReadyEvent(JsonElement jsonElement) {
+    public JSONReadyEvent(JsonElement jsonElement, String call) {
         this.json = jsonElement;
+        this.call = call;
     }
 }

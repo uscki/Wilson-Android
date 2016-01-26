@@ -4,22 +4,21 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -263,18 +262,43 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mPassword = password;
         }
 
+        public String MD5(String md5) {
+            try {
+                java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+                byte[] array = md.digest(md5.getBytes());
+                StringBuffer sb = new StringBuffer();
+                for (int i = 0; i < array.length; ++i) {
+                    sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
+                }
+                return sb.toString();
+            } catch (java.security.NoSuchAlgorithmException e) {
+            }
+            return null;
+        }
+
         @Override
         protected Boolean doInBackground(Void... params) {
             URL api = null;
             HttpURLConnection connection = null;
 
             try {
-                api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + mPassword);
+                String passwordHash = MD5(mPassword);
+                System.out.println(passwordHash);
+                api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + passwordHash);
                 connection = (HttpURLConnection) api.openConnection();
 
                 String token = connection.getHeaderField("X-AUTH-TOKEN");
+
+                if(token == null) {
+                    //TODO handle error
+                    connection.disconnect();
+                    return false;
+                }
+
                 User user = new User(token);
 
+                Log.i("LoginActivity: ", "token: " + token);
+                Log.i("LoginActivity: ", "decoded: " + new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
                 JSONObject jsonObject = new JSONObject(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
                 user.setFirstName(jsonObject.getString("firstname"));
                 user.setLastName(jsonObject.getString("lastname"));
