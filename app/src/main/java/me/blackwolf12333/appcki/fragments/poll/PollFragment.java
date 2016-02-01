@@ -11,7 +11,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import de.greenrobot.event.EventBus;
-import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.User;
 import me.blackwolf12333.appcki.api.PollAPI;
@@ -31,7 +30,7 @@ public class PollFragment extends APIFragment {
     private static final String ARG_USER = "user";
 
     private User user;
-    private PollAPI pollAPI;
+    private PollAPI pollAPI = new PollAPI();
     private RadioGroup pollOptions;
     private TextView pollText;
     private ViewGroup view;
@@ -46,7 +45,6 @@ public class PollFragment extends APIFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param user User
      * @return A new instance of fragment PollFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -58,7 +56,6 @@ public class PollFragment extends APIFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pollAPI = new PollAPI(MainActivity.user);
         pollAPI.getActivePoll();
     }
 
@@ -110,42 +107,21 @@ public class PollFragment extends APIFragment {
         return 0;
     }
 
-    private int getIndexForID(int id) {
-        //PollAPI.Poll poll = pollAPI.getActivePoll();
-        //for(int i = 0; i < poll.options.length; i++) {
-        //    if(poll.options[i].id == id) {
-        //        return i;
-        //    }
-        //}
-        return 0;
-    }
-
     private void populateWithActivePoll(Poll poll) {
         pollText.setText(poll.getPollItem().getTitle());
         for(PollOption option : poll.getOptions()) {
             RadioButton button = new RadioButton(pollOptions.getContext());
             button.setText(option.getName());
-            pollOptions.addView(button);
-        }
-
-        if(poll.getMyVote() > 0) {
-            for(int i = 0; i < poll.getOptions().size(); i++) {
-                if(poll.getOptions().get(i).getId() == poll.getMyVote()) {
-                    ((RadioButton)pollOptions.getChildAt(i)).setChecked(true);
-                }
+            if(poll.getMyVote() == option.getId()) {
+                button.setChecked(true);
             }
+            button.setEnabled(false); //TODO test this
+            pollOptions.addView(button);
         }
     }
 
     public void onEventMainThread(NewPollEvent event) {
         activity.showProgress(false);
         populateWithActivePoll(event.poll);
-    }
-
-    @Override
-    public void setUser(User user) {
-        this.user = user;
-        pollAPI = new PollAPI(user);
-        pollAPI.getActivePoll();
     }
 }

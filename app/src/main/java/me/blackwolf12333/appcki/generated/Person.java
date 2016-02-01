@@ -15,7 +15,7 @@ public class Person {
     @Expose
     private String username;
     @Expose
-    private Integer expires;
+    private Long expires;
     @Expose
     private String firstname;
     @Expose
@@ -27,7 +27,7 @@ public class Person {
     @Expose
     private String address2;
     @Expose
-    private Gender gender;
+    private String gender;
     @Expose
     private String signature;
     @Expose
@@ -82,7 +82,7 @@ public class Person {
      * @return
      *     The expires
      */
-    public Integer getExpires() {
+    public Long getExpires() {
         return expires;
     }
 
@@ -91,7 +91,7 @@ public class Person {
      * @param expires
      *     The expires
      */
-    public void setExpires(Integer expires) {
+    public void setExpires(Long expires) {
         this.expires = expires;
     }
 
@@ -190,7 +190,7 @@ public class Person {
      * @return
      *     The gender
      */
-    public Gender getGender() {
+    public String getGender() {
         return gender;
     }
 
@@ -199,7 +199,7 @@ public class Person {
      * @param gender
      *     The gender
      */
-    public void setGender(Gender gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 

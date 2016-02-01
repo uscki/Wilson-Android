@@ -9,9 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.greenrobot.event.EventBus;
-import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.User;
 import me.blackwolf12333.appcki.api.AgendaAPI;
 import me.blackwolf12333.appcki.events.AgendaEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
@@ -23,11 +21,9 @@ import me.blackwolf12333.appcki.fragments.ProgressActivity;
  * create an instance of this fragment.
  */
 public class AgendaFragment extends APIFragment {
-
-    User user;
-
     private RecyclerView recyclerView;
     private ProgressActivity activity;
+    private AgendaAPI agendaAPI = new AgendaAPI();
 
     public AgendaFragment() {
         // Required empty public constructor
@@ -48,7 +44,6 @@ public class AgendaFragment extends APIFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AgendaAPI agendaAPI = new AgendaAPI(MainActivity.user);
         agendaAPI.getAgenda();
     }
 
@@ -75,7 +70,7 @@ public class AgendaFragment extends APIFragment {
 
     public void onEventMainThread(AgendaEvent event) {
         activity.showProgress(false);
-        recyclerView.setAdapter(new AgendaItemAdapter(event.agenda.getContent()));
+        recyclerView.setAdapter(new AgendaItemAdapter(event.agenda.getContent(), this.getResources()));
     }
 
     @Override
@@ -88,10 +83,5 @@ public class AgendaFragment extends APIFragment {
     public void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
-    }
-
-    @Override
-    public void setUser(User user) {
-        this.user = user;
     }
 }

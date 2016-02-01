@@ -29,12 +29,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.json.JSONObject;
+import com.google.gson.Gson;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import me.blackwolf12333.appcki.generated.Person;
 
 /**
  * A login screen that offers login via email/password.
@@ -280,10 +282,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
             URL api = null;
             HttpURLConnection connection = null;
+            Gson gson = new Gson();
 
             try {
                 String passwordHash = MD5(mPassword);
-                System.out.println(passwordHash);
                 api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + passwordHash);
                 connection = (HttpURLConnection) api.openConnection();
 
@@ -295,16 +297,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     return false;
                 }
 
-                User user = new User(token);
-
                 Log.i("LoginActivity: ", "token: " + token);
                 Log.i("LoginActivity: ", "decoded: " + new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
-                JSONObject jsonObject = new JSONObject(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
-                user.setFirstName(jsonObject.getString("firstname"));
-                user.setLastName(jsonObject.getString("lastname"));
+                Person person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), Person.class);
+                UserHelper.getInstance().login(token, person);
 
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra(getString(R.string.login_request), user);
                 setResult(Activity.RESULT_OK, resultIntent);
 
                 connection.disconnect();

@@ -1,12 +1,16 @@
 package me.blackwolf12333.appcki.api;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -57,8 +61,8 @@ public class APICall extends AsyncTask<String, Void, Void> {
             connection.setRequestMethod("GET");
 
             if(connection.getResponseCode() == 200) {
-                String response = IOUtils.toString(connection.getInputStream());
-                System.out.println(response);
+                String response = readStream(connection.getInputStream());
+                Log.d("APICall", "got response: " + response);
                 elem = new JsonParser().parse(response);
             } else {
                 elem = new JsonParser().parse(IOUtils.toString(connection.getErrorStream()));
@@ -79,5 +83,19 @@ public class APICall extends AsyncTask<String, Void, Void> {
 
         EventBus.getDefault().post(new JSONReadyEvent(elem, apiCall));
         return null;
+    }
+
+    private String readStream(InputStream stream) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        int len;
+        byte[] buffer = new byte[512];
+        try {
+            while (-1 != (len = stream.read(buffer))) {
+                bos.write(buffer, 0, len);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bos.toString();
     }
 }

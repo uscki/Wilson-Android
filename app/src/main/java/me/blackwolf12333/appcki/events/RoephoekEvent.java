@@ -1,14 +1,14 @@
 package me.blackwolf12333.appcki.events;
 
-import me.blackwolf12333.appcki.api.RoephoekAPI;
+import me.blackwolf12333.appcki.generated.Roephoek;
 
 /**
  * Created by peter on 1/25/16.
  */
 public class RoephoekEvent {
-    public RoephoekAPI.Roephoek roephoek;
+    public Roephoek roephoek;
 
-    public RoephoekEvent(RoephoekAPI.Roephoek roephoek) {
+    public RoephoekEvent(Roephoek roephoek) {
         this.roephoek = roephoek;
     }
 }

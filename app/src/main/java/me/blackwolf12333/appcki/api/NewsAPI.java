@@ -1,7 +1,12 @@
 package me.blackwolf12333.appcki.api;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
+
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.User;
+import me.blackwolf12333.appcki.UserHelper;
 import me.blackwolf12333.appcki.events.JSONReadyEvent;
 import me.blackwolf12333.appcki.events.NewNewsItemEvent;
 import me.blackwolf12333.appcki.events.NewNewsOverviewEvent;
@@ -9,16 +14,19 @@ import me.blackwolf12333.appcki.events.NewNewsTypesEvent;
 import me.blackwolf12333.appcki.generated.NewsItem;
 import me.blackwolf12333.appcki.generated.NewsOverview;
 import me.blackwolf12333.appcki.generated.NewsType;
+import me.blackwolf12333.appcki.generated.ServerError;
 
 /**
  * Created by peter on 12/9/15.
  */
-public class NewsAPI extends APIClass {
-    public NewsItem item;
-    public NewsOverview overview;
+public class NewsAPI {
+    User user;
+    Gson gson;
 
-    public NewsAPI(User user) {
-        super(user);
+    public NewsAPI() {
+        this.user = UserHelper.getInstance().getUser();
+        this.gson = new Gson();
+        EventBus.getDefault().register(this);
     }
 
     public void getNewsItem(int id) {
@@ -33,25 +41,37 @@ public class NewsAPI extends APIClass {
         new APICall(user, "news/types/overview").execute();
     }
 
-    public void jsonReadyHandler(JSONReadyEvent event) {
-        NewsOverview newsItem = null;
-        newsItem = gson.fromJson(event.json, NewsOverview.class);
-        if(newsItem == null) {
-            NewsItem news = null;
-            news = gson.fromJson(event.json, NewsItem.class);
-            if(news == null) {
-                NewsType[] newsTypes = null;
-                newsTypes = gson.fromJson(event.json, NewsType[].class);
-                if(newsTypes == null) {
-                    return; // TODO handle this as error
-                } else {
-                    EventBus.getDefault().post(new NewNewsTypesEvent(newsTypes));
-                }
-            } else {
-                EventBus.getDefault().post(new NewNewsItemEvent(news));
-            }
+    public void onEventMainThread(JSONReadyEvent event) {
+        ServerError error = gson.fromJson(event.json, ServerError.class);
+
+        // status is nooit null bij een server error, dus hiermee kunnen we checken of dit het goede
+        // object was voor deserialization.
+        if(error.getStatus() != null) {
+            Log.e("APIClass", "error getting data from BadWolf with call: " + event.call + "\nserver error: " + error.toString());
+            //TODO handle errors
         } else {
-            EventBus.getDefault().post(new NewNewsOverviewEvent(newsItem));
+            if(event.call.startsWith("news")) {
+                jsonReadyHandler(event);
+            }
+        }
+    }
+
+    public void jsonReadyHandler(JSONReadyEvent event) {
+        switch(event.call) {
+            case "news/overview":
+                NewsOverview newsItem = gson.fromJson(event.json, NewsOverview.class);
+                EventBus.getDefault().post(new NewNewsOverviewEvent(newsItem));
+                break;
+            case "news/get":
+                NewsItem news = gson.fromJson(event.json, NewsItem.class);
+                EventBus.getDefault().post(new NewNewsItemEvent(news));
+                break;
+            case "news/types/overview":
+                Log.i("NewsAPI", event.json.toString());
+                NewsType[] newsTypes = gson.fromJson(event.json, NewsType[].class);
+                EventBus.getDefault().post(new NewNewsTypesEvent(newsTypes));
+            default:
+                Log.i("NewsAPI", "Unhandled api call: " + event.call);
         }
     }
 }

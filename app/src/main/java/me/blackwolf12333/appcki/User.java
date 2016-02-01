@@ -1,35 +1,27 @@
 package me.blackwolf12333.appcki;
 
-import java.io.Serializable;
+import me.blackwolf12333.appcki.generated.Person;
 
 /**
  * Created by peter on 11/27/15.
  */
-public class User implements Serializable {
+public class User {
 
     public String TOKEN;
     public boolean loggedIn;
 
-    String firstName;
-    String lastName;
+    Person person;
 
-    public User(String token) {
+    public User(String token, Person person) {
         this.TOKEN = token;
+        this.person = person;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public Person getPerson() {
+        return person;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 }

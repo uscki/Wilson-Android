@@ -5,8 +5,8 @@
     android:name="me.blackwolf12333.appcki.activities.agenda.AgendaFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="me.blackwolf12333.appcki.fragments.agenda.AgendaFragment"
     tools:listitem="@layout/fragment_agendaitem" />

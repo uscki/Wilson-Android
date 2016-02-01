@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class Poll {
     @SerializedName("poll")
+    @Expose
     private PollItem pollItem;
     @SerializedName("options")
     @Expose

@@ -1,13 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/content"
+        android:id="@+id/agendaitem_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
-</LinearLayout>
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Example text"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/agendaitem_poster"
+        android:layout_toEndOf="@+id/agendaitem_poster"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:id="@+id/agendaitem_poster"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Medium Text"
+        android:id="@+id/agendaitem_when"
+        android:layout_below="@+id/agendaitem_title"
+        android:layout_toRightOf="@+id/agendaitem_poster"
+        android:layout_toEndOf="@+id/agendaitem_poster" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Medium Text"
+        android:id="@+id/agendaitem_deelnemers"
+        android:layout_toRightOf="@+id/agendaitem_poster"
+        android:layout_toEndOf="@+id/agendaitem_poster"
+        android:layout_below="@+id/agendaitem_when" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Medium Text"
+        android:id="@+id/agendaitem_waar"
+        android:layout_below="@+id/agendaitem_deelnemers"
+        android:layout_toRightOf="@+id/agendaitem_poster"
+        android:layout_toEndOf="@+id/agendaitem_poster" />
+
+    <Space
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:layout_alignParentTop="false"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/agendaitem_poster" />
+
+</RelativeLayout>

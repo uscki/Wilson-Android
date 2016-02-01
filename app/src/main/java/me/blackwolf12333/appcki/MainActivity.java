@@ -3,6 +3,7 @@ package me.blackwolf12333.appcki;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,25 +15,29 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
+import me.blackwolf12333.appcki.api.RoephoekAPI;
 import me.blackwolf12333.appcki.fragments.APIFragment;
 import me.blackwolf12333.appcki.fragments.NotLoggedInFragment;
 import me.blackwolf12333.appcki.fragments.ProgressActivity;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaFragment;
 import me.blackwolf12333.appcki.fragments.news.NewsItemFragment;
 import me.blackwolf12333.appcki.fragments.poll.PollFragment;
+import me.blackwolf12333.appcki.generated.Person;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,ProgressActivity {
 
     public static final String PREFS_NAME = "preferences";
     public static final int LOGIN_REQUEST = 1;
-    public static User user = new User(null);
 
     private APIFragment fragment;
     private String title;
@@ -59,6 +64,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(!initUser()) {
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            startActivityForResult(loginIntent, LOGIN_REQUEST);
+        }
+
         setContentView(R.layout.activity_main);
         toolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
@@ -68,8 +79,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //TODO
-                //RoephoekAPI api = new RoephoekAPI(user);
-                //api.getRoephoek();
+                RoephoekAPI api = new RoephoekAPI();
+                api.getRoephoek();
             }
         });
 
@@ -85,11 +96,35 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        if(!user.loggedIn) {
-            openScreen(Screen.NOLOGIN);
-        } else {
-            openScreen(Screen.NEWS);
+        openScreen(Screen.NEWS);
+
+        // user should be logged in by now
+        //initLoggedInUserUI();
+    }
+
+    public boolean initUser() {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        if(preferences.contains("last_user")) {
+            String lastUser = preferences.getString("last_user", "");
+            Gson gson = new Gson();
+            Person p = gson.fromJson(lastUser, Person.class);
+            preferences = getSharedPreferences(p.getUsername(), MODE_PRIVATE);
+            String token = preferences.getString("TOKEN", "");
+            UserHelper.getInstance().login(token, p);
+            return true;
+        } else if(UserHelper.getInstance().isLoggedIn()) {
+            return true;
         }
+        return false;
+    }
+
+    private void initLoggedInUserUI() {
+        User user = UserHelper.getInstance().getUser();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.logout));
+
+        TextView view = (TextView) findViewById(R.id.login_status);
+        view.setText("Je bent nu ingelogt als " + user.getPerson().getFirstname());
     }
 
     @Override
@@ -106,6 +141,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
         return true;
     }
 
@@ -125,15 +161,39 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onPause() {
+        if(UserHelper.getInstance().isLoggedIn()) {
+            Gson gson = new Gson();
+            User user = UserHelper.getInstance().getUser();
+            String person = gson.toJson(user.getPerson());
+            Log.i("onPause: ", person);
+            getPreferences(MODE_PRIVATE).edit().putString("last_user", person).commit();
+            UserHelper.getInstance().save(getSharedPreferences(user.person.getUsername(), MODE_PRIVATE));
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(UserHelper.getInstance().isLoggedIn()) {
+            Gson gson = new Gson();
+            User user = UserHelper.getInstance().getUser();
+            String person = gson.toJson(user.getPerson());
+            Log.i("onPause: ", person);
+            getPreferences(MODE_PRIVATE).edit().putString("last_user", person).commit();
+            UserHelper.getInstance().save(getSharedPreferences(user.person.getUsername(), MODE_PRIVATE));
+        }
+        super.onDestroy();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == LOGIN_REQUEST) {
             if(resultCode == RESULT_OK) {
-                user = (User) data.getSerializableExtra("me.blackwolf12333.appcki.LOGIN_REQUEST");
+                User user = UserHelper.getInstance().getUser();
+                initLoggedInUserUI();
 
-                TextView view = (TextView) findViewById(R.id.textView);
-                view.setText("Je bent nu ingelogt als " + user.getFirstName());
-
-                user.loggedIn = true;
+                UserHelper.getInstance().save(getSharedPreferences(user.getPerson().getUsername(), MODE_PRIVATE));
 
                 openScreen(Screen.NEWS);
             }
@@ -141,11 +201,11 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        User user = UserHelper.getInstance().getUser();
 
         if(user != null && user.loggedIn) {
             if (id == R.id.nav_news) {
@@ -156,9 +216,10 @@ public class MainActivity extends AppCompatActivity
                 openScreen(Screen.POLL);
             } else if (id == R.id.nav_login) {
                 item.setTitle(getString(R.string.login));
-                user = null; // just forget about the user to log out
+                UserHelper.getInstance().logout();
             }
         } else {
+            System.out.println("user not logged in");
             if (id == R.id.nav_login) {
                 Intent loginIntent = new Intent(this, LoginActivity.class);
                 startActivityForResult(loginIntent, LOGIN_REQUEST);
@@ -190,7 +251,6 @@ public class MainActivity extends AppCompatActivity
         }
         try {
             fragment = type.newInstance();
-            fragment.setUser(user);
 
             if (currentFragment == fragment) {
                 return;
@@ -211,7 +271,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void showProgress(final boolean show) {
-        System.out.println("show: " + show);
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.

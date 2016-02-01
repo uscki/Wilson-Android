@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,10 +56,5 @@ public class NotLoggedInFragment extends APIFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-    }
-
-    @Override
-    public void setUser(User user) {
-
     }
 }
