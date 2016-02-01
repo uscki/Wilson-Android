@@ -3,6 +3,7 @@ package me.blackwolf12333.appcki.api;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.User;
@@ -37,11 +38,16 @@ public class PollAPI {
     }
 
     public void onEventMainThread(JSONReadyEvent event) {
-        ServerError error = gson.fromJson(event.json, ServerError.class);
+        ServerError error = null;
+        try {
+            error = gson.fromJson(event.json, ServerError.class);
+        } catch(JsonSyntaxException e) {
+            Log.i("PollAPI", "json syntax exception: " + event.json.toString());
+        }
 
         // status is nooit null bij een server error, dus hiermee kunnen we checken of dit het goede
         // object was voor deserialization.
-        if(error.getStatus() != null) {
+        if(error != null && error.getStatus() != null) {
             Log.e("APIClass", "error getting data from BadWolf with call: " + event.call + "\nserver error: " + error.toString());
             //TODO handle errors
         } else {
@@ -52,9 +58,18 @@ public class PollAPI {
     }
 
     public void jsonReadyHandler(JSONReadyEvent event) {
-        Poll poll = gson.fromJson(event.json, Poll.class);
-        if(poll != null) {
-            EventBus.getDefault().post(new PollEvent(poll));
+        switch (event.call) {
+            case "poll/get":
+                Poll poll = gson.fromJson(event.json, Poll.class);
+                EventBus.getDefault().post(new PollEvent(poll));
+                break;
+            case "poll/vote":
+                Log.i("PollAPI", "handle poll/vote response: " + event.json.toString());
+                break;
+            case "poll/active":
+                Poll poll2 = gson.fromJson(event.json, Poll.class);
+                EventBus.getDefault().post(new PollEvent(poll2));
+                break;
         }
     }
 

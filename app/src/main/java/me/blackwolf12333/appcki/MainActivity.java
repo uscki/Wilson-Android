@@ -29,7 +29,6 @@ import me.blackwolf12333.appcki.api.RoephoekAPI;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
-import me.blackwolf12333.appcki.fragments.ProgressActivity;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaFragment;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaItemDetailFragment;
 import me.blackwolf12333.appcki.fragments.news.NewsItemDetailFragment;
@@ -38,7 +37,7 @@ import me.blackwolf12333.appcki.fragments.poll.PollFragment;
 import me.blackwolf12333.appcki.generated.Person;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,ProgressActivity {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String PREFS_NAME = "preferences";
     public static final int LOGIN_REQUEST = 1;

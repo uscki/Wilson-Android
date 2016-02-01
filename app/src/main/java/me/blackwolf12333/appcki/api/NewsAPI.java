@@ -3,6 +3,8 @@ package me.blackwolf12333.appcki.api;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.User;
@@ -26,7 +28,7 @@ public class NewsAPI {
 
     public NewsAPI() {
         this.user = UserHelper.getInstance().getUser();
-        this.gson = new Gson();
+        this.gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         EventBus.getDefault().register(this);
     }
 
@@ -45,7 +47,13 @@ public class NewsAPI {
     }
 
     public void onEventMainThread(JSONReadyEvent event) {
-        ServerError error = gson.fromJson(event.json, ServerError.class);
+        ServerError error = null;
+        try {
+            error = gson.fromJson(event.json, ServerError.class);
+        } catch(JsonSyntaxException e) {
+            Log.i("NewsAPI", "json syntax exception: " + event.json.toString());
+        }
+
 
         // status is nooit null bij een server error, dus hiermee kunnen we checken of dit het goede
         // object was voor deserialization.

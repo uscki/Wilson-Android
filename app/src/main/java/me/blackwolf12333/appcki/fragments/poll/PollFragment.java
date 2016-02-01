@@ -20,8 +20,6 @@ import me.blackwolf12333.appcki.generated.PollOption;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link PollFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class PollFragment extends APIFragment {
     private PollAPI pollAPI = new PollAPI();
@@ -65,17 +63,27 @@ public class PollFragment extends APIFragment {
         return 0;
     }
 
-    private void populateWithActivePoll(Poll poll) {
+    private void populateWithActivePoll(final Poll poll) {
         pollText.setText(poll.getPollItem().getTitle());
+        pollOptions.removeAllViews(); // verwijder de polloptions van de vorige keer laden
         for(PollOption option : poll.getOptions()) {
             RadioButton button = new RadioButton(pollOptions.getContext());
             button.setText(option.getName());
-            if(poll.getMyVote() == option.getId()) {
+            if(option.getId().equals(poll.getMyVote())) {
                 button.setChecked(true);
             }
-            button.setEnabled(false); //TODO test this
             pollOptions.addView(button);
         }
+
+        this.pollOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(poll.getMyVote() > 0) {
+                    PollOption option = poll.getOptions().get(checkedId);
+                    pollAPI.vote(option.getId());
+                }
+            }
+        });
     }
 
     public void onEventMainThread(PollEvent event) {

@@ -12,12 +12,15 @@ import android.widget.TextView;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
+import me.blackwolf12333.appcki.UserHelper;
 import me.blackwolf12333.appcki.api.AgendaAPI;
 import me.blackwolf12333.appcki.events.AgendaItemEvent;
 import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
 import me.blackwolf12333.appcki.generated.AgendaItem;
+import me.blackwolf12333.appcki.generated.Participant;
+import me.blackwolf12333.appcki.generated.Person;
 
 /**
  * A simple {@link APIFragment} subclass.
@@ -66,12 +69,36 @@ public class AgendaItemDetailFragment extends APIFragment {
         //TODO set holder.itemPoster to an actual picture from AgendaItem.mediaCollection
         itemPoster.setImageDrawable(getResources().getDrawable(R.drawable.poster));
         itemLongDescription.setText(item.getLongdescription());
-        itemInschrijven.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                agendaAPI.subscribe(item, itemNote.getText().toString());
+
+        if(ingeschreven(item)) {
+            itemInschrijven.setChecked(true);
+            itemInschrijven.setText(getString(R.string.agenda_uitschrijven));
+            itemInschrijven.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    agendaAPI.unsubscribe(item);
+                }
+            });
+        } else {
+            itemInschrijven.setChecked(false);
+            itemInschrijven.setText(getString(R.string.agenda_inschrijven));
+            itemInschrijven.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    agendaAPI.subscribe(item, itemNote.getText().toString());
+                }
+            });
+        }
+    }
+
+    private boolean ingeschreven(AgendaItem item) {
+        for(Participant p : item.getParticipants()) {
+            Person user = UserHelper.getInstance().getUser().getPerson();
+            if(p.getPerson().getUsername().equals(user.getUsername())) {
+                return true;
             }
-        });
+        }
+        return false;
     }
 
     public void onEventMainThread(AgendaItemEvent event) {
