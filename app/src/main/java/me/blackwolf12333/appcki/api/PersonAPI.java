@@ -8,7 +8,7 @@ import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.User;
 import me.blackwolf12333.appcki.UserHelper;
 import me.blackwolf12333.appcki.events.JSONReadyEvent;
-import me.blackwolf12333.appcki.events.NewPersonEvent;
+import me.blackwolf12333.appcki.events.PersonEvent;
 import me.blackwolf12333.appcki.generated.Person;
 import me.blackwolf12333.appcki.generated.ServerError;
 
@@ -49,7 +49,7 @@ public class PersonAPI {
             case "person/get":
                 Person person = gson.fromJson(event.json, Person.class);
                 if(person != null) {
-                    EventBus.getDefault().post(new NewPersonEvent(person));
+                    EventBus.getDefault().post(new PersonEvent(person));
                 }
                 break;
         }

@@ -4,7 +4,8 @@
         <item>News</item>
         <item>Agenda</item>
         <item>Poll</item>
-        <item>Login</item>
+        <item>Agenda Detail</item>
+        <item>News Detail</item>
     </string-array>
 
 </resources>

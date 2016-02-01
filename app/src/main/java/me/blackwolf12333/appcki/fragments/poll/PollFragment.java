@@ -1,6 +1,5 @@
 package me.blackwolf12333.appcki.fragments.poll;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,11 +11,10 @@ import android.widget.TextView;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.User;
 import me.blackwolf12333.appcki.api.PollAPI;
-import me.blackwolf12333.appcki.events.NewPollEvent;
+import me.blackwolf12333.appcki.events.PollEvent;
+import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
-import me.blackwolf12333.appcki.fragments.ProgressActivity;
 import me.blackwolf12333.appcki.generated.Poll;
 import me.blackwolf12333.appcki.generated.PollOption;
 
@@ -26,32 +24,12 @@ import me.blackwolf12333.appcki.generated.PollOption;
  * create an instance of this fragment.
  */
 public class PollFragment extends APIFragment {
-
-    private static final String ARG_USER = "user";
-
-    private User user;
     private PollAPI pollAPI = new PollAPI();
     private RadioGroup pollOptions;
     private TextView pollText;
     private ViewGroup view;
 
-    private ProgressActivity activity;
-
-    public PollFragment() {
-
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment PollFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PollFragment newInstance() {
-        PollFragment fragment = new PollFragment();
-        return fragment;
-    }
+    public PollFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,17 +44,6 @@ public class PollFragment extends APIFragment {
         this.pollOptions = (RadioGroup) view.findViewById(R.id.poll_options);
         this.pollText = (TextView) view.findViewById(R.id.poll_text);
 
-        this.pollOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if(!pollAPI.hasVoted()) {
-                    pollAPI.vote(getIDForRadioButtonIndex(checkedId));
-                } else {
-                    //group.check(getIndexForID(pollAPI.getActivePoll().myvote));
-                }
-            }
-        });
-
         return view;
     }
 
@@ -90,15 +57,6 @@ public class PollFragment extends APIFragment {
     public void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof ProgressActivity)) {
-            throw new IllegalArgumentException("BaseLoginFragment's acitivity must implement interface LoginActivity");
-        }
-        this.activity = (ProgressActivity) activity;
     }
 
     private int getIDForRadioButtonIndex(int index) {
@@ -120,8 +78,8 @@ public class PollFragment extends APIFragment {
         }
     }
 
-    public void onEventMainThread(NewPollEvent event) {
-        activity.showProgress(false);
+    public void onEventMainThread(PollEvent event) {
+        EventBus.getDefault().post(new ShowProgressEvent(false));
         populateWithActivePoll(event.poll);
     }
 }

@@ -37,8 +37,6 @@ public class Person {
     @Expose
     private Integer photomediaid;
     @Expose
-    private String fbname;
-    @Expose
     private List<String> roles = new ArrayList<String>();
 
     /**
@@ -273,24 +271,6 @@ public class Person {
      */
     public void setPhotomediaid(Integer photomediaid) {
         this.photomediaid = photomediaid;
-    }
-
-    /**
-     * 
-     * @return
-     *     The fbname
-     */
-    public String getFbname() {
-        return fbname;
-    }
-
-    /**
-     * 
-     * @param fbname
-     *     The fbname
-     */
-    public void setFbname(String fbname) {
-        this.fbname = fbname;
     }
 
     /**

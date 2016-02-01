@@ -5,10 +5,10 @@ import me.blackwolf12333.appcki.generated.Poll;
 /**
  * Created by peter on 12/30/15.
  */
-public class NewPollEvent {
+public class PollEvent {
     public Poll poll;
 
-    public NewPollEvent(Poll poll) {
+    public PollEvent(Poll poll) {
         this.poll = poll;
     }
 }

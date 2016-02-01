@@ -8,7 +8,8 @@ import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.User;
 import me.blackwolf12333.appcki.UserHelper;
 import me.blackwolf12333.appcki.events.JSONReadyEvent;
-import me.blackwolf12333.appcki.events.NewPollEvent;
+import me.blackwolf12333.appcki.events.PollEvent;
+import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.generated.Poll;
 import me.blackwolf12333.appcki.generated.ServerError;
 
@@ -26,10 +27,12 @@ public class PollAPI {
     }
 
     public void getPoll(int id) {
+        EventBus.getDefault().post(new ShowProgressEvent(true));
         new APICall(user, "poll/get").execute("id="+id);
     }
 
     public void getActivePoll() {
+        EventBus.getDefault().post(new ShowProgressEvent(true));
         new APICall(user, "poll/active").execute();
     }
 
@@ -49,19 +52,13 @@ public class PollAPI {
     }
 
     public void jsonReadyHandler(JSONReadyEvent event) {
-        Log.i("PollAPI", event.json.toString());
         Poll poll = gson.fromJson(event.json, Poll.class);
         if(poll != null) {
-            //System.out.println(poll.getPollItem().getTitle());
-            EventBus.getDefault().post(new NewPollEvent(poll));
+            EventBus.getDefault().post(new PollEvent(poll));
         }
     }
 
     public void vote(int id) {
         new APICall(user, "poll/vote").execute("id=" + id);
-    }
-
-    public boolean hasVoted() {
-        return false; // FIXME: 12/30/15
     }
 }

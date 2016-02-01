@@ -5,10 +5,10 @@ import me.blackwolf12333.appcki.generated.Person;
 /**
  * Created by peter on 12/30/15.
  */
-public class NewPersonEvent {
+public class PersonEvent {
     Person person;
 
-    public NewPersonEvent(Person person) {
+    public PersonEvent(Person person) {
         this.person = person;
     }
 }

@@ -1,5 +1,6 @@
 package me.blackwolf12333.appcki.fragments.news;
 
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +9,10 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
+import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.generated.NewsItem;
 
 /**
@@ -37,7 +41,9 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO stuur een event naar de EventBus
+                Bundle args = new Bundle();
+                args.putInt("id", holder.mItem.getId());
+                EventBus.getDefault().post(new OpenFragmentEvent(MainActivity.Screen.NEWSDETAIL, args));
             }
         });
     }

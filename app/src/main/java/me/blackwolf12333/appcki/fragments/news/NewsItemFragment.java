@@ -1,7 +1,5 @@
 package me.blackwolf12333.appcki.fragments.news;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,11 +10,11 @@ import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.User;
 import me.blackwolf12333.appcki.api.NewsAPI;
-import me.blackwolf12333.appcki.events.NewNewsItemEvent;
-import me.blackwolf12333.appcki.events.NewNewsOverviewEvent;
-import me.blackwolf12333.appcki.events.NewNewsTypesEvent;
+import me.blackwolf12333.appcki.events.NewsItemEvent;
+import me.blackwolf12333.appcki.events.NewsOverviewEvent;
+import me.blackwolf12333.appcki.events.NewsTypesEvent;
+import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
-import me.blackwolf12333.appcki.fragments.ProgressActivity;
 import me.blackwolf12333.appcki.generated.NewsItem;
 import me.blackwolf12333.appcki.generated.NewsOverview;
 
@@ -34,8 +32,6 @@ public class NewsItemFragment extends APIFragment {
     private NewsItem newsItem = null;
 
     private RecyclerView recyclerView;
-
-    private ProgressActivity activity;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -71,15 +67,6 @@ public class NewsItemFragment extends APIFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof ProgressActivity)) {
-            throw new IllegalArgumentException("This fragments acitivity must implement interface ProgressActivity");
-        }
-        this.activity = (ProgressActivity) activity;
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_newsitem_list, container, false);
@@ -88,32 +75,23 @@ public class NewsItemFragment extends APIFragment {
         return view;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    public void onEventMainThread(NewNewsOverviewEvent event) {
-        activity.showProgress(false);
+    public void onEventMainThread(NewsOverviewEvent event) {
+        EventBus.getDefault().post(new ShowProgressEvent(false));
         if(event.newsOverview != null) {
             recyclerView.setAdapter(new NewsItemAdapter(event.newsOverview.getContent()));
         }
     }
 
-    public void onEventMainThread(NewNewsItemEvent event) {
-        activity.showProgress(false);
+    public void onEventMainThread(NewsItemEvent event) {
+        EventBus.getDefault().post(new ShowProgressEvent(false));
         if(event.newsItem != null) {
             // TODO
             //recyclerView.setAdapter(new MyNewsItemRecyclerViewAdapter(event.newsOverview.getContent(), mListener));
         }
     }
 
-    public void onEventMainThread(NewNewsTypesEvent event) {
+    public void onEventMainThread(NewsTypesEvent event) {
+        EventBus.getDefault().post(new ShowProgressEvent(false));
         if(event.newsTypes != null) {
             //TODO whatever hiermee gedaan moet worden...
         }

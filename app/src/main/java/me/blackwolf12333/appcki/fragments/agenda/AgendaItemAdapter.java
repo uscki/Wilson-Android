@@ -1,6 +1,7 @@
 package me.blackwolf12333.appcki.fragments.agenda;
 
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,11 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
+import me.blackwolf12333.appcki.events.OpenFragmentEvent;
+import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.generated.AgendaItem;
 
 /**
@@ -48,7 +53,10 @@ public class AgendaItemAdapter extends RecyclerView.Adapter<AgendaItemAdapter.Vi
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO stuur een event naar de EventBus
+                Bundle args = new Bundle();
+                args.putInt("id", holder.mItem.getId());
+                EventBus.getDefault().post(new OpenFragmentEvent(MainActivity.Screen.AGENDADETAIL, args));
+                EventBus.getDefault().post(new ShowProgressEvent(true));
             }
         });
     }

@@ -5,10 +5,10 @@ import me.blackwolf12333.appcki.generated.NewsItem;
 /**
  * Created by peter on 12/30/15.
  */
-public class NewNewsItemEvent {
+public class NewsItemEvent {
     public NewsItem newsItem;
 
-    public NewNewsItemEvent(NewsItem newsItem) {
+    public NewsItemEvent(NewsItem newsItem) {
         this.newsItem = newsItem;
     }
 }

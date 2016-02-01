@@ -1,6 +1,5 @@
 package me.blackwolf12333.appcki.fragments.agenda;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -12,8 +11,8 @@ import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.api.AgendaAPI;
 import me.blackwolf12333.appcki.events.AgendaEvent;
+import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
-import me.blackwolf12333.appcki.fragments.ProgressActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,7 +21,6 @@ import me.blackwolf12333.appcki.fragments.ProgressActivity;
  */
 public class AgendaFragment extends APIFragment {
     private RecyclerView recyclerView;
-    private ProgressActivity activity;
     private AgendaAPI agendaAPI = new AgendaAPI();
 
     public AgendaFragment() {
@@ -44,7 +42,7 @@ public class AgendaFragment extends APIFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        agendaAPI.getAgenda();
+        agendaAPI.getAgendaNewer();
     }
 
     @Override
@@ -59,17 +57,8 @@ public class AgendaFragment extends APIFragment {
         return view;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!(activity instanceof ProgressActivity)) {
-            throw new IllegalArgumentException("This fragments acitivity must implement interface ProgressActivity");
-        }
-        this.activity = (ProgressActivity) activity;
-    }
-
     public void onEventMainThread(AgendaEvent event) {
-        activity.showProgress(false);
+        EventBus.getDefault().post(new ShowProgressEvent(false));
         recyclerView.setAdapter(new AgendaItemAdapter(event.agenda.getContent(), this.getResources()));
     }
 

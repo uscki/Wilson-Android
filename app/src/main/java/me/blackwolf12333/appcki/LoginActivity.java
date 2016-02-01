@@ -293,6 +293,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 if(token == null) {
                     //TODO handle error
+                    Log.i("LoginActivity", "Error logging in!");
                     connection.disconnect();
                     return false;
                 }

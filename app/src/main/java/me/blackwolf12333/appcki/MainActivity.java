@@ -24,11 +24,15 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.api.RoephoekAPI;
+import me.blackwolf12333.appcki.events.OpenFragmentEvent;
+import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
-import me.blackwolf12333.appcki.fragments.NotLoggedInFragment;
 import me.blackwolf12333.appcki.fragments.ProgressActivity;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaFragment;
+import me.blackwolf12333.appcki.fragments.agenda.AgendaItemDetailFragment;
+import me.blackwolf12333.appcki.fragments.news.NewsItemDetailFragment;
 import me.blackwolf12333.appcki.fragments.news.NewsItemFragment;
 import me.blackwolf12333.appcki.fragments.poll.PollFragment;
 import me.blackwolf12333.appcki.generated.Person;
@@ -50,7 +54,8 @@ public class MainActivity extends AppCompatActivity
         NEWS(NewsItemFragment.class),
         AGENDA(AgendaFragment.class),
         POLL(PollFragment.class),
-        NOLOGIN(NotLoggedInFragment.class),
+        AGENDADETAIL(AgendaItemDetailFragment.class),
+        NEWSDETAIL(NewsItemDetailFragment.class),
 
         ;
 
@@ -133,7 +138,13 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if(fragment instanceof NewsItemDetailFragment) {
+                openScreen(Screen.NEWS);
+            } else if(fragment instanceof AgendaItemDetailFragment) {
+                openScreen(Screen.AGENDA);
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -161,7 +172,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onStart() {
+        EventBus.getDefault().register(this);
+        super.onStart();
+    }
+
+    @Override
     protected void onPause() {
+        EventBus.getDefault().unregister(this);
         if(UserHelper.getInstance().isLoggedIn()) {
             Gson gson = new Gson();
             User user = UserHelper.getInstance().getUser();
@@ -171,6 +189,12 @@ public class MainActivity extends AppCompatActivity
             UserHelper.getInstance().save(getSharedPreferences(user.person.getUsername(), MODE_PRIVATE));
         }
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
@@ -191,7 +215,7 @@ public class MainActivity extends AppCompatActivity
         if(requestCode == LOGIN_REQUEST) {
             if(resultCode == RESULT_OK) {
                 User user = UserHelper.getInstance().getUser();
-                initLoggedInUserUI();
+                //initLoggedInUserUI();
 
                 UserHelper.getInstance().save(getSharedPreferences(user.getPerson().getUsername(), MODE_PRIVATE));
 
@@ -232,9 +256,26 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void onEventMainThread(OpenFragmentEvent event) {
+        if(event.arguments != null) {
+            openScreen(event.screen, event.arguments);
+        } else {
+            openScreen(event.screen);
+        }
+    }
+
+    public void onEventMainThread(ShowProgressEvent event) {
+        this.showProgress(event.showProgress);
+    }
+
     private void openScreen(Screen screen) {
         String title = getResources().getStringArray(R.array.screen_titles)[screen.ordinal()];
         openScreen(screen, null, title);
+    }
+
+    private void openScreen(Screen screen, Bundle args) {
+        String title = getResources().getStringArray(R.array.screen_titles)[screen.ordinal()];
+        openScreen(screen, args, title);
     }
 
     private void openScreen(Screen screen, Bundle args, String newTitle) {
