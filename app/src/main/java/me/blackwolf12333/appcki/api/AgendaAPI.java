@@ -41,7 +41,7 @@ public class AgendaAPI {
 
     public void getAgendaNewer() {
         EventBus.getDefault().post(new ShowProgressEvent(true));
-        new APICall(user, "agenda/newer").execute();
+        new APICall(user, "agenda/newer").execute("sort=startdate,starttime,desc");
     }
 
     public void getAgendaItem(Integer id) {

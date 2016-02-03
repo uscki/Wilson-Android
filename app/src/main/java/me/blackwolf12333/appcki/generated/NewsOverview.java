@@ -1,10 +1,12 @@
 package me.blackwolf12333.appcki.generated;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewsOverview {
 
@@ -16,7 +18,7 @@ public class NewsOverview {
     private Integer totalPages;
     @SerializedName("sort")
     @Expose
-    private Sort sort;
+    private Sort[] sort;
     @SerializedName("numberOfElements")
     @Expose
     private Integer numberOfElements;
@@ -77,7 +79,7 @@ public class NewsOverview {
      * @return
      * The sort
      */
-    public Sort getSort() {
+    public Sort[] getSort() {
         return sort;
     }
 
@@ -86,7 +88,7 @@ public class NewsOverview {
      * @param sort
      * The sort
      */
-    public void setSort(Sort sort) {
+    public void setSort(Sort[] sort) {
         this.sort = sort;
     }
 

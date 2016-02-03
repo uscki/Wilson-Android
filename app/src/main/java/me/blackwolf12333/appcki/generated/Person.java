@@ -38,6 +38,8 @@ public class Person {
     private Integer photomediaid;
     @Expose
     private List<String> roles = new ArrayList<String>();
+    @Expose
+    private String cookiestring;
 
     /**
      * 
@@ -289,6 +291,14 @@ public class Person {
      */
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public String getCookiestring() {
+        return cookiestring;
+    }
+
+    public void setCookiestring(String cookiestring) {
+        this.cookiestring = cookiestring;
     }
 
     @Override

@@ -39,7 +39,7 @@ public class NewsAPI {
 
     public void getOverview() {
         EventBus.getDefault().post(new ShowProgressEvent(true));
-        new APICall(user, "news/overview").execute();
+        new APICall(user, "news/overview").execute("sort=posteddate,desc");
     }
 
     public void getNewsTypes() {

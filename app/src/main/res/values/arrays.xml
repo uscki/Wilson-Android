@@ -6,6 +6,7 @@
         <item>Poll</item>
         <item>Agenda Detail</item>
         <item>News Detail</item>
+        <item>Login</item>
     </string-array>
 
 </resources>

@@ -57,13 +57,7 @@ public class PollFragment extends APIFragment {
         super.onStop();
     }
 
-    private int getIDForRadioButtonIndex(int index) {
-        //PollAPI.Poll poll = pollAPI.getActivePoll();
-        //return poll.options[index].id;
-        return 0;
-    }
-
-    private void populateWithActivePoll(final Poll poll) {
+    private void populateWithPoll(final Poll poll) {
         pollText.setText(poll.getPollItem().getTitle());
         pollOptions.removeAllViews(); // verwijder de polloptions van de vorige keer laden
         for(PollOption option : poll.getOptions()) {
@@ -88,6 +82,6 @@ public class PollFragment extends APIFragment {
 
     public void onEventMainThread(PollEvent event) {
         EventBus.getDefault().post(new ShowProgressEvent(false));
-        populateWithActivePoll(event.poll);
+        populateWithPoll(event.poll);
     }
 }

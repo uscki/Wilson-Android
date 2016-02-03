@@ -2,10 +2,11 @@ package me.blackwolf12333.appcki;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -19,16 +20,23 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.imagepipeline.image.ImageInfo;
+import com.facebook.imagepipeline.image.QualityInfo;
 import com.google.gson.Gson;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.api.RoephoekAPI;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
+import me.blackwolf12333.appcki.events.UserLoggedInEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
+import me.blackwolf12333.appcki.fragments.LoginFragment;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaFragment;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaItemDetailFragment;
 import me.blackwolf12333.appcki.fragments.news.NewsItemDetailFragment;
@@ -48,6 +56,7 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private ProgressBar progressBar;
     private View content;
+    private ImageView userProfilePic;
 
     public enum Screen {
         NEWS(NewsItemFragment.class),
@@ -55,6 +64,7 @@ public class MainActivity extends AppCompatActivity
         POLL(PollFragment.class),
         AGENDADETAIL(AgendaItemDetailFragment.class),
         NEWSDETAIL(NewsItemDetailFragment.class),
+        LOGIN(LoginFragment.class),
 
         ;
 
@@ -68,11 +78,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if(!initUser()) {
-            Intent loginIntent = new Intent(this, LoginActivity.class);
-            startActivityForResult(loginIntent, LOGIN_REQUEST);
-        }
 
         setContentView(R.layout.activity_main);
         toolBar = (Toolbar) findViewById(R.id.toolbar);
@@ -99,36 +104,46 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        userProfilePic = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
 
-        openScreen(Screen.NEWS);
+    }
 
-        // user should be logged in by now
-        //initLoggedInUserUI();
+    @Override
+    protected void onResume() {
+        if(!initUser()) {
+            openScreen(Screen.LOGIN);
+        } else {
+            openScreen(Screen.NEWS);
+        }
+        super.onResume();
     }
 
     public boolean initUser() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         if(preferences.contains("last_user")) {
-            String lastUser = preferences.getString("last_user", "");
-            Gson gson = new Gson();
-            Person p = gson.fromJson(lastUser, Person.class);
-            preferences = getSharedPreferences(p.getUsername(), MODE_PRIVATE);
-            String token = preferences.getString("TOKEN", "");
-            UserHelper.getInstance().login(token, p);
+            loadUser();
             return true;
         } else if(UserHelper.getInstance().isLoggedIn()) {
+            initLoggedInUserUI(UserHelper.getInstance().getUser());
             return true;
         }
         return false;
     }
 
-    private void initLoggedInUserUI() {
-        User user = UserHelper.getInstance().getUser();
+    private void initLoggedInUserUI(User user) {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.logout));
 
-        TextView view = (TextView) findViewById(R.id.login_status);
+        TextView view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.login_status);
         view.setText("Je bent nu ingelogt als " + user.getPerson().getFirstname());
+    }
+
+    private void initLoggedOutUserUI() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.login));
+
+        TextView view = (TextView) findViewById(R.id.login_status);
+        view.setText("Je bent uitgelogd.");
     }
 
     @Override
@@ -177,51 +192,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onPause() {
-        EventBus.getDefault().unregister(this);
-        if(UserHelper.getInstance().isLoggedIn()) {
-            Gson gson = new Gson();
-            User user = UserHelper.getInstance().getUser();
-            String person = gson.toJson(user.getPerson());
-            Log.i("onPause: ", person);
-            getPreferences(MODE_PRIVATE).edit().putString("last_user", person).commit();
-            UserHelper.getInstance().save(getSharedPreferences(user.person.getUsername(), MODE_PRIVATE));
-        }
-        super.onPause();
-    }
-
-    @Override
     protected void onStop() {
         EventBus.getDefault().unregister(this);
+        saveUser();
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        if(UserHelper.getInstance().isLoggedIn()) {
-            Gson gson = new Gson();
-            User user = UserHelper.getInstance().getUser();
-            String person = gson.toJson(user.getPerson());
-            Log.i("onPause: ", person);
-            getPreferences(MODE_PRIVATE).edit().putString("last_user", person).commit();
-            UserHelper.getInstance().save(getSharedPreferences(user.person.getUsername(), MODE_PRIVATE));
-        }
+        saveUser();
         super.onDestroy();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == LOGIN_REQUEST) {
-            if(resultCode == RESULT_OK) {
-                User user = UserHelper.getInstance().getUser();
-                //initLoggedInUserUI();
-
-                UserHelper.getInstance().save(getSharedPreferences(user.getPerson().getUsername(), MODE_PRIVATE));
-
-                openScreen(Screen.NEWS);
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -238,15 +218,12 @@ public class MainActivity extends AppCompatActivity
             } else if (id == R.id.nav_poll) {
                 openScreen(Screen.POLL);
             } else if (id == R.id.nav_login) {
-                item.setTitle(getString(R.string.login));
-                UserHelper.getInstance().logout();
+                UserHelper.getInstance().logout(getSharedPreferences(user.getPerson().getUsername(), MODE_PRIVATE));
+                initLoggedOutUserUI();
             }
         } else {
-            System.out.println("user not logged in");
             if (id == R.id.nav_login) {
-                Intent loginIntent = new Intent(this, LoginActivity.class);
-                startActivityForResult(loginIntent, LOGIN_REQUEST);
-                item.setTitle(getString(R.string.logout));
+                openScreen(Screen.LOGIN);
             }
         }
 
@@ -265,6 +242,38 @@ public class MainActivity extends AppCompatActivity
 
     public void onEventMainThread(ShowProgressEvent event) {
         this.showProgress(event.showProgress);
+    }
+
+    public void onEventMainThread(UserLoggedInEvent event) {
+        Log.i("userloggedinevent: ", "test");
+        User user = UserHelper.getInstance().getUser();
+        initLoggedInUserUI(user);
+        openScreen(Screen.NEWS);
+    }
+
+    private void saveUser() {
+        if(UserHelper.getInstance().isLoggedIn()) {
+            Gson gson = new Gson();
+            User user = UserHelper.getInstance().getUser();
+            String person = gson.toJson(user.getPerson());
+            Log.i("saveUser: ", person);
+            getPreferences(MODE_PRIVATE).edit().putString("last_user", person).commit();
+            UserHelper.getInstance().save(getSharedPreferences(user.person.getUsername(), MODE_PRIVATE));
+        }
+    }
+
+    private void loadUser() {
+        if(getPreferences(MODE_PRIVATE).contains("last_user")) {
+            Gson gson = new Gson();
+            SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+            Person person = gson.fromJson(preferences.getString("last_user",""), Person.class);
+            preferences = getSharedPreferences(person.getUsername(), MODE_PRIVATE);
+            String token = preferences.getString("TOKEN", "");
+            if(!token.isEmpty()) {
+                Log.i("loadUser", token + " with person: " + person.toString());
+                UserHelper.getInstance().login(token, person);
+            }
+        }
     }
 
     private void openScreen(Screen screen) {
@@ -341,4 +350,29 @@ public class MainActivity extends AppCompatActivity
             content.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
+
+    ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+        @Override
+        public void onFinalImageSet(
+                String id,
+                @Nullable ImageInfo imageInfo,
+                @Nullable Animatable anim) {
+            if (imageInfo == null) {
+                return;
+            }
+            QualityInfo qualityInfo = imageInfo.getQualityInfo();
+            Log.i("succes", "");
+        }
+
+        @Override
+        public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
+            Log.d("bla","Intermediate image received");
+        }
+
+        @Override
+        public void onFailure(String id, Throwable throwable) {
+            Log.e(getClass().getSimpleName(), "Error loading " + id);
+        }
+    };
+
 }

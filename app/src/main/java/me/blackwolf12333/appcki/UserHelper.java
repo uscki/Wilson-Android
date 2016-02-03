@@ -3,6 +3,8 @@ package me.blackwolf12333.appcki;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.events.UserLoggedInEvent;
 import me.blackwolf12333.appcki.generated.Person;
 
 /**
@@ -39,9 +41,16 @@ public class UserHelper {
     public void login(String token, Person person) {
         this.user = new User(token, person);
         this.user.loggedIn = true;
+        EventBus.getDefault().post(new UserLoggedInEvent());
     }
 
-    public void logout() {
+    public void logout(SharedPreferences preferences) {
+        if(preferences.contains("TOKEN")) {
+            System.out.println("token in place, removing it");
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.remove("TOKEN");
+            editor.commit();
+        }
         this.user.loggedIn = false;
         this.user.TOKEN = null;
         this.user.person = null;
@@ -53,7 +62,6 @@ public class UserHelper {
 
     public void save(SharedPreferences preferences) {
         if(!preferences.contains("TOKEN")) {
-            System.out.println("no token in place");
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("TOKEN", user.TOKEN);
             editor.commit();

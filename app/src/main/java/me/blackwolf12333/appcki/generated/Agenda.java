@@ -17,7 +17,7 @@ public class Agenda {
     @Expose
     private Integer totalPages;
     @Expose
-    private Sort sort;
+    private Sort[] sort;
     @Expose
     private Integer numberOfElements;
     @Expose
@@ -70,7 +70,7 @@ public class Agenda {
      * @return
      *     The sort
      */
-    public Sort getSort() {
+    public Sort[] getSort() {
         return sort;
     }
 
@@ -79,7 +79,7 @@ public class Agenda {
      * @param sort
      *     The sort
      */
-    public void setSort(Sort sort) {
+    public void setSort(Sort[] sort) {
         this.sort = sort;
     }
 
