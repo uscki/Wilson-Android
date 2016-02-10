@@ -1,9 +1,10 @@
-package me.blackwolf12333.appcki;
+package me.blackwolf12333.appcki.helpers;
 
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.User;
 import me.blackwolf12333.appcki.events.UserLoggedInEvent;
 import me.blackwolf12333.appcki.generated.Person;
 
@@ -53,7 +54,7 @@ public class UserHelper {
         }
         this.user.loggedIn = false;
         this.user.TOKEN = null;
-        this.user.person = null;
+        this.user.setPerson(null);
     }
 
     public boolean isLoggedIn() {

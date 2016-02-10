@@ -293,6 +293,10 @@ public class Person {
         this.roles = roles;
     }
 
+    public String getName() {
+        return firstname + " " + lastname;
+    }
+
     public String getCookiestring() {
         return cookiestring;
     }

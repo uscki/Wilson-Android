@@ -5,12 +5,12 @@ import android.graphics.Bitmap;
 /**
  * Created by peter on 2/3/16.
  */
-public class MediaFileReadyEvent {
+public class MediaBitmapEvent {
     public Bitmap bitmap;
-    public Integer id;
+    public Integer fileid;
 
-    public MediaFileReadyEvent(Integer id, Bitmap bitmap) {
+    public MediaBitmapEvent(Integer fileid, Bitmap bitmap) {
         this.bitmap = bitmap;
-        this.id = id;
+        this.fileid = fileid;
     }
 }

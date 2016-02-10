@@ -11,7 +11,7 @@ public class MediaFile {
     @Expose
     private Person person;
     @Expose
-    private String date_added;
+    private Long date_added;
     @Expose
     private String md5;
     @Expose
@@ -62,7 +62,7 @@ public class MediaFile {
      * @return
      *     The date_added
      */
-    public String getDate_added() {
+    public Long getDate_added() {
         return date_added;
     }
 
@@ -71,7 +71,7 @@ public class MediaFile {
      * @param date_added
      *     The date_added
      */
-    public void setDate_added(String date_added) {
+    public void setDate_added(Long date_added) {
         this.date_added = date_added;
     }
 

@@ -2,11 +2,11 @@ package me.blackwolf12333.appcki;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Animatable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -20,18 +20,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.facebook.drawee.controller.BaseControllerListener;
-import com.facebook.drawee.controller.ControllerListener;
-import com.facebook.imagepipeline.image.ImageInfo;
-import com.facebook.imagepipeline.image.QualityInfo;
 import com.google.gson.Gson;
 
 import de.greenrobot.event.EventBus;
-import me.blackwolf12333.appcki.api.RoephoekAPI;
+import me.blackwolf12333.appcki.events.LinkClickedEvent;
+import me.blackwolf12333.appcki.events.MediaFileEvent;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.events.UserLoggedInEvent;
@@ -39,10 +35,17 @@ import me.blackwolf12333.appcki.fragments.APIFragment;
 import me.blackwolf12333.appcki.fragments.LoginFragment;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaFragment;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaItemDetailFragment;
+import me.blackwolf12333.appcki.fragments.agenda.ParticipantFragment;
 import me.blackwolf12333.appcki.fragments.news.NewsItemDetailFragment;
 import me.blackwolf12333.appcki.fragments.news.NewsItemFragment;
 import me.blackwolf12333.appcki.fragments.poll.PollFragment;
 import me.blackwolf12333.appcki.generated.Person;
+import me.blackwolf12333.appcki.helpers.UserHelper;
+import me.blackwolf12333.appcki.api.media.ImageLoader;
+import me.blackwolf12333.appcki.api.media.ImageRequest;
+import me.blackwolf12333.appcki.api.MediaAPI;
+import me.blackwolf12333.appcki.api.media.NetworkImageView;
+import me.blackwolf12333.appcki.api.APISingleton;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -56,7 +59,7 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private ProgressBar progressBar;
     private View content;
-    private ImageView userProfilePic;
+    private NetworkImageView userProfilePic;
 
     public enum Screen {
         NEWS(NewsItemFragment.class),
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity
         AGENDADETAIL(AgendaItemDetailFragment.class),
         NEWSDETAIL(NewsItemDetailFragment.class),
         LOGIN(LoginFragment.class),
+        AGENDAPARTICIPANTS(ParticipantFragment.class),
 
         ;
 
@@ -87,9 +91,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO
-                RoephoekAPI api = new RoephoekAPI();
-                api.getRoephoek();
+                //TODO ROEPHOEK
             }
         });
 
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        userProfilePic = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
+        userProfilePic = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
 
     }
 
@@ -134,6 +136,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.logout));
 
+        new MediaAPI().getMediaFile(UserHelper.getInstance().getUser().getPerson().getPhotomediaid());
+
         TextView view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.login_status);
         view.setText("Je bent nu ingelogt als " + user.getPerson().getFirstname());
     }
@@ -156,7 +160,10 @@ public class MainActivity extends AppCompatActivity
                 openScreen(Screen.NEWS);
             } else if(fragment instanceof AgendaItemDetailFragment) {
                 openScreen(Screen.AGENDA);
-            } else {
+            } else if(fragment instanceof ParticipantFragment) {
+                openScreen(Screen.AGENDA); //TODO go back to viewed item
+            }
+            else {
                 super.onBackPressed();
             }
         }
@@ -249,6 +256,19 @@ public class MainActivity extends AppCompatActivity
         User user = UserHelper.getInstance().getUser();
         initLoggedInUserUI(user);
         openScreen(Screen.NEWS);
+    }
+
+    public void onEventMainThread(MediaFileEvent event) {
+        ImageLoader loader = APISingleton.getInstance(App.getContext()).getImageLoader();
+        String url = String.format(ImageRequest.URL, MediaAPI.getFiletypeFromMime("image/jpeg"), 77125);
+        Log.d("MainActivity", "image request url: " + url);
+        userProfilePic.setImageIdAndType(77125, MediaAPI.getFiletypeFromMime("image/jpeg"), loader);
+    }
+
+    public void onEventMainThread(LinkClickedEvent event) {
+        Intent intent = new Intent(Intent.ACTION_PICK_ACTIVITY);
+        intent.setData(Uri.parse(event.url));
+        startActivity(intent);
     }
 
     private void saveUser() {
@@ -350,29 +370,5 @@ public class MainActivity extends AppCompatActivity
             content.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
-
-    ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
-        @Override
-        public void onFinalImageSet(
-                String id,
-                @Nullable ImageInfo imageInfo,
-                @Nullable Animatable anim) {
-            if (imageInfo == null) {
-                return;
-            }
-            QualityInfo qualityInfo = imageInfo.getQualityInfo();
-            Log.i("succes", "");
-        }
-
-        @Override
-        public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
-            Log.d("bla","Intermediate image received");
-        }
-
-        @Override
-        public void onFailure(String id, Throwable throwable) {
-            Log.e(getClass().getSimpleName(), "Error loading " + id);
-        }
-    };
 
 }

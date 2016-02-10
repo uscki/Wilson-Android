@@ -10,17 +10,18 @@ import android.widget.TextView;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.api.NewsAPI;
 import me.blackwolf12333.appcki.events.NewsItemEvent;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
 import me.blackwolf12333.appcki.generated.NewsItem;
+import me.blackwolf12333.appcki.api.VolleyNews;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class NewsItemDetailFragment extends APIFragment {
-    NewsAPI newsAPI = new NewsAPI();
+    //NewsAPI newsAPI = new NewsAPI();
+    VolleyNews newsAPI = new VolleyNews();
 
     TextView itemTitle;
     TextView itemContent;

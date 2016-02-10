@@ -50,8 +50,10 @@ public class AgendaItem {
     private String unregisterdeadline_time;
     @Expose
     private String unregisterdeadline_date;
+    /*@Expose
+    private Person poster;*/
     @Expose
-    private Person poster;
+    private MediaFile posterId;
     @Expose
     private MediaCollection mediaCollection;
     @Expose
@@ -430,17 +432,25 @@ public class AgendaItem {
      * @return
      *     The poster
      */
-    public Person getPoster() {
+    /*public Person getPoster() {
         return poster;
-    }
+    }*/
 
     /**
      * 
      * @param poster
      *     The poster
      */
-    public void setPoster(Person poster) {
+    /*public void setPoster(Person poster) {
         this.poster = poster;
+    }*/
+
+    public MediaFile getPosterid() {
+        return posterId;
+    }
+
+    public void setPosterid(MediaFile posterid) {
+        this.posterId = posterid;
     }
 
     /**

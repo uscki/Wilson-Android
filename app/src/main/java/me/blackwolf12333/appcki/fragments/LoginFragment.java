@@ -24,7 +24,7 @@ import java.net.URL;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.UserHelper;
+import me.blackwolf12333.appcki.helpers.UserHelper;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.events.UserLoggedInEvent;
 import me.blackwolf12333.appcki.generated.Person;

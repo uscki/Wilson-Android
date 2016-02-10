@@ -9,14 +9,12 @@ import android.view.ViewGroup;
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.User;
-import me.blackwolf12333.appcki.api.NewsAPI;
-import me.blackwolf12333.appcki.events.NewsItemEvent;
 import me.blackwolf12333.appcki.events.NewsOverviewEvent;
-import me.blackwolf12333.appcki.events.NewsTypesEvent;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
 import me.blackwolf12333.appcki.generated.NewsItem;
 import me.blackwolf12333.appcki.generated.NewsOverview;
+import me.blackwolf12333.appcki.api.VolleyNews;
 
 /**
  * A fragment representing a list of Items.
@@ -27,7 +25,8 @@ public class NewsItemFragment extends APIFragment {
     private static final String ARG_USER = "user";
 
     private int mColumnCount = 1;
-    private NewsAPI  newsAPI = new NewsAPI();
+    //private NewsAPI  newsAPI = new NewsAPI();
+    private VolleyNews newsAPI = new VolleyNews();
     private NewsOverview newsOverview = null;
     private NewsItem newsItem = null;
 
@@ -50,7 +49,7 @@ public class NewsItemFragment extends APIFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        newsAPI.getOverview();
+        newsAPI.getNewsOverview();
         super.onCreate(savedInstanceState);
     }
 
@@ -79,21 +78,6 @@ public class NewsItemFragment extends APIFragment {
         EventBus.getDefault().post(new ShowProgressEvent(false));
         if(event.newsOverview != null) {
             recyclerView.setAdapter(new NewsItemAdapter(event.newsOverview.getContent()));
-        }
-    }
-
-    public void onEventMainThread(NewsItemEvent event) {
-        EventBus.getDefault().post(new ShowProgressEvent(false));
-        if(event.newsItem != null) {
-            // TODO
-            //recyclerView.setAdapter(new MyNewsItemRecyclerViewAdapter(event.newsOverview.getContent(), mListener));
-        }
-    }
-
-    public void onEventMainThread(NewsTypesEvent event) {
-        EventBus.getDefault().post(new ShowProgressEvent(false));
-        if(event.newsTypes != null) {
-            //TODO whatever hiermee gedaan moet worden...
         }
     }
 }

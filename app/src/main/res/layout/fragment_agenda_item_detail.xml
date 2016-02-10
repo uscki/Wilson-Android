@@ -16,7 +16,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <ImageView
+    <me.blackwolf12333.appcki.api.media.NetworkImageView
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:id="@+id/agendaitem_poster"
@@ -65,7 +65,8 @@
         android:id="@+id/agendaitem_inschrijven"
         android:layout_below="@+id/agendaitem_longdescription_container"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -75,8 +76,9 @@
         android:id="@+id/agendaitem_note"
         android:layout_below="@+id/agendaitem_longdescription_container"
         android:layout_toLeftOf="@+id/agendaitem_inschrijven"
-        android:layout_alignParentLeft="true"
-        android:layout_alignBottom="@+id/agendaitem_inschrijven" />
+        android:layout_alignBottom="@+id/agendaitem_inschrijven"
+        android:layout_alignLeft="@+id/agendaitem_longdescription_container"
+        android:layout_alignStart="@+id/agendaitem_longdescription_container" />
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -86,7 +88,8 @@
         android:layout_alignParentLeft="false"
         android:layout_alignParentRight="true"
         android:layout_alignLeft="@+id/agendaitem_poster"
-        android:scrollIndicators="right">
+        android:scrollIndicators="right"
+        android:layout_marginRight="10dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -95,5 +98,14 @@
             android:id="@+id/agendaitem_longdescription"
              />
     </ScrollView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Deelnemers"
+        android:id="@+id/agendaitem_participants"
+        android:layout_below="@+id/agendaitem_note"
+        android:layout_alignLeft="@+id/agendaitem_note"
+        android:layout_alignStart="@+id/agendaitem_note" />
 
 </RelativeLayout>
