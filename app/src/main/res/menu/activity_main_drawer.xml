@@ -14,18 +14,10 @@
             android:id="@+id/nav_poll"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Poll" />
-        <item
-            android:id="@+id/nav_roephoek"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Roephoek" />
     </group>
 
     <item android:title="Communicate">
         <menu>
-            <item
-                android:id="@+id/nav_gol"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Game of Life" />
             <item
                 android:id="@+id/nav_login"
                 android:icon="@drawable/ic_menu_send"
