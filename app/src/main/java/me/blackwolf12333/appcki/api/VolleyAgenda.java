@@ -79,7 +79,7 @@ public class VolleyAgenda extends VolleyAPI {
 
     public class AgendaUnsubscribe extends Call<Boolean> {
         public AgendaUnsubscribe(Integer id) {
-            this.url = "agenda/subscribe";
+            this.url = "agenda/unsubscribe";
             this.arguments = new HashMap<>();
             this.arguments.put("id", id);
             this.type = Boolean.class;
