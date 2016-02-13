@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
@@ -135,7 +136,13 @@ public class LoginFragment extends APIFragment {
         private final String mPassword;
 
         UserLoginTask(String email, String password) {
-            mEmail = email;
+            String encodedEmail = "";
+
+            try {
+                encodedEmail = URLEncoder.encode(email, "UTF-8");
+            } catch (java.io.UnsupportedEncodingException e) {}
+
+            mEmail = encodedEmail;
             mPassword = password;
         }
 
