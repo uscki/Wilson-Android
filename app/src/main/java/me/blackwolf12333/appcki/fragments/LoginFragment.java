@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
@@ -120,8 +121,13 @@ public class LoginFragment extends APIFragment {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             EventBus.getDefault().post(new ShowProgressEvent(true));
-            authTask = new UserLoginTask(userName, password);
-            authTask.execute();
+
+            try {
+                authTask = new UserLoginTask(userName, password);
+                authTask.execute();
+            } catch (java.io.UnsupportedEncodingException e) {
+                passwordView.setError("Username contains invalid characters");
+            }
         }
     }
 
@@ -134,8 +140,8 @@ public class LoginFragment extends APIFragment {
         private final String mEmail;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
+        UserLoginTask(String email, String password) throws java.io.UnsupportedEncodingException {
+            mEmail = URLEncoder.encode(email, "UTF-8");;
             mPassword = password;
         }
 
