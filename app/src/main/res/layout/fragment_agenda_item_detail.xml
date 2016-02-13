@@ -4,6 +4,18 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
+    <TextView
+        android:id="@+id/agendaitem_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Example text"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/agendaitem_poster"
+        android:textStyle="bold"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
     <me.blackwolf12333.appcki.api.media.NetworkImageView
         android:layout_width="120dp"
         android:layout_height="120dp"
@@ -19,11 +31,10 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Medium Text"
         android:id="@+id/agendaitem_when"
-        android:layout_below="@+id/agendaitem_deelnemers"
-        android:layout_alignLeft="@+id/agendaitem_deelnemers"
-        android:layout_alignStart="@+id/agendaitem_deelnemers"
-        android:layout_alignRight="@+id/agendaitem_deelnemers"
-        android:layout_alignEnd="@+id/agendaitem_deelnemers" />
+        android:layout_below="@+id/agendaitem_title"
+        android:layout_toRightOf="@+id/agendaitem_poster"
+        android:layout_toEndOf="@+id/agendaitem_poster"
+        android:layout_alignParentRight="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -31,11 +42,10 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Medium Text"
         android:id="@+id/agendaitem_deelnemers"
-        android:layout_alignTop="@+id/agendaitem_poster"
-        android:layout_alignRight="@+id/agendaitem_longdescription_container"
-        android:layout_alignEnd="@+id/agendaitem_longdescription_container"
         android:layout_toRightOf="@+id/agendaitem_poster"
-        android:layout_toEndOf="@+id/agendaitem_poster" />
+        android:layout_toEndOf="@+id/agendaitem_poster"
+        android:layout_below="@+id/agendaitem_when"
+        android:layout_alignParentRight="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -43,10 +53,10 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Medium Text"
         android:id="@+id/agendaitem_waar"
-        android:layout_below="@+id/agendaitem_when"
-        android:layout_alignRight="@+id/agendaitem_longdescription_container"
-        android:layout_alignLeft="@+id/agendaitem_when"
-        android:layout_alignStart="@+id/agendaitem_when" />
+        android:layout_below="@+id/agendaitem_deelnemers"
+        android:layout_toRightOf="@+id/agendaitem_poster"
+        android:layout_toEndOf="@+id/agendaitem_poster"
+        android:layout_alignParentRight="true" />
 
     <CheckBox
         android:layout_width="wrap_content"

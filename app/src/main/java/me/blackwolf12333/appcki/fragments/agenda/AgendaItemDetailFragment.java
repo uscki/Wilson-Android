@@ -2,7 +2,6 @@ package me.blackwolf12333.appcki.fragments.agenda;
 
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +9,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import android.support.v7.app.ActionBar;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.App;
@@ -41,6 +38,7 @@ public class AgendaItemDetailFragment extends APIFragment {
     VolleyAgenda agendaAPI = new VolleyAgenda();
     AgendaItem currentItem;
 
+    private TextView itemTitle;
     private TextView itemWhen;
     private TextView itemWhere;
     private TextView itemDeelnemers;
@@ -49,8 +47,6 @@ public class AgendaItemDetailFragment extends APIFragment {
     private CheckBox itemInschrijven;
     private EditText itemNote;
     private Button participantsDetail;
-    private AppCompatActivity act;
-    private ActionBar actionBar;
 
     public AgendaItemDetailFragment() {
         // Required empty public constructor
@@ -62,6 +58,7 @@ public class AgendaItemDetailFragment extends APIFragment {
         Integer id = getArguments().getInt("id");
         agendaAPI.getAgendaItem(id);
         View view = inflater.inflate(R.layout.fragment_agenda_item_detail, container, false);
+        itemTitle = (TextView) view.findViewById(R.id.agendaitem_title);
         itemWhen = (TextView) view.findViewById(R.id.agendaitem_when);
         itemWhere = (TextView) view.findViewById(R.id.agendaitem_waar);
         itemDeelnemers = (TextView) view.findViewById(R.id.agendaitem_deelnemers);
@@ -81,14 +78,12 @@ public class AgendaItemDetailFragment extends APIFragment {
             }
         });
 
-        act = (AppCompatActivity) getActivity();
-        actionBar = act.getSupportActionBar();
-
         // Inflate the layout for this fragment
         return view;
     }
 
     private void updateView(final AgendaItem item) {
+        itemTitle.setText(item.getWhat());
         itemWhen.setText(item.getWhen());
         itemWhere.setText(item.getWhere());
         itemDeelnemers.setText(item.getParticipants().size()+"");
@@ -148,7 +143,6 @@ public class AgendaItemDetailFragment extends APIFragment {
     public void onEventMainThread(AgendaItemEvent event) {
         EventBus.getDefault().post(new ShowProgressEvent(false));
         currentItem = event.agendaItem;
-        actionBar.setTitle(event.agendaItem.getShortdescription());
         updateView(event.agendaItem);
     }
 
