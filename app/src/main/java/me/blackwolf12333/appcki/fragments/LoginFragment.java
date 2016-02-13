@@ -121,8 +121,13 @@ public class LoginFragment extends APIFragment {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             EventBus.getDefault().post(new ShowProgressEvent(true));
-            authTask = new UserLoginTask(userName, password);
-            authTask.execute();
+
+            try {
+                authTask = new UserLoginTask(userName, password);
+                authTask.execute();
+            } catch (java.io.UnsupportedEncodingException e) {
+                passwordView.setError("Username contains invalid characters");
+            }
         }
     }
 
@@ -135,14 +140,8 @@ public class LoginFragment extends APIFragment {
         private final String mEmail;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
-            String encodedEmail = "";
-
-            try {
-                encodedEmail = URLEncoder.encode(email, "UTF-8");
-            } catch (java.io.UnsupportedEncodingException e) {}
-
-            mEmail = encodedEmail;
+        UserLoginTask(String email, String password) throws java.io.UnsupportedEncodingException {
+            mEmail = URLEncoder.encode(email, "UTF-8");;
             mPassword = password;
         }
 
