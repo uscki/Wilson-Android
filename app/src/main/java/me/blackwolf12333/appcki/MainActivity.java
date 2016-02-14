@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -33,6 +32,7 @@ import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.events.UserLoggedInEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
 import me.blackwolf12333.appcki.fragments.LoginFragment;
+import me.blackwolf12333.appcki.fragments.roephoek.RoephoekFragment;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaFragment;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaItemDetailFragment;
 import me.blackwolf12333.appcki.fragments.agenda.ParticipantFragment;
@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity
         NEWSDETAIL(NewsItemDetailFragment.class),
         LOGIN(LoginFragment.class),
         AGENDAPARTICIPANTS(ParticipantFragment.class),
+        ROEPHOEK(RoephoekFragment.class),
 
         ;
 
@@ -87,13 +88,13 @@ public class MainActivity extends AppCompatActivity
         toolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO ROEPHOEK
-            }
-        });
+        //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        //fab.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+        //    public void onClick(View view) {
+        //        //openScreen(Screen.ROEPHOEKPOST);
+        //    }
+        //});
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         content = (View) findViewById(R.id.fragment_container);
@@ -224,6 +225,8 @@ public class MainActivity extends AppCompatActivity
                 openScreen(Screen.AGENDA);
             } else if (id == R.id.nav_poll) {
                 openScreen(Screen.POLL);
+            } else if (id == R.id.nav_roephoek) {
+                openScreen(Screen.ROEPHOEK);
             } else if (id == R.id.nav_login) {
                 UserHelper.getInstance().logout(getSharedPreferences(user.getPerson().getUsername(), MODE_PRIVATE));
                 initLoggedOutUserUI();
