@@ -3,9 +3,12 @@ package me.blackwolf12333.appcki.fragments.poll;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -46,6 +49,8 @@ public class PollFragment extends APIFragment {
         this.pollOptions = (RadioGroup) view.findViewById(R.id.poll_options);
         this.pollText = (TextView) view.findViewById(R.id.poll_text);
 
+        this.recyclerView = (RecyclerView) view.findViewById(R.id.poll_options_list);
+
         return view;
     }
 
@@ -63,7 +68,7 @@ public class PollFragment extends APIFragment {
 
     private void populateWithPoll(final Poll poll) {
         pollText.setText(poll.getPollItem().getTitle());
-        pollOptions.removeAllViews(); // verwijder de polloptions van de vorige keer laden
+        pollOptions.removeAllViews(); // verwijder de polloptions van de vorige keer
         boolean voted = false;
         for(PollOption option : poll.getOptions()) {
             RadioButton button = new RadioButton(pollOptions.getContext());
@@ -79,9 +84,12 @@ public class PollFragment extends APIFragment {
             this.pollOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    if(poll.getMyVote() < 0) {
+                    if(poll.getMyVote() == null) {
                         PollOption option = poll.getOptions().get(checkedId);
-                        pollAPI.vote(option.getId());
+                        // Maak een stemknop aan.
+                        Button voteButton = (Button) view.findViewById(R.id.vote_button);
+                        voteButton.setVisibility(View.VISIBLE);
+                        voteButton.setOnTouchListener(new CustomListener(option));
                     }
                 }
             });
@@ -90,15 +98,35 @@ public class PollFragment extends APIFragment {
         }
     }
 
+    private class CustomListener implements View.OnTouchListener {
+
+        private PollOption option;
+
+        public CustomListener(PollOption option) {
+            this.option = option;
+        }
+
+        public boolean onTouch(View v, MotionEvent event) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                pollAPI.vote(option.getId());
+                showResults();
+                return true;
+            }
+            return false;
+        }
+    }
+
     private void showResults() { //TODO show results
-        //pollOptions.removeAllViews();
-        //pollOptions.setVisibility(View.GONE);
-        //recyclerView.setVisibility(View.VISIBLE);
+        // Haalt keuzes weg
+        pollOptions.removeAllViews();
+        pollOptions.setVisibility(View.GONE);
 
-        pollText.setText(currentPoll.getPollItem().getTitle());
+        for(PollOption option : currentPoll.getOptions()) {
+            TextView optionText = new TextView(pollOptions.getContext());
+            optionText.setText(option.getName());
 
-
-        //recyclerView.setAdapter(new PollOptionAdapter(currentPoll.getOptions()));
+            pollOptions.addView(optionText);
+        }
     }
 
     public void onEventMainThread(PollEvent event) {
@@ -108,6 +136,9 @@ public class PollFragment extends APIFragment {
     }
 
     public void onEventMainThread(PollVoteEvent event) {
+        currentPoll = event.poll;
+        this.recyclerView.setAdapter(new PollOptionAdapter(currentPoll.getOptions()));
+        this.recyclerView.setVisibility(View.VISIBLE);
         showResults();
     }
 }
