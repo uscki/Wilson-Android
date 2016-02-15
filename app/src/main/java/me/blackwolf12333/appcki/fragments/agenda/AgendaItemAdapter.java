@@ -16,12 +16,12 @@ import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.events.MediaBitmapEvent;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
-import me.blackwolf12333.appcki.generated.AgendaItem;
-import me.blackwolf12333.appcki.generated.MediaFile;
+import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
+import me.blackwolf12333.appcki.generated.media.MediaFile;
 import me.blackwolf12333.appcki.api.media.ImageLoader;
 import me.blackwolf12333.appcki.api.MediaAPI;
 import me.blackwolf12333.appcki.api.media.NetworkImageView;
-import me.blackwolf12333.appcki.api.APISingleton;
+import me.blackwolf12333.appcki.api.common.APISingleton;
 
 /**
  * Created by peter on 1/25/16.

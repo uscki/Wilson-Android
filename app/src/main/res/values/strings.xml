@@ -22,6 +22,7 @@
     <string name="login">Login</string>
 
     <string name="notloggedin">Je bent niet ingelogd.</string>
+    <string name="content_loading_error">Er ging iets fout bij het laden van de content.</string>
 
     <string name="agenda_inschrijven">Inschrijven</string>
     <string name="agenda_uitschrijven">Uitschrijven</string>

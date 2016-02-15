@@ -8,24 +8,18 @@ import android.view.ViewGroup;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.User;
+import me.blackwolf12333.appcki.api.VolleyNews;
 import me.blackwolf12333.appcki.events.NewsOverviewEvent;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
-import me.blackwolf12333.appcki.generated.NewsItem;
-import me.blackwolf12333.appcki.generated.NewsOverview;
-import me.blackwolf12333.appcki.api.VolleyNews;
+import me.blackwolf12333.appcki.generated.news.NewsItem;
+import me.blackwolf12333.appcki.generated.news.NewsOverview;
 
 /**
  * A fragment representing a list of Items.
  * <p/>
  */
 public class NewsItemFragment extends APIFragment {
-
-    private static final String ARG_USER = "user";
-
-    private int mColumnCount = 1;
-    //private NewsAPI  newsAPI = new NewsAPI();
     private VolleyNews newsAPI = new VolleyNews();
     private NewsOverview newsOverview = null;
     private NewsItem newsItem = null;
@@ -38,13 +32,6 @@ public class NewsItemFragment extends APIFragment {
      */
     public NewsItemFragment() {
 
-    }
-
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static NewsItemFragment newInstance(User user) {
-        NewsItemFragment fragment = new NewsItemFragment();
-        return fragment;
     }
 
     @Override
@@ -72,6 +59,11 @@ public class NewsItemFragment extends APIFragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.news_item_list);
 
         return view;
+    }
+
+    @Override
+    public void refresh() {
+        newsAPI.getNewsOverview();
     }
 
     public void onEventMainThread(NewsOverviewEvent event) {

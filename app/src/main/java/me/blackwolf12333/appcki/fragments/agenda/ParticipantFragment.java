@@ -14,16 +14,17 @@ import me.blackwolf12333.appcki.api.VolleyAgenda;
 import me.blackwolf12333.appcki.events.AgendaItemEvent;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
-import me.blackwolf12333.appcki.generated.Participant;
+import me.blackwolf12333.appcki.generated.agenda.AgendaParticipant;
 
 /**
  * A fragment representing a list of Items.
  * <p/>
  */
 public class ParticipantFragment extends APIFragment {
-    List<Participant> participants;
+    List<AgendaParticipant> participants;
     VolleyAgenda agendaAPI = new VolleyAgenda();
     RecyclerView recyclerView;
+    Integer currentId;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -34,7 +35,8 @@ public class ParticipantFragment extends APIFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        agendaAPI.getAgendaItem(getArguments().getInt("id"));
+        currentId = getArguments().getInt("id");
+        agendaAPI.getAgendaItem(currentId);
         super.onCreate(savedInstanceState);
     }
 
@@ -48,6 +50,11 @@ public class ParticipantFragment extends APIFragment {
             recyclerView = (RecyclerView) view;
         }
         return view;
+    }
+
+    @Override
+    public void refresh() {
+        agendaAPI.getAgendaItem(currentId);
     }
 
     public void onEventMainThread(AgendaItemEvent event) {

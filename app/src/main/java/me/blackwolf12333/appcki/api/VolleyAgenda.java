@@ -5,11 +5,12 @@ import com.android.volley.Response;
 import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.api.common.VolleyAPI;
 import me.blackwolf12333.appcki.events.AgendaEvent;
 import me.blackwolf12333.appcki.events.AgendaItemEvent;
 import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
-import me.blackwolf12333.appcki.generated.Agenda;
-import me.blackwolf12333.appcki.generated.AgendaItem;
+import me.blackwolf12333.appcki.generated.agenda.Agenda;
+import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
 
 /**
  * Created by peter on 2/6/16.

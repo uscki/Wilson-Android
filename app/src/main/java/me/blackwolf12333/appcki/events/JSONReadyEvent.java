@@ -2,7 +2,7 @@ package me.blackwolf12333.appcki.events;
 
 import com.google.gson.JsonElement;
 
-import me.blackwolf12333.appcki.api.APIError;
+import me.blackwolf12333.appcki.api.common.APIError;
 
 /**
  * Created by peter on 12/30/15.

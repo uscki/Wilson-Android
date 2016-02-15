@@ -225,17 +225,17 @@ public class ImageLoader {
         }
         // The request is not already in flight. Send the new request to the network and
         // track it.
-        Request<Bitmap> newRequest = makeImageRequest(requestUrl, maxWidth, maxHeight, scaleType,
+        BitmapRequest newRequest = makeImageRequest(requestUrl, maxWidth, maxHeight, scaleType,
                 cacheKey, headers);
         mRequestQueue.add(newRequest);
         mInFlightRequests.put(cacheKey,
                 new BatchedImageRequest(newRequest, imageContainer));
         return imageContainer;
     }
-    protected Request<Bitmap> makeImageRequest(String requestUrl, int maxWidth, int maxHeight,
+    protected BitmapRequest makeImageRequest(String requestUrl, int maxWidth, int maxHeight,
                                                ScaleType scaleType, final String cacheKey,
                                                Map<String, String> headers) {
-        return new ImageRequest(requestUrl, headers, new Listener<Bitmap>() {
+        return new BitmapRequest(requestUrl, headers, new Listener<Bitmap>() {
             @Override
             public void onResponse(Bitmap response) {
                 onGetImageSuccess(cacheKey, response);

@@ -13,7 +13,7 @@ import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
-import me.blackwolf12333.appcki.generated.NewsItem;
+import me.blackwolf12333.appcki.generated.news.NewsItem;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link NewsItem}.

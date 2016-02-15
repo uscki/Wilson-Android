@@ -1,6 +1,6 @@
 package me.blackwolf12333.appcki.events;
 
-import me.blackwolf12333.appcki.generated.MediaCollection;
+import me.blackwolf12333.appcki.generated.media.MediaCollection;
 
 /**
  * Created by peter on 2/5/16.

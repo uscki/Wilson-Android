@@ -5,10 +5,11 @@ import com.android.volley.Response;
 import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.api.common.VolleyAPI;
 import me.blackwolf12333.appcki.events.NewsItemEvent;
 import me.blackwolf12333.appcki.events.NewsOverviewEvent;
-import me.blackwolf12333.appcki.generated.NewsItem;
-import me.blackwolf12333.appcki.generated.NewsOverview;
+import me.blackwolf12333.appcki.generated.news.NewsItem;
+import me.blackwolf12333.appcki.generated.news.NewsOverview;
 
 /**
  * Created by peter on 2/7/16.

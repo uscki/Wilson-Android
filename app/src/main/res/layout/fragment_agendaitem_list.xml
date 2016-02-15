@@ -9,4 +9,6 @@
     android:layout_marginRight="4dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="me.blackwolf12333.appcki.fragments.agenda.AgendaFragment"
-    tools:listitem="@layout/fragment_agendaitem" />
+    tools:listitem="@layout/fragment_agendaitem">
+
+    </android.support.v7.widget.RecyclerView>

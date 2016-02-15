@@ -8,9 +8,13 @@ import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.App;
+import me.blackwolf12333.appcki.api.common.APISingleton;
+import me.blackwolf12333.appcki.api.common.GsonRequest;
+import me.blackwolf12333.appcki.api.common.VolleyAPI;
 import me.blackwolf12333.appcki.events.MediaFileEvent;
-import me.blackwolf12333.appcki.generated.MediaFile;
+import me.blackwolf12333.appcki.generated.media.MediaFile;
 import me.blackwolf12333.appcki.api.media.ImageRequest;
+import me.blackwolf12333.appcki.helpers.UserHelper;
 
 /**
  * Created by peter on 2/6/16.
@@ -41,6 +45,7 @@ public class MediaAPI extends VolleyAPI {
     public static HashMap<String, String> getBitmapHeaders() {
         HashMap<String, String> headers = new HashMap<>();
         //TODO fix cookiestring getter
+        Log.d("MediaAPI", "cookiestring=" + UserHelper.getInstance().getUser().getPerson().getCookiestring());
         headers.put("Cookie", "cookiestring=84434202129090b9154fdf437eb260ad");//"cookiestring=" + UserHelper.getInstance().getUser().getPerson().getCookiestring());
         return headers;
     }

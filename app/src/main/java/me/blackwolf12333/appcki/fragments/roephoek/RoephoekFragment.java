@@ -1,24 +1,26 @@
 package me.blackwolf12333.appcki.fragments.roephoek;
 
-import de.greenrobot.event.EventBus;
-import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.api.VolleyRoephoek;
-import me.blackwolf12333.appcki.events.RoephoekEvent;
-import me.blackwolf12333.appcki.events.ShowProgressEvent;
-import me.blackwolf12333.appcki.fragments.APIFragment;
-import me.blackwolf12333.appcki.generated.Roephoek;
-
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.R;
+import me.blackwolf12333.appcki.api.VolleyRoephoek;
+import me.blackwolf12333.appcki.events.RoephoekEvent;
+import me.blackwolf12333.appcki.events.ShowProgressEvent;
+import me.blackwolf12333.appcki.fragments.APIFragment;
+import me.blackwolf12333.appcki.generated.roephoek.Roephoek;
+
 
 /**
  * Created by Jorik on 13/02/16.
  */
 public class RoephoekFragment extends APIFragment {
+    private final Integer START = 25515;
+
     private VolleyRoephoek roephoekAPI = new VolleyRoephoek();
     private RecyclerView recyclerView;
     private Roephoek roephoek = null;
@@ -26,8 +28,12 @@ public class RoephoekFragment extends APIFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        roephoekAPI.getOlder(25515);
+        roephoekAPI.getOlder(START);
+    }
 
+    @Override
+    public void refresh() {
+        roephoekAPI.getOlder(START);
     }
 
     @Override

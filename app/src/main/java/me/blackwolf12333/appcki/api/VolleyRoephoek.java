@@ -7,8 +7,9 @@ import com.android.volley.Response;
 import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.api.common.VolleyAPI;
 import me.blackwolf12333.appcki.events.RoephoekEvent;
-import me.blackwolf12333.appcki.generated.Roephoek;
+import me.blackwolf12333.appcki.generated.roephoek.Roephoek;
 
 /**
  * Created by Jorik on 13/02/16.

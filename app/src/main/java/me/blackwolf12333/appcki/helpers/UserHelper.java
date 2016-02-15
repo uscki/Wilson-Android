@@ -6,7 +6,7 @@ import android.util.Log;
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.User;
 import me.blackwolf12333.appcki.events.UserLoggedInEvent;
-import me.blackwolf12333.appcki.generated.Person;
+import me.blackwolf12333.appcki.generated.organisation.Person;
 
 /**
  * Created by peter on 1/31/16.
@@ -34,8 +34,8 @@ public class UserHelper {
     }
 
     public void updateUser(String token, Person person) {
-        Log.i("updateUser", token);
-        Log.i("updateUser", person.toString());
+        Log.d("UserHelper", token);
+        Log.d("UserHelper", person.toString());
         this.user = new User(token, person);
     }
 
@@ -47,7 +47,7 @@ public class UserHelper {
 
     public void logout(SharedPreferences preferences) {
         if(preferences.contains("TOKEN")) {
-            System.out.println("token in place, removing it");
+            Log.d("UserHelper", "token in place, removing it");
             SharedPreferences.Editor editor = preferences.edit();
             editor.remove("TOKEN");
             editor.commit();

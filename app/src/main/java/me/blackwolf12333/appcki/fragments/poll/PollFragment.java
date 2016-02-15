@@ -2,7 +2,6 @@ package me.blackwolf12333.appcki.fragments.poll;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +11,13 @@ import android.widget.TextView;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
+import me.blackwolf12333.appcki.api.VolleyPoll;
 import me.blackwolf12333.appcki.events.PollEvent;
 import me.blackwolf12333.appcki.events.PollVoteEvent;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
-import me.blackwolf12333.appcki.generated.Poll;
-import me.blackwolf12333.appcki.generated.PollOption;
-import me.blackwolf12333.appcki.api.VolleyPoll;
+import me.blackwolf12333.appcki.generated.poll.Poll;
+import me.blackwolf12333.appcki.generated.poll.PollOption;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,13 +28,17 @@ public class PollFragment extends APIFragment {
     private TextView pollText;
     private ViewGroup view;
     private Poll currentPoll;
-    private RecyclerView recyclerView;
 
     public PollFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        pollAPI.getActivePoll();
+    }
+
+    @Override
+    public void refresh() {
         pollAPI.getActivePoll();
     }
 

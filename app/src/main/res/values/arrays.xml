@@ -9,6 +9,7 @@
         <item>Login</item>
         <item>Deelnemers</item>
         <item>Roephoek</item>
+        <item>Meetings</item>
     </string-array>
 
 </resources>

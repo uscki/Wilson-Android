@@ -18,6 +18,10 @@
             android:id="@+id/nav_roephoek"
             android:icon="@drawable/ic_menu_share"
             android:title="Roephoek" />
+        <item
+            android:id="@+id/nav_meetings"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Vergaderingen" />
     </group>
 
     <item android:title="Communicate">

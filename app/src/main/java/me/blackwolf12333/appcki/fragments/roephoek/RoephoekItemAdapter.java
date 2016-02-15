@@ -6,13 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.generated.NewsItem;
-import me.blackwolf12333.appcki.generated.RoephoekItem;
+import me.blackwolf12333.appcki.generated.roephoek.RoephoekItem;
 
 /**
  * Created by Jorik on 14/02/16.

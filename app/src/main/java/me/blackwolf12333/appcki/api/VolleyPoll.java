@@ -7,8 +7,9 @@ import com.android.volley.Response;
 import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.api.common.VolleyAPI;
 import me.blackwolf12333.appcki.events.PollEvent;
-import me.blackwolf12333.appcki.generated.Poll;
+import me.blackwolf12333.appcki.generated.poll.Poll;
 
 /**
  * Created by peter on 2/7/16.

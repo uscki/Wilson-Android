@@ -2,6 +2,7 @@ package me.blackwolf12333.appcki.fragments.agenda;
 
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,28 +12,25 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import android.support.v7.app.ActionBar;
-
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.App;
 import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.helpers.CalendarHelper;
-import me.blackwolf12333.appcki.helpers.UserHelper;
+import me.blackwolf12333.appcki.api.MediaAPI;
+import me.blackwolf12333.appcki.api.VolleyAgenda;
+import me.blackwolf12333.appcki.api.common.APISingleton;
+import me.blackwolf12333.appcki.api.media.ImageLoader;
+import me.blackwolf12333.appcki.api.media.NetworkImageView;
 import me.blackwolf12333.appcki.events.AgendaItemEvent;
 import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
-import me.blackwolf12333.appcki.events.MediaBitmapEvent;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
-import me.blackwolf12333.appcki.generated.AgendaItem;
-import me.blackwolf12333.appcki.generated.Participant;
-import me.blackwolf12333.appcki.generated.Person;
-import me.blackwolf12333.appcki.api.media.ImageLoader;
-import me.blackwolf12333.appcki.api.MediaAPI;
-import me.blackwolf12333.appcki.api.media.NetworkImageView;
-import me.blackwolf12333.appcki.api.APISingleton;
-import me.blackwolf12333.appcki.api.VolleyAgenda;
+import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
+import me.blackwolf12333.appcki.generated.agenda.AgendaParticipant;
+import me.blackwolf12333.appcki.generated.organisation.Person;
+import me.blackwolf12333.appcki.helpers.CalendarHelper;
+import me.blackwolf12333.appcki.helpers.UserHelper;
 
 /**
  * A simple {@link APIFragment} subclass.
@@ -41,6 +39,7 @@ public class AgendaItemDetailFragment extends APIFragment {
     VolleyAgenda agendaAPI = new VolleyAgenda();
     AgendaItem currentItem;
 
+    private TextView itemTitle;
     private TextView itemWhen;
     private TextView itemWhere;
     private TextView itemDeelnemers;
@@ -49,7 +48,6 @@ public class AgendaItemDetailFragment extends APIFragment {
     private CheckBox itemInschrijven;
     private EditText itemNote;
     private Button participantsDetail;
-    private AppCompatActivity act;
     private ActionBar actionBar;
 
     public AgendaItemDetailFragment() {
@@ -62,6 +60,7 @@ public class AgendaItemDetailFragment extends APIFragment {
         Integer id = getArguments().getInt("id");
         agendaAPI.getAgendaItem(id);
         View view = inflater.inflate(R.layout.fragment_agenda_item_detail, container, false);
+        itemTitle = (TextView) view.findViewById(R.id.agendaitem_title);
         itemWhen = (TextView) view.findViewById(R.id.agendaitem_when);
         itemWhere = (TextView) view.findViewById(R.id.agendaitem_waar);
         itemDeelnemers = (TextView) view.findViewById(R.id.agendaitem_deelnemers);
@@ -81,14 +80,20 @@ public class AgendaItemDetailFragment extends APIFragment {
             }
         });
 
-        act = (AppCompatActivity) getActivity();
+        AppCompatActivity act = (AppCompatActivity) getActivity();
         actionBar = act.getSupportActionBar();
 
         // Inflate the layout for this fragment
         return view;
     }
 
+    @Override
+    public void refresh() {
+        agendaAPI.getAgendaItem(currentItem.getId());
+    }
+
     private void updateView(final AgendaItem item) {
+        itemTitle.setText(item.getShortdescription());
         itemWhen.setText(item.getWhen());
         itemWhere.setText(item.getWhere());
         itemDeelnemers.setText(item.getParticipants().size()+"");
@@ -126,7 +131,7 @@ public class AgendaItemDetailFragment extends APIFragment {
     }
 
     private String getNote(AgendaItem item) {
-        for(Participant p : item.getParticipants()) {
+        for(AgendaParticipant p : item.getParticipants()) {
             Person user = UserHelper.getInstance().getUser().getPerson();
             if(p.getPerson().getUsername().equals(user.getUsername())) {
                 return p.getNote();
@@ -136,7 +141,7 @@ public class AgendaItemDetailFragment extends APIFragment {
     }
 
     private boolean ingeschreven(AgendaItem item) {
-        for(Participant p : item.getParticipants()) {
+        for(AgendaParticipant p : item.getParticipants()) {
             Person user = UserHelper.getInstance().getUser().getPerson();
             if(p.getPerson().getUsername().equals(user.getUsername())) {
                 return true;
@@ -176,10 +181,6 @@ public class AgendaItemDetailFragment extends APIFragment {
             });
             itemDeelnemers.setText((currentItem.getParticipants().size()-1) +"");
         }
-    }
-
-    public void onEventMainThread(MediaBitmapEvent event) {
-        itemPoster.setImageBitmap(event.bitmap);
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import me.blackwolf12333.appcki.generated.AgendaItem;
+import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
 
 /**
  * Created by peter on 2/7/16.

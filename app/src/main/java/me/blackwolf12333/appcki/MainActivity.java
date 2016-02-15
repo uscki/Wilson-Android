@@ -21,43 +21,43 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.api.MediaAPI;
+import me.blackwolf12333.appcki.api.common.APISingleton;
+import me.blackwolf12333.appcki.api.media.ImageLoader;
+import me.blackwolf12333.appcki.api.media.ImageRequest;
+import me.blackwolf12333.appcki.api.media.NetworkImageView;
 import me.blackwolf12333.appcki.events.LinkClickedEvent;
 import me.blackwolf12333.appcki.events.MediaFileEvent;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
+import me.blackwolf12333.appcki.events.ServerErrorEvent;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.events.UserLoggedInEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
 import me.blackwolf12333.appcki.fragments.LoginFragment;
-import me.blackwolf12333.appcki.fragments.roephoek.RoephoekFragment;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaFragment;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaItemDetailFragment;
 import me.blackwolf12333.appcki.fragments.agenda.ParticipantFragment;
+import me.blackwolf12333.appcki.fragments.meetings.MeetingFragment;
 import me.blackwolf12333.appcki.fragments.news.NewsItemDetailFragment;
 import me.blackwolf12333.appcki.fragments.news.NewsItemFragment;
 import me.blackwolf12333.appcki.fragments.poll.PollFragment;
-import me.blackwolf12333.appcki.generated.Person;
+import me.blackwolf12333.appcki.fragments.roephoek.RoephoekFragment;
+import me.blackwolf12333.appcki.generated.organisation.Person;
 import me.blackwolf12333.appcki.helpers.UserHelper;
-import me.blackwolf12333.appcki.api.media.ImageLoader;
-import me.blackwolf12333.appcki.api.media.ImageRequest;
-import me.blackwolf12333.appcki.api.MediaAPI;
-import me.blackwolf12333.appcki.api.media.NetworkImageView;
-import me.blackwolf12333.appcki.api.APISingleton;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    public static final String PREFS_NAME = "preferences";
-    public static final int LOGIN_REQUEST = 1;
-
     private APIFragment fragment;
     private String title;
     private Toolbar toolBar;
     private DrawerLayout drawer;
     private ProgressBar progressBar;
+    //private SwipeRefreshLayout refreshLayout;
     private View content;
     private NetworkImageView userProfilePic;
 
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity
         LOGIN(LoginFragment.class),
         AGENDAPARTICIPANTS(ParticipantFragment.class),
         ROEPHOEK(RoephoekFragment.class),
-
+        MEETINGS(MeetingFragment.class),
         ;
 
         final Class<? extends APIFragment> type;
@@ -109,6 +109,13 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         userProfilePic = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
 
+        /*refreshLayout = (SwipeRefreshLayout) findViewById(R.id.content);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fragment.refresh();
+            }
+        });*/
     }
 
     @Override
@@ -124,10 +131,11 @@ public class MainActivity extends AppCompatActivity
     public boolean initUser() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         if(preferences.contains("last_user")) {
+            Log.d("MainActivity", "last_user found");
             loadUser();
             return true;
         } else if(UserHelper.getInstance().isLoggedIn()) {
-            initLoggedInUserUI(UserHelper.getInstance().getUser());
+            //initLoggedInUserUI(UserHelper.getInstance().getUser());
             return true;
         }
         return false;
@@ -163,8 +171,7 @@ public class MainActivity extends AppCompatActivity
                 openScreen(Screen.AGENDA);
             } else if(fragment instanceof ParticipantFragment) {
                 openScreen(Screen.AGENDA); //TODO go back to viewed item
-            }
-            else {
+            } else {
                 super.onBackPressed();
             }
         }
@@ -227,9 +234,12 @@ public class MainActivity extends AppCompatActivity
                 openScreen(Screen.POLL);
             } else if (id == R.id.nav_roephoek) {
                 openScreen(Screen.ROEPHOEK);
+            } else if(id == R.id.nav_meetings) {
+               openScreen(Screen.MEETINGS);
             } else if (id == R.id.nav_login) {
                 UserHelper.getInstance().logout(getSharedPreferences(user.getPerson().getUsername(), MODE_PRIVATE));
                 initLoggedOutUserUI();
+                openScreen(Screen.LOGIN);
             }
         } else {
             if (id == R.id.nav_login) {
@@ -255,7 +265,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onEventMainThread(UserLoggedInEvent event) {
-        Log.i("userloggedinevent: ", "test");
         User user = UserHelper.getInstance().getUser();
         initLoggedInUserUI(user);
         openScreen(Screen.NEWS);
@@ -263,15 +272,35 @@ public class MainActivity extends AppCompatActivity
 
     public void onEventMainThread(MediaFileEvent event) {
         ImageLoader loader = APISingleton.getInstance(App.getContext()).getImageLoader();
-        String url = String.format(ImageRequest.URL, MediaAPI.getFiletypeFromMime("image/jpeg"), 77125);
+        String url = String.format(ImageRequest.URL, MediaAPI.getFiletypeFromMime(event.file.getMimetype()), event.file.getId());
         Log.d("MainActivity", "image request url: " + url);
-        userProfilePic.setImageIdAndType(77125, MediaAPI.getFiletypeFromMime("image/jpeg"), loader);
+        userProfilePic.setImageMediaFile(event.file, loader);
     }
 
     public void onEventMainThread(LinkClickedEvent event) {
         Intent intent = new Intent(Intent.ACTION_PICK_ACTIVITY);
         intent.setData(Uri.parse(event.url));
         startActivity(intent);
+    }
+
+    public void onEventMainThread(ServerErrorEvent event) {
+        Toast toast;
+        switch (event.error.getStatus()) {
+            case 401:
+            case 403:
+                toast = Toast.makeText(getApplicationContext(), getString(R.string.notloggedin), Toast.LENGTH_SHORT);
+                toast.show();
+                openScreen(Screen.LOGIN);
+                break;
+            case 404:
+                toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
+                toast.show();
+                break;
+            case 500:
+                toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
+                toast.show();
+                //TODO stuur een bericht naar de AppCKI over een interne server error
+        }
     }
 
     private void saveUser() {
@@ -343,6 +372,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void showProgress(final boolean show) {
+        //refreshLayout.setRefreshing(show);
+        //content.setVisibility(show ? View.GONE : View.VISIBLE);
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
@@ -358,6 +389,7 @@ public class MainActivity extends AppCompatActivity
                 }
             });
 
+
             progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
             progressBar.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
@@ -370,6 +402,7 @@ public class MainActivity extends AppCompatActivity
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+            //refreshLayout.setRefreshing(show);
             content.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }

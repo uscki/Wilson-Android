@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.generated.PollOption;
+import me.blackwolf12333.appcki.generated.poll.PollOption;
 
 /**
  * Created by peter on 2/7/16.

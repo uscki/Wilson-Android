@@ -9,17 +9,16 @@ import android.view.ViewGroup;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
+import me.blackwolf12333.appcki.api.VolleyAgenda;
 import me.blackwolf12333.appcki.events.AgendaEvent;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
-import me.blackwolf12333.appcki.api.VolleyAgenda;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AgendaFragment extends APIFragment {
     private RecyclerView recyclerView;
-    //private AgendaAPI agendaAPI = new AgendaAPI();
     VolleyAgenda agendaAPI = new VolleyAgenda();
 
     public AgendaFragment() {
@@ -42,6 +41,11 @@ public class AgendaFragment extends APIFragment {
             this.recyclerView = (RecyclerView) view;
         }
         return view;
+    }
+
+    @Override
+    public void refresh() {
+        agendaAPI.getAgendaNewer();
     }
 
     public void onEventMainThread(AgendaEvent event) {

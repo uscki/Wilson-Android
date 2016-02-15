@@ -1,6 +1,6 @@
 package me.blackwolf12333.appcki.events;
 
-import me.blackwolf12333.appcki.generated.NewsType;
+import me.blackwolf12333.appcki.generated.news.NewsType;
 
 /**
  * Created by peter on 12/30/15.

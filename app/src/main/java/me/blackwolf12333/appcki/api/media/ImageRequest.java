@@ -2,6 +2,7 @@ package me.blackwolf12333.appcki.api.media;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -47,6 +48,8 @@ public class ImageRequest extends Request<Bitmap> {
         if(response.statusCode == 200) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(response.data, 0, response.data.length);
             return Response.success(bitmap, HttpHeaderParser.parseCacheHeaders(response));
+        } else {
+            Log.d("ImageRequest", new String(response.data));
         }
         return null;
     }

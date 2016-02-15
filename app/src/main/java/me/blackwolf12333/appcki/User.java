@@ -1,6 +1,6 @@
 package me.blackwolf12333.appcki;
 
-import me.blackwolf12333.appcki.generated.Person;
+import me.blackwolf12333.appcki.generated.organisation.Person;
 
 /**
  * Created by peter on 11/27/15.

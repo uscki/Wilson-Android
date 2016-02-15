@@ -28,7 +28,7 @@ import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.helpers.UserHelper;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.events.UserLoggedInEvent;
-import me.blackwolf12333.appcki.generated.Person;
+import me.blackwolf12333.appcki.generated.organisation.Person;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -129,6 +129,11 @@ public class LoginFragment extends APIFragment {
                 passwordView.setError("Username contains invalid characters");
             }
         }
+    }
+
+    @Override
+    public void refresh() {
+        //DO NOTHING
     }
 
     /**

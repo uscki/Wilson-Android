@@ -15,15 +15,15 @@ import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.events.NewsItemEvent;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
-import me.blackwolf12333.appcki.generated.NewsItem;
+import me.blackwolf12333.appcki.generated.news.NewsItem;
 import me.blackwolf12333.appcki.api.VolleyNews;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class NewsItemDetailFragment extends APIFragment {
-    //NewsAPI newsAPI = new NewsAPI();
     VolleyNews newsAPI = new VolleyNews();
+    Integer currentId;
 
     TextView itemTitle;
     TextView itemContent;
@@ -35,12 +35,11 @@ public class NewsItemDetailFragment extends APIFragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Integer id = getArguments().getInt("id");
-        newsAPI.getNewsItem(id);
+        currentId = getArguments().getInt("id");
+        newsAPI.getNewsItem(currentId);
 
         act = (AppCompatActivity) getActivity();
 
@@ -49,6 +48,11 @@ public class NewsItemDetailFragment extends APIFragment {
         itemContent = (TextView) view.findViewById(R.id.newsitem_content);
 
         return view;
+    }
+
+    @Override
+    public void refresh() {
+        newsAPI.getNewsItem(currentId);
     }
 
     private void updateView(NewsItem item) {

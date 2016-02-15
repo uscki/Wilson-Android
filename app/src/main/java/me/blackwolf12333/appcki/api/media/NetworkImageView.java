@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import com.android.volley.VolleyError;
 
 import me.blackwolf12333.appcki.api.MediaAPI;
+import me.blackwolf12333.appcki.generated.media.MediaFile;
 
 /**
  * Handles fetching an image from a URL as well as the life-cycle of the
@@ -83,6 +84,13 @@ public class NetworkImageView extends ImageView {
 
     public void setImageIdAndType(Integer id, String type, ImageLoader loader) {
         mUrl = String.format(ImageRequest.URL, type, id);
+        mImageLoader = loader;
+
+        loadImageIfNecessary(false);
+    }
+
+    public void setImageMediaFile(MediaFile file, ImageLoader loader) {
+        mUrl = String.format(ImageRequest.URL, MediaAPI.getFiletypeFromMime(file.getMimetype()), file.getId());
         mImageLoader = loader;
 
         loadImageIfNecessary(false);

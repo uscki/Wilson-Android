@@ -9,13 +9,13 @@ import android.widget.TextView;
 import java.util.List;
 
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.generated.Participant;
+import me.blackwolf12333.appcki.generated.agenda.AgendaParticipant;
 
 public class ParticipantRecyclerViewAdapter extends RecyclerView.Adapter<ParticipantRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Participant> mValues;
+    private final List<AgendaParticipant> mValues;
 
-    public ParticipantRecyclerViewAdapter(List<Participant> items) {
+    public ParticipantRecyclerViewAdapter(List<AgendaParticipant> items) {
         mValues = items;
     }
 
@@ -49,7 +49,7 @@ public class ParticipantRecyclerViewAdapter extends RecyclerView.Adapter<Partici
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public Participant mItem;
+        public AgendaParticipant mItem;
 
         public ViewHolder(View view) {
             super(view);
