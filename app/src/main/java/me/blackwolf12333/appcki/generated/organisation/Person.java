@@ -35,11 +35,11 @@ public class Person {
     @Expose
     private String nickname;
     @Expose
+    private String cookiestring;
+    @Expose
     private Integer photomediaid;
     @Expose
     private List<String> roles = new ArrayList<String>();
-    @Expose
-    private String cookiestring;
 
     /**
      * 

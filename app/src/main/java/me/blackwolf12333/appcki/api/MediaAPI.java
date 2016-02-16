@@ -44,9 +44,10 @@ public class MediaAPI extends VolleyAPI {
 
     public static HashMap<String, String> getBitmapHeaders() {
         HashMap<String, String> headers = new HashMap<>();
-        //TODO fix cookiestring getter
-        Log.d("MediaAPI", "cookiestring=" + UserHelper.getInstance().getUser().getPerson().getCookiestring());
-        headers.put("Cookie", "cookiestring=84434202129090b9154fdf437eb260ad");//"cookiestring=" + UserHelper.getInstance().getUser().getPerson().getCookiestring());
+        if(UserHelper.getInstance().isLoggedIn()) { // avoid nullpointer
+            headers.put("Cookie", "cookiestring=" + UserHelper.getInstance().getUser().getPerson().getCookiestring());
+        }
+
         return headers;
     }
 
