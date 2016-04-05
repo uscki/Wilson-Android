@@ -278,8 +278,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onEventMainThread(LinkClickedEvent event) {
-        Intent intent = new Intent(Intent.ACTION_PICK_ACTIVITY);
-        intent.setData(Uri.parse(event.url));
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(event.url.replace('\"',' ').trim()));
         startActivity(intent);
     }
 
