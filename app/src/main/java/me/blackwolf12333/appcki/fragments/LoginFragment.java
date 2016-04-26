@@ -171,9 +171,10 @@ public class LoginFragment extends APIFragment {
             Gson gson = new Gson();
 
             try {
-                String passwordHash = MD5(mPassword);
-                api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + passwordHash);
+                String password = MD5(mPassword);
+                api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + password); //TODO
                 connection = (HttpURLConnection) api.openConnection();
+                //connection.setRequestMethod("POST");
 
                 String token = connection.getHeaderField("X-AUTH-TOKEN");
 
