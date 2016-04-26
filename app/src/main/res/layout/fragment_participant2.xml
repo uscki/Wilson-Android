@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/refreshContainer"
-    tools:context="me.blackwolf12333.appcki.fragments.agenda2.AgendaFragment">
+    tools:context="me.blackwolf12333.appcki.fragments.agenda2.ParticipantFragment">
 
     <android.support.v7.widget.RecyclerView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -13,8 +13,8 @@
         android:layout_height="match_parent"
         android:id="@+id/recyclerView"
         app:layoutManager="LinearLayoutManager"
-        tools:context="me.blackwolf12333.appcki.fragments.agenda2.AgendaFragment"
-        tools:listitem="@layout/fragment_agendaitem">
+        tools:context="me.blackwolf12333.appcki.fragments.agenda2.ParticipantFragment"
+        tools:listitem="@layout/fragment_participant">
     </android.support.v7.widget.RecyclerView>
 
 </android.support.v4.widget.SwipeRefreshLayout>

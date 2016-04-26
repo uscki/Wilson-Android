@@ -41,7 +41,7 @@ import me.blackwolf12333.appcki.fragments.APIFragment;
 import me.blackwolf12333.appcki.fragments.LoginFragment;
 import me.blackwolf12333.appcki.fragments.agenda2.AgendaFragment;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaItemDetailFragment;
-import me.blackwolf12333.appcki.fragments.agenda.ParticipantFragment;
+import me.blackwolf12333.appcki.fragments.agenda2.ParticipantFragment;
 import me.blackwolf12333.appcki.fragments.meetings.MeetingFragment;
 import me.blackwolf12333.appcki.fragments.news.NewsItemDetailFragment;
 import me.blackwolf12333.appcki.fragments.news2.NewsFragment;
