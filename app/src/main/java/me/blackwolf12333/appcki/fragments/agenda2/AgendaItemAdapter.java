@@ -1,4 +1,4 @@
-package me.blackwolf12333.appcki.fragments.agenda;
+package me.blackwolf12333.appcki.fragments.agenda2;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +23,7 @@ import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
 import me.blackwolf12333.appcki.generated.media.MediaFile;
 
 /**
- * Created by peter on 1/25/16.
+ * Created by peter on 4/26/16.
  */
 public class AgendaItemAdapter extends RecyclerView.Adapter<AgendaItemAdapter.ViewHolder> {
     private final List<AgendaItem> mValues;
@@ -105,5 +105,15 @@ public class AgendaItemAdapter extends RecyclerView.Adapter<AgendaItemAdapter.Vi
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
         }
+    }
+
+    public void clear() {
+        mValues.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addAll(List<AgendaItem> list) {
+        mValues.addAll(list);
+        notifyDataSetChanged();
     }
 }

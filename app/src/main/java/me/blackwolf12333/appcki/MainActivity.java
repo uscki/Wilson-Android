@@ -39,14 +39,14 @@ import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.events.UserLoggedInEvent;
 import me.blackwolf12333.appcki.fragments.APIFragment;
 import me.blackwolf12333.appcki.fragments.LoginFragment;
-import me.blackwolf12333.appcki.fragments.agenda.AgendaFragment;
+import me.blackwolf12333.appcki.fragments.agenda2.AgendaFragment;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaItemDetailFragment;
-import me.blackwolf12333.appcki.fragments.agenda.ParticipantFragment;
+import me.blackwolf12333.appcki.fragments.agenda2.ParticipantFragment;
 import me.blackwolf12333.appcki.fragments.meetings.MeetingFragment;
 import me.blackwolf12333.appcki.fragments.news.NewsItemDetailFragment;
-import me.blackwolf12333.appcki.fragments.news.NewsItemFragment;
-import me.blackwolf12333.appcki.fragments.poll.PollFragment;
-import me.blackwolf12333.appcki.fragments.roephoek.RoephoekFragment;
+import me.blackwolf12333.appcki.fragments.news2.NewsFragment;
+import me.blackwolf12333.appcki.fragments.poll2.PollFragment;
+import me.blackwolf12333.appcki.fragments.roephoek2.RoephoekFragment;
 import me.blackwolf12333.appcki.generated.organisation.Person;
 import me.blackwolf12333.appcki.helpers.UserHelper;
 
@@ -57,12 +57,11 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolBar;
     private DrawerLayout drawer;
     private ProgressBar progressBar;
-    //private SwipeRefreshLayout refreshLayout;
     private View content;
     private NetworkImageView userProfilePic;
 
     public enum Screen {
-        NEWS(NewsItemFragment.class),
+        NEWS(NewsFragment.class),
         AGENDA(AgendaFragment.class),
         POLL(PollFragment.class),
         AGENDADETAIL(AgendaItemDetailFragment.class),
@@ -108,14 +107,6 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         userProfilePic = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
-
-        /*refreshLayout = (SwipeRefreshLayout) findViewById(R.id.content);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                fragment.refresh();
-            }
-        });*/
     }
 
     @Override
@@ -295,6 +286,8 @@ public class MainActivity extends AppCompatActivity
             case 404:
                 toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
                 toast.show();
+                break;
+            case 405:
                 break;
             case 500:
                 toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);

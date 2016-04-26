@@ -1,8 +1,4 @@
-package me.blackwolf12333.appcki.fragments.poll;
-
-/**
- * Created by Pim on 16-2-2016.
- */
+package me.blackwolf12333.appcki.fragments.poll2;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +12,7 @@ import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.generated.poll.PollOption;
 
 /**
- * Created by peter on 1/25/16.
+ * Created by peter on 4/26/16.
  */
 public class PollResultAdapter extends RecyclerView.Adapter<PollResultAdapter.ViewHolder> {
     private final List<PollOption> mValues;
@@ -67,5 +63,15 @@ public class PollResultAdapter extends RecyclerView.Adapter<PollResultAdapter.Vi
         public String toString() {
             return super.toString() + " '" + "'";
         }
+    }
+
+    public void clear() {
+        mValues.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addAll(List<PollOption> list) {
+        mValues.addAll(list);
+        notifyDataSetChanged();
     }
 }
