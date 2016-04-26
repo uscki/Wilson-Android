@@ -16,7 +16,7 @@ import me.blackwolf12333.appcki.events.PollVotedEvent;
 import me.blackwolf12333.appcki.generated.poll.PollOption;
 
 /**
- * Created by peter on 1/25/16.
+ * Created by peter on 4/26/16.
  */
 public class PollOptionAdapter extends RecyclerView.Adapter<PollOptionAdapter.ViewHolder> {
     private final List<PollOption> mValues;
@@ -42,8 +42,7 @@ public class PollOptionAdapter extends RecyclerView.Adapter<PollOptionAdapter.Vi
         holder.name.setText(item.getName());
         holder.vote.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                pollAPI.vote(item.getId());
+            public void onClick(View v) {pollAPI.vote(item.getId());
                 EventBus.getDefault().post(new PollVotedEvent());
             }
         });
@@ -71,5 +70,15 @@ public class PollOptionAdapter extends RecyclerView.Adapter<PollOptionAdapter.Vi
         public String toString() {
             return super.toString() + " '" + "'";
         }
+    }
+
+    public void clear() {
+        mValues.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addAll(List<PollOption> list) {
+        mValues.addAll(list);
+        notifyDataSetChanged();
     }
 }

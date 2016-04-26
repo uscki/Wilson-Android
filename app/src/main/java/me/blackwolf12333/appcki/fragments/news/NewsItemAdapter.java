@@ -16,11 +16,11 @@ import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.generated.news.NewsItem;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link NewsItem}.
+ * Created by peter on 4/26/16.
  */
 public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHolder> {
-
     private final List<NewsItem> mValues;
+    private ViewHolder holder;
 
     public NewsItemAdapter(List<NewsItem> items) {
         mValues = items;
@@ -30,7 +30,8 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_newsitem, parent, false);
-        return new ViewHolder(view);
+        holder = new ViewHolder(view);
+        return holder;
     }
 
     @Override
@@ -68,5 +69,15 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
         }
+    }
+
+    public void clear() {
+        mValues.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addAll(List<NewsItem> list) {
+        mValues.addAll(list);
+        notifyDataSetChanged();
     }
 }
