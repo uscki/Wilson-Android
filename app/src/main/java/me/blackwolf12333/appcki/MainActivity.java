@@ -287,6 +287,8 @@ public class MainActivity extends AppCompatActivity
                 toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
                 toast.show();
                 break;
+            case 405:
+                break;
             case 500:
                 toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
                 toast.show();

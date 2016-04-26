@@ -2,6 +2,7 @@
 package me.blackwolf12333.appcki.generated.news;
 
 import com.google.gson.annotations.Expose;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import me.blackwolf12333.appcki.generated.organisation.Person;
