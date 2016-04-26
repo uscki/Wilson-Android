@@ -64,14 +64,6 @@
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/development/jni" isTestSource="false" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/development/rs" isTestSource="false" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/development/shaders" isTestSource="false" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/res" type="java-test-resource" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/resources" type="java-test-resource" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/assets" type="java-test-resource" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/aidl" isTestSource="true" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/java" isTestSource="true" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/jni" isTestSource="true" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/rs" isTestSource="true" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/shaders" isTestSource="true" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTestDevelopment/res" type="java-test-resource" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTestDevelopment/resources" type="java-test-resource" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTestDevelopment/assets" type="java-test-resource" />
@@ -80,6 +72,14 @@
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTestDevelopment/jni" isTestSource="true" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTestDevelopment/rs" isTestSource="true" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTestDevelopment/shaders" isTestSource="true" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/res" type="java-test-resource" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/resources" type="java-test-resource" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/assets" type="java-test-resource" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/aidl" isTestSource="true" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/java" isTestSource="true" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/jni" isTestSource="true" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/rs" isTestSource="true" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/testDevelopment/shaders" isTestSource="true" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/debug/res" type="java-resource" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/debug/resources" type="java-resource" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/debug/assets" type="java-resource" />
@@ -104,14 +104,6 @@
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/main/jni" isTestSource="false" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/main/rs" isTestSource="false" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/main/shaders" isTestSource="false" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/res" type="java-test-resource" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/resources" type="java-test-resource" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/assets" type="java-test-resource" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/aidl" isTestSource="true" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/java" isTestSource="true" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/jni" isTestSource="true" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/rs" isTestSource="true" />
-      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/shaders" isTestSource="true" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/test/res" type="java-test-resource" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/test/resources" type="java-test-resource" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/test/assets" type="java-test-resource" />
@@ -120,6 +112,14 @@
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/test/jni" isTestSource="true" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/test/rs" isTestSource="true" />
       <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/test/shaders" isTestSource="true" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/res" type="java-test-resource" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/resources" type="java-test-resource" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/assets" type="java-test-resource" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/aidl" isTestSource="true" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/java" isTestSource="true" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/jni" isTestSource="true" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/rs" isTestSource="true" />
+      <sourceFolder url="file:///oldhome/home/peter/development/AppCKI/app/src/androidTest/shaders" isTestSource="true" />
       <excludeFolder url="file:///oldhome/home/peter/development/AppCKI/app/build/intermediates/assets" />
       <excludeFolder url="file:///oldhome/home/peter/development/AppCKI/app/build/intermediates/blame" />
       <excludeFolder url="file:///oldhome/home/peter/development/AppCKI/app/build/intermediates/builds" />
