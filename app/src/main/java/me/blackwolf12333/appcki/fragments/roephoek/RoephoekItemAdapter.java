@@ -12,7 +12,7 @@ import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.generated.roephoek.RoephoekItem;
 
 /**
- * Created by Jorik on 14/02/16.
+ * Created by peter on 4/26/16.
  */
 public class RoephoekItemAdapter extends RecyclerView.Adapter<RoephoekItemAdapter.ViewHolder> {
     private final List<RoephoekItem> mValues;
@@ -67,5 +67,15 @@ public class RoephoekItemAdapter extends RecyclerView.Adapter<RoephoekItemAdapte
         public String toString() {
             return super.toString() + " '" + mMessageView.getText() + "'";
         }
+    }
+
+    public void clear() {
+        mValues.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addAll(List<RoephoekItem> list) {
+        mValues.addAll(list);
+        notifyDataSetChanged();
     }
 }
