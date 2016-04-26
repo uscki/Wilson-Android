@@ -39,7 +39,7 @@ public class PollFragment extends APIFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pollAPI.getPoll(521);
+        pollAPI.getActivePoll();
     }
 
     @Nullable

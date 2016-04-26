@@ -1,0 +1,20 @@
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/refreshContainer"
+    tools:context="me.blackwolf12333.appcki.fragments.roephoek2.RoephoekFragment">
+
+    <android.support.v7.widget.RecyclerView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/roepheokRecyclerView"
+        app:layoutManager="LinearLayoutManager"
+        tools:context="me.blackwolf12333.appcki.fragments.roephoek2.RoephoekFragment"
+        tools:listitem="@layout/fragment_roephoekitem">
+    </android.support.v7.widget.RecyclerView>
+
+</android.support.v4.widget.SwipeRefreshLayout>

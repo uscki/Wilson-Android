@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import me.blackwolf12333.appcki.generated.organisation.Person;
 import me.blackwolf12333.appcki.generated.media.MediaFile;
+import me.blackwolf12333.appcki.generated.organisation.Person;
 
 public class PollItem {
     @SerializedName("id")

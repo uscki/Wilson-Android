@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.blackwolf12333.appcki.generated.Category;
-import me.blackwolf12333.appcki.generated.organisation.Committee;
 import me.blackwolf12333.appcki.generated.media.MediaCollection;
 import me.blackwolf12333.appcki.generated.media.MediaFile;
+import me.blackwolf12333.appcki.generated.organisation.Committee;
 
 public class AgendaItem {
 

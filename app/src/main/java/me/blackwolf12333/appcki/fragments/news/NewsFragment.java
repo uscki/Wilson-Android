@@ -19,7 +19,7 @@ import me.blackwolf12333.appcki.generated.news.NewsOverview;
  * A fragment representing a list of Items.
  * <p/>
  */
-public class NewsItemFragment extends APIFragment {
+public class NewsFragment extends APIFragment {
     private VolleyNews newsAPI = new VolleyNews();
     private NewsOverview newsOverview = null;
     private NewsItem newsItem = null;
@@ -30,7 +30,7 @@ public class NewsItemFragment extends APIFragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public NewsItemFragment() {
+    public NewsFragment() {
 
     }
 
