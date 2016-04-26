@@ -45,7 +45,7 @@ import me.blackwolf12333.appcki.fragments.agenda2.ParticipantFragment;
 import me.blackwolf12333.appcki.fragments.meetings.MeetingFragment;
 import me.blackwolf12333.appcki.fragments.news.NewsItemDetailFragment;
 import me.blackwolf12333.appcki.fragments.news2.NewsFragment;
-import me.blackwolf12333.appcki.fragments.poll.PollFragment;
+import me.blackwolf12333.appcki.fragments.poll2.PollFragment;
 import me.blackwolf12333.appcki.fragments.roephoek2.RoephoekFragment;
 import me.blackwolf12333.appcki.generated.organisation.Person;
 import me.blackwolf12333.appcki.helpers.UserHelper;

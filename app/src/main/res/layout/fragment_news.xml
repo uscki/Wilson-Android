@@ -11,7 +11,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/newsRecyclerView"
+        android:id="@+id/recyclerView"
         app:layoutManager="LinearLayoutManager"
         tools:context="me.blackwolf12333.appcki.fragments.news2.NewsFragment"
         tools:listitem="@layout/fragment_agendaitem">
