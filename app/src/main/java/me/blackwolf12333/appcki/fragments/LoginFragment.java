@@ -25,10 +25,10 @@ import java.net.URLEncoder;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.helpers.UserHelper;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.events.UserLoggedInEvent;
 import me.blackwolf12333.appcki.generated.organisation.Person;
+import me.blackwolf12333.appcki.helpers.UserHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -174,7 +174,7 @@ public class LoginFragment extends APIFragment {
                 String password = MD5(mPassword);
                 api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + mPassword); //TODO
                 connection = (HttpURLConnection) api.openConnection();
-                connection.setRequestMethod("POST");
+                connection.setRequestMethod("GET");
 
                 String token = connection.getHeaderField("X-AUTH-TOKEN");
 
