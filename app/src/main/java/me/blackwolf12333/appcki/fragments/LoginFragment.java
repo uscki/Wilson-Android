@@ -172,9 +172,9 @@ public class LoginFragment extends APIFragment {
 
             try {
                 String password = MD5(mPassword);
-                api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + password); //TODO
+                api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + mPassword); //TODO
                 connection = (HttpURLConnection) api.openConnection();
-                //connection.setRequestMethod("POST");
+                connection.setRequestMethod("POST");
 
                 String token = connection.getHeaderField("X-AUTH-TOKEN");
 
