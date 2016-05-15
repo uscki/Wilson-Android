@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar progressBar;
     private View content;
     private NetworkImageView userProfilePic;
+    private Screen lastScreen;
 
     public enum Screen {
         NEWS(NewsFragment.class),
@@ -104,19 +105,39 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        getLastScreen();
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         userProfilePic = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
     }
 
+    public Screen getLastScreen() {
+        SharedPreferences preferences = getSharedPreferences("default", MODE_PRIVATE);
+        if(preferences.contains("lastScreen")) {
+            String screen = preferences.getString("lastScreen", "NEWS");
+            this.lastScreen = Screen.valueOf(screen);
+            Log.d("MainActivity", "loading last screen");
+        } else {
+            lastScreen = Screen.NEWS;
+        }
+        return lastScreen;
+    }
+
+    public void saveLastScreen() {
+        Log.d("MainActivity", "saving last screen");
+        SharedPreferences preferences = getSharedPreferences("default", MODE_PRIVATE);
+        preferences.edit().putString("lastScreen", lastScreen.name()).apply();
+    }
+
     @Override
     protected void onResume() {
+        super.onResume();
         if(!initUser()) {
             openScreen(Screen.LOGIN);
         } else {
-            openScreen(Screen.NEWS);
+            openScreen(getLastScreen());
         }
-        super.onResume();
     }
 
     public boolean initUser() {
@@ -194,6 +215,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         EventBus.getDefault().register(this);
+        getLastScreen();
         super.onStart();
     }
 
@@ -201,12 +223,14 @@ public class MainActivity extends AppCompatActivity
     protected void onStop() {
         EventBus.getDefault().unregister(this);
         saveUser();
+        saveLastScreen();
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
         saveUser();
+        saveLastScreen();
         super.onDestroy();
     }
 
@@ -215,19 +239,27 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         User user = UserHelper.getInstance().getUser();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
 
         if(user != null && user.loggedIn) {
             if (id == R.id.nav_news) {
                 openScreen(Screen.NEWS);
+                navigationView.setCheckedItem(R.id.nav_news);
             } else if (id == R.id.nav_agenda) {
                 openScreen(Screen.AGENDA);
+                navigationView.setCheckedItem(R.id.nav_agenda);
             } else if (id == R.id.nav_poll) {
                 openScreen(Screen.POLL);
+                navigationView.setCheckedItem(R.id.nav_poll);
             } else if (id == R.id.nav_roephoek) {
                 openScreen(Screen.ROEPHOEK);
+                navigationView.setCheckedItem(R.id.nav_roephoek);
             } else if(id == R.id.nav_meetings) {
                openScreen(Screen.MEETINGS);
+                navigationView.setCheckedItem(R.id.nav_meetings);
             } else if (id == R.id.nav_login) {
+                navigationView.setCheckedItem(R.id.nav_login);
                 UserHelper.getInstance().logout(getSharedPreferences(user.getPerson().getUsername(), MODE_PRIVATE));
                 initLoggedOutUserUI();
                 openScreen(Screen.LOGIN);
@@ -332,6 +364,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void openScreen(Screen screen, Bundle args, String newTitle) {
+        lastScreen = screen;
         drawer.closeDrawers();
         showProgress(true);
 
