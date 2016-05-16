@@ -16,19 +16,19 @@
             android:title="Poll" />
         <item
             android:id="@+id/nav_roephoek"
-            android:icon="@drawable/ic_menu_share"
+            android:icon="@drawable/ic_menu_manage"
             android:title="Roephoek" />
         <item
-            android:id="@+id/nav_meetings"
+            android:id="@+id/nav_meeting"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Vergaderingen" />
+            android:title="Vergaderplanner" />
     </group>
 
     <item android:title="Communicate">
         <menu>
             <item
                 android:id="@+id/nav_login"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_menu_share"
                 android:title="Login" />
         </menu>
     </item>

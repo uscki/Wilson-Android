@@ -6,22 +6,13 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="me.blackwolf12333.appcki.MainActivity"
-    tools:showIn="@layout/app_bar_main"
-    android:id="@+id/content">
-
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:layout_centerInParent="true" />
+    tools:showIn="@layout/app_bar_main">
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:foreground="?android:windowContentOverlay"
-        tools:context=".MainActivity"/>
+        tools:context=".MainActivity"
+        android:background="#ffffff" />
 
 </RelativeLayout>

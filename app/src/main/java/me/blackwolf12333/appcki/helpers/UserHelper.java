@@ -1,11 +1,14 @@
 package me.blackwolf12333.appcki.helpers;
 
 import android.content.SharedPreferences;
+import android.util.Base64;
 import android.util.Log;
 
-import de.greenrobot.event.EventBus;
+import com.google.gson.Gson;
+
+import java.io.UnsupportedEncodingException;
+
 import me.blackwolf12333.appcki.User;
-import me.blackwolf12333.appcki.events.UserLoggedInEvent;
 import me.blackwolf12333.appcki.generated.organisation.Person;
 
 /**
@@ -14,6 +17,7 @@ import me.blackwolf12333.appcki.generated.organisation.Person;
 public class UserHelper {
     private static UserHelper singleton;
     private User user;
+    private SharedPreferences preferences;
 
     private UserHelper() {
         user = new User(null, null);
@@ -29,28 +33,21 @@ public class UserHelper {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void updateUser(String token, Person person) {
-        Log.d("UserHelper", token);
-        Log.d("UserHelper", person.toString());
-        this.user = new User(token, person);
+    public void setPreferences(SharedPreferences preferences) {
+        this.preferences = preferences;
     }
 
     public void login(String token, Person person) {
         this.user = new User(token, person);
         this.user.loggedIn = true;
-        EventBus.getDefault().post(new UserLoggedInEvent());
     }
 
-    public void logout(SharedPreferences preferences) {
+    public void logout() {
         if(preferences.contains("TOKEN")) {
             Log.d("UserHelper", "token in place, removing it");
             SharedPreferences.Editor editor = preferences.edit();
             editor.remove("TOKEN");
-            editor.commit();
+            editor.apply();
         }
         this.user.loggedIn = false;
         this.user.TOKEN = null;
@@ -61,11 +58,30 @@ public class UserHelper {
         return user.loggedIn;
     }
 
-    public void save(SharedPreferences preferences) {
+    public void save() {
         if(!preferences.contains("TOKEN")) {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("TOKEN", user.TOKEN);
-            editor.commit();
+            editor.apply();
+        }
+    }
+
+    public void load() {
+        if(preferences.contains("TOKEN")) {
+            Gson gson = new Gson();
+            String token = preferences.getString("TOKEN", "null");
+            Log.d("UserHelper", token);
+            try {
+                if (!token.equals("null")) {
+                    Person person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), Person.class);
+                    login(token, person);
+                } else {
+                    user.loggedIn = false;
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 }

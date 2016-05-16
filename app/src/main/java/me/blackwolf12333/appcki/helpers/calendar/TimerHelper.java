@@ -1,20 +1,9 @@
 package me.blackwolf12333.appcki.helpers.calendar;
 
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 
-import org.joda.time.DateTime;
-
-import java.util.Date;
-
-import uk.co.nutricia.mypku.PkuApplication;
-import uk.co.nutricia.mypku.model.generated.RegimeReminder;
-import uk.co.nutricia.mypku.model.sqlite.ReminderPeriod;
-import uk.co.nutricia.mypku.receiver.AlaramReceiver;
+import me.blackwolf12333.appcki.App;
 
 /**
  * Created by michielvanliempt on 19/01/15.
@@ -25,7 +14,7 @@ public class TimerHelper {
     private static final String SCHEME = "pku-alarm";
     private static TimerHelper instance;
     private final AlarmManager am;
-    private final PkuApplication context;
+    private final Context context;
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -33,11 +22,11 @@ public class TimerHelper {
     ///////////////////////////////////////////////////////////////////////////
 
     public TimerHelper() {
-        context = PkuApplication.getInstance();
+        context = App.getContext();
         am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
-    public static Uri makeUri(RegimeReminder reminder) {
+    /*public static Uri makeUri(RegimeReminder reminder) {
         return new Uri.Builder().scheme(SCHEME)
                                 .path(Long.toString(reminder.getSubstituteRegime()))
                                 .appendPath(Long.toString(reminder.getId()))
@@ -55,7 +44,7 @@ public class TimerHelper {
                                 .path(Integer.toString(id))
                                 .build();
     }
-
+*/
     ///////////////////////////////////////////////////////////////////////////
     // methods to create intents for the alarmmanager
     ///////////////////////////////////////////////////////////////////////////
@@ -80,7 +69,7 @@ public class TimerHelper {
      *
      * @param reminder
      */
-    public void scheduleReminder(RegimeReminder reminder) {
+    /*public void scheduleReminder(RegimeReminder reminder) {
         String substituteName = reminder.getSubstituteName();
         DateTime now = DateTime.now();
         DateTime schedule = now.withTime(reminder.getHours(), reminder.getMinutes(), 0, 0);
@@ -164,5 +153,5 @@ public class TimerHelper {
 
     public void unscheduleMessage(int messageId) {
         am.cancel(getPendingIntent(makeMessageIntent(messageId, null)));
-    }
+    }*/
 }

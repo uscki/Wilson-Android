@@ -16,7 +16,6 @@ import org.joda.time.DateTime;
 import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.helpers.calendar.ReminderPeriod;
-import me.blackwolf12333.appcki.helpers.calendar.TimerHelper;
 
 /**
  * Created by michielvanliempt on 30/12/14.
@@ -54,7 +53,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             if (reminderRecurrence != null && reminderRecurrence > 0) {
                 ReminderPeriod period = ReminderPeriod.values()[reminderRecurrence];
                 DateTime nextTime = period.apply(DateTime.now().withTime(12, 0, 0, 0));
-                TimerHelper.getInstance().scheduleBloodReminder(nextTime);
+                //TimerHelper.getInstance().scheduleBloodReminder(nextTime);
             }
         } else if (NotificationType.TAKE_SUBSTITUTE.name().equals(type)) {
             handleReminderIntent(context, intent);
@@ -121,7 +120,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     protected void checkActivityForeground(Context context, final Runnable inForeground, final Runnable inBackground) {
         Log.d("alarm", "start checking for Activity in foreground");
         Intent intent = new Intent();
-        intent.setAction(MainActivity.ACTION_ACTIVITY_DETECTOR);
+        //intent.setAction(MainActivity.ACTION_ACTIVITY_DETECTOR);
         context.sendOrderedBroadcast(intent, null, new BroadcastReceiver() {
 
             @Override

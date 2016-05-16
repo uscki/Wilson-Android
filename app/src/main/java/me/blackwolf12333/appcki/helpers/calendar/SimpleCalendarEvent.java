@@ -4,8 +4,6 @@ import android.database.Cursor;
 
 import org.joda.time.DateTime;
 
-import uk.co.nutricia.mypku.util.Utils;
-
 /**
 * Created by michielvanliempt on 08/01/15.
 */
@@ -38,7 +36,7 @@ public class SimpleCalendarEvent {
 
     @Override
     public String toString() {
-        return String.format("%s\n%d %s", title, id, startDate.toString(Utils.FORMATTER_DATETIME));
+        return "";//String.format("%s\n%d %s", title, id, startDate.toString(Utils.FORMATTER_DATETIME));
     }
 
     public long getId() {

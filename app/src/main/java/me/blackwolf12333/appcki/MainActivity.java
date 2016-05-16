@@ -1,176 +1,98 @@
 package me.blackwolf12333.appcki;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
 import de.greenrobot.event.EventBus;
-import me.blackwolf12333.appcki.api.MediaAPI;
-import me.blackwolf12333.appcki.api.common.APISingleton;
-import me.blackwolf12333.appcki.api.media.ImageLoader;
-import me.blackwolf12333.appcki.api.media.ImageRequest;
-import me.blackwolf12333.appcki.api.media.NetworkImageView;
 import me.blackwolf12333.appcki.events.LinkClickedEvent;
-import me.blackwolf12333.appcki.events.MediaFileEvent;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.events.ServerErrorEvent;
-import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.events.UserLoggedInEvent;
-import me.blackwolf12333.appcki.fragments.APIFragment;
 import me.blackwolf12333.appcki.fragments.LoginFragment;
-import me.blackwolf12333.appcki.fragments.agenda.AgendaFragment;
-import me.blackwolf12333.appcki.fragments.agenda.AgendaItemDetailFragment;
-import me.blackwolf12333.appcki.fragments.agenda.ParticipantFragment;
-import me.blackwolf12333.appcki.fragments.meetings.MeetingFragment;
-import me.blackwolf12333.appcki.fragments.news.NewsItemDetailFragment;
-import me.blackwolf12333.appcki.fragments.news.NewsFragment;
-import me.blackwolf12333.appcki.fragments.poll.PollFragment;
-import me.blackwolf12333.appcki.fragments.roephoek.RoephoekFragment;
-import me.blackwolf12333.appcki.generated.organisation.Person;
+import me.blackwolf12333.appcki.fragments.PageableFragment;
 import me.blackwolf12333.appcki.helpers.UserHelper;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    public static final String ACTION_ACTIVITY_DETECTOR = "me.blackwolf12333.appcki.activities.ACTION_ACTIVITY_DETECTOR";
 
-    private APIFragment fragment;
-    private String title;
-    private Toolbar toolBar;
-    private DrawerLayout drawer;
-    private ProgressBar progressBar;
-    private View content;
-    private NetworkImageView userProfilePic;
-    private Screen lastScreen;
+    Toolbar toolbar;
+    NavigationView navigationView;
+
+    LoginFragment loginFragment = new LoginFragment();
 
     public enum Screen {
-        NEWS(NewsFragment.class),
-        AGENDA(AgendaFragment.class),
-        POLL(PollFragment.class),
-        AGENDADETAIL(AgendaItemDetailFragment.class),
-        NEWSDETAIL(NewsItemDetailFragment.class),
-        LOGIN(LoginFragment.class),
-        AGENDAPARTICIPANTS(ParticipantFragment.class),
-        ROEPHOEK(RoephoekFragment.class),
-        MEETINGS(MeetingFragment.class),
-        ;
-
-        final Class<? extends APIFragment> type;
-
-        Screen(Class<? extends APIFragment> type) {
-            this.type = type;
-        }
+        LOGIN,
+        NEWS,
+        AGENDA,
+        POLL,
+        ROEPHOEK,
+        VERGADERPLANNER
     }
+
+    public static Screen currentScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-        toolBar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolBar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(getString(R.string.app_name));
+        setSupportActionBar(toolbar);
 
-        //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        //fab.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View view) {
-        //        //openScreen(Screen.ROEPHOEKPOST);
-        //    }
-        //});
-
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        content = (View) findViewById(R.id.fragment_container);
-
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolBar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        getLastScreen();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        userProfilePic = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
-    }
 
-    public Screen getLastScreen() {
-        SharedPreferences preferences = getSharedPreferences("default", MODE_PRIVATE);
-        if(preferences.contains("lastScreen")) {
-            String screen = preferences.getString("lastScreen", "NEWS");
-            this.lastScreen = Screen.valueOf(screen);
-            Log.d("MainActivity", "loading last screen");
+        UserHelper.getInstance().setPreferences(getPreferences(MODE_PRIVATE));
+        UserHelper.getInstance().load();
+
+        if (UserHelper.getInstance().isLoggedIn()) {
+            loadState();
         } else {
-            lastScreen = Screen.NEWS;
+            openFragment(loginFragment, null);
         }
-        return lastScreen;
-    }
-
-    public void saveLastScreen() {
-        Log.d("MainActivity", "saving last screen");
-        SharedPreferences preferences = getSharedPreferences("default", MODE_PRIVATE);
-        preferences.edit().putString("lastScreen", lastScreen.name()).apply();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if(!initUser()) {
-            openScreen(Screen.LOGIN);
-        } else {
-            openScreen(getLastScreen());
-        }
+    protected void onStart() {
+        EventBus.getDefault().register(this);
+        super.onStart();
     }
 
-    public boolean initUser() {
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        if(preferences.contains("last_user")) {
-            Log.d("MainActivity", "last_user found");
-            loadUser();
-            return true;
-        } else if(UserHelper.getInstance().isLoggedIn()) {
-            //initLoggedInUserUI(UserHelper.getInstance().getUser());
-            return true;
-        }
-        return false;
+    @Override
+    protected void onStop() {
+        saveState();
+        UserHelper.getInstance().save();
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
-    private void initLoggedInUserUI(User user) {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.logout));
-
-        new MediaAPI().getMediaFile(UserHelper.getInstance().getUser().getPerson().getPhotomediaid());
-
-        TextView view = (TextView) navigationView.getHeaderView(0).findViewById(R.id.login_status);
-        view.setText("Je bent nu ingelogt als " + user.getPerson().getFirstname());
-    }
-
-    private void initLoggedOutUserUI() {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.login));
-
-        TextView view = (TextView) findViewById(R.id.login_status);
-        view.setText("Je bent uitgelogd.");
+    @Override
+    protected void onDestroy() {
+        saveState();
+        UserHelper.getInstance().save();
+        super.onDestroy();
     }
 
     @Override
@@ -179,15 +101,7 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if(fragment instanceof NewsItemDetailFragment) {
-                openScreen(Screen.NEWS);
-            } else if(fragment instanceof AgendaItemDetailFragment) {
-                openScreen(Screen.AGENDA);
-            } else if(fragment instanceof ParticipantFragment) {
-                openScreen(Screen.AGENDA); //TODO go back to viewed item
-            } else {
-                super.onBackPressed();
-            }
+            super.onBackPressed();
         }
     }
 
@@ -195,7 +109,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
         return true;
     }
 
@@ -215,60 +128,33 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStart() {
-        EventBus.getDefault().register(this);
-        getLastScreen();
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        EventBus.getDefault().unregister(this);
-        saveUser();
-        saveLastScreen();
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        saveUser();
-        saveLastScreen();
-        super.onDestroy();
-    }
-
-    @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        User user = UserHelper.getInstance().getUser();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
+        Bundle bundle = new Bundle();
 
-        if(user != null && user.loggedIn) {
+        if (UserHelper.getInstance().isLoggedIn()) {
             if (id == R.id.nav_news) {
-                openScreen(Screen.NEWS);
-                navigationView.setCheckedItem(R.id.nav_news);
+                bundle.putInt("type", PageableFragment.NEWS);
+                openPageableFragment(bundle);
             } else if (id == R.id.nav_agenda) {
-                openScreen(Screen.AGENDA);
-                navigationView.setCheckedItem(R.id.nav_agenda);
+                bundle.putInt("type", PageableFragment.AGENDA);
+                openPageableFragment(bundle);
             } else if (id == R.id.nav_poll) {
-                openScreen(Screen.POLL);
-                navigationView.setCheckedItem(R.id.nav_poll);
+
             } else if (id == R.id.nav_roephoek) {
-                openScreen(Screen.ROEPHOEK);
-                navigationView.setCheckedItem(R.id.nav_roephoek);
-            } else if(id == R.id.nav_meetings) {
-               openScreen(Screen.MEETINGS);
-                navigationView.setCheckedItem(R.id.nav_meetings);
+                bundle.putInt("type", PageableFragment.ROEPHOEK);
+                openPageableFragment(bundle);
+            } else if (id == R.id.nav_meeting) {
+
             } else if (id == R.id.nav_login) {
-                navigationView.setCheckedItem(R.id.nav_login);
-                UserHelper.getInstance().logout(getSharedPreferences(user.getPerson().getUsername(), MODE_PRIVATE));
-                initLoggedOutUserUI();
-                openScreen(Screen.LOGIN);
+                UserHelper.getInstance().logout();
+                initLoggedOutUI();
             }
         } else {
             if (id == R.id.nav_login) {
-                openScreen(Screen.LOGIN);
+                openFragment(loginFragment, null);
             }
         }
 
@@ -277,29 +163,117 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void onEventMainThread(OpenFragmentEvent event) {
-        if(event.arguments != null) {
-            openScreen(event.screen, event.arguments);
-        } else {
-            openScreen(event.screen);
+    private void openPageableFragment(Bundle arguments) {
+        Fragment fragment = new PageableFragment();
+        openFragment(fragment, arguments);
+    }
+
+    private void openFragment(Fragment fragment, Bundle arguments) {
+        if (arguments != null) {
+            fragment.setArguments(arguments);
+        }
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
+    }
+
+    private void openFragmentWithBack(Fragment fragment, Bundle arguments) {
+        if (arguments != null) {
+            fragment.setArguments(arguments);
+        }
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(fragment.getTag())
+                .commit();
+    }
+
+    private void initLoggedInUI() {
+        hideKeyboard(findViewById(R.id.drawer_layout));
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", PageableFragment.NEWS);
+        openPageableFragment(bundle);
+
+        navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.logout));
+        TextView name = (TextView) navigationView.findViewById(R.id.nav_header_name);
+        name.setText(UserHelper.getInstance().getUser().getPerson().getName());
+    }
+
+    private void initLoggedOutUI() {
+        openFragment(new LoginFragment(), null);
+        navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.login));
+    }
+
+    private void saveState() {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        preferences.edit().putString("last_screen", currentScreen.name()).apply();
+    }
+
+    private void loadState() {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        Screen screen = Screen.valueOf(preferences.getString("last_screen", "NEWS"));
+        switch (screen) {
+            case LOGIN:
+                openFragment(loginFragment, null);
+                break;
+            case NEWS:
+                Bundle bundle = new Bundle();
+                bundle.putInt("type", PageableFragment.NEWS);
+                openPageableFragment(bundle);
+                break;
+            case AGENDA:
+                bundle = new Bundle();
+                bundle.putInt("type", PageableFragment.AGENDA);
+                openPageableFragment(bundle);
+                break;
+            case POLL:
+                break;
+            case ROEPHOEK:
+                bundle = new Bundle();
+                bundle.putInt("type", PageableFragment.ROEPHOEK);
+                openPageableFragment(bundle);
+                break;
+            case VERGADERPLANNER:
+                break;
         }
     }
 
-    public void onEventMainThread(ShowProgressEvent event) {
-        this.showProgress(event.showProgress);
+    public static void hideKeyboard(View someView) {
+        InputMethodManager imm = (InputMethodManager) someView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(someView.getWindowToken(), 0);
     }
 
+    // EVENT HANDLING
     public void onEventMainThread(UserLoggedInEvent event) {
-        User user = UserHelper.getInstance().getUser();
-        initLoggedInUserUI(user);
-        openScreen(Screen.NEWS);
+        initLoggedInUI();
     }
 
-    public void onEventMainThread(MediaFileEvent event) {
-        ImageLoader loader = APISingleton.getInstance(App.getContext()).getImageLoader();
-        String url = String.format(ImageRequest.URL, MediaAPI.getFiletypeFromMime(event.file.getMimetype()), event.file.getId());
-        Log.d("MainActivity", "image request url: " + url);
-        userProfilePic.setImageMediaFile(event.file, loader);
+    public void onEventMainThread(OpenFragmentEvent event) {
+        openFragmentWithBack(event.screen, event.arguments);
+    }
+
+    public void onEventMainThread(ServerErrorEvent event) {
+        Toast toast;
+        switch (event.error.getStatus()) {
+            case 401: // Unauthorized
+            case 403: // Forbidden
+                toast = Toast.makeText(getApplicationContext(), getString(R.string.notloggedin), Toast.LENGTH_SHORT);
+                toast.show();
+                openFragment(new LoginFragment(), null);
+                break;
+            case 404: // Not found
+                toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
+                toast.show();
+                break;
+            case 405:
+                break;
+            case 500: // Internal error
+                toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
+                toast.show();
+                //TODO stuur een bericht naar de AppCKI over een interne server error
+        }
     }
 
     public void onEventMainThread(LinkClickedEvent event) {
@@ -307,132 +281,4 @@ public class MainActivity extends AppCompatActivity
         intent.setData(Uri.parse(event.url.replace('\"',' ').trim()));
         startActivity(intent);
     }
-
-    public void onEventMainThread(ServerErrorEvent event) {
-        Toast toast;
-        switch (event.error.getStatus()) {
-            case 401:
-            case 403:
-                toast = Toast.makeText(getApplicationContext(), getString(R.string.notloggedin), Toast.LENGTH_SHORT);
-                toast.show();
-                openScreen(Screen.LOGIN);
-                break;
-            case 404:
-                toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
-                toast.show();
-                break;
-            case 405:
-                break;
-            case 500:
-                toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
-                toast.show();
-                //TODO stuur een bericht naar de AppCKI over een interne server error
-        }
-    }
-
-    private void saveUser() {
-        if(UserHelper.getInstance().isLoggedIn()) {
-            Gson gson = new Gson();
-            User user = UserHelper.getInstance().getUser();
-            String person = gson.toJson(user.getPerson());
-            Log.i("saveUser: ", person);
-            getPreferences(MODE_PRIVATE).edit().putString("last_user", person).commit();
-            UserHelper.getInstance().save(getSharedPreferences(user.person.getUsername(), MODE_PRIVATE));
-        }
-    }
-
-    private void loadUser() {
-        if(getPreferences(MODE_PRIVATE).contains("last_user")) {
-            Gson gson = new Gson();
-            SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-            Person person = gson.fromJson(preferences.getString("last_user",""), Person.class);
-            preferences = getSharedPreferences(person.getUsername(), MODE_PRIVATE);
-            String token = preferences.getString("TOKEN", "");
-            if(!token.isEmpty()) {
-                Log.i("loadUser", token + " with person: " + person.toString());
-                UserHelper.getInstance().login(token, person);
-            }
-        }
-    }
-
-    private void openScreen(Screen screen) {
-        String title = getResources().getStringArray(R.array.screen_titles)[screen.ordinal()];
-        openScreen(screen, null, title);
-    }
-
-    private void openScreen(Screen screen, Bundle args) {
-        String title = getResources().getStringArray(R.array.screen_titles)[screen.ordinal()];
-        openScreen(screen, args, title);
-    }
-
-    private void openScreen(Screen screen, Bundle args, String newTitle) {
-        lastScreen = screen;
-        drawer.closeDrawers();
-        showProgress(true);
-
-        Class<? extends APIFragment> type = screen.type;
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_container);
-
-        if (newTitle != null) {
-            title = newTitle;
-            toolBar.setTitle(title);
-        }
-        try {
-            fragment = type.newInstance();
-
-            if (currentFragment == fragment) {
-                return;
-            }
-
-            if (args != null) {
-                fragment.setArguments(args);
-            }
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .commitAllowingStateLoss();
-            invalidateOptionsMenu();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void showProgress(final boolean show) {
-        //refreshLayout.setRefreshing(show);
-        //content.setVisibility(show ? View.GONE : View.VISIBLE);
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            content.setVisibility(show ? View.GONE : View.VISIBLE);
-            content.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    content.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-
-            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-            progressBar.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-            //refreshLayout.setRefreshing(show);
-            content.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
-
 }

@@ -1,6 +1,5 @@
 package me.blackwolf12333.appcki.fragments;
 
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -24,6 +23,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.events.ShowProgressEvent;
 import me.blackwolf12333.appcki.events.UserLoggedInEvent;
@@ -33,7 +33,7 @@ import me.blackwolf12333.appcki.helpers.UserHelper;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LoginFragment extends APIFragment {
+public class LoginFragment extends Fragment {
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -45,6 +45,7 @@ public class LoginFragment extends APIFragment {
 
     public LoginFragment() {
         // Required empty public constructor
+        MainActivity.currentScreen = MainActivity.Screen.LOGIN;
     }
 
 
@@ -129,11 +130,6 @@ public class LoginFragment extends APIFragment {
                 passwordView.setError("Username contains invalid characters");
             }
         }
-    }
-
-    @Override
-    public void refresh() {
-        //DO NOTHING
     }
 
     /**

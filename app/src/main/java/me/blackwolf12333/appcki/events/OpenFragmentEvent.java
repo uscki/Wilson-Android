@@ -1,22 +1,21 @@
 package me.blackwolf12333.appcki.events;
 
 import android.os.Bundle;
-
-import me.blackwolf12333.appcki.MainActivity;
+import android.support.v4.app.Fragment;
 
 /**
  * Created by peter on 2/1/16.
  */
 public class OpenFragmentEvent {
-    public MainActivity.Screen screen;
+    public Fragment screen;
     public Bundle arguments;
 
-    public OpenFragmentEvent(MainActivity.Screen screen) {
+    public OpenFragmentEvent(Fragment screen) {
         this.screen = screen;
         this.arguments = null;
     }
 
-    public OpenFragmentEvent(MainActivity.Screen screen, Bundle arguments) {
+    public OpenFragmentEvent(Fragment screen, Bundle arguments) {
         this.screen = screen;
         this.arguments = arguments;
     }

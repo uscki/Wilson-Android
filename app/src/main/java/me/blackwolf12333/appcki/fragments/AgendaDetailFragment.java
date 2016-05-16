@@ -1,7 +1,9 @@
-package me.blackwolf12333.appcki.fragments.agenda;
+package me.blackwolf12333.appcki.fragments;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -14,7 +16,6 @@ import android.widget.TextView;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.App;
-import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.api.MediaAPI;
 import me.blackwolf12333.appcki.api.VolleyAgenda;
@@ -23,22 +24,16 @@ import me.blackwolf12333.appcki.api.media.ImageLoader;
 import me.blackwolf12333.appcki.api.media.NetworkImageView;
 import me.blackwolf12333.appcki.events.AgendaItemEvent;
 import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
-import me.blackwolf12333.appcki.events.OpenFragmentEvent;
-import me.blackwolf12333.appcki.events.ShowProgressEvent;
-import me.blackwolf12333.appcki.fragments.APIFragment;
 import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
 import me.blackwolf12333.appcki.generated.agenda.AgendaParticipant;
 import me.blackwolf12333.appcki.generated.organisation.Person;
-import me.blackwolf12333.appcki.helpers.calendar.CalendarHelper;
 import me.blackwolf12333.appcki.helpers.UserHelper;
 
 /**
- * A simple {@link APIFragment} subclass.
+ * A simple {@link Fragment} subclass.
  */
-public class AgendaItemDetailFragment extends APIFragment {
-    VolleyAgenda agendaAPI = new VolleyAgenda();
+public class AgendaDetailFragment extends Fragment {
     AgendaItem currentItem;
-
     private TextView itemTitle;
     private TextView itemWhen;
     private TextView itemWhere;
@@ -50,33 +45,40 @@ public class AgendaItemDetailFragment extends APIFragment {
     private Button participantsDetail;
     private ActionBar actionBar;
 
-    public AgendaItemDetailFragment() {
+    public AgendaDetailFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        Integer id = getArguments().getInt("id");
+        VolleyAgenda.getInstance().getAgendaItem(id);
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Integer id = getArguments().getInt("id");
-        agendaAPI.getAgendaItem(id);
-        View view = inflater.inflate(R.layout.fragment_agenda_item_detail, container, false);
-        itemTitle = (TextView) view.findViewById(R.id.agendaitem_title);
-        itemWhen = (TextView) view.findViewById(R.id.agendaitem_when);
-        itemWhere = (TextView) view.findViewById(R.id.agendaitem_waar);
-        itemDeelnemers = (TextView) view.findViewById(R.id.agendaitem_deelnemers);
-        itemPoster = (NetworkImageView) view.findViewById(R.id.agendaitem_poster);
-        itemLongDescription = (TextView) view.findViewById(R.id.agendaitem_longdescription);
-        itemNote = (EditText) view.findViewById(R.id.agendaitem_note);
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_agenda_detail, container, false);
+        itemTitle = (TextView) view.findViewById(R.id.agenda_item_title);
+        itemWhen = (TextView) view.findViewById(R.id.agenda_item_when);
+        itemWhere = (TextView) view.findViewById(R.id.agenda_item_waar);
+        itemDeelnemers = (TextView) view.findViewById(R.id.agenda_item_deelnemers);
+        itemPoster = (NetworkImageView) view.findViewById(R.id.agenda_item_poster);
+        itemLongDescription = (TextView) view.findViewById(R.id.agenda_item_longdescription);
+        itemNote = (EditText) view.findViewById(R.id.agenda_item_note);
 
-        itemInschrijven = (CheckBox) view.findViewById(R.id.agendaitem_inschrijven);
+        itemInschrijven = (CheckBox) view.findViewById(R.id.agenda_item_inschrijven);
 
-        participantsDetail = (Button) view.findViewById(R.id.agendaitem_participants);
+        participantsDetail = (Button) view.findViewById(R.id.agenda_item_participants);
         participantsDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle();
                 args.putInt("id", currentItem.getId());
-                EventBus.getDefault().post(new OpenFragmentEvent(MainActivity.Screen.AGENDAPARTICIPANTS, args));
+                // TODO: 5/16/16 agenda participants
+                //EventBus.getDefault().post(new OpenFragmentEvent(MainActivity.Screen.AGENDAPARTICIPANTS, args));
             }
         });
 
@@ -85,11 +87,6 @@ public class AgendaItemDetailFragment extends APIFragment {
 
         // Inflate the layout for this fragment
         return view;
-    }
-
-    @Override
-    public void refresh() {
-        agendaAPI.getAgendaItem(currentItem.getId());
     }
 
     private void updateView(final AgendaItem item) {
@@ -110,8 +107,8 @@ public class AgendaItemDetailFragment extends APIFragment {
             itemInschrijven.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    agendaAPI.unsubscribe(item.getId());
-                    CalendarHelper.getInstance().removeItemFromCalendar(currentItem);
+                    VolleyAgenda.getInstance().unsubscribe(item.getId());
+                    //CalendarHelper.getInstance(getContext()).removeItemFromCalendar(currentItem);
                 }
             });
 
@@ -123,8 +120,8 @@ public class AgendaItemDetailFragment extends APIFragment {
             itemInschrijven.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    agendaAPI.subscribe(item.getId(), itemNote.getText().toString());
-                    CalendarHelper.getInstance().addItemToCalendar(currentItem);
+                    VolleyAgenda.getInstance().subscribe(item.getId(), itemNote.getText().toString());
+                    //CalendarHelper.getInstance(getContext()).addItemToCalendar(currentItem);
                 }
             });
         }
@@ -151,7 +148,6 @@ public class AgendaItemDetailFragment extends APIFragment {
     }
 
     public void onEventMainThread(AgendaItemEvent event) {
-        EventBus.getDefault().post(new ShowProgressEvent(false));
         currentItem = event.agendaItem;
         actionBar.setTitle(event.agendaItem.getShortdescription());
         updateView(event.agendaItem);
@@ -164,8 +160,8 @@ public class AgendaItemDetailFragment extends APIFragment {
             itemInschrijven.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    agendaAPI.unsubscribe(currentItem.getId());
-                    CalendarHelper.getInstance().removeItemFromCalendar(currentItem);
+                    VolleyAgenda.getInstance().unsubscribe(currentItem.getId());
+                    //CalendarHelper.getInstance(getContext()).removeItemFromCalendar(currentItem);
                 }
             });
 
@@ -175,8 +171,8 @@ public class AgendaItemDetailFragment extends APIFragment {
             itemInschrijven.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    agendaAPI.subscribe(currentItem.getId(), itemNote.getText().toString());
-                    CalendarHelper.getInstance().addItemToCalendar(currentItem);
+                    VolleyAgenda.getInstance().subscribe(currentItem.getId(), itemNote.getText().toString());
+                    //CalendarHelper.getInstance(getContext()).addItemToCalendar(currentItem);
                 }
             });
             itemDeelnemers.setText((currentItem.getParticipants().size()-1) +"");

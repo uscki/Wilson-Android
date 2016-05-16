@@ -1,4 +1,4 @@
-package me.blackwolf12333.appcki.fragments.agenda;
+package me.blackwolf12333.appcki.fragments.adapters;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -11,39 +11,34 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.App;
-import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.api.MediaAPI;
 import me.blackwolf12333.appcki.api.common.APISingleton;
 import me.blackwolf12333.appcki.api.media.ImageLoader;
 import me.blackwolf12333.appcki.api.media.NetworkImageView;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
-import me.blackwolf12333.appcki.events.ShowProgressEvent;
+import me.blackwolf12333.appcki.fragments.AgendaDetailFragment;
 import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
-import me.blackwolf12333.appcki.generated.media.MediaFile;
 
 /**
- * Created by peter on 4/26/16.
+ *
  */
-public class AgendaItemAdapter extends RecyclerView.Adapter<AgendaItemAdapter.ViewHolder> {
-    private final List<AgendaItem> mValues;
-    private ViewHolder holder;
+public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHolder, AgendaItem> {
 
     public AgendaItemAdapter(List<AgendaItem> items) {
-        mValues = items;
+        super(items);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_agendaitem, parent, false);
-        holder = new ViewHolder(view);
-        return holder;
+                .inflate(R.layout.agenda_item, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        AgendaItem item = mValues.get(position);
+        AgendaItem item = items.get(position);
         holder.mItem = item;
         holder.mContentView.setText(item.getWhat());
         holder.itemWhen.setText(item.getWhen());
@@ -62,24 +57,14 @@ public class AgendaItemAdapter extends RecyclerView.Adapter<AgendaItemAdapter.Vi
             public void onClick(View v) {
                 Bundle args = new Bundle();
                 args.putInt("id", holder.mItem.getId());
-                EventBus.getDefault().post(new OpenFragmentEvent(MainActivity.Screen.AGENDADETAIL, args));
-                EventBus.getDefault().post(new ShowProgressEvent(true));
+                EventBus.getDefault().post(new OpenFragmentEvent(new AgendaDetailFragment(), args)); // TODO: 5/16/16 open agenda detail
             }
         });
     }
 
-    private int getLocation(MediaFile file) {
-        for(int i = 0; i < mValues.size(); i++) {
-            if(mValues.get(i).getPosterid().getId() == file.getId()) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return items.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -94,26 +79,16 @@ public class AgendaItemAdapter extends RecyclerView.Adapter<AgendaItemAdapter.Vi
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mContentView = (TextView) view.findViewById(R.id.agendaitem_title);
-            itemWhen = (TextView) view.findViewById(R.id.agendaitem_when);
-            itemWhere = (TextView) view.findViewById(R.id.agendaitem_waar);
-            itemDeelnemers = (TextView) view.findViewById(R.id.agendaitem_deelnemers);
-            itemPoster = (NetworkImageView) view.findViewById(R.id.agendaitem_poster);
+            mContentView = (TextView) view.findViewById(R.id.agenda_item_title);
+            itemWhen = (TextView) view.findViewById(R.id.agenda_item_when);
+            itemWhere = (TextView) view.findViewById(R.id.agenda_item_waar);
+            itemDeelnemers = (TextView) view.findViewById(R.id.agenda_item_deelnemers);
+            itemPoster = (NetworkImageView) view.findViewById(R.id.agenda_item_poster);
         }
 
         @Override
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
         }
-    }
-
-    public void clear() {
-        mValues.clear();
-        notifyDataSetChanged();
-    }
-
-    public void addAll(List<AgendaItem> list) {
-        mValues.addAll(list);
-        notifyDataSetChanged();
     }
 }

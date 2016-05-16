@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="screen_titles">
+        <item>Login</item>
         <item>News</item>
         <item>Agenda</item>
         <item>Poll</item>
-        <item>Agenda Detail</item>
-        <item>News Detail</item>
-        <item>Login</item>
-        <item>Deelnemers</item>
         <item>Roephoek</item>
-        <item>Meetings</item>
+        <item>Vergaderplanner</item>
     </string-array>
 
 </resources>
