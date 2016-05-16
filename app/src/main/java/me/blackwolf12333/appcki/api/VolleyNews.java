@@ -15,6 +15,14 @@ import me.blackwolf12333.appcki.generated.news.NewsOverview;
  * Created by peter on 2/7/16.
  */
 public class VolleyNews extends VolleyAPI {
+    private static VolleyNews instance;
+
+    public static synchronized VolleyNews getInstance( ) {
+        if (instance == null)
+            instance = new VolleyNews();
+        return instance;
+    }
+
     public void getNewsOverview() {
         this.apiCall(new NewsOverviewCall());
     }

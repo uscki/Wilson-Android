@@ -16,6 +16,14 @@ import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
  * Created by peter on 2/6/16.
  */
 public class VolleyAgenda extends VolleyAPI {
+    private static VolleyAgenda instance;
+
+    public static synchronized VolleyAgenda getInstance( ) {
+        if (instance == null)
+            instance = new VolleyAgenda();
+        return instance;
+    }
+
     public void getAgendaItem(Integer id) {
         this.apiCall(new GetAgendaItem(id));
     }

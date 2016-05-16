@@ -15,6 +15,14 @@ import me.blackwolf12333.appcki.generated.poll.Poll;
  * Created by peter on 2/7/16.
  */
 public class VolleyPoll extends VolleyAPI {
+    private static VolleyPoll instance;
+
+    public static synchronized VolleyPoll getInstance( ) {
+        if (instance == null)
+            instance = new VolleyPoll();
+        return instance;
+    }
+
     public void getPoll(Integer id) {
         this.apiCall(new PollCall(id));
     }

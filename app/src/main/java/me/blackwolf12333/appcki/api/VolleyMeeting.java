@@ -17,6 +17,14 @@ import me.blackwolf12333.appcki.generated.meeting.MeetingOverview;
  * Created by peter on 2/14/16.
  */
 public class VolleyMeeting extends VolleyAPI {
+    private static VolleyMeeting instance;
+
+    public static synchronized VolleyMeeting getInstance( ) {
+        if (instance == null)
+            instance = new VolleyMeeting();
+        return instance;
+    }
+
     public void getMeetingOverview() {
         this.apiCall(new MeetingOverviewCall());
     }

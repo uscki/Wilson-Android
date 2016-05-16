@@ -1,5 +1,7 @@
 package me.blackwolf12333.appcki.api.common;
 
+import android.util.Log;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
@@ -30,6 +32,7 @@ public class VolleyAPI {
         public void onErrorResponse(VolleyError error) {
             if(error.networkResponse != null) {
                 Gson gson = new Gson();
+                Log.d("VolleyAPI", "error: " + new String(error.networkResponse.data));
                 ServerError serverError = gson.fromJson(new String(error.networkResponse.data), ServerError.class);
                 EventBus.getDefault().post(new ServerErrorEvent(serverError));
             }

@@ -15,6 +15,14 @@ import me.blackwolf12333.appcki.generated.roephoek.Roephoek;
  * Created by Jorik on 13/02/16.
  */
 public class VolleyRoephoek extends VolleyAPI {
+    private static VolleyRoephoek instance;
+
+    public static synchronized VolleyRoephoek getInstance( ) {
+        if (instance == null)
+            instance = new VolleyRoephoek();
+        return instance;
+    }
+
     public void getNewer(Integer id) {this.apiCall(new NewerCall(id)); }
 
     public void getOlder(Integer id) {this.apiCall(new OlderCall(id)); }
