@@ -29,7 +29,7 @@ import me.blackwolf12333.appcki.fragments.APIFragment;
 import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
 import me.blackwolf12333.appcki.generated.agenda.AgendaParticipant;
 import me.blackwolf12333.appcki.generated.organisation.Person;
-import me.blackwolf12333.appcki.helpers.CalendarHelper;
+import me.blackwolf12333.appcki.helpers.calendar.CalendarHelper;
 import me.blackwolf12333.appcki.helpers.UserHelper;
 
 /**
@@ -111,7 +111,7 @@ public class AgendaItemDetailFragment extends APIFragment {
                 @Override
                 public void onClick(View v) {
                     agendaAPI.unsubscribe(item.getId());
-                    CalendarHelper.getInstance(getContext()).removeItemFromCalendar(currentItem);
+                    CalendarHelper.getInstance().removeItemFromCalendar(currentItem);
                 }
             });
 
@@ -124,7 +124,7 @@ public class AgendaItemDetailFragment extends APIFragment {
                 @Override
                 public void onClick(View v) {
                     agendaAPI.subscribe(item.getId(), itemNote.getText().toString());
-                    CalendarHelper.getInstance(getContext()).addItemToCalendar(currentItem);
+                    CalendarHelper.getInstance().addItemToCalendar(currentItem);
                 }
             });
         }
@@ -165,7 +165,7 @@ public class AgendaItemDetailFragment extends APIFragment {
                 @Override
                 public void onClick(View v) {
                     agendaAPI.unsubscribe(currentItem.getId());
-                    CalendarHelper.getInstance(getContext()).removeItemFromCalendar(currentItem);
+                    CalendarHelper.getInstance().removeItemFromCalendar(currentItem);
                 }
             });
 
@@ -176,7 +176,7 @@ public class AgendaItemDetailFragment extends APIFragment {
                 @Override
                 public void onClick(View v) {
                     agendaAPI.subscribe(currentItem.getId(), itemNote.getText().toString());
-                    CalendarHelper.getInstance(getContext()).addItemToCalendar(currentItem);
+                    CalendarHelper.getInstance().addItemToCalendar(currentItem);
                 }
             });
             itemDeelnemers.setText((currentItem.getParticipants().size()-1) +"");

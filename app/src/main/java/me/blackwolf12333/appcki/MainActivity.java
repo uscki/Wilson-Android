@@ -52,6 +52,8 @@ import me.blackwolf12333.appcki.helpers.UserHelper;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    public static final String ACTION_ACTIVITY_DETECTOR = "me.blackwolf12333.appcki.activities.ACTION_ACTIVITY_DETECTOR";
+
     private APIFragment fragment;
     private String title;
     private Toolbar toolBar;
