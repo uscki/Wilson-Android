@@ -34,6 +34,7 @@ import me.blackwolf12333.appcki.helpers.UserHelper;
  */
 public class AgendaDetailFragment extends Fragment {
     AgendaItem currentItem;
+    private View view;
     private TextView itemTitle;
     private TextView itemWhen;
     private TextView itemWhere;
@@ -60,7 +61,8 @@ public class AgendaDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_agenda_detail, container, false);
+        view = inflater.inflate(R.layout.fragment_agenda_detail, container, false);
+        view.setVisibility(View.GONE);
         itemTitle = (TextView) view.findViewById(R.id.agenda_item_title);
         itemWhen = (TextView) view.findViewById(R.id.agenda_item_when);
         itemWhere = (TextView) view.findViewById(R.id.agenda_item_waar);
@@ -151,6 +153,7 @@ public class AgendaDetailFragment extends Fragment {
         currentItem = event.agendaItem;
         actionBar.setTitle(event.agendaItem.getShortdescription());
         updateView(event.agendaItem);
+        view.setVisibility(View.VISIBLE);
     }
 
     public void onEventMainThread(AgendaItemSubscribedEvent event) {

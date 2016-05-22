@@ -6,8 +6,10 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,12 +28,15 @@ import me.blackwolf12333.appcki.events.ServerErrorEvent;
 import me.blackwolf12333.appcki.events.UserLoggedInEvent;
 import me.blackwolf12333.appcki.fragments.LoginFragment;
 import me.blackwolf12333.appcki.fragments.PageableFragment;
+import me.blackwolf12333.appcki.fragments.adapters.HomeViewPagerAdapter;
 import me.blackwolf12333.appcki.helpers.UserHelper;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Toolbar toolbar;
+    TabLayout tabLayout;
+    ViewPager viewPager;
     NavigationView navigationView;
 
     LoginFragment loginFragment = new LoginFragment();
@@ -66,6 +71,12 @@ public class MainActivity extends AppCompatActivity
 
         UserHelper.getInstance().setPreferences(getPreferences(MODE_PRIVATE));
         UserHelper.getInstance().load();
+
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+
+        tabLayout = (TabLayout) findViewById(R.id.home_tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
         if (UserHelper.getInstance().isLoggedIn()) {
             loadState();
@@ -132,22 +143,17 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        Bundle bundle = new Bundle();
-
         if (UserHelper.getInstance().isLoggedIn()) {
             if (id == R.id.nav_news) {
-                bundle.putInt("type", PageableFragment.NEWS);
-                openPageableFragment(bundle);
+                openTab(PageableFragment.NEWS);
             } else if (id == R.id.nav_agenda) {
-                bundle.putInt("type", PageableFragment.AGENDA);
-                openPageableFragment(bundle);
+                openTab(PageableFragment.AGENDA);
             } else if (id == R.id.nav_poll) {
-
+// TODO: 5/22/16 poll
             } else if (id == R.id.nav_roephoek) {
-                bundle.putInt("type", PageableFragment.ROEPHOEK);
-                openPageableFragment(bundle);
+                openTab(PageableFragment.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
-
+// TODO: 5/22/16 meetings 
             } else if (id == R.id.nav_login) {
                 UserHelper.getInstance().logout();
                 initLoggedOutUI();
@@ -163,12 +169,22 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void openPageableFragment(Bundle arguments) {
-        Fragment fragment = new PageableFragment();
-        openFragment(fragment, arguments);
+    private void openTab(int index) {
+        if (tabLayout.getVisibility() == View.GONE) {
+            tabLayout.setVisibility(View.VISIBLE);
+            viewPager.setVisibility(View.VISIBLE);
+            findViewById(R.id.fragment_container).setVisibility(View.GONE);
+        }
+        viewPager.setCurrentItem(index);
+        tabLayout.setScrollPosition(index, 0f, false);
     }
 
     private void openFragment(Fragment fragment, Bundle arguments) {
+        if (tabLayout.getVisibility() == View.VISIBLE) {
+            tabLayout.setVisibility(View.GONE);
+            viewPager.setVisibility(View.GONE);
+            findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
+        }
         if (arguments != null) {
             fragment.setArguments(arguments);
         }
@@ -179,6 +195,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void openFragmentWithBack(Fragment fragment, Bundle arguments) {
+        if (tabLayout.getVisibility() == View.VISIBLE) {
+            tabLayout.setVisibility(View.GONE);
+            viewPager.setVisibility(View.GONE);
+            findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
+        }
         if (arguments != null) {
             fragment.setArguments(arguments);
         }
@@ -192,18 +213,22 @@ public class MainActivity extends AppCompatActivity
     private void initLoggedInUI() {
         hideKeyboard(findViewById(R.id.drawer_layout));
 
-        Bundle bundle = new Bundle();
-        bundle.putInt("type", PageableFragment.NEWS);
-        openPageableFragment(bundle);
+        openTab(PageableFragment.NEWS);
 
         navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.logout));
         TextView name = (TextView) navigationView.findViewById(R.id.nav_header_name);
         name.setText(UserHelper.getInstance().getUser().getPerson().getName());
+        // TODO: 5/22/16 profile pic
     }
 
     private void initLoggedOutUI() {
         openFragment(new LoginFragment(), null);
         navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.login));
+
+        TextView name = (TextView) navigationView.findViewById(R.id.nav_header_name);
+        name.setText("");
+
+        // TODO: 5/22/16 profile pic
     }
 
     private void saveState() {
@@ -219,21 +244,15 @@ public class MainActivity extends AppCompatActivity
                 openFragment(loginFragment, null);
                 break;
             case NEWS:
-                Bundle bundle = new Bundle();
-                bundle.putInt("type", PageableFragment.NEWS);
-                openPageableFragment(bundle);
+                openTab(PageableFragment.NEWS);
                 break;
             case AGENDA:
-                bundle = new Bundle();
-                bundle.putInt("type", PageableFragment.AGENDA);
-                openPageableFragment(bundle);
+                openTab(PageableFragment.AGENDA);
                 break;
             case POLL:
                 break;
             case ROEPHOEK:
-                bundle = new Bundle();
-                bundle.putInt("type", PageableFragment.ROEPHOEK);
-                openPageableFragment(bundle);
+                openTab(PageableFragment.ROEPHOEK);
                 break;
             case VERGADERPLANNER:
                 break;
@@ -243,6 +262,10 @@ public class MainActivity extends AppCompatActivity
     public static void hideKeyboard(View someView) {
         InputMethodManager imm = (InputMethodManager) someView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(someView.getWindowToken(), 0);
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        viewPager.setAdapter(new HomeViewPagerAdapter(getSupportFragmentManager()));
     }
 
     // EVENT HANDLING

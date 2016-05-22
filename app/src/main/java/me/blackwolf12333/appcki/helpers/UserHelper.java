@@ -70,7 +70,6 @@ public class UserHelper {
         if(preferences.contains("TOKEN")) {
             Gson gson = new Gson();
             String token = preferences.getString("TOKEN", "null");
-            Log.d("UserHelper", token);
             try {
                 if (!token.equals("null")) {
                     Person person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), Person.class);

@@ -47,8 +47,7 @@ public class PageableFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public PageableFragment() {
-    }
+    public PageableFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -117,7 +116,6 @@ public class PageableFragment extends Fragment {
 
     // EVENT HANDLING
     public void onEventMainThread(NewsOverviewEvent event) {
-        Log.d("PageableFragment", "updating news content");
         swipeContainer.setRefreshing(false);
         if (adapter instanceof NewsItemAdapter) {
             adapter.update(event.newsOverview.getContent());
@@ -125,7 +123,6 @@ public class PageableFragment extends Fragment {
     }
 
     public void onEventMainThread(AgendaEvent event) {
-        Log.d("PageableFragment", "updating agenda content");
         swipeContainer.setRefreshing(false);
         if (adapter instanceof AgendaItemAdapter) {
             adapter.update(event.agenda.getContent());
@@ -133,7 +130,6 @@ public class PageableFragment extends Fragment {
     }
 
     public void onEventMainThread(RoephoekEvent event) {
-        Log.d("PageableFragment", "updating roephoek content");
         swipeContainer.setRefreshing(false);
         if (adapter instanceof RoephoekItemAdapter) {
             adapter.update(event.roephoek.getContent());
