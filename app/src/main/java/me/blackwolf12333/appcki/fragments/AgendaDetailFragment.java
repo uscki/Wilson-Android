@@ -4,8 +4,6 @@ package me.blackwolf12333.appcki.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +14,7 @@ import android.widget.TextView;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.App;
+import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.api.MediaAPI;
 import me.blackwolf12333.appcki.api.VolleyAgenda;
@@ -44,7 +43,6 @@ public class AgendaDetailFragment extends Fragment {
     private CheckBox itemInschrijven;
     private EditText itemNote;
     private Button participantsDetail;
-    private ActionBar actionBar;
 
     public AgendaDetailFragment() {
         // Required empty public constructor
@@ -54,6 +52,7 @@ public class AgendaDetailFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Integer id = getArguments().getInt("id");
         VolleyAgenda.getInstance().getAgendaItem(id);
+        MainActivity.currentScreen = MainActivity.Screen.AGENDA_DETAIL;
         super.onCreate(savedInstanceState);
     }
 
@@ -83,9 +82,6 @@ public class AgendaDetailFragment extends Fragment {
                 //EventBus.getDefault().post(new OpenFragmentEvent(MainActivity.Screen.AGENDAPARTICIPANTS, args));
             }
         });
-
-        AppCompatActivity act = (AppCompatActivity) getActivity();
-        actionBar = act.getSupportActionBar();
 
         // Inflate the layout for this fragment
         return view;
@@ -151,7 +147,6 @@ public class AgendaDetailFragment extends Fragment {
 
     public void onEventMainThread(AgendaItemEvent event) {
         currentItem = event.agendaItem;
-        actionBar.setTitle(event.agendaItem.getShortdescription());
         updateView(event.agendaItem);
         view.setVisibility(View.VISIBLE);
     }

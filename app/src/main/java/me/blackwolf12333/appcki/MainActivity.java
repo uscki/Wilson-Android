@@ -46,7 +46,8 @@ public class MainActivity extends AppCompatActivity
         AGENDA,
         POLL,
         ROEPHOEK,
-        VERGADERPLANNER
+        VERGADERPLANNER,
+        AGENDA_DETAIL,
     }
 
     public static Screen currentScreen;
@@ -105,6 +106,9 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            if (currentScreen == Screen.AGENDA_DETAIL) {
+                openTab(PageableFragment.AGENDA);
+            }
             super.onBackPressed();
         }
     }
