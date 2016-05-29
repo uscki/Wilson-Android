@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -17,7 +19,7 @@ import me.blackwolf12333.appcki.api.common.APISingleton;
 import me.blackwolf12333.appcki.api.media.ImageLoader;
 import me.blackwolf12333.appcki.api.media.NetworkImageView;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
-import me.blackwolf12333.appcki.fragments.AgendaDetailFragment;
+import me.blackwolf12333.appcki.fragments.agenda.AgendaDetailTabsFragment;
 import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
 
 /**
@@ -45,19 +47,20 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         holder.itemDeelnemers.setText(item.getParticipants().size() + "");
         holder.itemWhere.setText(item.getWhere());
 
+        holder.itemPoster.setDefaultImageResId(R.drawable.default_poster);
         if(item.getPosterid() != null) {
             ImageLoader loader = APISingleton.getInstance(App.getContext()).getImageLoader();
             holder.itemPoster.setImageIdAndType(item.getPosterid().getId(), MediaAPI.getFiletypeFromMime(item.getPosterid().getMimetype()), loader);
-        } else {
-            holder.itemPoster.setImageDrawable(App.getContext().getResources().getDrawable(R.drawable.default_poster));
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle();
-                args.putInt("id", holder.mItem.getId());
-                EventBus.getDefault().post(new OpenFragmentEvent(new AgendaDetailFragment(), args));
+                Gson gson = new Gson();
+                String json = gson.toJson(holder.mItem, AgendaItem.class);
+                args.putString("item", json);
+                EventBus.getDefault().post(new OpenFragmentEvent(new AgendaDetailTabsFragment(), args));
             }
         });
     }
