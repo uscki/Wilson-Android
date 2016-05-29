@@ -1,112 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content">
-
-<TextView
-    android:id="@+id/agenda_item_title"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textAppearance="?android:attr/textAppearanceMedium"
-    android:text=""
-    android:layout_alignParentTop="true"
-    android:layout_toRightOf="@+id/agenda_item_poster"
-    android:textStyle="bold"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentEnd="true" />
-
-<me.blackwolf12333.appcki.api.media.NetworkImageView
-    android:layout_width="120dp"
-    android:layout_height="120dp"
-    android:id="@+id/agenda_item_poster"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentStart="true"
-    android:layout_margin="10dp" />
-
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textAppearance="?android:attr/textAppearanceSmall"
-    android:text=""
-    android:id="@+id/agenda_item_when"
-    android:layout_below="@+id/agenda_item_title"
-    android:layout_toRightOf="@+id/agenda_item_poster"
-    android:layout_toEndOf="@+id/agenda_item_poster"
-    android:layout_alignParentRight="true" />
-
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textAppearance="?android:attr/textAppearanceSmall"
-    android:text=""
-    android:id="@+id/agenda_item_deelnemers"
-    android:layout_toRightOf="@+id/agenda_item_poster"
-    android:layout_toEndOf="@+id/agenda_item_poster"
-    android:layout_below="@+id/agenda_item_when"
-    android:layout_alignParentRight="true" />
-
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textAppearance="?android:attr/textAppearanceSmall"
-    android:text=""
-    android:id="@+id/agenda_item_waar"
-    android:layout_below="@+id/agenda_item_deelnemers"
-    android:layout_toRightOf="@+id/agenda_item_poster"
-    android:layout_toEndOf="@+id/agenda_item_poster"
-    android:layout_alignParentRight="true" />
-
-<CheckBox
-    android:layout_width="wrap_content"
-    android:layout_height="50dp"
-    android:text="@string/agenda_inschrijven"
-    android:id="@+id/agenda_item_inschrijven"
-    android:layout_below="@+id/agenda_item_longdescription_container"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentEnd="true"
-    android:layout_marginRight="10dp" />
-
-<EditText
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textAppearance="?android:attr/textAppearanceSmall"
-    android:text=""
-    android:id="@+id/agenda_item_note"
-    android:layout_below="@+id/agenda_item_longdescription_container"
-    android:layout_toLeftOf="@+id/agenda_item_inschrijven"
-    android:layout_alignBottom="@+id/agenda_item_inschrijven"
-    android:layout_alignLeft="@+id/agenda_item_longdescription_container"
-    android:layout_alignStart="@+id/agenda_item_longdescription_container"
-    android:inputType="textAutoCorrect|text" />
-
 <ScrollView
-    android:layout_width="wrap_content"
-    android:layout_height="250dp"
-    android:id="@+id/agenda_item_longdescription_container"
-    android:layout_below="@+id/agenda_item_poster"
-    android:layout_alignParentLeft="false"
-    android:layout_alignParentRight="true"
-    android:layout_alignLeft="@+id/agenda_item_poster"
-    android:scrollIndicators="right"
-    android:layout_marginRight="10dp">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/agenda_item_longdescription"
-        />
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="me.blackwolf12333.appcki.fragments.agenda.AgendaDetailFragment">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/agenda_detail_title"
+            android:layout_alignParentTop="true" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/agenda_detail_when"
+            android:layout_below="@+id/agenda_detail_title" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/agenda_detail_longtext"
+            android:layout_below="@+id/agenda_detail_when"/>
+    </RelativeLayout>
 </ScrollView>
-
-<Button
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Deelnemers"
-    android:id="@+id/agenda_item_participants"
-    android:layout_below="@+id/agenda_item_note"
-    android:layout_alignLeft="@+id/agenda_item_note"
-    android:layout_alignStart="@+id/agenda_item_note" />
-
-</RelativeLayout>
