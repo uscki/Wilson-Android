@@ -32,6 +32,7 @@ import me.blackwolf12333.appcki.helpers.UserHelper;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String TAG = "MainActivity";
 
     Toolbar toolbar;
     NavigationView navigationView;
@@ -106,8 +107,9 @@ public class MainActivity extends AppCompatActivity
         } else {
             if (currentScreen == Screen.AGENDA_DETAIL) {
                 openTab(PageableFragment.AGENDA);
+            } else {
+                super.onBackPressed();
             }
-            super.onBackPressed();
         }
     }
 
@@ -172,7 +174,6 @@ public class MainActivity extends AppCompatActivity
             bundle.putInt("index", index);
             openFragment(new HomeFragment(), bundle);
         }
-
     }
 
     private void openFragment(Fragment fragment, Bundle arguments) {
@@ -182,17 +183,6 @@ public class MainActivity extends AppCompatActivity
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
-                .commit();
-    }
-
-    private void openFragmentWithBack(Fragment fragment, Bundle arguments) {
-        if (arguments != null) {
-            fragment.setArguments(arguments);
-        }
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(fragment.getTag())
                 .commit();
     }
 
@@ -256,7 +246,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onEventMainThread(OpenFragmentEvent event) {
-        openFragmentWithBack(event.screen, event.arguments);
+        openFragment(event.screen, event.arguments);
     }
 
     public void onEventMainThread(ServerErrorEvent event) {
