@@ -6,10 +6,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,18 +23,17 @@ import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.events.LinkClickedEvent;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.events.ServerErrorEvent;
+import me.blackwolf12333.appcki.events.SwitchTabEvent;
 import me.blackwolf12333.appcki.events.UserLoggedInEvent;
+import me.blackwolf12333.appcki.fragments.HomeFragment;
 import me.blackwolf12333.appcki.fragments.LoginFragment;
 import me.blackwolf12333.appcki.fragments.PageableFragment;
-import me.blackwolf12333.appcki.fragments.adapters.HomeViewPagerAdapter;
 import me.blackwolf12333.appcki.helpers.UserHelper;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Toolbar toolbar;
-    TabLayout tabLayout;
-    ViewPager viewPager;
     NavigationView navigationView;
 
     LoginFragment loginFragment = new LoginFragment();
@@ -71,12 +68,6 @@ public class MainActivity extends AppCompatActivity
 
         UserHelper.getInstance().setPreferences(getPreferences(MODE_PRIVATE));
         UserHelper.getInstance().load();
-
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-
-        tabLayout = (TabLayout) findViewById(R.id.home_tabs);
-        tabLayout.setupWithViewPager(viewPager);
 
         if (UserHelper.getInstance().isLoggedIn()) {
             loadState();
@@ -170,21 +161,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void openTab(int index) {
-        if (tabLayout.getVisibility() == View.GONE) {
-            tabLayout.setVisibility(View.VISIBLE);
-            viewPager.setVisibility(View.VISIBLE);
-            findViewById(R.id.fragment_container).setVisibility(View.GONE);
+        if (currentScreen == Screen.ROEPHOEK || currentScreen == Screen.NEWS || currentScreen == Screen.AGENDA) {
+            EventBus.getDefault().post(new SwitchTabEvent(index));
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putInt("index", index);
+            openFragment(new HomeFragment(), bundle);
         }
-        viewPager.setCurrentItem(index);
-        tabLayout.setScrollPosition(index, 0f, false);
+
     }
 
     private void openFragment(Fragment fragment, Bundle arguments) {
-        if (tabLayout.getVisibility() == View.VISIBLE) {
-            tabLayout.setVisibility(View.GONE);
-            viewPager.setVisibility(View.GONE);
-            findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
-        }
         if (arguments != null) {
             fragment.setArguments(arguments);
         }
@@ -195,11 +182,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void openFragmentWithBack(Fragment fragment, Bundle arguments) {
-        if (tabLayout.getVisibility() == View.VISIBLE) {
-            tabLayout.setVisibility(View.GONE);
-            viewPager.setVisibility(View.GONE);
-            findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
-        }
         if (arguments != null) {
             fragment.setArguments(arguments);
         }
@@ -262,10 +244,6 @@ public class MainActivity extends AppCompatActivity
     public static void hideKeyboard(View someView) {
         InputMethodManager imm = (InputMethodManager) someView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(someView.getWindowToken(), 0);
-    }
-
-    private void setupViewPager(ViewPager viewPager) {
-        viewPager.setAdapter(new HomeViewPagerAdapter(getSupportFragmentManager()));
     }
 
     // EVENT HANDLING

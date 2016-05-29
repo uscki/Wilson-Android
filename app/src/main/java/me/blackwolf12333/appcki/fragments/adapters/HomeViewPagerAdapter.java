@@ -3,17 +3,17 @@ package me.blackwolf12333.appcki.fragments.adapters;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import me.blackwolf12333.appcki.fragments.PageableFragment;
 
 /**
  * Created by peter on 5/22/16.
  */
-public class HomeViewPagerAdapter extends FragmentPagerAdapter {
+public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    public HomeViewPagerAdapter(FragmentManager manager) {
-        super(manager);
+    public HomeViewPagerAdapter(FragmentManager fm) {
+        super(fm);
     }
 
     @Override
@@ -43,18 +43,5 @@ public class HomeViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return 3;
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case PageableFragment.NEWS:
-                return "Nieuws";
-            case PageableFragment.AGENDA:
-                return "Agenda";
-            case PageableFragment.ROEPHOEK:
-                return "Roephoek";
-        }
-        return "";
     }
 }
