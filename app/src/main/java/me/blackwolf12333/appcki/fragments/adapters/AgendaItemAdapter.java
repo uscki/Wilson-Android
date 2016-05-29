@@ -57,7 +57,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             public void onClick(View v) {
                 Bundle args = new Bundle();
                 args.putInt("id", holder.mItem.getId());
-                EventBus.getDefault().post(new OpenFragmentEvent(new AgendaDetailFragment(), args)); // TODO: 5/16/16 open agenda detail
+                EventBus.getDefault().post(new OpenFragmentEvent(new AgendaDetailFragment(), args));
             }
         });
     }
