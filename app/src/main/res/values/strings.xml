@@ -33,6 +33,5 @@
     <string name="roephoek_dialog_roep">Voeg toe!</string>
     <string name="roephoek_dialog_cancel">Annuleren</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="example_text">Example text</string>
 </resources>

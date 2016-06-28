@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Example text"
+        android:text="@string/example_text"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/agenda_item_poster"
         android:layout_toEndOf="@+id/agenda_item_poster"
@@ -60,11 +60,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Medium Text"
-        android:layout_toRightOf="@+id/agenda_item_deelnemers_icon"
         android:layout_toEndOf="@+id/agenda_item_deelnemers_icon"
         android:layout_below="@+id/agenda_item_when"
         android:layout_margin="5dp"
-        style="@style/AppTheme.Text" />
+        style="@style/AppTheme.Text"
+        android:layout_toRightOf="@+id/agenda_item_deelnemers_icon" />
 
     <ImageView
         android:layout_width="wrap_content"
