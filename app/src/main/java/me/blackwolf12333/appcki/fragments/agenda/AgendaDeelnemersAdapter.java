@@ -1,6 +1,7 @@
 package me.blackwolf12333.appcki.fragments.agenda;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
             @Override
             public void onClick(View v) {
                 // TODO: 5/29/16 bekijk persoon
+                Log.d("AgendaDeelnemersAdapter", "TODO: bekijk persoon");
             }
         });
     }

@@ -10,4 +10,4 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="me.blackwolf12333.appcki.fragments.agenda.AgendaDeelnemersFragment"
-    tools:listitem="@layout/fragment_agendadeelnemers" />
+    tools:listitem="@layout/fragment_person_list_item" />

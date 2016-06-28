@@ -19,7 +19,7 @@
     <me.blackwolf12333.appcki.api.media.NetworkImageView
         android:id="@+id/agenda_item_poster"
         android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
