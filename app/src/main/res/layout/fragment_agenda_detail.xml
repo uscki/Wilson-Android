@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/agenda_detail_when"
             android:layout_below="@+id/agenda_detail_title" />
-        <TextView
+        <me.blackwolf12333.appcki.views.BBTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/agenda_detail_longtext"
