@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
+import me.blackwolf12333.appcki.views.BBTextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,7 +20,7 @@ import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
 public class AgendaDetailFragment extends Fragment {
     TextView title;
     TextView when;
-    TextView longText;
+    BBTextView longText;
 
     AgendaItem item;
 
@@ -41,7 +42,7 @@ public class AgendaDetailFragment extends Fragment {
 
         title = (TextView) view.findViewById(R.id.agenda_detail_title);
         when = (TextView) view.findViewById(R.id.agenda_detail_when);
-        longText = (TextView) view.findViewById(R.id.agenda_detail_longtext);
+        longText = (BBTextView) view.findViewById(R.id.agenda_detail_longtext);
 
         title.setText(item.getShortdescription());
         when.setText(item.getWhen());
