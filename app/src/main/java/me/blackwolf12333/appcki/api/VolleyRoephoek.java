@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.android.volley.Response;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
@@ -27,7 +29,7 @@ public class VolleyRoephoek extends VolleyAPI {
 
     public void getOlder(Integer id) {this.apiCall(new OlderCall(id)); }
 
-    public void getShout(String nickname, String message) {this.apiCall(new ShoutCall(nickname, message));}
+    public void addShout(String nickname, String message) {this.apiCall(new ShoutCall(nickname, message));}
 
     public class NewerCall extends Call<Roephoek> {
         public NewerCall(Integer id) {
@@ -64,8 +66,12 @@ public class VolleyRoephoek extends VolleyAPI {
         public ShoutCall(String nickname, String message) {
             this.url = "shoutbox/shout";
             this.arguments = new HashMap<>();
-            this.arguments.put("nickname", nickname);
-            this.arguments.put("message", message);
+            try {
+                this.arguments.put("nickname", URLEncoder.encode(nickname, "UTF-8"));
+                this.arguments.put("message", URLEncoder.encode(message, "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                Log.d("ShoutCall", "couldn't urlencode nickname or message");
+            }
             this.type = Roephoek.class;
             this.responseListener = new Response.Listener<Roephoek>() {
                 @Override

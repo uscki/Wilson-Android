@@ -101,7 +101,7 @@ public class PageableFragment extends Fragment {
                 MainActivity.currentScreen = MainActivity.Screen.AGENDA;
                 break;
             case ROEPHOEK:
-                VolleyRoephoek.getInstance().getNewer(1000);
+                VolleyRoephoek.getInstance().getOlder(1000000);
                 adapter = new RoephoekItemAdapter(new ArrayList<RoephoekItem>());
                 MainActivity.currentScreen = MainActivity.Screen.ROEPHOEK;
                 break;
