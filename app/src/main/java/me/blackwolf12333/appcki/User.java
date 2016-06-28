@@ -15,6 +15,7 @@ public class User {
     public User(String token, Person person) {
         this.TOKEN = token;
         this.person = person;
+        this.loggedIn = false;
     }
 
     public Person getPerson() {

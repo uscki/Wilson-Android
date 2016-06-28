@@ -5,6 +5,7 @@ import android.util.Log;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.util.HashMap;
 
@@ -33,8 +34,12 @@ public class VolleyAPI {
             if(error.networkResponse != null) {
                 Gson gson = new Gson();
                 Log.d("VolleyAPI", "error: " + new String(error.networkResponse.data));
-                ServerError serverError = gson.fromJson(new String(error.networkResponse.data), ServerError.class);
-                EventBus.getDefault().post(new ServerErrorEvent(serverError));
+                try {
+                    ServerError serverError = gson.fromJson(new String(error.networkResponse.data), ServerError.class);
+                    EventBus.getDefault().post(new ServerErrorEvent(serverError));
+                } catch (JsonSyntaxException e) {
+                    Log.d("VolleyAPI", "Not a json error message :O");
+                }
             }
         }
     };
