@@ -41,6 +41,8 @@ public class PageableFragment extends Fragment {
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeContainer;
 
+    public static Menu m;
+
     public static final int NEWS = 0;
     public static final int AGENDA = 1;
     public static final int ROEPHOEK = 2;
@@ -74,9 +76,13 @@ public class PageableFragment extends Fragment {
         menu.clear();
         switch (type) {
             case NEWS:
+                inflater.inflate(R.menu.main, menu);
                 break;
             case AGENDA:
-                // TODO: 6/28/16 setup menu for agenda
+                inflater.inflate(R.menu.agenda_menu, menu);
+                // verander visibility pas als we in een detail view zitten
+                menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
+                menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
                 break;
             case ROEPHOEK:
                 inflater.inflate(R.menu.roephoek_menu, menu);
@@ -84,6 +90,8 @@ public class PageableFragment extends Fragment {
             default:
                 inflater.inflate(R.menu.main, menu);
         }
+
+        m = menu;
         super.onCreateOptionsMenu(menu, inflater);
     }
 

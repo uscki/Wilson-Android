@@ -32,7 +32,7 @@ public class RoephoekDialogFragment extends DialogFragment {
         final EditText name = (EditText) view.findViewById(R.id.roephoek_dialog_name);
         final EditText content = (EditText) view.findViewById(R.id.roephoek_dialog_content);
 
-        builder.setTitle("Nieuwe roep plaatsen").setView(view).setPositiveButton(R.string.roephoek_dialog_roep, new DialogInterface.OnClickListener() {
+        builder.setTitle("Nieuwe roep plaatsen").setView(view).setPositiveButton(R.string.roephoek_dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // TODO: 6/28/16 post content

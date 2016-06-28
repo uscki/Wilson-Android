@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.api.VolleyAgenda;
+import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
 import me.blackwolf12333.appcki.events.LinkClickedEvent;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.events.ServerErrorEvent;
@@ -30,6 +33,8 @@ import me.blackwolf12333.appcki.fragments.HomeFragment;
 import me.blackwolf12333.appcki.fragments.LoginFragment;
 import me.blackwolf12333.appcki.fragments.PageableFragment;
 import me.blackwolf12333.appcki.fragments.RoephoekDialogFragment;
+import me.blackwolf12333.appcki.fragments.agenda.AgendaDetailFragment;
+import me.blackwolf12333.appcki.fragments.agenda.SubscribeDialogFragment;
 import me.blackwolf12333.appcki.helpers.UserHelper;
 
 public class MainActivity extends AppCompatActivity
@@ -135,6 +140,12 @@ public class MainActivity extends AppCompatActivity
         } else if(id == R.id.action_roephoek_roep) {
             buildRoephoekAddDialog();
             return true;
+        } else if(id == R.id.action_agenda_subscribe) {
+            subscribeToAgenda(true);
+            return true;
+        } else if (id == R.id.action_agenda_unsubscribe) {
+            subscribeToAgenda(false);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -237,6 +248,18 @@ public class MainActivity extends AppCompatActivity
                 break;
             case VERGADERPLANNER:
                 break;
+        }
+    }
+
+    private void subscribeToAgenda(boolean subscribe) {
+        if(subscribe) {
+            DialogFragment newFragment = new SubscribeDialogFragment();
+            newFragment.show(getSupportFragmentManager(), "agenda_subscribe");
+        } else {
+            Log.d("MainActivity", "unsubscribing for:" + AgendaDetailFragment.item.getId());
+            VolleyAgenda.getInstance().unsubscribe(AgendaDetailFragment.item.getId());
+
+            EventBus.getDefault().post(new AgendaItemSubscribedEvent(false));
         }
     }
 

@@ -5,15 +5,21 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 
+import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
+import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
+import me.blackwolf12333.appcki.fragments.PageableFragment;
 import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
+import me.blackwolf12333.appcki.generated.agenda.AgendaParticipant;
+import me.blackwolf12333.appcki.helpers.UserHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +27,8 @@ import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
 public class AgendaDetailTabsFragment extends Fragment {
     TabLayout tabLayout;
     ViewPager viewPager;
+
+    AgendaItem item;
 
     public static final int AGENDA = 0;
     public static final int DEELNEMERS = 1;
@@ -65,7 +73,47 @@ public class AgendaDetailTabsFragment extends Fragment {
             }
         });
 
+        if (getArguments() != null) {
+            Gson gson = new Gson();
+            item = gson.fromJson(getArguments().getString("item"), AgendaItem.class);
+        }
+
+        boolean foundUser = false;
+        for (AgendaParticipant part : item.getParticipants()) {
+            if (part.getPerson().getName().equals(UserHelper.getInstance().getUser().getPerson().getName())) {
+                foundUser = true;
+                PageableFragment.m.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
+            }
+        }
+        if (!foundUser) {
+            Log.d("AgendaDetailFragment", "found user");
+            PageableFragment.m.findItem(R.id.action_agenda_subscribe).setVisible(true);
+        }
+
         return inflatedView;
     }
 
+    // EVENT HANDLING
+
+    public void onEventMainThread(AgendaItemSubscribedEvent event) {
+        if(event.subscribed) {
+            PageableFragment.m.findItem(R.id.action_agenda_subscribe).setVisible(false);
+            PageableFragment.m.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
+        } else {
+            PageableFragment.m.findItem(R.id.action_agenda_subscribe).setVisible(true);
+            PageableFragment.m.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        EventBus.getDefault().register(this);
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
 }

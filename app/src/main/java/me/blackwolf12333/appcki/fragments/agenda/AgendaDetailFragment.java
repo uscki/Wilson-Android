@@ -22,7 +22,7 @@ public class AgendaDetailFragment extends Fragment {
     TextView when;
     BBTextView longText;
 
-    AgendaItem item;
+    public static AgendaItem item;
 
     public AgendaDetailFragment() {
         // Required empty public constructor

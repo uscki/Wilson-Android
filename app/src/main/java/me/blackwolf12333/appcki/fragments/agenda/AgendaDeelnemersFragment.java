@@ -20,13 +20,7 @@ import me.blackwolf12333.appcki.generated.agenda.AgendaParticipant;
  */
 public class AgendaDeelnemersFragment extends Fragment {
     List<AgendaParticipant> deelnemers;
-
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public AgendaDeelnemersFragment() {
-    }
+    RecyclerView recyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,9 +38,23 @@ public class AgendaDeelnemersFragment extends Fragment {
 
         // Set the adapter
         if (view instanceof RecyclerView) {
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             recyclerView.setAdapter(new AgendaDeelnemersAdapter(deelnemers));
         }
         return view;
+    }
+
+    // EVENT HANDLING
+
+    @Override
+    public void onStart() {
+        //EventBus.getDefault().register(this);
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        //EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 }

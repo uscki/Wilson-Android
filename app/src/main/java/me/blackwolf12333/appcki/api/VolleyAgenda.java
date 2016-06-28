@@ -1,7 +1,11 @@
 package me.blackwolf12333.appcki.api;
 
+import android.util.Log;
+
 import com.android.volley.Response;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
@@ -74,12 +78,17 @@ public class VolleyAgenda extends VolleyAPI {
         public AgendaSubscribe(Integer id, String note) {
             this.url = "agenda/subscribe";
             this.arguments = new HashMap<>();
-            this.arguments.put("id", id);
-            this.arguments.put("note", note);
+            try {
+                this.arguments.put("id", id);
+                this.arguments.put("note", URLEncoder.encode(note, "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                Log.d("ShoutCall", "couldn't urlencode nickname or message");
+            }
             this.type = Boolean.class;
             this.responseListener = new Response.Listener<Boolean>() {
                 @Override
                 public void onResponse(Boolean response) {
+                    // this response is useless...geeft altijd true terug
                     EventBus.getDefault().post(new AgendaItemSubscribedEvent(response));
                 }
             };

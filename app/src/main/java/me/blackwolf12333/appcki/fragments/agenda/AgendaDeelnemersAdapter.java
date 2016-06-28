@@ -1,7 +1,6 @@
 package me.blackwolf12333.appcki.fragments.agenda;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +13,16 @@ import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.api.common.APISingleton;
 import me.blackwolf12333.appcki.api.media.ImageLoader;
 import me.blackwolf12333.appcki.api.media.NetworkImageView;
+import me.blackwolf12333.appcki.fragments.adapters.BaseItemAdapter;
 import me.blackwolf12333.appcki.generated.agenda.AgendaParticipant;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link AgendaParticipant}
  */
-public class AgendaDeelnemersAdapter extends RecyclerView.Adapter<AgendaDeelnemersAdapter.ViewHolder> {
-
-    private final List<AgendaParticipant> mValues;
+public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAdapter.ViewHolder, AgendaParticipant> {
 
     public AgendaDeelnemersAdapter(List<AgendaParticipant> items) {
-        mValues = items;
+        super(items);
     }
 
     @Override
@@ -36,9 +34,9 @@ public class AgendaDeelnemersAdapter extends RecyclerView.Adapter<AgendaDeelneme
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.name.setText(mValues.get(position).getPerson().getName());
-        holder.note.setText(mValues.get(position).getNote());
+        holder.mItem = items.get(position);
+        holder.name.setText(items.get(position).getPerson().getName());
+        holder.note.setText(items.get(position).getNote());
 
         if(holder.mItem.getPerson().getPhotomediaid() != null) {
             ImageLoader loader = APISingleton.getInstance(App.getContext()).getImageLoader();
@@ -57,7 +55,7 @@ public class AgendaDeelnemersAdapter extends RecyclerView.Adapter<AgendaDeelneme
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return items.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
