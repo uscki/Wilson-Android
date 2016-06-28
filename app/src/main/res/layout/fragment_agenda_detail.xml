@@ -14,7 +14,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
-            android:text="Studiereis Sint Petersburg"
+            android:text="@string/example_text"
             style="@style/AppTheme.TextHeader" />
 
         <TextView
@@ -22,8 +22,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/agenda_detail_when"
             android:layout_below="@+id/agenda_detail_title"
-            android:text="donderdag 14 april 2016 - zondag 24 april 2016"
+            android:text="@string/example_text"
             android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             style="@style/AppTheme.TextSubHeader" />
 
         <me.blackwolf12333.appcki.views.BBTextView
