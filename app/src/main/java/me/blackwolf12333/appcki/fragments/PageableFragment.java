@@ -6,6 +6,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -62,7 +64,27 @@ public class PageableFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_pageable, container, false);
         setupSwipeContainer(view);
         setupRecyclerView(view);
+
+        setHasOptionsMenu(true);
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        switch (type) {
+            case NEWS:
+                break;
+            case AGENDA:
+                // TODO: 6/28/16 setup menu for agenda
+                break;
+            case ROEPHOEK:
+                inflater.inflate(R.menu.roephoek_menu, menu);
+                break;
+            default:
+                inflater.inflate(R.menu.main, menu);
+        }
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void setupRecyclerView(View view) {
