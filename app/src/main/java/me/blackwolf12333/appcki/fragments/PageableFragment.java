@@ -100,7 +100,7 @@ public class PageableFragment extends Fragment {
                         VolleyAgenda.getInstance().getAgendaNewer();
                         break;
                     case ROEPHOEK:
-                        VolleyRoephoek.getInstance().getNewer(1000);
+                        VolleyRoephoek.getInstance().getOlder(100000);
                         break; // TODO: 5/16/16 gebruik juiste id
                 }
             }
