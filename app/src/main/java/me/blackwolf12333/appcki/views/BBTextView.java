@@ -40,29 +40,27 @@ public class BBTextView extends TextView {
     }
 
     private void fixTextView() {
-        SpannableString current=(SpannableString)this.getText();
-        URLSpan[] spans=
-                current.getSpans(0, current.length(), URLSpan.class);
+        SpannableString current = (SpannableString) this.getText();
+        URLSpan[] spans = current.getSpans(0, current.length(), URLSpan.class);
 
         for (URLSpan span : spans) {
-            int start=current.getSpanStart(span);
-            int end=current.getSpanEnd(span);
+            int start = current.getSpanStart(span);
+            int end = current.getSpanEnd(span);
 
             current.removeSpan(span);
-            current.setSpan(new DefensiveURLSpan(span.getURL()), start, end,
-                    0);
+            current.setSpan(new DefensiveURLSpan(span.getURL()), start, end, 0);
         }
     }
 
     public static String bbcode(String text) {
-        String html = null;
+        String html = text;
 
         Map<String,String> bbMap = new HashMap<>();
         bbMap.put("\\[link url=(.+?)\\](.+?)\\[/link\\]", "<a href='$1'>$2</a> ");
         bbMap.put("(\\r\\n|\\r|\\n|\\n\\r)", "<br/>");
 
         for (Map.Entry entry: bbMap.entrySet()) {
-            html = text.replaceAll(entry.getKey().toString(), entry.getValue().toString());
+            html = html.replaceAll(entry.getKey().toString(), entry.getValue().toString());
         }
 
         return html;
