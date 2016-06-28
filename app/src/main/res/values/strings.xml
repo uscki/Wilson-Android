@@ -28,6 +28,11 @@
 
     <string name="title_activity_main">MainActivity</string>
 
+    <string name="roephoek_dialog_name_hint">Naam</string>
+    <string name="roephoek_dialog_content_hint">Bericht</string>
+    <string name="roephoek_dialog_roep">Voeg toe!</string>
+    <string name="roephoek_dialog_cancel">Annuleren</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

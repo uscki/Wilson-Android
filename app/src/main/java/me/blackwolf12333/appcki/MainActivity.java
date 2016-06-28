@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -28,6 +29,7 @@ import me.blackwolf12333.appcki.events.UserLoggedInEvent;
 import me.blackwolf12333.appcki.fragments.HomeFragment;
 import me.blackwolf12333.appcki.fragments.LoginFragment;
 import me.blackwolf12333.appcki.fragments.PageableFragment;
+import me.blackwolf12333.appcki.fragments.RoephoekDialogFragment;
 import me.blackwolf12333.appcki.helpers.UserHelper;
 
 public class MainActivity extends AppCompatActivity
@@ -123,6 +125,9 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if(id == R.id.action_roephoek_roep) {
+            buildRoephoekAddDialog();
             return true;
         }
 
@@ -239,6 +244,11 @@ public class MainActivity extends AppCompatActivity
             case VERGADERPLANNER:
                 break;
         }
+    }
+
+    private void buildRoephoekAddDialog() {
+        DialogFragment newFragment = new RoephoekDialogFragment();
+        newFragment.show(getSupportFragmentManager(), "roephoek_add");
     }
 
     public static void hideKeyboard(View someView) {
