@@ -56,12 +56,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/testDevelopmentDebug/jni" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testDevelopmentDebug/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testDevelopmentDebug/shaders" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/r/androidTest/development/debug" isTestSource="true" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/aidl/androidTest/development/debug" isTestSource="true" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/androidTest/development/debug" isTestSource="true" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/source/rs/androidTest/development/debug" isTestSource="true" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/androidTest/development/debug" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/resValues/androidTest/development/debug" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/development/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/development/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/development/assets" type="java-resource" />
@@ -86,14 +80,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/testDevelopment/jni" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testDevelopment/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testDevelopment/shaders" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDevelopment/res" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDevelopment/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDevelopment/assets" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDevelopment/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDevelopment/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDevelopment/jni" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDevelopment/rs" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDevelopment/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/assets" type="java-resource" />
@@ -134,14 +120,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/jni" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/shaders" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/res" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/assets" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/jni" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/rs" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/shaders" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/blame" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/bundles" />
@@ -161,8 +139,8 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="eventbus-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="commons-io-2.4" level="project" />
+    <orderEntry type="library" exported="" name="eventbus-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="gson-2.5" level="project" />
     <orderEntry type="library" exported="" name="commons-lang-2.6" level="project" />
     <orderEntry type="library" exported="" name="design-23.2.0" level="project" />
