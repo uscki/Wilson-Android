@@ -19,12 +19,21 @@
     <me.blackwolf12333.appcki.api.media.NetworkImageView
         android:id="@+id/agenda_item_poster"
         android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_margin="10dp"
         android:src="@drawable/default_poster" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/agenda_item_when_icon"
+        android:layout_below="@+id/agenda_item_title"
+        android:layout_toRightOf="@+id/agenda_item_poster"
+        android:layout_toEndOf="@+id/agenda_item_poster"
+        android:src="@drawable/calendar_clock" />
 
     <ImageView
         android:layout_width="wrap_content"
