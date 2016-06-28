@@ -19,16 +19,17 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/person_list_item_profile"
         android:layout_toEndOf="@+id/person_list_item_profile"
-        android:textStyle="bold" />
+        style="@style/AppTheme.TextSubHeader" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/person_list_item_note"
-        android:visibility="visible"
+        android:visibility="gone"
         android:text="Menno houd van Bram de Beer"
         android:layout_below="@+id/person_list_item_name"
         android:layout_toRightOf="@+id/person_list_item_profile"
         android:layout_toEndOf="@+id/person_list_item_profile"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        style="@style/AppTheme.Text"/>
 
 </RelativeLayout>
