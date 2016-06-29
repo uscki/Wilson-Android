@@ -41,7 +41,7 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
 
         if(holder.mItem.getPerson().getPhotomediaid() != null) {
             ImageLoader loader = APISingleton.getInstance(App.getContext()).getImageLoader();
-            // TODO: 5/29/16 fix this shit in the api
+            // TODO API: 5/29/16 fix this shit in the api
             //MediaFile file = holder.mItem.getPerson().getPhotomediaid();
             //holder.profile.setImageIdAndType(file.getId(), MediaAPI.getFiletypeFromMime(file.getMimetype()), loader);
         }

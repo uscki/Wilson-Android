@@ -168,14 +168,14 @@ public class LoginFragment extends Fragment {
 
             try {
                 String password = MD5(mPassword);
-                api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + mPassword); //TODO
+                api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + mPassword); //TODO API: beslissing maken over hash of niet
                 connection = (HttpURLConnection) api.openConnection();
                 connection.setRequestMethod("GET");
 
                 String token = connection.getHeaderField("X-AUTH-TOKEN");
 
                 if (token == null) {
-                    //TODO handle error
+                    //TODO: handle error
                     Log.i("LoginActivity", "Error logging in!");
                     connection.disconnect();
                     return false;
