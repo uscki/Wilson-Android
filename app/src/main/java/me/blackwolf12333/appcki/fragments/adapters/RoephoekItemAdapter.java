@@ -40,6 +40,11 @@ public class RoephoekItemAdapter extends BaseItemAdapter<RoephoekItemAdapter.Vie
     }
 
     @Override
+    public Integer getLastID() {
+        return items.get(items.size()-1).getId();
+    }
+
+    @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         RoephoekItem item = items.get(position);
         holder.nickname.setText(item.getNickname());

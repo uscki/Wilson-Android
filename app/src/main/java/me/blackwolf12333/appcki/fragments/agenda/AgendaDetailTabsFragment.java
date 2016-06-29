@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
-import me.blackwolf12333.appcki.fragments.PageableFragment;
+import me.blackwolf12333.appcki.fragments.HomeSubFragments;
 import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
 import me.blackwolf12333.appcki.generated.agenda.AgendaParticipant;
 import me.blackwolf12333.appcki.helpers.UserHelper;
@@ -82,12 +81,11 @@ public class AgendaDetailTabsFragment extends Fragment {
         for (AgendaParticipant part : item.getParticipants()) {
             if (part.getPerson().getName().equals(UserHelper.getInstance().getUser().getPerson().getName())) {
                 foundUser = true;
-                PageableFragment.m.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
+                HomeSubFragments.m.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
             }
         }
         if (!foundUser) {
-            Log.d("AgendaDetailFragment", "found user");
-            PageableFragment.m.findItem(R.id.action_agenda_subscribe).setVisible(true);
+            HomeSubFragments.m.findItem(R.id.action_agenda_subscribe).setVisible(true);
         }
 
         return inflatedView;
@@ -96,12 +94,12 @@ public class AgendaDetailTabsFragment extends Fragment {
     // EVENT HANDLING
 
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
-        if(event.subscribed) {
-            PageableFragment.m.findItem(R.id.action_agenda_subscribe).setVisible(false);
-            PageableFragment.m.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
+        if(event.subscribed != null) {
+            HomeSubFragments.m.findItem(R.id.action_agenda_subscribe).setVisible(false);
+            HomeSubFragments.m.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
         } else {
-            PageableFragment.m.findItem(R.id.action_agenda_subscribe).setVisible(true);
-            PageableFragment.m.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
+            HomeSubFragments.m.findItem(R.id.action_agenda_subscribe).setVisible(true);
+            HomeSubFragments.m.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
         }
     }
 

@@ -3,49 +3,30 @@ package me.blackwolf12333.appcki.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
-import de.greenrobot.event.EventBus;
-import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.api.VolleyAgenda;
-import me.blackwolf12333.appcki.api.VolleyNews;
-import me.blackwolf12333.appcki.api.VolleyRoephoek;
-import me.blackwolf12333.appcki.events.AgendaEvent;
-import me.blackwolf12333.appcki.events.NewsOverviewEvent;
-import me.blackwolf12333.appcki.events.RoephoekEvent;
-import me.blackwolf12333.appcki.fragments.adapters.AgendaItemAdapter;
 import me.blackwolf12333.appcki.fragments.adapters.BaseItemAdapter;
-import me.blackwolf12333.appcki.fragments.adapters.NewsItemAdapter;
-import me.blackwolf12333.appcki.fragments.adapters.RoephoekItemAdapter;
-import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
-import me.blackwolf12333.appcki.generated.news.NewsItem;
-import me.blackwolf12333.appcki.generated.roephoek.RoephoekItem;
 
 /**
  * A fragment representing a list of Items.
  * <p>
  */
-public class PageableFragment extends Fragment {
+public abstract class PageableFragment extends Fragment {
 
-    private int type;
     private BaseItemAdapter adapter;
     private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeContainer;
+    protected SwipeRefreshLayout swipeContainer;
 
-    public static Menu m;
-
-    public static final int NEWS = 0;
-    public static final int AGENDA = 1;
-    public static final int ROEPHOEK = 2;
+    // The minimum amount of items to have below your current scroll position
+    // before loading more.
+    private int visibleThreshold = 1;
+    private int lastVisibleItem, totalItemCount;
+    protected boolean loading;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -56,8 +37,6 @@ public class PageableFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        type = getArguments().getInt("type");
-        Log.d("PageableFragment", "type=" + type);
     }
 
     @Override
@@ -66,73 +45,37 @@ public class PageableFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_pageable, container, false);
         setupSwipeContainer(view);
         setupRecyclerView(view);
-
-        setHasOptionsMenu(true);
         return view;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        switch (type) {
-            case NEWS:
-                inflater.inflate(R.menu.main, menu);
-                break;
-            case AGENDA:
-                inflater.inflate(R.menu.agenda_menu, menu);
-                // verander visibility pas als we in een detail view zitten
-                menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
-                menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
-                break;
-            case ROEPHOEK:
-                inflater.inflate(R.menu.roephoek_menu, menu);
-                break;
-            default:
-                inflater.inflate(R.menu.main, menu);
-        }
-
-        m = menu;
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    private void setupRecyclerView(View view) {
+    protected void setupRecyclerView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        switch (type) {
-            case NEWS:
-                VolleyNews.getInstance().getNewsOverview();
-                adapter = new NewsItemAdapter(new ArrayList<NewsItem>());
-                MainActivity.currentScreen = MainActivity.Screen.NEWS;
-                break;
-            case AGENDA:
-                VolleyAgenda.getInstance().getAgendaNewer();
-                adapter = new AgendaItemAdapter(new ArrayList<AgendaItem>());
-                MainActivity.currentScreen = MainActivity.Screen.AGENDA;
-                break;
-            case ROEPHOEK:
-                VolleyRoephoek.getInstance().getOlder(1000000);
-                adapter = new RoephoekItemAdapter(new ArrayList<RoephoekItem>());
-                MainActivity.currentScreen = MainActivity.Screen.ROEPHOEK;
-                break;
-        }
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                totalItemCount = layoutManager.getItemCount();
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                if (!loading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                    // End has been reached
+                    loading = true;
+                    onScrollRefresh();
+                }
+            }
+        });
+
         recyclerView.setAdapter(adapter);
     }
 
-    private void setupSwipeContainer(View view) {
+    protected void setupSwipeContainer(View view) {
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.refreshContainer);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                switch (type) {
-                    case NEWS:
-                        VolleyNews.getInstance().getNewsOverview();
-                        break;
-                    case AGENDA:
-                        VolleyAgenda.getInstance().getAgendaNewer();
-                        break;
-                    case ROEPHOEK:
-                        VolleyRoephoek.getInstance().getOlder(100000);
-                        break; // TODO: 5/16/16 gebruik juiste id
-                }
+                onSwipeRefresh();
             }
         });
 
@@ -140,41 +83,16 @@ public class PageableFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
-        swipeContainer.setRefreshing(true);
     }
 
-    // EVENT HANDLING
-    public void onEventMainThread(NewsOverviewEvent event) {
-        swipeContainer.setRefreshing(false);
-        if (adapter instanceof NewsItemAdapter) {
-            adapter.update(event.newsOverview.getContent());
-        }
+    public BaseItemAdapter getAdapter() {
+        return adapter;
     }
 
-    public void onEventMainThread(AgendaEvent event) {
-        swipeContainer.setRefreshing(false);
-        if (adapter instanceof AgendaItemAdapter) {
-            adapter.update(event.agenda.getContent());
-        }
+    public void setAdapter(BaseItemAdapter adapter) {
+        this.adapter = adapter;
     }
 
-    public void onEventMainThread(RoephoekEvent event) {
-        swipeContainer.setRefreshing(false);
-        if (adapter instanceof RoephoekItemAdapter) {
-            adapter.update(event.roephoek.getContent());
-        }
-    }
-
-    @Override
-    public void onStart() {
-        EventBus.getDefault().register(this);
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
-    }
+    public abstract void onSwipeRefresh();
+    public abstract void onScrollRefresh();
 }

@@ -1,60 +1,76 @@
 package me.blackwolf12333.appcki.fragments.agenda;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 
-import java.util.List;
-
-import me.blackwolf12333.appcki.R;
+import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.api.VolleyAgenda;
+import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
+import me.blackwolf12333.appcki.events.AgendaSubscribersEvent;
+import me.blackwolf12333.appcki.fragments.PageableFragment;
 import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
-import me.blackwolf12333.appcki.generated.agenda.AgendaParticipant;
 
 /**
  * A fragment representing a list of AgendaParticipants.
  */
-public class AgendaDeelnemersFragment extends Fragment {
-    List<AgendaParticipant> deelnemers;
-    RecyclerView recyclerView;
+public class AgendaDeelnemersFragment extends PageableFragment {
+    AgendaItem item;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Gson gson = new Gson();
-            deelnemers = gson.fromJson(getArguments().getString("item"), AgendaItem.class).getParticipants();
+            item = gson.fromJson(getArguments().getString("item"), AgendaItem.class);
+            setAdapter(new AgendaDeelnemersAdapter(item.getParticipants()));
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_agendadeelnemers_list, container, false);
-
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            recyclerView = (RecyclerView) view;
-            recyclerView.setAdapter(new AgendaDeelnemersAdapter(deelnemers));
-        }
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
+
+    @Override
+    public void onSwipeRefresh() {
+        VolleyAgenda.getInstance().getSubscribed(item.getId()); // TODO API: wacht op api implementatie
+    }
+
+    @Override
+    public void onScrollRefresh() {}
 
     // EVENT HANDLING
 
+    public void onEventMainThread(AgendaSubscribersEvent event) {
+        swipeContainer.setRefreshing(false);
+        if (getAdapter() instanceof AgendaDeelnemersAdapter) {
+            getAdapter().update(event.subscribers.getContent());
+        }
+    }
+
+    public void onEventMainThread(AgendaItemSubscribedEvent event) {
+        swipeContainer.setRefreshing(false);
+        if (getAdapter() instanceof AgendaDeelnemersAdapter) {
+            if(event.subscribed != null) { //TODO because of dirty hackin MainActivity
+                getAdapter().update(event.subscribed.getContent());
+            }
+        }
+    }
+
     @Override
     public void onStart() {
-        //EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
         super.onStart();
     }
 
     @Override
     public void onStop() {
-        //EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this);
         super.onStop();
     }
 }

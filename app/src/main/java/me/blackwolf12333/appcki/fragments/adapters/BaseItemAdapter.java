@@ -20,4 +20,11 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K> exte
         this.items.addAll(items);
         this.notifyDataSetChanged();
     }
+
+    public void addItems(List<K> items) {
+        this.items.addAll(items);
+        this.notifyDataSetChanged();
+    }
+
+    public abstract Integer getLastID();
 }

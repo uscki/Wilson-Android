@@ -30,8 +30,8 @@ import me.blackwolf12333.appcki.events.ServerErrorEvent;
 import me.blackwolf12333.appcki.events.SwitchTabEvent;
 import me.blackwolf12333.appcki.events.UserLoggedInEvent;
 import me.blackwolf12333.appcki.fragments.HomeFragment;
+import me.blackwolf12333.appcki.fragments.HomeSubFragments;
 import me.blackwolf12333.appcki.fragments.LoginFragment;
-import me.blackwolf12333.appcki.fragments.PageableFragment;
 import me.blackwolf12333.appcki.fragments.RoephoekDialogFragment;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaDetailFragment;
 import me.blackwolf12333.appcki.fragments.agenda.SubscribeDialogFragment;
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             if (currentScreen == Screen.AGENDA_DETAIL) {
-                openTab(PageableFragment.AGENDA);
+                openTab(HomeSubFragments.AGENDA);
             } else {
                 super.onBackPressed();
             }
@@ -158,13 +158,13 @@ public class MainActivity extends AppCompatActivity
 
         if (UserHelper.getInstance().isLoggedIn()) {
             if (id == R.id.nav_news) {
-                openTab(PageableFragment.NEWS);
+                openTab(HomeSubFragments.NEWS);
             } else if (id == R.id.nav_agenda) {
-                openTab(PageableFragment.AGENDA);
+                openTab(HomeSubFragments.AGENDA);
             } else if (id == R.id.nav_poll) {
 // TODO: 5/22/16 poll
             } else if (id == R.id.nav_roephoek) {
-                openTab(PageableFragment.ROEPHOEK);
+                openTab(HomeSubFragments.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
 // TODO: 5/22/16 meetings 
             } else if (id == R.id.nav_login) {
@@ -205,12 +205,12 @@ public class MainActivity extends AppCompatActivity
     private void initLoggedInUI() {
         hideKeyboard(findViewById(R.id.drawer_layout));
 
-        openTab(PageableFragment.NEWS);
+        openTab(HomeSubFragments.NEWS);
 
         navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.logout));
         TextView name = (TextView) navigationView.findViewById(R.id.nav_header_name);
         name.setText(UserHelper.getInstance().getUser().getPerson().getName());
-        // TODO: 5/22/16 profile pic
+        // TODO API: 5/22/16 profile pic
     }
 
     private void initLoggedOutUI() {
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity
         TextView name = (TextView) navigationView.findViewById(R.id.nav_header_name);
         name.setText("");
 
-        // TODO: 5/22/16 profile pic
+        // TODO API: 5/22/16 profile pic
     }
 
     private void saveState() {
@@ -236,15 +236,15 @@ public class MainActivity extends AppCompatActivity
                 openFragment(loginFragment, null);
                 break;
             case NEWS:
-                openTab(PageableFragment.NEWS);
+                openTab(HomeSubFragments.NEWS);
                 break;
             case AGENDA:
-                openTab(PageableFragment.AGENDA);
+                openTab(HomeSubFragments.AGENDA);
                 break;
             case POLL:
                 break;
             case ROEPHOEK:
-                openTab(PageableFragment.ROEPHOEK);
+                openTab(HomeSubFragments.ROEPHOEK);
                 break;
             case VERGADERPLANNER:
                 break;
