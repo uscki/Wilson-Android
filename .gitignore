@@ -28,4 +28,5 @@ proguard/
 
 app/src/main/res/values/api.xml
 app/src/master/res/values/api.xml
+app/src/development/res/values/api.xml
 .idea/
