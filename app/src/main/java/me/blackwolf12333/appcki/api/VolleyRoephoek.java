@@ -11,6 +11,7 @@ import java.util.HashMap;
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.api.common.VolleyAPI;
 import me.blackwolf12333.appcki.events.RoephoekEvent;
+import me.blackwolf12333.appcki.events.RoephoekOlderEvent;
 import me.blackwolf12333.appcki.generated.roephoek.Roephoek;
 
 /**
@@ -55,8 +56,7 @@ public class VolleyRoephoek extends VolleyAPI {
             this.responseListener = new Response.Listener<Roephoek>() {
                 @Override
                 public void onResponse(Roephoek response) {
-                    Log.i("Response: ", response.toString());
-                    EventBus.getDefault().post(new RoephoekEvent(response));
+                    EventBus.getDefault().post(new RoephoekOlderEvent(response));
                 }
             };
         }

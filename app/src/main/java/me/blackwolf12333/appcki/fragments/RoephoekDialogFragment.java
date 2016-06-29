@@ -35,7 +35,6 @@ public class RoephoekDialogFragment extends DialogFragment {
         builder.setTitle("Nieuwe roep plaatsen").setView(view).setPositiveButton(R.string.roephoek_dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        // TODO: 6/28/16 post content
                         VolleyRoephoek.getInstance().addShout(name.getText().toString(), content.getText().toString());
                     }
                 }).setNegativeButton(R.string.roephoek_dialog_cancel, new DialogInterface.OnClickListener() {
