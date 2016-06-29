@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingBottom="4dp">
 
     <TextView
         android:id="@+id/agenda_item_title"
@@ -86,11 +87,48 @@
         android:layout_margin="5dp"
         style="@style/AppTheme.Text" />
 
-    <Space
-        android:layout_width="fill_parent"
-        android:layout_height="5dp"
-        android:layout_alignParentTop="false"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/agenda_item_poster" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/agenda_inschrijven_verplicht_background"
+        android:layout_below="@+id/agenda_item_waar"
+        android:layout_toRightOf="@+id/agenda_item_poster"
+        android:layout_toEndOf="@+id/agenda_item_poster"
+        android:layout_margin="4dp"
+        android:visibility="gone"
+        android:id="@+id/agenda_inschrijven_verplicht">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/inschrijven_verplicht_icon"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/emoticon_happy"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginRight="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/inschrijven_verplicht_icon"
+            android:layout_toEndOf="@+id/inschrijven_verplicht_icon"
+            android:text="@string/agenda_inschrijven_verplicht"
+            style="@style/AppTheme.Text"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:textColor="#FFF" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/inschrijven_verplicht_date"
+            android:text="maandag 20 januari 1979 23:59"
+            android:layout_below="@+id/inschrijven_verplicht_icon"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="4dp"
+            android:textColor="#fff" />
+    </RelativeLayout>
 
 </RelativeLayout>

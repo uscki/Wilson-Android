@@ -48,6 +48,14 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         holder.itemDeelnemers.setText(item.getParticipants().size() + "");
         holder.itemWhere.setText(item.getWhere());
 
+        if(item.getDeadline()) {
+            Log.d("AgendaItemAdapter", "deadline");
+            holder.itemDeadline.setText(item.getDeadline_date()); // TODO API: richard gaat hier nog shit aan veranderen
+            holder.inschrijvenVerplicht.setVisibility(View.VISIBLE);
+        } else {
+            holder.inschrijvenVerplicht.setVisibility(View.GONE);
+        }
+
         holder.itemPoster.setDefaultImageResId(R.drawable.default_poster);
         if(item.getPosterid() != null) {
             ImageLoader loader = APISingleton.getInstance(App.getContext()).getImageLoader();
@@ -83,6 +91,8 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         public final TextView itemWhere;
         public final TextView itemDeelnemers;
         public final NetworkImageView itemPoster;
+        public final TextView itemDeadline;
+        public final View inschrijvenVerplicht;
         public AgendaItem mItem;
 
         public ViewHolder(View view) {
@@ -93,6 +103,8 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             itemWhere = (TextView) view.findViewById(R.id.agenda_item_waar);
             itemDeelnemers = (TextView) view.findViewById(R.id.agenda_item_deelnemers);
             itemPoster = (NetworkImageView) view.findViewById(R.id.agenda_item_poster);
+            itemDeadline = (TextView) view.findViewById(R.id.inschrijven_verplicht_date);
+            inschrijvenVerplicht = view.findViewById(R.id.agenda_inschrijven_verplicht);
         }
 
         @Override

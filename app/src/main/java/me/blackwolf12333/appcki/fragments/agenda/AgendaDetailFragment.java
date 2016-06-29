@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -21,6 +22,13 @@ public class AgendaDetailFragment extends Fragment {
     TextView title;
     TextView when;
     BBTextView longText;
+
+    TextView summaryCommissie;
+    ImageView summaryCommissieIcon;
+    TextView summaryTitle;
+    TextView summaryWaar;
+    TextView summaryWhen;
+    TextView summaryCost;
 
     public static AgendaItem item;
 
@@ -44,9 +52,28 @@ public class AgendaDetailFragment extends Fragment {
         when = (TextView) view.findViewById(R.id.agenda_detail_when);
         longText = (BBTextView) view.findViewById(R.id.agenda_detail_longtext);
 
+        summaryCommissie = (TextView) view.findViewById(R.id.agenda_summary_commissie_text);
+        summaryCommissieIcon = (ImageView) view.findViewById(R.id.agenda_summary_commissie_icon);
+        summaryTitle = (TextView) view.findViewById(R.id.agenda_summary_title_text);
+        summaryWaar = (TextView) view.findViewById(R.id.agenda_summary_waar_text);
+        summaryWhen = (TextView) view.findViewById(R.id.agenda_summary_when_text);
+        summaryCost = (TextView) view.findViewById(R.id.agenda_summary_cost_text);
+
         title.setText(item.getShortdescription());
         when.setText(item.getWhen());
         longText.setText(item.getLongdescription());
+
+        if (item.getCommittee() != null) {
+            summaryCommissie.setText(item.getCommittee().getGroup().getName());
+        } else {
+            summaryCommissie.setVisibility(View.GONE);
+            summaryCommissieIcon.setVisibility(View.GONE);
+        }
+
+        summaryTitle.setText(item.getShortdescription());
+        summaryWaar.setText(item.getWhere());
+        summaryWhen.setText(item.getWhen());
+        summaryCost.setText(item.getCosts());
 
         return view;
     }
