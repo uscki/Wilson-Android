@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity
             Log.d("MainActivity", "unsubscribing for:" + AgendaDetailFragment.item.getId());
             VolleyAgenda.getInstance().unsubscribe(AgendaDetailFragment.item.getId());
 
-            EventBus.getDefault().post(new AgendaItemSubscribedEvent(false));
+            EventBus.getDefault().post(new AgendaItemSubscribedEvent(null)); // TODO: 6/29/16 dirty hack to get the right action in the menu in AgendaDetailTabsFragment
         }
     }
 
