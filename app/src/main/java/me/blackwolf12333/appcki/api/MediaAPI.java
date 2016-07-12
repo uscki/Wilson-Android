@@ -1,45 +1,59 @@
 package me.blackwolf12333.appcki.api;
 
-import android.util.Log;
-
-import com.android.volley.Response;
+import android.graphics.Bitmap;
 
 import java.util.HashMap;
 
-import de.greenrobot.event.EventBus;
-import me.blackwolf12333.appcki.App;
-import me.blackwolf12333.appcki.api.common.APISingleton;
-import me.blackwolf12333.appcki.api.common.GsonRequest;
 import me.blackwolf12333.appcki.api.common.VolleyAPI;
-import me.blackwolf12333.appcki.events.MediaFileEvent;
 import me.blackwolf12333.appcki.generated.media.MediaFile;
-import me.blackwolf12333.appcki.api.media.ImageRequest;
 import me.blackwolf12333.appcki.helpers.UserHelper;
 
 /**
  * Created by peter on 2/6/16.
  */
 public class MediaAPI extends VolleyAPI {
+    public static String URL = "https://www.uscki.nl/?pagina=Media/MediaObject/%s&mediaFile=%d";
+    private static HashMap<String, Bitmap> cache = new HashMap<>();
+
     public void getMediaFile(Integer id) {
         String url = this.url + "media/get?id=" + id;
-        Log.d("MediaAPI", url);
-        GsonRequest<MediaFile> request = new GsonRequest<>(url, MediaFile.class, getHeaders(), new Response.Listener<MediaFile>() {
-            @Override
-            public void onResponse(MediaFile response) {
-                EventBus.getDefault().post(new MediaFileEvent(response));
-            }
-        }, errorListener);
-        APISingleton.getInstance(App.getContext()).addToRequestQueue(request);
+        //Todo
     }
 
     public void getMediaFileBitmap(MediaFile file) {
         getMediaFileBitmap(file.getId(), file.getMimetype());
     }
 
-    public void getMediaFileBitmap(final Integer id, String mimetype) {
+    public Bitmap getMediaFileBitmap(final Integer id, String mimetype) {
         String type = getFiletypeFromMime(mimetype);
-        String url = String.format(ImageRequest.URL, type, id);
+        String url = String.format(URL, type, id);
+        if (cache.containsKey(url)) {
+            return cache.get(url);
+        } else {
 
+        }
+        return cache.get(url);
+    }
+
+    public static Bitmap getFromCache(String url) {
+        if (cache.containsKey(url)) {
+            return cache.get(url);
+        }
+        return null;
+    }
+
+    public static boolean cacheContains(String url) {
+        return cache.containsKey(url);
+    }
+
+    public static void putInCache(Bitmap bitmap, String url) {
+        if (cache.size() < 5) {
+            cache.put(url, bitmap);
+        } else {
+            String first = cache.keySet().iterator().next();
+            cache.remove(first);
+            cache.put(url, bitmap);
+        }
     }
 
     public static HashMap<String, String> getBitmapHeaders() {

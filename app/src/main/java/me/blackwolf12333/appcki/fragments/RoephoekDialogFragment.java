@@ -10,8 +10,14 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
 
+import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.api.VolleyRoephoek;
+import me.blackwolf12333.appcki.api.Services;
+import me.blackwolf12333.appcki.events.RoephoekEvent;
+import me.blackwolf12333.appcki.generated.roephoek.Roephoek;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,7 +41,17 @@ public class RoephoekDialogFragment extends DialogFragment {
         builder.setTitle("Nieuwe roep plaatsen").setView(view).setPositiveButton(R.string.roephoek_dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        VolleyRoephoek.getInstance().addShout(name.getText().toString(), content.getText().toString());
+                        Services.getInstance().shoutboxService.shout(name.getText().toString(), content.getText().toString()).enqueue(new Callback<Roephoek>() {
+                            @Override
+                            public void onResponse(Call<Roephoek> call, Response<Roephoek> response) {
+                                EventBus.getDefault().post(new RoephoekEvent(response.body()));
+                            }
+
+                            @Override
+                            public void onFailure(Call<Roephoek> call, Throwable t) {
+                                //TODO
+                            }
+                        });
                     }
                 }).setNegativeButton(R.string.roephoek_dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override

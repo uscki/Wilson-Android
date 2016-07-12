@@ -168,7 +168,7 @@ public class LoginFragment extends Fragment {
 
             try {
                 String password = MD5(mPassword);
-                api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + mPassword); //TODO API: beslissing maken over hash of niet
+                api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + password); //TODO API: beslissing maken over hash of niet
                 connection = (HttpURLConnection) api.openConnection();
                 connection.setRequestMethod("GET");
 
@@ -199,7 +199,6 @@ public class LoginFragment extends Fragment {
         @Override
         protected void onPostExecute(final Boolean success) {
             authTask = null;
-            EventBus.getDefault().post(new ShowProgressEvent(false));
 
             if (success) {
                 EventBus.getDefault().post(new UserLoggedInEvent());
@@ -212,7 +211,6 @@ public class LoginFragment extends Fragment {
         @Override
         protected void onCancelled() {
             authTask = null;
-            EventBus.getDefault().post(new ShowProgressEvent(false));
         }
     }
 }

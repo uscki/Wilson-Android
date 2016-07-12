@@ -10,9 +10,13 @@ import android.view.ViewGroup;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.api.VolleyNews;
+import me.blackwolf12333.appcki.api.Services;
 import me.blackwolf12333.appcki.events.NewsItemEvent;
+import me.blackwolf12333.appcki.generated.news.NewsItem;
 import me.blackwolf12333.appcki.views.BBTextView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,7 +30,17 @@ public class NewsDetailFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        VolleyNews.getInstance().getNewsItem(getArguments().getInt("id"));
+        Services.getInstance().newsService.get(getArguments().getInt("id")).enqueue(new Callback<NewsItem>() {
+            @Override
+            public void onResponse(Call<NewsItem> call, Response<NewsItem> response) {
+                content.setText(response.body().getShorttext());
+            }
+
+            @Override
+            public void onFailure(Call<NewsItem> call, Throwable t) {
+                //TODO
+            }
+        });
         super.onCreate(savedInstanceState);
     }
 

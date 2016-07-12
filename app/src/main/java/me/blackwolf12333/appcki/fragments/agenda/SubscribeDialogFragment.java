@@ -8,8 +8,14 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
 
+import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.api.VolleyAgenda;
+import me.blackwolf12333.appcki.api.Services;
+import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
+import me.blackwolf12333.appcki.generated.agenda.Subscribers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by peter on 6/28/16.
@@ -27,7 +33,17 @@ public class SubscribeDialogFragment extends DialogFragment {
         builder.setTitle("Inschrijven").setView(view).setPositiveButton(R.string.agenda_dialog_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                VolleyAgenda.getInstance().subscribe(agendaId, note.getText().toString());
+                Services.getInstance().agendaService.subscribe(agendaId, note.getText().toString()).enqueue(new Callback<Subscribers>() {
+                    @Override
+                    public void onResponse(Call<Subscribers> call, Response<Subscribers> response) {
+                        EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body()));
+                    }
+
+                    @Override
+                    public void onFailure(Call<Subscribers> call, Throwable t) {
+
+                    }
+                });
             }
         }).setNegativeButton(R.string.agenda_dialog_cancel, new DialogInterface.OnClickListener() {
             @Override
