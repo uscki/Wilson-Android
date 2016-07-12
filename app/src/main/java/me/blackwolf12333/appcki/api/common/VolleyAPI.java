@@ -56,6 +56,9 @@ public class VolleyAPI {
         protected Response.Listener<T> responseListener;
 
         public String getRequestUrl() {
+            if (arguments.isEmpty()) {
+                return url;
+            }
             String ret = url + "?";
             for(String key : arguments.keySet()) {
                 ret += key+"="+arguments.get(key)+"&";

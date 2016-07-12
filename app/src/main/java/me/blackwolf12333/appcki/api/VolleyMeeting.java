@@ -39,10 +39,10 @@ public class VolleyMeeting extends VolleyAPI {
 
     public class SetSlotCall extends Call<Boolean> {
         public SetSlotCall(Integer id, String note) {
-            this.url = "meeting/set-slot";
+            this.url = "meetings/slots/" + id;
             this.arguments = new HashMap<>();
-            this.arguments.put("id", id);
-            this.arguments.put("note", note);
+            this.arguments.put("notes", note);
+            this.arguments.put("canAttend", true);
             this.type = Boolean.class;
             this.responseListener = new Response.Listener<Boolean>() {
                 @Override
@@ -55,9 +55,9 @@ public class VolleyMeeting extends VolleyAPI {
 
     public class MeetingCall extends Call<Meeting> {
         public MeetingCall(Integer id) {
-            this.url = "meeting/get";
+            this.url = "meetings/" + id;
             this.arguments = new HashMap<>();
-            this.arguments.put("id", id);
+            //this.arguments.put("id", id);
             this.type = Meeting.class;
             this.responseListener = new Response.Listener<Meeting>() {
                 @Override
@@ -70,7 +70,7 @@ public class VolleyMeeting extends VolleyAPI {
 
     public class MeetingOverviewCall extends Call<MeetingOverview> {
         public MeetingOverviewCall() {
-            this.url = "meeting/mymeetings";
+            this.url = "meetings/";
             this.arguments = new HashMap<>();
             //this.arguments.put("sort", "startdate,starttime,asc");
             this.type = MeetingOverview.class;

@@ -32,6 +32,7 @@ import me.blackwolf12333.appcki.events.UserLoggedInEvent;
 import me.blackwolf12333.appcki.fragments.HomeFragment;
 import me.blackwolf12333.appcki.fragments.HomeSubFragments;
 import me.blackwolf12333.appcki.fragments.LoginFragment;
+import me.blackwolf12333.appcki.fragments.MeetingOverviewFragment;
 import me.blackwolf12333.appcki.fragments.RoephoekDialogFragment;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaDetailFragment;
 import me.blackwolf12333.appcki.fragments.agenda.SubscribeDialogFragment;
@@ -166,6 +167,7 @@ public class MainActivity extends AppCompatActivity
             } else if (id == R.id.nav_roephoek) {
                 openTab(HomeSubFragments.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
+                openFragment(new MeetingOverviewFragment(), null);
 // TODO: 5/22/16 meetings 
             } else if (id == R.id.nav_login) {
                 UserHelper.getInstance().logout();
@@ -247,6 +249,7 @@ public class MainActivity extends AppCompatActivity
                 openTab(HomeSubFragments.ROEPHOEK);
                 break;
             case VERGADERPLANNER:
+                openFragment(new MeetingOverviewFragment(), null);
                 break;
         }
     }
