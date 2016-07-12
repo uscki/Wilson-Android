@@ -8,7 +8,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MeetingSlot {
+public class Slot {
 
     @SerializedName("id")
     @Expose

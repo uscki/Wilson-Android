@@ -2,11 +2,7 @@ package me.blackwolf12333.appcki.generated.meeting;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import me.blackwolf12333.appcki.generated.organisation.Person;
 
@@ -24,9 +20,6 @@ public class Meeting {
     @SerializedName("actual_time")
     @Expose
     private String actualTime;
-    @SerializedName("meetingSlot")
-    @Expose
-    private MeetingSlot meetingSlot;
     @SerializedName("location")
     @Expose
     private String location;
@@ -63,12 +56,6 @@ public class Meeting {
     @SerializedName("notifypct")
     @Expose
     private Integer notifypct;
-    @SerializedName("participants")
-    @Expose
-    private List<Participant> participants = new ArrayList<Participant>();
-    @SerializedName("slots")
-    @Expose
-    private List<MeetingSlot> slots = new ArrayList<MeetingSlot>();
 
     /**
      *
@@ -140,24 +127,6 @@ public class Meeting {
      */
     public void setActualTime(String actualTime) {
         this.actualTime = actualTime;
-    }
-
-    /**
-     *
-     * @return
-     * The meetingSlot
-     */
-    public MeetingSlot getMeetingSlot() {
-        return meetingSlot;
-    }
-
-    /**
-     *
-     * @param meetingSlot
-     * The meetingSlot
-     */
-    public void setMeetingSlot(MeetingSlot meetingSlot) {
-        this.meetingSlot = meetingSlot;
     }
 
     /**
@@ -374,42 +343,6 @@ public class Meeting {
      */
     public void setNotifypct(Integer notifypct) {
         this.notifypct = notifypct;
-    }
-
-    /**
-     *
-     * @return
-     * The participants
-     */
-    public List<Participant> getParticipants() {
-        return participants;
-    }
-
-    /**
-     *
-     * @param participants
-     * The participants
-     */
-    public void setParticipants(List<Participant> participants) {
-        this.participants = participants;
-    }
-
-    /**
-     *
-     * @return
-     * The slots
-     */
-    public List<MeetingSlot> getSlots() {
-        return slots;
-    }
-
-    /**
-     *
-     * @param slots
-     * The slots
-     */
-    public void setSlots(List<MeetingSlot> slots) {
-        this.slots = slots;
     }
 
     @Override

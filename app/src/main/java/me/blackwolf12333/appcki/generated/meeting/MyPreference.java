@@ -5,22 +5,23 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import me.blackwolf12333.appcki.generated.organisation.Person;
-
-public class Preference {
+public class MyPreference {
 
     @SerializedName("id")
     @Expose
     private Integer id;
+    @SerializedName("slotId")
+    @Expose
+    private Integer slotId;
+    @SerializedName("starttime")
+    @Expose
+    private String starttime;
     @SerializedName("notes")
     @Expose
     private String notes;
     @SerializedName("canattend")
     @Expose
     private Boolean canattend;
-    @SerializedName("person")
-    @Expose
-    private Person person;
 
     /**
      *
@@ -38,6 +39,42 @@ public class Preference {
      */
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    /**
+     *
+     * @return
+     * The slotId
+     */
+    public Integer getSlotId() {
+        return slotId;
+    }
+
+    /**
+     *
+     * @param slotId
+     * The slotId
+     */
+    public void setSlotId(Integer slotId) {
+        this.slotId = slotId;
+    }
+
+    /**
+     *
+     * @return
+     * The starttime
+     */
+    public String getStarttime() {
+        return starttime;
+    }
+
+    /**
+     *
+     * @param starttime
+     * The starttime
+     */
+    public void setStarttime(String starttime) {
+        this.starttime = starttime;
     }
 
     /**
@@ -74,24 +111,6 @@ public class Preference {
      */
     public void setCanattend(Boolean canattend) {
         this.canattend = canattend;
-    }
-
-    /**
-     *
-     * @return
-     * The person
-     */
-    public Person getPerson() {
-        return person;
-    }
-
-    /**
-     *
-     * @param person
-     * The person
-     */
-    public void setPerson(Person person) {
-        this.person = person;
     }
 
     @Override
