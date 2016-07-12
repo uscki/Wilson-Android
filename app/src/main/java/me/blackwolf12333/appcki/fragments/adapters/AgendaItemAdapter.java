@@ -13,11 +13,8 @@ import com.google.gson.Gson;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
-import me.blackwolf12333.appcki.App;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.api.MediaAPI;
-import me.blackwolf12333.appcki.api.common.APISingleton;
-import me.blackwolf12333.appcki.api.media.ImageLoader;
 import me.blackwolf12333.appcki.api.media.NetworkImageView;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaDetailTabsFragment;
@@ -56,10 +53,10 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             holder.inschrijvenVerplicht.setVisibility(View.GONE);
         }
 
-        holder.itemPoster.setDefaultImageResId(R.drawable.default_poster);
+        //holder.itemPoster.setDefaultImageResId(R.drawable.default_poster);
         if(item.getPosterid() != null) {
-            ImageLoader loader = APISingleton.getInstance(App.getContext()).getImageLoader();
-            holder.itemPoster.setImageIdAndType(item.getPosterid().getId(), MediaAPI.getFiletypeFromMime(item.getPosterid().getMimetype()), loader);
+            final String url = String.format(MediaAPI.URL, MediaAPI.getFiletypeFromMime(item.getPosterid().getMimetype()), item.getPosterid().getId());
+            holder.itemPoster.setImageIdAndType(item.getPosterid().getId(), MediaAPI.getFiletypeFromMime(item.getPosterid().getMimetype()));
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {

@@ -22,7 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
-import me.blackwolf12333.appcki.api.VolleyAgenda;
+import me.blackwolf12333.appcki.api.Services;
 import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
 import me.blackwolf12333.appcki.events.LinkClickedEvent;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
@@ -36,7 +36,11 @@ import me.blackwolf12333.appcki.fragments.MeetingOverviewFragment;
 import me.blackwolf12333.appcki.fragments.RoephoekDialogFragment;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaDetailFragment;
 import me.blackwolf12333.appcki.fragments.agenda.SubscribeDialogFragment;
+import me.blackwolf12333.appcki.generated.agenda.Subscribers;
 import me.blackwolf12333.appcki.helpers.UserHelper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -260,9 +264,18 @@ public class MainActivity extends AppCompatActivity
             newFragment.show(getSupportFragmentManager(), "agenda_subscribe");
         } else {
             Log.d("MainActivity", "unsubscribing for:" + AgendaDetailFragment.item.getId());
-            VolleyAgenda.getInstance().unsubscribe(AgendaDetailFragment.item.getId());
+            Services.getInstance().agendaService.unsubscribe(AgendaDetailFragment.item.getId()).enqueue(new Callback<Subscribers>() {
+                @Override
+                public void onResponse(Call<Subscribers> call, Response<Subscribers> response) {
+                    //TODO
+                    EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body())); // TODO: 6/29/16 dirty hack to get the right action in the menu in AgendaDetailTabsFragment
+                }
 
-            EventBus.getDefault().post(new AgendaItemSubscribedEvent(null)); // TODO: 6/29/16 dirty hack to get the right action in the menu in AgendaDetailTabsFragment
+                @Override
+                public void onFailure(Call<Subscribers> call, Throwable t) {
+
+                }
+            });
         }
     }
 

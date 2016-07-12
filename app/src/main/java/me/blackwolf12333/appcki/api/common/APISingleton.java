@@ -6,9 +6,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
-import me.blackwolf12333.appcki.api.media.ImageLoader;
-import me.blackwolf12333.appcki.api.media.LruBitmapCache;
-
 /**
  * Created by peter on 2/6/16.
  */
@@ -16,14 +13,13 @@ import me.blackwolf12333.appcki.api.media.LruBitmapCache;
 public class APISingleton {
     private static APISingleton mInstance;
     private RequestQueue mRequestQueue;
-    private ImageLoader mImageLoader;
     private static Context mCtx;
 
     private APISingleton(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
 
-        mImageLoader = new ImageLoader(mRequestQueue, new LruBitmapCache(mCtx));
+        //mImageLoader = new ImageLoader(mRequestQueue, new LruBitmapCache(mCtx));
     }
 
     public static synchronized APISingleton getInstance(Context context) {
@@ -44,9 +40,5 @@ public class APISingleton {
 
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
-    }
-
-    public ImageLoader getImageLoader() {
-        return mImageLoader;
     }
 }

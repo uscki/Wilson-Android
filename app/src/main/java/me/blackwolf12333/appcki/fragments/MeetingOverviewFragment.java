@@ -11,16 +11,21 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
-import me.blackwolf12333.appcki.api.VolleyMeeting;
+import me.blackwolf12333.appcki.api.MeetingService;
+import me.blackwolf12333.appcki.api.ServiceGenerator;
 import me.blackwolf12333.appcki.events.MeetingOverviewEvent;
 import me.blackwolf12333.appcki.fragments.adapters.MeetingItemAdapter;
 import me.blackwolf12333.appcki.generated.meeting.MeetingItem;
+import me.blackwolf12333.appcki.generated.meeting.MeetingOverview;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MeetingOverviewFragment extends PageableFragment {
-
+    MeetingService service = ServiceGenerator.createService(MeetingService.class);
 
     public MeetingOverviewFragment() {
         // Required empty public constructor
@@ -31,7 +36,21 @@ public class MeetingOverviewFragment extends PageableFragment {
         super.onCreate(savedInstanceState);
 
         setAdapter(new MeetingItemAdapter(new ArrayList<MeetingItem>()));
-        VolleyMeeting.getInstance().getMeetingOverview();
+        service.overview().enqueue(new Callback<MeetingOverview>() {
+            @Override
+            public void onResponse(Call<MeetingOverview> call, Response<MeetingOverview> response) {
+                swipeContainer.setRefreshing(false);
+                if (getAdapter() instanceof MeetingItemAdapter) {
+                    Log.d("MeetingOverviewFragment", response.body().toString());
+                    getAdapter().update(response.body().getContent());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MeetingOverview> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override
@@ -43,12 +62,25 @@ public class MeetingOverviewFragment extends PageableFragment {
 
     @Override
     public void onScrollRefresh() {
-        //VolleyMeeting.getInstance().getMeetingOverview();
     }
 
     @Override
     public void onSwipeRefresh() {
-        VolleyMeeting.getInstance().getMeetingOverview();
+        service.overview().enqueue(new Callback<MeetingOverview>() {
+            @Override
+            public void onResponse(Call<MeetingOverview> call, Response<MeetingOverview> response) {
+                swipeContainer.setRefreshing(false);
+                if (getAdapter() instanceof MeetingItemAdapter) {
+                    Log.d("MeetingOverviewFragment", response.body().toString());
+                    getAdapter().update(response.body().getContent());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MeetingOverview> call, Throwable t) {
+
+            }
+        });
     }
 
     // EVENT HANDLING

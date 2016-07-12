@@ -8,11 +8,14 @@ import android.view.ViewGroup;
 import com.google.gson.Gson;
 
 import de.greenrobot.event.EventBus;
-import me.blackwolf12333.appcki.api.VolleyAgenda;
+import me.blackwolf12333.appcki.api.Services;
 import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
 import me.blackwolf12333.appcki.events.AgendaSubscribersEvent;
 import me.blackwolf12333.appcki.fragments.PageableFragment;
 import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A fragment representing a list of AgendaParticipants.
@@ -38,7 +41,21 @@ public class AgendaDeelnemersFragment extends PageableFragment {
 
     @Override
     public void onSwipeRefresh() {
-        VolleyAgenda.getInstance().getSubscribed(item.getId()); // TODO API: wacht op api implementatie
+        Services.getInstance().agendaService.get(item.getId()).enqueue(new Callback<AgendaItem>() {
+            @Override
+            public void onResponse(Call<AgendaItem> call, Response<AgendaItem> response) {
+                swipeContainer.setRefreshing(false);
+                if (getAdapter() instanceof AgendaDeelnemersAdapter) {
+                    getAdapter().update(response.body().getParticipants());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AgendaItem> call, Throwable t) {
+
+            }
+        });
+        //VolleyAgenda.getInstance().getSubscribed(item.getId()); // TODO API: wacht op api implementatie
     }
 
     @Override
