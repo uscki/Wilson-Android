@@ -42,7 +42,10 @@ public class ServiceGenerator {
                         .method(original.method(), original.body());
 
                 Request request = requestBuilder.build();
-                return chain.proceed(request);
+                Response response = chain.proceed(request);
+
+                //Log.d("ServiceGenerator", respon);
+                return response;
             }
         });
 

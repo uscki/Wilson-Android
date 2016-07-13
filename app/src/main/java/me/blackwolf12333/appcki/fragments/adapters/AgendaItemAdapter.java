@@ -53,7 +53,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             holder.inschrijvenVerplicht.setVisibility(View.GONE);
         }
 
-        holder.itemPoster.setDefaultImageResId(R.drawable.default_poster);
+        //holder.itemPoster.setDefaultImageResId(R.drawable.default_poster);
         if(item.getPosterid() != null) {
             final String url = String.format(MediaAPI.URL, MediaAPI.getFiletypeFromMime(item.getPosterid().getMimetype()), item.getPosterid().getId());
             holder.itemPoster.setImageIdAndType(item.getPosterid().getId(), MediaAPI.getFiletypeFromMime(item.getPosterid().getMimetype()));
