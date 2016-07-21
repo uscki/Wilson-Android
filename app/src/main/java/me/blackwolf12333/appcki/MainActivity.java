@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
-import me.blackwolf12333.appcki.views.NetworkImageView;
 import me.blackwolf12333.appcki.events.LinkClickedEvent;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.events.ServerErrorEvent;
@@ -35,6 +34,7 @@ import me.blackwolf12333.appcki.fragments.LoginFragment;
 import me.blackwolf12333.appcki.fragments.RoephoekDialogFragment;
 import me.blackwolf12333.appcki.fragments.meeting.MeetingOverviewFragment;
 import me.blackwolf12333.appcki.helpers.UserHelper;
+import me.blackwolf12333.appcki.views.NetworkImageView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -128,13 +128,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
-        // initialize user related ui elements
-        if (UserHelper.getInstance().isLoggedIn()) {
-            initLoggedInUI();
-        } else {
-            initLoggedOutUI();
-        }
         return true;
     }
 

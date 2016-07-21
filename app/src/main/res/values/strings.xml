@@ -13,7 +13,7 @@
     <string name="prompt_username">Gebruikersnaam</string>
     <string name="prompt_password">Wachtwoord</string>
     <string name="action_sign_in">Inloggen</string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_sign_in_short">Log in</string>
     <string name="error_invalid_username">This username address is invalid</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>

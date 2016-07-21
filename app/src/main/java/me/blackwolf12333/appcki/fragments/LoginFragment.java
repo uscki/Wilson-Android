@@ -47,6 +47,7 @@ public class LoginFragment extends Fragment {
     EditText passwordView;
     AutoCompleteTextView userView;
     ImageView logoTop;
+    ObjectAnimator animation;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -65,7 +66,7 @@ public class LoginFragment extends Fragment {
         passwordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == R.id.login || id == EditorInfo.IME_ACTION_DONE) {
                     attemptLogin();
                     return true;
                 }
@@ -133,11 +134,12 @@ public class LoginFragment extends Fragment {
 
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            ObjectAnimator animation = ObjectAnimator.ofFloat(logoTop, "rotationY", 0.0f, 360f);
+            animation = ObjectAnimator.ofFloat(logoTop, "rotationY", 0.0f, 360f);
             animation.setDuration(3600);
             animation.setRepeatCount(ObjectAnimator.INFINITE);
             animation.setInterpolator(new LinearInterpolator());
             animation.start();
+
             EventBus.getDefault().post(new ShowProgressEvent(true));
 
             try {
@@ -216,9 +218,9 @@ public class LoginFragment extends Fragment {
         @Override
         protected void onPostExecute(final Boolean success) {
             authTask = null;
+            animation.end();
 
             if (success) {
-                logoTop.setAnimation(null); // stop de animatie
                 EventBus.getDefault().post(new UserLoggedInEvent());
             } else {
                 passwordView.setError(getString(R.string.error_incorrect_password));
