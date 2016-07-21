@@ -79,12 +79,7 @@ public class MainActivity extends AppCompatActivity
         UserHelper.getInstance().setPreferences(getPreferences(MODE_PRIVATE));
         UserHelper.getInstance().load();
 
-        if (UserHelper.getInstance().isLoggedIn()) {
-            loadState();
-        } else {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-            openFragment(loginFragment, null);
-        }
+        loadState();
     }
 
     @Override
@@ -165,7 +160,7 @@ public class MainActivity extends AppCompatActivity
                 openTab(HomeSubFragments.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
                 openFragment(new MeetingOverviewFragment(), null);
-            } else if (id == R.id.nav_login) {
+            } else if (id == R.id.nav_logout) {
                 UserHelper.getInstance().logout();
                 initLoggedOutUI();
             }
@@ -214,14 +209,14 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         hideKeyboard(findViewById(R.id.drawer_layout));
 
-        openTab(HomeSubFragments.NEWS);
+        navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
+        navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
 
-        navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.logout));
-        TextView name = (TextView) navigationView.findViewById(R.id.nav_header_name);
+        TextView name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText(UserHelper.getInstance().getPerson().getName());
         // TODO API: 5/22/16 profile pic
 
-        NetworkImageView profile = (NetworkImageView) navigationView.findViewById(R.id.nav_header_profilepic);
+        NetworkImageView profile = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
         profile.setImageMediaFile(UserHelper.getInstance().getPerson().getPhotomediaid());
     }
 
@@ -229,14 +224,15 @@ public class MainActivity extends AppCompatActivity
         toolbar.setVisibility(View.GONE);
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         openFragment(new LoginFragment(), null);
-        navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.login));
+        navigationView.getMenu().findItem(R.id.nav_login).setVisible(true);
+        navigationView.getMenu().findItem(R.id.nav_logout).setVisible(false);
 
-        TextView name = (TextView) navigationView.findViewById(R.id.nav_header_name);
+        TextView name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText("");
 
         // TODO API: 5/22/16 profile pic
-        //NetworkImageView profile = (NetworkImageView) navigationView.findViewById(R.id.nav_header_profilepic);
-        //profile.setDefaultImageResId(android.R.drawable.sym_def_app_icon);
+        NetworkImageView profile = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
+        profile.setDefaultImageResId(android.R.drawable.sym_def_app_icon);
     }
 
     public void resizeOnKeyboard() {
@@ -251,11 +247,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadState() {
+        if (!UserHelper.getInstance().isLoggedIn()) {
+            openFragment(loginFragment, null);
+            initLoggedOutUI();
+            return;
+        }
+        initLoggedInUI();
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         Screen screen = Screen.valueOf(preferences.getString("last_screen", "NEWS"));
         Log.d("MainActivity", "load: " + screen.name());
         switch (screen) {
             case LOGIN:
+                initLoggedOutUI();
                 openFragment(loginFragment, null);
                 break;
             case NEWS:
@@ -291,6 +294,8 @@ public class MainActivity extends AppCompatActivity
     // EVENT HANDLING
     public void onEventMainThread(UserLoggedInEvent event) {
         initLoggedInUI();
+        openTab(HomeSubFragments.NEWS);
+        saveState(); // save user
     }
 
     public void onEventMainThread(OpenFragmentEvent event) {

@@ -51,13 +51,13 @@ public class LoginFragment extends Fragment {
 
     public LoginFragment() {
         // Required empty public constructor
-        MainActivity.currentScreen = MainActivity.Screen.LOGIN;
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        MainActivity.currentScreen = MainActivity.Screen.LOGIN;
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         userView = (AutoCompleteTextView) view.findViewById(R.id.username);
@@ -85,7 +85,7 @@ public class LoginFragment extends Fragment {
             }
         });
         // No idea why, but it doesn't work otherwise
-        EventBus.getDefault().post(new ShowProgressEvent(false));
+        //EventBus.getDefault().post(new ShowProgressEvent(false));
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         return view;
     }
