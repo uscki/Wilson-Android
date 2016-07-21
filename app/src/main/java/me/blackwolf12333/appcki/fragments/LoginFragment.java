@@ -1,5 +1,6 @@
 package me.blackwolf12333.appcki.fragments;
 
+import android.animation.ObjectAnimator;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,10 +11,13 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -42,6 +46,7 @@ public class LoginFragment extends Fragment {
 
     EditText passwordView;
     AutoCompleteTextView userView;
+    ImageView logoTop;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -55,6 +60,7 @@ public class LoginFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         userView = (AutoCompleteTextView) view.findViewById(R.id.username);
+
         passwordView = (EditText) view.findViewById(R.id.password);
         passwordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -67,6 +73,9 @@ public class LoginFragment extends Fragment {
             }
         });
 
+
+        logoTop = (ImageView) view.findViewById(R.id.login_logo_top);
+
         Button signIn = (Button) view.findViewById(R.id.sign_in_button);
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +85,7 @@ public class LoginFragment extends Fragment {
         });
         // No idea why, but it doesn't work otherwise
         EventBus.getDefault().post(new ShowProgressEvent(false));
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         return view;
     }
 
@@ -119,8 +129,15 @@ public class LoginFragment extends Fragment {
             // form field with an error.
             focusView.requestFocus();
         } else {
+            MainActivity.hideKeyboard(passwordView);
+
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+            ObjectAnimator animation = ObjectAnimator.ofFloat(logoTop, "rotationY", 0.0f, 360f);
+            animation.setDuration(3600);
+            animation.setRepeatCount(ObjectAnimator.INFINITE);
+            animation.setInterpolator(new LinearInterpolator());
+            animation.start();
             EventBus.getDefault().post(new ShowProgressEvent(true));
 
             try {
@@ -201,6 +218,7 @@ public class LoginFragment extends Fragment {
             authTask = null;
 
             if (success) {
+                logoTop.setAnimation(null); // stop de animatie
                 EventBus.getDefault().post(new UserLoggedInEvent());
             } else {
                 passwordView.setError(getString(R.string.error_incorrect_password));

@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity
         if (UserHelper.getInstance().isLoggedIn()) {
             loadState();
         } else {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             openFragment(loginFragment, null);
         }
     }
@@ -197,6 +199,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void openFragment(Fragment fragment, Bundle arguments) {
+        if (fragment instanceof LoginFragment) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        } else {
+            // TODO: 5/28/16 currently keyboard overlaps in agenda detail, but this needs a new
+            // TODO implementation. Check if it's still the case with the new one
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        }
+
         if (arguments != null) {
             fragment.setArguments(arguments);
         }
@@ -208,7 +218,7 @@ public class MainActivity extends AppCompatActivity
 
     private void initLoggedInUI() {
         toolbar.setVisibility(View.VISIBLE);
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         hideKeyboard(findViewById(R.id.drawer_layout));
 
         openTab(HomeSubFragments.NEWS);
@@ -226,7 +236,7 @@ public class MainActivity extends AppCompatActivity
         toolbar.setVisibility(View.GONE);
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         openFragment(new LoginFragment(), null);
-        //navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.login));
+        navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.login));
 
         TextView name = (TextView) navigationView.findViewById(R.id.nav_header_name);
         name.setText("");
@@ -234,6 +244,10 @@ public class MainActivity extends AppCompatActivity
         // TODO API: 5/22/16 profile pic
         //NetworkImageView profile = (NetworkImageView) navigationView.findViewById(R.id.nav_header_profilepic);
         //profile.setDefaultImageResId(android.R.drawable.sym_def_app_icon);
+    }
+
+    public void resizeOnKeyboard() {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
     private void saveState() {
