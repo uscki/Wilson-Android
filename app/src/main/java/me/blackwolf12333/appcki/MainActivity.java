@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity
 
     Toolbar toolbar;
     NavigationView navigationView;
+    DrawerLayout drawer;
 
     LoginFragment loginFragment = new LoginFragment();
 
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -125,6 +126,13 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        // initialize user related ui elements
+        if (UserHelper.getInstance().isLoggedIn()) {
+            initLoggedInUI();
+        } else {
+            initLoggedOutUI();
+        }
         return true;
     }
 
@@ -199,6 +207,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initLoggedInUI() {
+        toolbar.setVisibility(View.VISIBLE);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
         hideKeyboard(findViewById(R.id.drawer_layout));
 
         openTab(HomeSubFragments.NEWS);
@@ -213,8 +223,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initLoggedOutUI() {
+        toolbar.setVisibility(View.GONE);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         openFragment(new LoginFragment(), null);
-        navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.login));
+        //navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.login));
 
         TextView name = (TextView) navigationView.findViewById(R.id.nav_header_name);
         name.setText("");
