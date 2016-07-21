@@ -2,7 +2,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
 
-    <me.blackwolf12333.appcki.api.media.NetworkImageView
+    <me.blackwolf12333.appcki.views.NetworkImageView
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:id="@+id/person_list_item_profile"

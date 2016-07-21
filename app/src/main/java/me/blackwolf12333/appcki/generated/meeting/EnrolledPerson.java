@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import me.blackwolf12333.appcki.generated.media.MediaFile;
+
 public class EnrolledPerson {
 
     @SerializedName("id")
@@ -15,7 +17,7 @@ public class EnrolledPerson {
     private String username;
     @SerializedName("photomediaid")
     @Expose
-    private Integer photomediaid;
+    private MediaFile photomediaid;
     @SerializedName("nickname")
     @Expose
     private String nickname;
@@ -61,7 +63,7 @@ public class EnrolledPerson {
      * @return
      * The photomediaid
      */
-    public Integer getPhotomediaid() {
+    public MediaFile getPhotomediaid() {
         return photomediaid;
     }
 
@@ -70,7 +72,7 @@ public class EnrolledPerson {
      * @param photomediaid
      * The photomediaid
      */
-    public void setPhotomediaid(Integer photomediaid) {
+    public void setPhotomediaid(MediaFile photomediaid) {
         this.photomediaid = photomediaid;
     }
 

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -28,7 +29,7 @@ public class SubscribeDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = getActivity().getLayoutInflater().inflate(R.layout.agenda_subscribe_dialog, null);
         final EditText note = (EditText) view.findViewById(R.id.agenda_dialog_note);
-        final int agendaId = 1455;
+        final int agendaId = getArguments().getInt("id");
 
         builder.setTitle("Inschrijven").setView(view).setPositiveButton(R.string.agenda_dialog_ok, new DialogInterface.OnClickListener() {
             @Override
@@ -37,11 +38,12 @@ public class SubscribeDialogFragment extends DialogFragment {
                     @Override
                     public void onResponse(Call<Subscribers> call, Response<Subscribers> response) {
                         EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body()));
+                        Log.d("Subscribe", response.body().toString());
                     }
 
                     @Override
                     public void onFailure(Call<Subscribers> call, Throwable t) {
-
+                        t.printStackTrace();
                     }
                 });
             }

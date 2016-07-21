@@ -55,6 +55,7 @@ public class HomeSubFragments extends PageableFragment {
         @Override
         public void onFailure(Call<NewsOverview> call, Throwable t) {
             // TODO
+            t.printStackTrace();
         }
     };
 
@@ -65,10 +66,16 @@ public class HomeSubFragments extends PageableFragment {
             if(loading) {
                 loading = false;
                 if (getAdapter() instanceof AgendaItemAdapter) {
-                    getAdapter().addItems(response.body().getContent());
+                    if (response.body() != null) {
+                        getAdapter().addItems(response.body().getContent());
+                    } else {
+                        //TODO handle failing to load more
+                        Log.d("HomeSubFragments", response.body()+"");
+                    }
                 }
             } else {
                 if (getAdapter() instanceof AgendaItemAdapter) {
+                    Log.d("HomeSubFragments", response.body().toString());
                     getAdapter().update(response.body().getContent());
                 }
             }
@@ -77,6 +84,7 @@ public class HomeSubFragments extends PageableFragment {
         @Override
         public void onFailure(Call<Agenda> call, Throwable t) {
             // TODO
+            t.printStackTrace();
         }
     };
 
@@ -101,6 +109,7 @@ public class HomeSubFragments extends PageableFragment {
         @Override
         public void onFailure(Call<Roephoek> call, Throwable t) {
             // TODO
+            t.printStackTrace();
         }
     };
 

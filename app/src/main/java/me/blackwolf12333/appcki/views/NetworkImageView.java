@@ -1,4 +1,4 @@
-package me.blackwolf12333.appcki.api.media;
+package me.blackwolf12333.appcki.views;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import me.blackwolf12333.appcki.api.MediaAPI;
 import me.blackwolf12333.appcki.api.Services;
+import me.blackwolf12333.appcki.generated.media.MediaFile;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,6 +31,10 @@ public class NetworkImageView extends ImageView {
         super(context, attrs, defStyle);
     }
 
+    public void setImageMediaFile(MediaFile file) {
+        this.setImageIdAndType(file.getId(), MediaAPI.getFiletypeFromMime(file.getMimetype()));
+    }
+
     public void setImageIdAndType(Integer id, String type) {
         final String url = String.format(MediaAPI.URL, type, id);
 
@@ -41,13 +46,16 @@ public class NetworkImageView extends ImageView {
                              @Override
                              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                  if (response.isSuccessful()) {
-                                     Log.d("NetworkImageView", "server contacted and has file");
+                                     Log.v("NetworkImageView", "server contacted and has file");
                                      Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
-                                     setImageBitmap(bitmap);
-
-                                     Log.d("NetworkImageView", "file download was a success? ");
+                                     if (bitmap != null) {
+                                         setImageBitmap(bitmap);
+                                         Log.v("NetworkImageView", "file download was a success!");
+                                     } else {
+                                         Log.v("NetworkImageView", "file download was a failure!");
+                                     }
                                  } else {
-                                     Log.d("NetworkImageView", "server contact failed");
+                                     Log.v("NetworkImageView", "server contact failed");
                                  }
                                  response.body().close();
                              }

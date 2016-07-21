@@ -26,6 +26,6 @@ public interface AgendaService {
     @GET("agenda/unsubscribe")
     Call<Subscribers> unsubscribe(@Query("id") Integer id);
 
-    @GET("agenda/subscirbed")
+    @GET("agenda/subscribed")
     Call<Agenda> subscribed();
 }

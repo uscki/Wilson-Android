@@ -37,15 +37,11 @@ public class ServiceGenerator {
                 Log.d("ServiceGenerator", original.toString());
 
                 Request.Builder requestBuilder = original.newBuilder()
-                        .header("X-AUTH-TOKEN", UserHelper.getInstance().getUser().TOKEN)
-                        //.header("Accept", "application/json")
+                        .header("X-AUTH-TOKEN", UserHelper.getInstance().TOKEN)
                         .method(original.method(), original.body());
 
                 Request request = requestBuilder.build();
-                Response response = chain.proceed(request);
-
-                //Log.d("ServiceGenerator", respon);
-                return response;
+                return chain.proceed(request);
             }
         });
 

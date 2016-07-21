@@ -1,9 +1,10 @@
 package me.blackwolf12333.appcki.api;
 
-import me.blackwolf12333.appcki.generated.meeting.Meeting;
+import me.blackwolf12333.appcki.generated.meeting.MeetingItem;
 import me.blackwolf12333.appcki.generated.meeting.MeetingOverview;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -15,8 +16,8 @@ public interface MeetingService {
     Call<MeetingOverview> overview();
 
     @GET("meetings/{id}")
-    Call<Meeting> get(@Path("id") Integer id);
+    Call<MeetingItem> get(@Path("id") Integer id);
 
-    @GET("meetings/slots/{id}?canAttend=true")
+    @POST("meetings/slots/{id}?canAttend=true")
     Call<Void> setSlot(@Path("id") Integer id, @Query("notes") String notes);
 }

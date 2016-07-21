@@ -53,26 +53,34 @@ public class AgendaDetailFragment extends Fragment {
         longText = (BBTextView) view.findViewById(R.id.agenda_detail_longtext);
 
         summaryCommissie = (TextView) view.findViewById(R.id.agenda_summary_commissie_text);
-        summaryCommissieIcon = (ImageView) view.findViewById(R.id.agenda_summary_commissie_icon);
         summaryTitle = (TextView) view.findViewById(R.id.agenda_summary_title_text);
         summaryWaar = (TextView) view.findViewById(R.id.agenda_summary_waar_text);
         summaryWhen = (TextView) view.findViewById(R.id.agenda_summary_when_text);
         summaryCost = (TextView) view.findViewById(R.id.agenda_summary_cost_text);
 
-        title.setText(item.getShortdescription());
-        when.setText(item.getWhen());
-        longText.setText(item.getLongdescription());
+        title.setText(item.getTitle());
+        if (item.getEnd() != null) {
+            String whenStr = item.getStart().toString("EEEE dd MMMM YYYY HH:mm") + " - " + item.getEnd().toString("EEEE dd MMMM YYYY HH:mm");
+            when.setText(whenStr);
+        } else {
+            when.setText(item.getStart().toString("EEEE dd MMMM YYYY HH:mm"));
+        }
+        longText.setText(item.getDescription());
 
         if (item.getCommittee() != null) {
-            summaryCommissie.setText(item.getCommittee().getGroup().getName());
+            summaryCommissie.setText(item.getCommittee());
         } else {
             summaryCommissie.setVisibility(View.GONE);
-            summaryCommissieIcon.setVisibility(View.GONE);
         }
 
-        summaryTitle.setText(item.getShortdescription());
-        summaryWaar.setText(item.getWhere());
-        summaryWhen.setText(item.getWhen());
+        summaryTitle.setText(item.getTitle());
+        summaryWaar.setText(item.getLocation());
+        if (item.getEnd() != null) {
+            String whenStr = item.getStart().toString("EEEE dd MMMM YYYY HH:mm") + " - " + item.getEnd().toString("EEEE dd MMMM YYYY HH:mm");
+            summaryWhen.setText(whenStr);
+        } else {
+            summaryWhen.setText(item.getStart().toString("EEEE dd MMMM YYYY HH:mm"));
+        }
         summaryCost.setText(item.getCosts());
 
         return view;

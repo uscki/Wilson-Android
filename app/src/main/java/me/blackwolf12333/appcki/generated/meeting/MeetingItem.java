@@ -3,8 +3,6 @@ package me.blackwolf12333.appcki.generated.meeting;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +14,9 @@ public class MeetingItem {
     @SerializedName("enrolledPersons")
     @Expose
     private List<EnrolledPerson> enrolledPersons = new ArrayList<EnrolledPerson>();
+    @SerializedName("participation")
+    @Expose
+    private List<Participation> participation = new ArrayList<Participation>();
     @SerializedName("slots")
     @Expose
     private List<Slot> slots = new ArrayList<Slot>();
@@ -62,6 +63,24 @@ public class MeetingItem {
     /**
      *
      * @return
+     * The participation
+     */
+    public List<Participation> getParticipation() {
+        return participation;
+    }
+
+    /**
+     *
+     * @param participation
+     * The participation
+     */
+    public void setParticipation(List<Participation> participation) {
+        this.participation = participation;
+    }
+
+    /**
+     *
+     * @return
      * The slots
      */
     public List<Slot> getSlots() {
@@ -93,11 +112,6 @@ public class MeetingItem {
      */
     public void setMyPreferences(List<MyPreference> myPreferences) {
         this.myPreferences = myPreferences;
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
     }
 
 }

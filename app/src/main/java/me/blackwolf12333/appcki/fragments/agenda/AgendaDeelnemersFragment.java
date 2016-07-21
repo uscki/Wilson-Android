@@ -66,7 +66,7 @@ public class AgendaDeelnemersFragment extends PageableFragment {
     public void onEventMainThread(AgendaSubscribersEvent event) {
         swipeContainer.setRefreshing(false);
         if (getAdapter() instanceof AgendaDeelnemersAdapter) {
-            getAdapter().update(event.subscribers.getContent());
+            getAdapter().update(event.subscribers);
         }
     }
 
@@ -74,7 +74,7 @@ public class AgendaDeelnemersFragment extends PageableFragment {
         swipeContainer.setRefreshing(false);
         if (getAdapter() instanceof AgendaDeelnemersAdapter) {
             if(event.subscribed != null) { //TODO because of dirty hackin MainActivity
-                getAdapter().update(event.subscribed.getContent());
+                getAdapter().update(event.subscribed);
             }
         }
     }

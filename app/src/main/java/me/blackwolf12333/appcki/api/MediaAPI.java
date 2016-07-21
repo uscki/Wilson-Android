@@ -4,19 +4,18 @@ import android.graphics.Bitmap;
 
 import java.util.HashMap;
 
-import me.blackwolf12333.appcki.api.common.VolleyAPI;
 import me.blackwolf12333.appcki.generated.media.MediaFile;
 import me.blackwolf12333.appcki.helpers.UserHelper;
 
 /**
  * Created by peter on 2/6/16.
  */
-public class MediaAPI extends VolleyAPI {
+public class MediaAPI {
     public static String URL = "https://www.uscki.nl/?pagina=Media/MediaObject/%s&mediaFile=%d";
     private static HashMap<String, Bitmap> cache = new HashMap<>();
 
     public void getMediaFile(Integer id) {
-        String url = this.url + "media/get?id=" + id;
+        //String url = this.url + "media/get?id=" + id;
         //Todo
     }
 
@@ -59,7 +58,7 @@ public class MediaAPI extends VolleyAPI {
     public static HashMap<String, String> getBitmapHeaders() {
         HashMap<String, String> headers = new HashMap<>();
         if(UserHelper.getInstance().isLoggedIn()) { // avoid nullpointer
-            headers.put("Cookie", "cookiestring=" + UserHelper.getInstance().getUser().getPerson().getCookiestring());
+            headers.put("Cookie", "cookiestring=" + UserHelper.getInstance().getPerson().getCookiestring());
         }
 
         return headers;

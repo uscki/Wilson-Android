@@ -2,18 +2,21 @@ package me.blackwolf12333.appcki.fragments.adapters;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
+import me.blackwolf12333.appcki.events.OpenFragmentEvent;
+import me.blackwolf12333.appcki.fragments.meeting.MeetingPlannerFragment;
 import me.blackwolf12333.appcki.generated.meeting.MeetingItem;
 
 /**
@@ -35,10 +38,20 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
     public void onBindViewHolder(final ViewHolder holder, int position) {
         MeetingItem item = items.get(position);
         holder.mItem = item;
-        Log.d("MeetingItemAdapter", item.toString());
         holder.title.setText(item.getMeeting().getTitle());
-        holder.plannedDate.setText(item.getMeeting().getActualTime()); //TODO API: Richard fixt dit
-        holder.where.setText(item.getMeeting().getLocation());
+
+        if (item.getMeeting().getActualTime() != null) {
+            DateTime dateTime = new DateTime(item.getMeeting().getActualTime());
+            holder.plannedDate.setText(dateTime.toString("EEEE dd MMMM YYYY HH:mm"));
+        } else {
+            holder.plannedDate.setVisibility(View.GONE);
+        }
+
+        if (item.getMeeting().getLocation() == null || item.getMeeting().getLocation().isEmpty()) {
+            holder.where.setVisibility(View.GONE);
+        } else {
+            holder.where.setText(item.getMeeting().getLocation());
+        }
         holder.mensen.setText(getMensenString(item));
         holder.status.setText(getStatusString(item));
 
@@ -48,9 +61,9 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
                 Bundle args = new Bundle();
                 Gson gson = new Gson();
                 String json = gson.toJson(holder.mItem, MeetingItem.class);
-                args.putString("item", json);
+                args.putInt("item", holder.mItem.getMeeting().getId());
                 // TODO: 7/3/16 launch vergaderplanner fragment
-                //EventBus.getDefault().post(new OpenFragmentEvent(new AgendaDetailTabsFragment(), args));
+                EventBus.getDefault().post(new OpenFragmentEvent(new MeetingPlannerFragment(), args));
             }
         });
     }
@@ -59,7 +72,7 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
         if (meeting.getMyPreferences().isEmpty()) {
             return "Je hebt nog niet gereageerd.";
         } else {
-            if (meeting.getMeeting().getActualTime().isEmpty()) {
+            if (meeting.getMeeting().getActualTime() == null) {
                 return "Deze vergadering is nog niet gepland";
             } else {
                 return "Deze vergadering is al gepland";
@@ -68,8 +81,8 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
     }
 
     private String getMensenString(MeetingItem meeting) {
-        Log.d("MeetingItemAdapter", ""+meeting.getSlots().size());
-        String mensen = "blabla";//String.format("%d / %d (%d %)", meeting.getParticipants().size());
+        String mensen = String.format("%d / %d ( %d )", meeting.getEnrolledPersons().size(), meeting.getParticipation().size(),
+                (int)(((float)meeting.getEnrolledPersons().size()/(float)meeting.getParticipation().size()) * 100));
         return mensen;
     }
 
@@ -88,22 +101,18 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
         public MeetingItem mItem;
         public final TextView title;
         public final TextView plannedDate;
-        public final ImageView plannedIcon;
         public final TextView where;
         public final TextView mensen;
         public final TextView status;
-        public final ImageView statusIcon;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             title = (TextView) view.findViewById(R.id.meeting_overview_title);
             plannedDate = (TextView) view.findViewById(R.id.meeting_overview_time_text);
-            plannedIcon = (ImageView) view.findViewById(R.id.meeting_overview_time_icon);
             where = (TextView) view.findViewById(R.id.meeting_overview_where_text);
             mensen = (TextView) view.findViewById(R.id.meeting_overview_mensen_text);
             status = (TextView) view.findViewById(R.id.meeting_overview_status_text);
-            statusIcon = (ImageView) view.findViewById(R.id.meeting_overview_status_icon);
         }
 
         @Override

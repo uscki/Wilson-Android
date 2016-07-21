@@ -19,7 +19,7 @@ import me.blackwolf12333.appcki.fragments.adapters.BaseItemAdapter;
 public abstract class PageableFragment extends Fragment {
 
     private BaseItemAdapter adapter;
-    private RecyclerView recyclerView;
+    protected RecyclerView recyclerView;
     protected SwipeRefreshLayout swipeContainer;
 
     // The minimum amount of items to have below your current scroll position

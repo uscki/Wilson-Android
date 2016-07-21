@@ -12,7 +12,7 @@ public interface ShoutboxService {
     @GET("shoutbox/newer")
     Call<Roephoek> newer(@Query("id") Integer newer);
 
-    @GET("news/older")
+    @GET("shoutbox/older")
     Call<Roephoek> older(@Query("id") Integer older);
 
     @GET("shoutbox/shout")

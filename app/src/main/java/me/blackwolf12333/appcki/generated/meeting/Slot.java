@@ -15,7 +15,7 @@ public class Slot {
     private Integer id;
     @SerializedName("starttime")
     @Expose
-    private String starttime;
+    private Long starttime;
     @SerializedName("preferences")
     @Expose
     private List<Preference> preferences = new ArrayList<Preference>();
@@ -43,7 +43,7 @@ public class Slot {
      * @return
      * The starttime
      */
-    public String getStarttime() {
+    public Long getStarttime() {
         return starttime;
     }
 
@@ -52,7 +52,7 @@ public class Slot {
      * @param starttime
      * The starttime
      */
-    public void setStarttime(String starttime) {
+    public void setStarttime(Long starttime) {
         this.starttime = starttime;
     }
 

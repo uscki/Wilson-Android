@@ -2,7 +2,6 @@ package me.blackwolf12333.appcki.fragments.adapters;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +9,14 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.api.MediaAPI;
-import me.blackwolf12333.appcki.api.media.NetworkImageView;
+import me.blackwolf12333.appcki.views.NetworkImageView;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.fragments.agenda.AgendaDetailTabsFragment;
 import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
@@ -40,23 +41,32 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
     public void onBindViewHolder(final ViewHolder holder, int position) {
         AgendaItem item = items.get(position);
         holder.mItem = item;
-        holder.mContentView.setText(item.getWhat());
-        holder.itemWhen.setText(item.getWhen());
-        holder.itemDeelnemers.setText(item.getParticipants().size() + "");
-        holder.itemWhere.setText(item.getWhere());
+        holder.mContentView.setText(item.getTitle());
 
-        if(item.getDeadline()) {
-            Log.d("AgendaItemAdapter", "deadline");
-            holder.itemDeadline.setText(item.getDeadline_date()); // TODO API: richard gaat hier nog shit aan veranderen
+        if (item.getEnd() != null) {
+            String when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm") + " - " + item.getEnd().toString("EEEE dd MMMM YYYY HH:mm");
+            holder.itemWhen.setText(when);
+        } else {
+            holder.itemWhen.setText(item.getStart().toString("EEEE dd MMMM YYYY HH:mm"));
+        }
+
+        holder.itemDeelnemers.setText(item.getParticipants().size() + "");
+        holder.itemWhere.setText(item.getLocation());
+
+        if(item.getHasDeadline()) {
+            DateTime dateTime = new DateTime(item.getDeadline());
+            holder.itemDeadline.setText(dateTime.toString("EEEE dd MMMM YYYY HH:mm")); // TODO API: richard gaat hier nog shit aan veranderen
             holder.inschrijvenVerplicht.setVisibility(View.VISIBLE);
         } else {
             holder.inschrijvenVerplicht.setVisibility(View.GONE);
         }
 
         //holder.itemPoster.setDefaultImageResId(R.drawable.default_poster);
-        if(item.getPosterid() != null) {
-            final String url = String.format(MediaAPI.URL, MediaAPI.getFiletypeFromMime(item.getPosterid().getMimetype()), item.getPosterid().getId());
-            holder.itemPoster.setImageIdAndType(item.getPosterid().getId(), MediaAPI.getFiletypeFromMime(item.getPosterid().getMimetype()));
+        if(item.getPoster() != null) {
+            holder.itemPoster.setVisibility(View.VISIBLE); // als het vorige item in deze holder invisible was moet het weer visible worden
+            holder.itemPoster.setImageIdAndType(item.getPoster().getId(), MediaAPI.getFiletypeFromMime(item.getPoster().getMimetype()));
+        } else {
+            holder.itemPoster.setVisibility(View.INVISIBLE);
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {

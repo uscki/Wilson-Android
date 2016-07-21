@@ -8,6 +8,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.blackwolf12333.appcki.generated.media.MediaFile;
+
 public class Person {
 
     @Expose
@@ -37,7 +39,7 @@ public class Person {
     @Expose
     private String cookiestring;
     @Expose
-    private Integer photomediaid;
+    private MediaFile photomediaid;
     @Expose
     private List<String> roles = new ArrayList<String>();
 
@@ -262,7 +264,7 @@ public class Person {
      * @return
      *     The photomediaid
      */
-    public Integer getPhotomediaid() {
+    public MediaFile getPhotomediaid() {
         return photomediaid;
     }
 
@@ -271,7 +273,7 @@ public class Person {
      * @param photomediaid
      *     The photomediaid
      */
-    public void setPhotomediaid(Integer photomediaid) {
+    public void setPhotomediaid(MediaFile photomediaid) {
         this.photomediaid = photomediaid;
     }
 

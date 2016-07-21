@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
 
-import me.blackwolf12333.appcki.User;
 import me.blackwolf12333.appcki.generated.organisation.Person;
 
 /**
@@ -16,11 +15,15 @@ import me.blackwolf12333.appcki.generated.organisation.Person;
  */
 public class UserHelper {
     private static UserHelper singleton;
-    private User user;
+    public String TOKEN;
+    private Person person;
+    private boolean loggedIn;
     private SharedPreferences preferences;
 
     private UserHelper() {
-        user = new User(null, null);
+        this.TOKEN = null;
+        this.person = null;
+        this.loggedIn = false;
     }
 
     public static synchronized UserHelper getInstance( ) {
@@ -29,17 +32,22 @@ public class UserHelper {
         return singleton;
     }
 
-    public User getUser() {
-        return user;
-    }
-
     public void setPreferences(SharedPreferences preferences) {
         this.preferences = preferences;
     }
 
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
     public void login(String token, Person person) {
-        this.user = new User(token, person);
-        this.user.loggedIn = true;
+        this.TOKEN = token;
+        this.person = person;
+        this.loggedIn = true;
     }
 
     public void logout() {
@@ -49,19 +57,24 @@ public class UserHelper {
             editor.remove("TOKEN");
             editor.apply();
         }
-        this.user.loggedIn = false;
-        this.user.TOKEN = null;
-        this.user.setPerson(null);
+        this.loggedIn = false;
+        this.TOKEN = null;
+        this.setPerson(null);
     }
 
     public boolean isLoggedIn() {
-        return user.loggedIn;
+        return loggedIn;
     }
 
     public void save() {
         if(!preferences.contains("TOKEN")) {
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("TOKEN", user.TOKEN);
+            editor.putString("TOKEN", TOKEN);
+            editor.apply();
+        } else {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.remove("TOKEN");
+            editor.putString("TOKEN", TOKEN);
             editor.apply();
         }
     }
@@ -75,12 +88,15 @@ public class UserHelper {
                     Person person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), Person.class);
                     login(token, person);
                 } else {
-                    user.loggedIn = false;
+                    loggedIn = false;
                 }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-
+        } else {
+            this.person = null;
+            this.TOKEN = null;
+            this.loggedIn = false;
         }
     }
 }

@@ -22,8 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
-import me.blackwolf12333.appcki.api.Services;
-import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
+import me.blackwolf12333.appcki.views.NetworkImageView;
 import me.blackwolf12333.appcki.events.LinkClickedEvent;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.events.ServerErrorEvent;
@@ -32,15 +31,9 @@ import me.blackwolf12333.appcki.events.UserLoggedInEvent;
 import me.blackwolf12333.appcki.fragments.HomeFragment;
 import me.blackwolf12333.appcki.fragments.HomeSubFragments;
 import me.blackwolf12333.appcki.fragments.LoginFragment;
-import me.blackwolf12333.appcki.fragments.MeetingOverviewFragment;
 import me.blackwolf12333.appcki.fragments.RoephoekDialogFragment;
-import me.blackwolf12333.appcki.fragments.agenda.AgendaDetailFragment;
-import me.blackwolf12333.appcki.fragments.agenda.SubscribeDialogFragment;
-import me.blackwolf12333.appcki.generated.agenda.Subscribers;
+import me.blackwolf12333.appcki.fragments.meeting.MeetingOverviewFragment;
 import me.blackwolf12333.appcki.helpers.UserHelper;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -57,8 +50,9 @@ public class MainActivity extends AppCompatActivity
         AGENDA,
         POLL,
         ROEPHOEK,
-        VERGADERPLANNER,
         AGENDA_DETAIL,
+        MEETING_OVERVIEW,
+        MEETING_PLANNER
     }
 
     public static Screen currentScreen;
@@ -99,7 +93,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         saveState();
-        UserHelper.getInstance().save();
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
@@ -107,19 +100,22 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         saveState();
-        UserHelper.getInstance().save();
         super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        Log.d(TAG, "back: " + currentScreen.name());
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             if (currentScreen == Screen.AGENDA_DETAIL) {
                 openTab(HomeSubFragments.AGENDA);
-            } else {
+            } else if (currentScreen == Screen.MEETING_PLANNER) {
+                openFragment(new MeetingOverviewFragment(), null);
+            }
+            else {
                 super.onBackPressed();
             }
         }
@@ -145,12 +141,6 @@ public class MainActivity extends AppCompatActivity
         } else if(id == R.id.action_roephoek_roep) {
             buildRoephoekAddDialog();
             return true;
-        } else if(id == R.id.action_agenda_subscribe) {
-            subscribeToAgenda(true);
-            return true;
-        } else if (id == R.id.action_agenda_unsubscribe) {
-            subscribeToAgenda(false);
-            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -172,7 +162,6 @@ public class MainActivity extends AppCompatActivity
                 openTab(HomeSubFragments.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
                 openFragment(new MeetingOverviewFragment(), null);
-// TODO: 5/22/16 meetings 
             } else if (id == R.id.nav_login) {
                 UserHelper.getInstance().logout();
                 initLoggedOutUI();
@@ -190,6 +179,7 @@ public class MainActivity extends AppCompatActivity
 
     private void openTab(int index) {
         if (currentScreen == Screen.ROEPHOEK || currentScreen == Screen.NEWS || currentScreen == Screen.AGENDA) {
+            // HomeFragment luistert naar dit event om daarin de tab te switchen
             EventBus.getDefault().post(new SwitchTabEvent(index));
         } else {
             Bundle bundle = new Bundle();
@@ -215,8 +205,11 @@ public class MainActivity extends AppCompatActivity
 
         navigationView.getMenu().findItem(R.id.nav_login).setTitle(getString(R.string.logout));
         TextView name = (TextView) navigationView.findViewById(R.id.nav_header_name);
-        name.setText(UserHelper.getInstance().getUser().getPerson().getName());
+        name.setText(UserHelper.getInstance().getPerson().getName());
         // TODO API: 5/22/16 profile pic
+
+        NetworkImageView profile = (NetworkImageView) navigationView.findViewById(R.id.nav_header_profilepic);
+        profile.setImageMediaFile(UserHelper.getInstance().getPerson().getPhotomediaid());
     }
 
     private void initLoggedOutUI() {
@@ -227,16 +220,21 @@ public class MainActivity extends AppCompatActivity
         name.setText("");
 
         // TODO API: 5/22/16 profile pic
+        //NetworkImageView profile = (NetworkImageView) navigationView.findViewById(R.id.nav_header_profilepic);
+        //profile.setDefaultImageResId(android.R.drawable.sym_def_app_icon);
     }
 
     private void saveState() {
+        UserHelper.getInstance().save();
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         preferences.edit().putString("last_screen", currentScreen.name()).apply();
+        Log.d("MainActivity", "save: " + currentScreen.name());
     }
 
     private void loadState() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         Screen screen = Screen.valueOf(preferences.getString("last_screen", "NEWS"));
+        Log.d("MainActivity", "load: " + screen.name());
         switch (screen) {
             case LOGIN:
                 openFragment(loginFragment, null);
@@ -252,30 +250,12 @@ public class MainActivity extends AppCompatActivity
             case ROEPHOEK:
                 openTab(HomeSubFragments.ROEPHOEK);
                 break;
-            case VERGADERPLANNER:
+            case MEETING_OVERVIEW:
                 openFragment(new MeetingOverviewFragment(), null);
                 break;
-        }
-    }
-
-    private void subscribeToAgenda(boolean subscribe) {
-        if(subscribe) {
-            DialogFragment newFragment = new SubscribeDialogFragment();
-            newFragment.show(getSupportFragmentManager(), "agenda_subscribe");
-        } else {
-            Log.d("MainActivity", "unsubscribing for:" + AgendaDetailFragment.item.getId());
-            Services.getInstance().agendaService.unsubscribe(AgendaDetailFragment.item.getId()).enqueue(new Callback<Subscribers>() {
-                @Override
-                public void onResponse(Call<Subscribers> call, Response<Subscribers> response) {
-                    //TODO
-                    EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body())); // TODO: 6/29/16 dirty hack to get the right action in the menu in AgendaDetailTabsFragment
-                }
-
-                @Override
-                public void onFailure(Call<Subscribers> call, Throwable t) {
-
-                }
-            });
+            default: // UNHANDLED SCREENS eg AGENDA_DETAIL
+                openTab(HomeSubFragments.NEWS);
+                break;
         }
     }
 

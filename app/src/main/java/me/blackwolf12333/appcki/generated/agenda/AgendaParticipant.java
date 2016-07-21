@@ -3,6 +3,7 @@ package me.blackwolf12333.appcki.generated.agenda;
 
 import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.joda.time.DateTime;
 
 import me.blackwolf12333.appcki.generated.organisation.Person;
 
@@ -15,7 +16,7 @@ public class AgendaParticipant {
     @Expose
     private String note;
     @Expose
-    private String subscribed;
+    private Long subscribed;
     @Expose
     private Boolean backuplist;
     @Expose
@@ -80,8 +81,8 @@ public class AgendaParticipant {
      * @return
      *     The subscribed
      */
-    public String getSubscribed() {
-        return subscribed;
+    public DateTime getSubscribed() {
+        return new DateTime(subscribed);
     }
 
     /**
@@ -89,7 +90,7 @@ public class AgendaParticipant {
      * @param subscribed
      *     The subscribed
      */
-    public void setSubscribed(String subscribed) {
+    public void setSubscribed(Long subscribed) {
         this.subscribed = subscribed;
     }
 

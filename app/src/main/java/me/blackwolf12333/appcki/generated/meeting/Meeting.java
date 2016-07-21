@@ -19,7 +19,7 @@ public class Meeting {
     private Integer duration;
     @SerializedName("actual_time")
     @Expose
-    private String actualTime;
+    private Long actualTime;
     @SerializedName("location")
     @Expose
     private String location;
@@ -116,7 +116,7 @@ public class Meeting {
      * @return
      * The actualTime
      */
-    public String getActualTime() {
+    public Long getActualTime() {
         return actualTime;
     }
 
@@ -125,7 +125,7 @@ public class Meeting {
      * @param actualTime
      * The actual_time
      */
-    public void setActualTime(String actualTime) {
+    public void setActualTime(Long actualTime) {
         this.actualTime = actualTime;
     }
 
