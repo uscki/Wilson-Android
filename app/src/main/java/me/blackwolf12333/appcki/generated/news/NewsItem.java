@@ -26,6 +26,8 @@ public class NewsItem {
     @Expose
     private String sticky;
     @Expose
+    private Long timestamp;
+    @Expose
     private NewsType type;
 
     /**
@@ -170,6 +172,14 @@ public class NewsItem {
      */
     public void setSticky(String sticky) {
         this.sticky = sticky;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 
     /**

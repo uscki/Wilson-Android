@@ -1,19 +1,24 @@
 package me.blackwolf12333.appcki.fragments.adapters;
 
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Hours;
+import org.joda.time.Months;
+import org.joda.time.Weeks;
+import org.joda.time.Years;
+
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.events.OpenFragmentEvent;
-import me.blackwolf12333.appcki.fragments.NewsDetailFragment;
 import me.blackwolf12333.appcki.generated.news.NewsItem;
+import me.blackwolf12333.appcki.views.BBTextView;
+import me.blackwolf12333.appcki.views.NetworkImageView;
 
 /**
  */
@@ -31,8 +36,42 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = items.get(position);
-        holder.title.setText(items.get(position).getTitle());
+        NewsItem item = items.get(position);
+        holder.mItem = item;
+        holder.title.setText(item.getTitle());
+        holder.content.setText(item.getShorttext());
+
+        String iconUrl = "https://www.uscki.nl/modules/News/images/" + item.getType().getIcon();
+        holder.category.setImageUrl(iconUrl);
+
+        holder.metadata.setText("(" + item.getPerson().getName() + " / " + timestampConversion(item.getTimestamp()));
+    }
+
+    private String timestampConversion(Long time) {
+        DateTime now = DateTime.now();
+        DateTime other = new DateTime(time);
+        int hours = Hours.hoursBetween(other, now).getHours();
+        if(hours > 24) {
+            int days = Days.daysBetween(other, now).getDays();
+            if(days > 7) {
+                int weeks = Weeks.weeksBetween(other, now).getWeeks();
+                if(weeks > 3) {
+                    int months = Months.monthsBetween(other, now).getMonths();
+                    if(months > 12) {
+                        int years = Years.yearsBetween(other, now).getYears();
+                        return "± " + years + " jaren geleden)";
+                    } else {
+                        return "± " + months + " maanden geleden)";
+                    }
+                } else {
+                    return "± " + weeks + " weken geleden)";
+                }
+            } else {
+                return "± " + days + " dagen geleden)";
+            }
+        } else {
+            return "± " + hours + " uur geleden)";
+        }
     }
 
     @Override
@@ -45,24 +84,21 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
         return items.get(items.size()-1).getId();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView title;
+        public final BBTextView content;
+        public final TextView metadata;
+        public final NetworkImageView category;
         public NewsItem mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             title = (TextView) view.findViewById(R.id.news_item_title);
-
-            mView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            Bundle arguments = new Bundle();
-            arguments.putInt("id", mItem.getId());
-            EventBus.getDefault().post(new OpenFragmentEvent(new NewsDetailFragment(), arguments));
+            content = (BBTextView) view.findViewById(R.id.news_item_content);
+            metadata = (TextView) view.findViewById(R.id.news_item_metadata);
+            category = (NetworkImageView) view.findViewById(R.id.news_item_category);
         }
 
         @Override
