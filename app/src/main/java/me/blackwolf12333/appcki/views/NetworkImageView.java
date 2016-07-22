@@ -31,17 +31,11 @@ public class NetworkImageView extends ImageView {
         super(context, attrs, defStyle);
     }
 
-    public void setImageMediaFile(MediaFile file) {
-        this.setImageIdAndType(file.getId(), MediaAPI.getFiletypeFromMime(file.getMimetype()));
-    }
-
-    public void setImageIdAndType(Integer id, String type) {
-        final String url = String.format(MediaAPI.URL, type, id);
-
+    public void setImageUrl(final String url) {
         if (MediaAPI.cacheContains(url)) {
             setImageBitmap(MediaAPI.getFromCache(url));
         } else {
-            Call<ResponseBody> call = Services.getInstance().imageService.getAgendaPoster(url);
+            Call<ResponseBody> call = Services.getInstance().imageService.getImage(url);
             call.enqueue(new Callback<ResponseBody>() {
                              @Override
                              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -50,6 +44,7 @@ public class NetworkImageView extends ImageView {
                                      Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
                                      if (bitmap != null) {
                                          setImageBitmap(bitmap);
+                                         MediaAPI.putInCache(bitmap, url);
                                          Log.v("NetworkImageView", "file download was a success!");
                                      } else {
                                          Log.v("NetworkImageView", "file download was a failure!");
@@ -61,11 +56,24 @@ public class NetworkImageView extends ImageView {
                              }
                              @Override
                              public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                 return;
+                                 if (t instanceof ConnectException) {
+                                     new ConnectionError(t); // handle connection error in MainActivity
+                                 } else {
+                                     throw new RuntimeException(t);
+                                 }
                              }
                          }
             );
         }
+    }
+
+    public void setImageMediaFile(MediaFile file) {
+        this.setImageIdAndType(file.getId(), MediaAPI.getFiletypeFromMime(file.getMimetype()));
+    }
+
+    public void setImageIdAndType(Integer id, String type) {
+        final String url = String.format(MediaAPI.URL, type, id);
+        this.setImageUrl(url);
     }
 
     public void setDefaultImageResId(int defaultImage) {
