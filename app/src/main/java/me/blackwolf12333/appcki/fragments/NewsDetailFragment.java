@@ -8,9 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.net.ConnectException;
+
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.api.Services;
+import me.blackwolf12333.appcki.error.ConnectionError;
 import me.blackwolf12333.appcki.events.NewsItemEvent;
 import me.blackwolf12333.appcki.generated.news.NewsItem;
 import me.blackwolf12333.appcki.views.BBTextView;
@@ -38,7 +41,11 @@ public class NewsDetailFragment extends Fragment {
 
             @Override
             public void onFailure(Call<NewsItem> call, Throwable t) {
-                //TODO
+                if (t instanceof ConnectException) {
+                    new ConnectionError(t); // handle connection error in MainActivity
+                } else {
+                    throw new RuntimeException(t);
+                }
             }
         });
         super.onCreate(savedInstanceState);

@@ -7,8 +7,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
 
+import java.net.ConnectException;
+
 import me.blackwolf12333.appcki.api.MediaAPI;
 import me.blackwolf12333.appcki.api.Services;
+import me.blackwolf12333.appcki.error.ConnectionError;
 import me.blackwolf12333.appcki.generated.media.MediaFile;
 import okhttp3.ResponseBody;
 import retrofit2.Call;

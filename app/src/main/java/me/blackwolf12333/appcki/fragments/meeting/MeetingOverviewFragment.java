@@ -10,12 +10,14 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.api.Services;
+import me.blackwolf12333.appcki.error.ConnectionError;
 import me.blackwolf12333.appcki.events.MeetingOverviewEvent;
 import me.blackwolf12333.appcki.fragments.PageableFragment;
 import me.blackwolf12333.appcki.fragments.adapters.MeetingItemAdapter;
@@ -52,8 +54,11 @@ public class MeetingOverviewFragment extends PageableFragment {
 
             @Override
             public void onFailure(Call<MeetingOverview> call, Throwable t) {
-                Log.d("MeetingOverviewFragment", "Failed to get the meeting overview");
-                Log.d("MeetingOverviewFragment", t.getMessage());
+                if (t instanceof ConnectException) {
+                    new ConnectionError(t); // handle connection error in MainActivity
+                } else {
+                    t.printStackTrace();
+                }
             }
         });
     }
@@ -89,7 +94,11 @@ public class MeetingOverviewFragment extends PageableFragment {
 
             @Override
             public void onFailure(Call<MeetingOverview> call, Throwable t) {
-
+                if (t instanceof ConnectException) {
+                    new ConnectionError(t); // handle connection error in MainActivity
+                } else {
+                    throw new RuntimeException(t);
+                }
             }
         });
     }

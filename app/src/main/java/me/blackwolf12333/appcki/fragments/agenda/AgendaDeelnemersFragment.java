@@ -7,8 +7,11 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 
+import java.net.ConnectException;
+
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.api.Services;
+import me.blackwolf12333.appcki.error.ConnectionError;
 import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
 import me.blackwolf12333.appcki.events.AgendaSubscribersEvent;
 import me.blackwolf12333.appcki.fragments.PageableFragment;
@@ -52,7 +55,11 @@ public class AgendaDeelnemersFragment extends PageableFragment {
 
             @Override
             public void onFailure(Call<AgendaItem> call, Throwable t) {
-
+                if (t instanceof ConnectException) {
+                    new ConnectionError(t); // handle connection error in MainActivity
+                } else {
+                    throw new RuntimeException(t);
+                }
             }
         });
         //VolleyAgenda.getInstance().getSubscribed(item.getId()); // TODO API: wacht op api implementatie

@@ -9,9 +9,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import java.net.ConnectException;
+
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.api.Services;
+import me.blackwolf12333.appcki.error.ConnectionError;
 import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
 import me.blackwolf12333.appcki.generated.agenda.Subscribers;
 import retrofit2.Call;
@@ -43,7 +46,11 @@ public class SubscribeDialogFragment extends DialogFragment {
 
                     @Override
                     public void onFailure(Call<Subscribers> call, Throwable t) {
-                        t.printStackTrace();
+                        if (t instanceof ConnectException) {
+                            new ConnectionError(t); // handle connection error in MainActivity
+                        } else {
+                            throw new RuntimeException(t);
+                        }
                     }
                 });
             }

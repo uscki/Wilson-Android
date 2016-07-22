@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.events.ErrorEvent;
 import me.blackwolf12333.appcki.events.LinkClickedEvent;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
 import me.blackwolf12333.appcki.events.ServerErrorEvent;
@@ -292,6 +293,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     // EVENT HANDLING
+    public void onEventMainThread(ErrorEvent event) {
+        Toast toast = Toast.makeText(getApplicationContext(), event.error.getMessage(), Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
     public void onEventMainThread(UserLoggedInEvent event) {
         initLoggedInUI();
         openTab(HomeSubFragments.NEWS);

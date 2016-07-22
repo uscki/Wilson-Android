@@ -8,12 +8,14 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.api.Services;
+import me.blackwolf12333.appcki.error.ConnectionError;
 import me.blackwolf12333.appcki.events.AgendaEvent;
 import me.blackwolf12333.appcki.events.NewsOverviewEvent;
 import me.blackwolf12333.appcki.events.RoephoekOlderEvent;
@@ -54,8 +56,11 @@ public class HomeSubFragments extends PageableFragment {
 
         @Override
         public void onFailure(Call<NewsOverview> call, Throwable t) {
-            // TODO
-            t.printStackTrace();
+            if (t instanceof ConnectException) {
+                new ConnectionError(t); // handle connection error in MainActivity
+            } else {
+                throw new RuntimeException(t);
+            }
         }
     };
 
@@ -83,8 +88,11 @@ public class HomeSubFragments extends PageableFragment {
 
         @Override
         public void onFailure(Call<Agenda> call, Throwable t) {
-            // TODO
-            t.printStackTrace();
+            if (t instanceof ConnectException) {
+                new ConnectionError(t); // handle connection error in MainActivity
+            } else {
+                throw new RuntimeException(t);
+            }
         }
     };
 
@@ -108,8 +116,11 @@ public class HomeSubFragments extends PageableFragment {
 
         @Override
         public void onFailure(Call<Roephoek> call, Throwable t) {
-            // TODO
-            t.printStackTrace();
+            if (t instanceof ConnectException) {
+                new ConnectionError(t); // handle connection error in MainActivity
+            } else {
+                throw new RuntimeException(t);
+            }
         }
     };
 
