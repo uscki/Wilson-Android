@@ -11,5 +11,5 @@ import retrofit2.http.Url;
 public interface ImageService {
     //@Streaming
     @GET
-    Call<ResponseBody> getAgendaPoster(@Url String url);
+    Call<ResponseBody> getImage(@Url String url);
 }
