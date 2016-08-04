@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity
         ROEPHOEK,
         AGENDA_DETAIL,
         MEETING_OVERVIEW,
-        MEETING_PLANNER
+        MEETING_PLANNER,
+        MEETING_DETAIL
     }
 
     public static Screen currentScreen;
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             if (currentScreen == Screen.AGENDA_DETAIL) {
                 openTab(HomeSubFragments.AGENDA);
-            } else if (currentScreen == Screen.MEETING_PLANNER) {
+            } else if (currentScreen == Screen.MEETING_PLANNER || currentScreen == Screen.MEETING_DETAIL) {
                 openFragment(new MeetingOverviewFragment(), null);
             }
             else {

@@ -296,6 +296,9 @@ public class Person {
     }
 
     public String getName() {
+        if (middlename != null) {
+            return getFirstname() + " " + getMiddlename() + " " + getLastname();
+        }
         return firstname + " " + lastname;
     }
 

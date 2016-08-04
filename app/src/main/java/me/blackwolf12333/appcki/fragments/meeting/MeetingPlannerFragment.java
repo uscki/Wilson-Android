@@ -9,11 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 
 import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.api.Services;
+import me.blackwolf12333.appcki.fragments.meeting.adapter.DaySlots;
+import me.blackwolf12333.appcki.fragments.meeting.adapter.MeetingPreferenceDayAdapter;
 import me.blackwolf12333.appcki.generated.meeting.MeetingItem;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,6 +28,7 @@ import retrofit2.Response;
  */
 public class MeetingPlannerFragment extends Fragment {
     RecyclerView recyclerView;
+    MeetingItem item;
     Integer meetingItemId;
 
     public MeetingPlannerFragment() {
@@ -33,7 +38,9 @@ public class MeetingPlannerFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        meetingItemId = getArguments().getInt("item");
+        Gson gson = new Gson();
+        item = gson.fromJson(getArguments().getString("item"), MeetingItem.class);
+        meetingItemId = item.getMeeting().getId();
     }
 
     @Override
@@ -44,11 +51,11 @@ public class MeetingPlannerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_meeting_planner, container, false);
         if (view instanceof RecyclerView) {
             recyclerView = (RecyclerView) view;
-            recyclerView.setAdapter(new MeetingPreferenceDayAdapter(new ArrayList<DaySlots>()));
+            recyclerView.setAdapter(new MeetingPreferenceDayAdapter(getActivity(), new ArrayList<DaySlots>()));
             Services.getInstance().meetingService.get(meetingItemId).enqueue(new Callback<MeetingItem>() {
                 @Override
                 public void onResponse(Call<MeetingItem> call, Response<MeetingItem> response) {
-                    recyclerView.setAdapter(new MeetingPreferenceDayAdapter(DaySlots.fromSlots(response.body().getSlots())));
+                    recyclerView.setAdapter(new MeetingPreferenceDayAdapter(getActivity(), DaySlots.fromSlots(response.body().getSlots())));
                 }
 
                 @Override

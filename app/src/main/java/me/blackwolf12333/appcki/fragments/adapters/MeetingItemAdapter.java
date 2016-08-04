@@ -12,11 +12,12 @@ import com.google.gson.Gson;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.events.OpenFragmentEvent;
-import me.blackwolf12333.appcki.fragments.meeting.MeetingPlannerFragment;
+import me.blackwolf12333.appcki.fragments.meeting.MeetingDetailTabsFragment;
 import me.blackwolf12333.appcki.generated.meeting.MeetingItem;
 
 /**
@@ -61,9 +62,9 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
                 Bundle args = new Bundle();
                 Gson gson = new Gson();
                 String json = gson.toJson(holder.mItem, MeetingItem.class);
-                args.putInt("item", holder.mItem.getMeeting().getId());
+                args.putString("item", json);
                 // TODO: 7/3/16 launch vergaderplanner fragment
-                EventBus.getDefault().post(new OpenFragmentEvent(new MeetingPlannerFragment(), args));
+                EventBus.getDefault().post(new OpenFragmentEvent(new MeetingDetailTabsFragment(), args));
             }
         });
     }
@@ -81,9 +82,8 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
     }
 
     private String getMensenString(MeetingItem meeting) {
-        String mensen = String.format("%d / %d ( %d )", meeting.getEnrolledPersons().size(), meeting.getParticipation().size(),
+        return String.format(Locale.getDefault(), "%d / %d ( %d )", meeting.getEnrolledPersons().size(), meeting.getParticipation().size(),
                 (int)(((float)meeting.getEnrolledPersons().size()/(float)meeting.getParticipation().size()) * 100));
-        return mensen;
     }
 
     @Override

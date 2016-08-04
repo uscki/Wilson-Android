@@ -53,7 +53,7 @@ public class AgendaDetailTabsFragment extends Fragment {
         MainActivity.currentScreen = MainActivity.Screen.AGENDA_DETAIL;
 
         // Inflate the layout for this fragment
-        View inflatedView = inflater.inflate(R.layout.fragment_agenda_detail_tabs, container, false);
+        View inflatedView = inflater.inflate(R.layout.fragment_tabs, container, false);
 
         tabLayout = (TabLayout) inflatedView.findViewById(R.id.tabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("Agenda"));

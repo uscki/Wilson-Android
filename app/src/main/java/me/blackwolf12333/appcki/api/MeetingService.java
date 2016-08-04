@@ -19,5 +19,5 @@ public interface MeetingService {
     Call<MeetingItem> get(@Path("id") Integer id);
 
     @POST("meetings/slots/{id}?canAttend=true")
-    Call<Void> setSlot(@Path("id") Integer id, @Query("notes") String notes);
+    Call<Boolean> setSlot(@Path("id") Integer id, @Query("notes") String notes);
 }

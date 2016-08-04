@@ -12,15 +12,12 @@ public class EnrolledPerson {
     @SerializedName("id")
     @Expose
     private Integer id;
-    @SerializedName("username")
-    @Expose
-    private String username;
     @SerializedName("photomediaid")
     @Expose
     private MediaFile photomediaid;
-    @SerializedName("nickname")
+    @SerializedName("name")
     @Expose
-    private String nickname;
+    private String name;
 
     /**
      *
@@ -38,24 +35,6 @@ public class EnrolledPerson {
      */
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    /**
-     *
-     * @return
-     * The username
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     *
-     * @param username
-     * The username
-     */
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     /**
@@ -79,19 +58,19 @@ public class EnrolledPerson {
     /**
      *
      * @return
-     * The nickname
+     * The name
      */
-    public String getNickname() {
-        return nickname;
+    public String getName() {
+        return name;
     }
 
     /**
      *
-     * @param nickname
-     * The nickname
+     * @param name
+     * The name
      */
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

@@ -1,6 +1,7 @@
-package me.blackwolf12333.appcki.fragments.meeting;
+package me.blackwolf12333.appcki.fragments.meeting.adapter;
 
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,9 +20,11 @@ import me.blackwolf12333.appcki.R;
  */
 public class MeetingPreferenceDayAdapter extends RecyclerView.Adapter<MeetingPreferenceDayAdapter.ViewHolder> {
     List<DaySlots> slots;
+    private Context context;
 
-    public MeetingPreferenceDayAdapter(List<DaySlots> slots) {
+    public MeetingPreferenceDayAdapter(Context context, List<DaySlots> slots) {
         this.slots = slots;
+        this.context = context;
     }
 
     @Override
@@ -36,7 +39,7 @@ public class MeetingPreferenceDayAdapter extends RecyclerView.Adapter<MeetingPre
         DaySlots daySlots = slots.get(position);
         holder.daySlots = daySlots;
         holder.date.setText(daySlots.getDay());
-        holder.slots.setAdapter(new MeetingPreferenceDaySlotAdapter(daySlots.getSlots()));
+        holder.slots.setAdapter(new MeetingPreferenceDaySlotAdapter(context, daySlots.getSlots()));
         holder.collapse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

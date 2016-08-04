@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".fragments.meeting.MeetingPreferenceDayAdapter">
+    tools:context=".fragments.meeting.adapter.MeetingPreferenceDayAdapter">
 
     <TextView
         android:layout_width="wrap_content"
@@ -28,7 +28,7 @@
         android:layout_marginRight="16dp"
         android:layout_below="@id/meeting_preference_day_text"
         app:layoutManager="LinearLayoutManager"
-        tools:context=".fragments.meeting.MeetingPreferenceDayAdapter"
+        tools:context=".fragments.meeting.adapter.MeetingPreferenceDayAdapter"
         tools:listitem="@layout/meeting_slot" />
 
     <ImageView

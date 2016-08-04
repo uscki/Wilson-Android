@@ -1,4 +1,4 @@
-package me.blackwolf12333.appcki.fragments;
+package me.blackwolf12333.appcki.fragments.meeting;
 
 
 import android.os.Bundle;
@@ -9,34 +9,58 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import de.greenrobot.event.EventBus;
+import com.google.gson.Gson;
+
+import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.events.SwitchTabEvent;
-import me.blackwolf12333.appcki.fragments.adapters.HomeViewPagerAdapter;
+import me.blackwolf12333.appcki.fragments.meeting.adapter.MeetingDetailAdapter;
+import me.blackwolf12333.appcki.generated.meeting.MeetingItem;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment {
+public class MeetingDetailTabsFragment extends Fragment {
     TabLayout tabLayout;
     ViewPager viewPager;
 
-    public HomeFragment() {
+    MeetingItem item;
+
+    public static final int PLANNER = 0;
+    public static final int AANWEZIG = 1;
+    public static final int AFWEZIG = 2;
+
+    public MeetingDetailTabsFragment() {
         // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        MainActivity.currentScreen = MainActivity.Screen.MEETING_DETAIL;
+
+        // Inflate the layout for this fragment
         View inflatedView = inflater.inflate(R.layout.fragment_tabs, container, false);
 
+        if (getArguments() != null) {
+            Gson gson = new Gson();
+            item = gson.fromJson(getArguments().getString("item"), MeetingItem.class);
+        }
+
         tabLayout = (TabLayout) inflatedView.findViewById(R.id.tabLayout);
-        tabLayout.addTab(tabLayout.newTab().setText("Nieuws"));
-        tabLayout.addTab(tabLayout.newTab().setText("Agenda"));
-        tabLayout.addTab(tabLayout.newTab().setText("Roephoek"));
+        if (item.getMeeting().getActualTime() != null) {
+            tabLayout.addTab(tabLayout.newTab().setText("Overzicht"));
+            tabLayout.addTab(tabLayout.newTab().setText("Aanwezig"));
+            tabLayout.addTab(tabLayout.newTab().setText("Afwezig"));
+        } else {
+            tabLayout.addTab(tabLayout.newTab().setText("Planner"));
+            tabLayout.addTab(tabLayout.newTab().setText("Gereageerd"));
+            tabLayout.addTab(tabLayout.newTab().setText("Niet gereageerd"));
+        }
+
         viewPager = (ViewPager) inflatedView.findViewById(R.id.viewpager);
 
-        viewPager.setAdapter(new HomeViewPagerAdapter(getFragmentManager()));
+        viewPager.setAdapter(new MeetingDetailAdapter(getFragmentManager(), item));
+
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -54,32 +78,20 @@ public class HomeFragment extends Fragment {
 
             }
         });
-
-        if (getArguments() != null) {
-            int index = getArguments().getInt("index");
-            viewPager.setCurrentItem(index);
-            tabLayout.setScrollPosition(index, 0f, false);
-        }
-
         return inflatedView;
     }
 
-    // EVENT HANDLING
 
-    public void onEventMainThread(SwitchTabEvent event) {
-        viewPager.setCurrentItem(event.index);
-        tabLayout.setScrollPosition(event.index, 0f, false);
-    }
 
     @Override
     public void onStart() {
-        EventBus.getDefault().register(this);
+       // EventBus.getDefault().register(this);
         super.onStart();
     }
 
     @Override
     public void onStop() {
-        EventBus.getDefault().unregister(this);
+       // EventBus.getDefault().unregister(this);
         super.onStop();
     }
 }

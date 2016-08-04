@@ -1,4 +1,4 @@
-package me.blackwolf12333.appcki.fragments.meeting;
+package me.blackwolf12333.appcki.fragments.meeting.adapter;
 
 import org.joda.time.DateTime;
 
