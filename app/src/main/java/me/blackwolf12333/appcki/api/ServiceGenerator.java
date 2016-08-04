@@ -1,7 +1,5 @@
 package me.blackwolf12333.appcki.api;
 
-import android.util.Log;
-
 import java.io.IOException;
 
 import me.blackwolf12333.appcki.App;
@@ -11,6 +9,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -29,19 +28,20 @@ public class ServiceGenerator {
                     .addConverterFactory(GsonConverterFactory.create());
 
     public static <S> S createService(Class<S> serviceClass) {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        // set your desired log level
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        //httpClient.addInterceptor(logging); TODO uncomment voor debug output
+
         httpClient.addInterceptor(new Interceptor() {
             @Override
             public Response intercept(Interceptor.Chain chain) throws IOException {
                 Request original = chain.request();
-
-                Log.d("ServiceGenerator", original.toString());
-
                 Request.Builder requestBuilder = original.newBuilder()
                         .header("X-AUTH-TOKEN", UserHelper.getInstance().TOKEN)
                         .method(original.method(), original.body());
 
-                Request request = requestBuilder.build();
-                return chain.proceed(request);
+                return chain.proceed(requestBuilder.build());
             }
         });
 
