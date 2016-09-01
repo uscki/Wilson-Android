@@ -45,13 +45,32 @@ public class HomeSubFragments extends PageableFragment {
     public static final int AGENDA = 1;
     public static final int ROEPHOEK = 2;
 
+    private final int NEWS_PAGE_SIZE = 3;
+    private final int AGENDA_PAGE_SIZE = 4;
+    private final int ROEPHOEK_PAGE_SIZE = 7;
+
     private Callback<NewsOverview> newsOverviewCallback = new Callback<NewsOverview>() {
         @Override
         public void onResponse(Call<NewsOverview> call, Response<NewsOverview> response) {
             swipeContainer.setRefreshing(false);
-            if (getAdapter() instanceof NewsItemAdapter) {
-                getAdapter().update(response.body().getContent());
+            if (loading) {
+                loading = false;
+                if (getAdapter() instanceof NewsItemAdapter) {
+                    if (response.body() != null) {
+                        getAdapter().addItems(response.body().getContent());
+                    } else {
+                        //TODO handle failing to load more
+                        Log.d("HomeSubFragments", response.body()+"");
+                    }
+                }
+            }else {
+                if (getAdapter() instanceof NewsItemAdapter) {
+                    if (response.body() != null) {
+                        getAdapter().update(response.body().getContent());
+                    }
+                }
             }
+
         }
 
         @Override
@@ -145,17 +164,17 @@ public class HomeSubFragments extends PageableFragment {
         switch (type) {
             case NEWS:
                 setAdapter(new NewsItemAdapter(new ArrayList<NewsItem>()));
-                Services.getInstance().newsService.overview().enqueue(newsOverviewCallback);
+                Services.getInstance().newsService.overview(page, NEWS_PAGE_SIZE).enqueue(newsOverviewCallback);
                 MainActivity.currentScreen = MainActivity.Screen.NEWS;
                 break;
             case AGENDA:
                 setAdapter(new AgendaItemAdapter(new ArrayList<AgendaItem>()));
-                Services.getInstance().agendaService.newer().enqueue(agendaCallback);
+                Services.getInstance().agendaService.newer(page, AGENDA_PAGE_SIZE).enqueue(agendaCallback);
                 MainActivity.currentScreen = MainActivity.Screen.AGENDA;
                 break;
             case ROEPHOEK:
                 setAdapter(new RoephoekItemAdapter(new ArrayList<RoephoekItem>()));
-                Services.getInstance().shoutboxService.older(1000000).enqueue(roephoekCallback);
+                Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE, 1000000).enqueue(roephoekCallback);
                 MainActivity.currentScreen = MainActivity.Screen.ROEPHOEK;
                 break;
         }
@@ -190,13 +209,13 @@ public class HomeSubFragments extends PageableFragment {
     public void onSwipeRefresh() {
         switch (type) {
             case NEWS:
-                Services.getInstance().newsService.overview().enqueue(newsOverviewCallback);
+                Services.getInstance().newsService.overview(page, NEWS_PAGE_SIZE).enqueue(newsOverviewCallback);
                 break;
             case AGENDA:
-                Services.getInstance().agendaService.newer().enqueue(agendaCallback);
+                Services.getInstance().agendaService.newer(page, AGENDA_PAGE_SIZE).enqueue(agendaCallback);
                 break;
             case ROEPHOEK:
-                Services.getInstance().shoutboxService.older(1000000).enqueue(roephoekCallback);
+                Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE, 1000000).enqueue(roephoekCallback);
                 break;
         }
     }
@@ -205,12 +224,13 @@ public class HomeSubFragments extends PageableFragment {
     public void onScrollRefresh() {
         switch(type) {
             case NEWS:
+                Services.getInstance().newsService.overview(page, NEWS_PAGE_SIZE).enqueue(newsOverviewCallback);
                 break;
             case AGENDA:
-                Services.getInstance().agendaService.older(getAdapter().getLastID()).enqueue(agendaCallback);
+                Services.getInstance().agendaService.older(page, AGENDA_PAGE_SIZE, getAdapter().getLastID()).enqueue(agendaCallback);
                 break;
             case ROEPHOEK:
-                Services.getInstance().shoutboxService.older(getAdapter().getLastID()).enqueue(roephoekCallback);
+                Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE, getAdapter().getLastID()).enqueue(roephoekCallback);
                 break;
         }
     }

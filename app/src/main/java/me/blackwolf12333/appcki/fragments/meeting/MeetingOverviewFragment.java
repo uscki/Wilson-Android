@@ -35,6 +35,38 @@ public class MeetingOverviewFragment extends PageableFragment {
         // Required empty public constructor
     }
 
+    private final int MEETING_PAGE_SIZE = 4;
+
+    private Callback<MeetingOverview> overviewCallback = new Callback<MeetingOverview>() {
+        @Override
+        public void onResponse(Call<MeetingOverview> call, Response<MeetingOverview> response) {
+            swipeContainer.setRefreshing(false);
+            if (loading) {
+                loading = false;
+                if (getAdapter() instanceof MeetingItemAdapter) {
+                    if (response.body() != null) {
+                        getAdapter().addItems(response.body().getContent());
+                    }
+                }
+            } else {
+                if (getAdapter() instanceof MeetingItemAdapter) {
+                    if (response.body() != null) {
+                        getAdapter().update(response.body().getContent());
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<MeetingOverview> call, Throwable t) {
+            if (t instanceof ConnectException) {
+                new ConnectionError(t); // handle connection error in MainActivity
+            } else {
+                throw new RuntimeException(t);
+            }
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,24 +75,7 @@ public class MeetingOverviewFragment extends PageableFragment {
         MainActivity.currentScreen = MainActivity.Screen.MEETING_OVERVIEW;
 
         setAdapter(new MeetingItemAdapter(new ArrayList<MeetingItem>()));
-        Services.getInstance().meetingService.overview().enqueue(new Callback<MeetingOverview>() {
-            @Override
-            public void onResponse(Call<MeetingOverview> call, Response<MeetingOverview> response) {
-                swipeContainer.setRefreshing(false);
-                if (getAdapter() instanceof MeetingItemAdapter) {
-                    getAdapter().update(response.body().getContent());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MeetingOverview> call, Throwable t) {
-                if (t instanceof ConnectException) {
-                    new ConnectionError(t); // handle connection error in MainActivity
-                } else {
-                    t.printStackTrace();
-                }
-            }
-        });
+        Services.getInstance().meetingService.overview(page, MEETING_PAGE_SIZE).enqueue(overviewCallback);
     }
 
     @Override
@@ -79,28 +94,12 @@ public class MeetingOverviewFragment extends PageableFragment {
 
     @Override
     public void onScrollRefresh() {
+        Services.getInstance().meetingService.overview(page, MEETING_PAGE_SIZE).enqueue(overviewCallback);
     }
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().meetingService.overview().enqueue(new Callback<MeetingOverview>() {
-            @Override
-            public void onResponse(Call<MeetingOverview> call, Response<MeetingOverview> response) {
-                swipeContainer.setRefreshing(false);
-                if (getAdapter() instanceof MeetingItemAdapter) {
-                    getAdapter().update(response.body().getContent());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MeetingOverview> call, Throwable t) {
-                if (t instanceof ConnectException) {
-                    new ConnectionError(t); // handle connection error in MainActivity
-                } else {
-                    throw new RuntimeException(t);
-                }
-            }
-        });
+        Services.getInstance().meetingService.overview(page, MEETING_PAGE_SIZE).enqueue(overviewCallback);
     }
 
     // EVENT HANDLING

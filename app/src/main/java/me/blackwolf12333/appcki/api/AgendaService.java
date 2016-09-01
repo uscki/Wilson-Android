@@ -15,10 +15,10 @@ public interface AgendaService {
     Call<AgendaItem> get(@Query("id") Integer id);
 
     @GET("agenda/newer")
-    Call<Agenda> newer();
+    Call<Agenda> newer(@Query("page") Integer page, @Query("size") Integer size);
 
     @GET("agenda/older")
-    Call<Agenda> older(@Query("id") Integer older);
+    Call<Agenda> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
 
     @GET("agenda/subscribe")
     Call<Subscribers> subscribe(@Query("id") Integer id, @Query("note") String note);

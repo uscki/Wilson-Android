@@ -10,10 +10,10 @@ import retrofit2.http.Query;
  */
 public interface ShoutboxService {
     @GET("shoutbox/newer")
-    Call<Roephoek> newer(@Query("id") Integer newer);
+    Call<Roephoek> newer(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer newer);
 
     @GET("shoutbox/older")
-    Call<Roephoek> older(@Query("id") Integer older);
+    Call<Roephoek> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
 
     @GET("shoutbox/shout")
     Call<Roephoek> shout(@Query("nickname") String name, @Query("message") String message);

@@ -11,14 +11,14 @@ import retrofit2.http.Query;
  */
 public interface NewsService {
     @GET("news/overview?sort=posteddate,desc")
-    Call<NewsOverview> overview();
+    Call<NewsOverview> overview(@Query("page") Integer page, @Query("size") Integer size);
 
     @GET("news/get")
     Call<NewsItem> get(@Query("id") Integer id);
 
     @GET("news/newer")
-    Call<NewsOverview> newer(@Query("id") Integer newer);
+    Call<NewsOverview> newer(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer newer);
 
     @GET("news/older")
-    Call<NewsOverview> older(@Query("id") Integer older);
+    Call<NewsOverview> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
 }

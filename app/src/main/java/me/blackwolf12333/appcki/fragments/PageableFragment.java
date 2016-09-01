@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +29,15 @@ public abstract class PageableFragment extends Fragment {
     private int lastVisibleItem, totalItemCount;
     protected boolean loading;
 
+    protected Integer page;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public PageableFragment() {}
+    public PageableFragment() {
+        page = 0;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,8 @@ public abstract class PageableFragment extends Fragment {
                 if (!loading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
                     // End has been reached
                     loading = true;
+                    page++;
+                    Log.e("PageableFragment", "Loading page: " + page);
                     onScrollRefresh();
                 }
             }
@@ -75,6 +82,7 @@ public abstract class PageableFragment extends Fragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                page = 0;
                 onSwipeRefresh();
             }
         });
@@ -83,6 +91,13 @@ public abstract class PageableFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+
+        swipeContainer.post(new Runnable() { // refresh on init TODO dit word gefixt in support v24.2.0
+            @Override
+            public void run() {
+                swipeContainer.setRefreshing(true);
+            }
+        });
     }
 
     public BaseItemAdapter getAdapter() {

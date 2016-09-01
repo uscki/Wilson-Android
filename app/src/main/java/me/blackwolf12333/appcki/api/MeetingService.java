@@ -13,7 +13,7 @@ import retrofit2.http.Query;
  */
 public interface MeetingService {
     @GET("meetings/")
-    Call<MeetingOverview> overview();
+    Call<MeetingOverview> overview(@Query("page") Integer page, @Query("size") Integer size);
 
     @GET("meetings/{id}")
     Call<MeetingItem> get(@Path("id") Integer id);
