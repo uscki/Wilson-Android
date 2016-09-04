@@ -33,6 +33,7 @@ public class AgendaDeelnemersFragment extends PageableFragment {
             Gson gson = new Gson();
             item = gson.fromJson(getArguments().getString("item"), AgendaItem.class);
             setAdapter(new AgendaDeelnemersAdapter(item.getParticipants()));
+            swipeContainer.setRefreshing(false);
         }
     }
 
