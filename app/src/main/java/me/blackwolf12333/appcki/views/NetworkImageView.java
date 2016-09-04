@@ -52,10 +52,10 @@ public class NetworkImageView extends ImageView {
                                      } else {
                                          Log.v("NetworkImageView", "file download was a failure!");
                                      }
+                                     response.body().close();
                                  } else {
                                      Log.v("NetworkImageView", "server contact failed");
                                  }
-                                 response.body().close();
                              }
                              @Override
                              public void onFailure(Call<ResponseBody> call, Throwable t) {
