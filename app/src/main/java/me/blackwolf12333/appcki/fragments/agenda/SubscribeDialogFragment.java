@@ -40,7 +40,7 @@ public class SubscribeDialogFragment extends DialogFragment {
                 Services.getInstance().agendaService.subscribe(agendaId, note.getText().toString()).enqueue(new Callback<Subscribers>() {
                     @Override
                     public void onResponse(Call<Subscribers> call, Response<Subscribers> response) {
-                        EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body()));
+                        EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body(), false));
                         Log.d("Subscribe", response.body().toString());
                     }
 

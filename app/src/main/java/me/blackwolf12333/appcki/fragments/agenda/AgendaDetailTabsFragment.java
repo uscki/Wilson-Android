@@ -129,7 +129,7 @@ public class AgendaDetailTabsFragment extends Fragment {
                 @Override
                 public void onResponse(Call<Subscribers> call, Response<Subscribers> response) {
                     //TODO
-                    EventBus.getDefault().post(new AgendaItemSubscribedEvent(null)); // TODO: 6/29/16 dirty hack to get the right action in the menu in AgendaDetailTabsFragment
+                    EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body(), true));
                 }
 
                 @Override
@@ -147,7 +147,7 @@ public class AgendaDetailTabsFragment extends Fragment {
     // EVENT HANDLING
 
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
-        if(event.subscribed != null) {
+        if(!event.showSubscribe) {
             HomeSubFragments.m.findItem(R.id.action_agenda_subscribe).setVisible(false);
             HomeSubFragments.m.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
         } else {

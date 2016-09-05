@@ -7,8 +7,10 @@ import me.blackwolf12333.appcki.generated.agenda.Subscribers;
  */
 public class AgendaItemSubscribedEvent {
     public Subscribers subscribed;
+    public boolean showSubscribe;
 
-    public AgendaItemSubscribedEvent(Subscribers subscribed) {
+    public AgendaItemSubscribedEvent(Subscribers subscribed, boolean showSubscribe) {
         this.subscribed = subscribed;
+        this.showSubscribe = showSubscribe;
     }
 }
