@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity
         // TODO API: 5/22/16 profile pic
 
         NetworkImageView profile = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
-        profile.setImageMediaFile(UserHelper.getInstance().getPerson().getPhotomediaid());
+        //profile.setImageMediaFile(UserHelper.getInstance().getPerson().getPhotomediaid());
     }
 
     private void initLoggedOutUI() {

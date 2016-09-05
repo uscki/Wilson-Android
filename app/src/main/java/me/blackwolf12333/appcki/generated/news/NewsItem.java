@@ -28,7 +28,7 @@ public class NewsItem {
     @Expose
     private Long timestamp;
     @Expose
-    private NewsType type;
+    private String type;
 
     /**
      * 
@@ -187,7 +187,7 @@ public class NewsItem {
      * @return
      *     The type
      */
-    public NewsType getType() {
+    public String getType() {
         return type;
     }
 
@@ -196,7 +196,7 @@ public class NewsItem {
      * @param type
      *     The type
      */
-    public void setType(NewsType type) {
+    public void setType(String type) {
         this.type = type;
     }
 

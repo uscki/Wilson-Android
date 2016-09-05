@@ -3,6 +3,7 @@ package me.blackwolf12333.appcki.generated.meeting;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.joda.time.DateTime;
 
 import me.blackwolf12333.appcki.generated.organisation.Person;
 
@@ -41,6 +42,12 @@ public class Meeting {
     @SerializedName("starttime")
     @Expose
     private String starttime;
+    @SerializedName("start")
+    @Expose
+    private Long start;
+    @SerializedName("end")
+    @Expose
+    private Long end;
     @SerializedName("enddate")
     @Expose
     private String enddate;
@@ -217,6 +224,14 @@ public class Meeting {
      */
     public void setInterval(String interval) {
         this.interval = interval;
+    }
+
+    public DateTime getStart() {
+        return new DateTime(start);
+    }
+
+    public DateTime getEnd() {
+        return new DateTime(end);
     }
 
     /**

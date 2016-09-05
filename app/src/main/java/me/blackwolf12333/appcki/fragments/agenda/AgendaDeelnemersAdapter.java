@@ -10,10 +10,9 @@ import android.widget.TextView;
 import java.util.List;
 
 import me.blackwolf12333.appcki.R;
-import me.blackwolf12333.appcki.views.NetworkImageView;
 import me.blackwolf12333.appcki.fragments.adapters.BaseItemAdapter;
 import me.blackwolf12333.appcki.generated.agenda.AgendaParticipant;
-import me.blackwolf12333.appcki.generated.media.MediaFile;
+import me.blackwolf12333.appcki.views.NetworkImageView;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link AgendaParticipant}
@@ -39,8 +38,8 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
 
         if(holder.mItem.getPerson().getPhotomediaid() != null) {
             // TODO API: 5/29/16 fix this shit in the api
-            MediaFile profile = holder.mItem.getPerson().getPhotomediaid();
-            holder.profile.setImageMediaFile(profile);
+            //MediaFile profile = holder.mItem.getPerson().getPhotomediaid();
+            //holder.profile.setImageMediaFile(profile);
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {

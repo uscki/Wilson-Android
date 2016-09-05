@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.blackwolf12333.appcki.generated.organisation.PersonSimple;
+
 public class MeetingItem {
 
     @SerializedName("meeting")
@@ -13,7 +15,7 @@ public class MeetingItem {
     private Meeting meeting;
     @SerializedName("enrolledPersons")
     @Expose
-    private List<EnrolledPerson> enrolledPersons = new ArrayList<EnrolledPerson>();
+    private List<PersonSimple> enrolledPersons = new ArrayList<PersonSimple>();
     @SerializedName("participation")
     @Expose
     private List<Participation> participation = new ArrayList<Participation>();
@@ -47,7 +49,7 @@ public class MeetingItem {
      * @return
      * The enrolledPersons
      */
-    public List<EnrolledPerson> getEnrolledPersons() {
+    public List<PersonSimple> getEnrolledPersons() {
         return enrolledPersons;
     }
 
@@ -56,7 +58,7 @@ public class MeetingItem {
      * @param enrolledPersons
      * The enrolledPersons
      */
-    public void setEnrolledPersons(List<EnrolledPerson> enrolledPersons) {
+    public void setEnrolledPersons(List<PersonSimple> enrolledPersons) {
         this.enrolledPersons = enrolledPersons;
     }
 
