@@ -92,12 +92,13 @@ public abstract class PageableFragment extends Fragment {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        swipeContainer.post(new Runnable() { // refresh on init TODO dit word gefixt in support v24.2.0
+        swipeContainer.setRefreshing(true);
+        /*swipeContainer.post(new Runnable() { // refresh on init TODO dit word gefixt in support v24.2.0
             @Override
             public void run() {
                 swipeContainer.setRefreshing(true);
             }
-        });
+        });*/
     }
 
     public BaseItemAdapter getAdapter() {

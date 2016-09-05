@@ -33,14 +33,15 @@ public class AgendaDeelnemersFragment extends PageableFragment {
             Gson gson = new Gson();
             item = gson.fromJson(getArguments().getString("item"), AgendaItem.class);
             setAdapter(new AgendaDeelnemersAdapter(item.getParticipants()));
-            swipeContainer.setRefreshing(false);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        swipeContainer.setRefreshing(false);
+        return view;
     }
 
     @Override

@@ -59,17 +59,19 @@ public class MeetingParticipantsFragment extends PageableFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        swipeContainer.setRefreshing(false);
+        return view;
     }
 
     private List<PersonWithNote> findAttendingPersons(MeetingItem item) {
         List<PersonWithNote> personWithNotes = new ArrayList<>();
 
-        for (EnrolledPerson person : item.getEnrolledPersons()) {
-            personWithNotes.add(new PersonWithNote(person.getName(), ""));
+        for (PersonSimple person : item.getEnrolledPersons()) {
+            personWithNotes.add(new PersonWithNote(person.getPostalname(), ""));
         }
 
-        Log.d("findAttending", "found " + personWithNotes.size());
+        Log.d("MeetingParticipants", personWithNotes.size() + "");
 
         return personWithNotes;
     }
