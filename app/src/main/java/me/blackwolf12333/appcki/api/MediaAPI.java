@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 
 import java.util.HashMap;
 
+import me.blackwolf12333.appcki.App;
+import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.generated.media.MediaFile;
 import me.blackwolf12333.appcki.helpers.UserHelper;
 
@@ -12,27 +14,8 @@ import me.blackwolf12333.appcki.helpers.UserHelper;
  */
 public class MediaAPI {
     public static String URL = "https://www.uscki.nl/?pagina=Media/MediaObject/%s&mediaFile=%d";
+    public static String API_URL = App.getContext().getString(R.string.apiurl) + "media/";
     private static HashMap<String, Bitmap> cache = new HashMap<>();
-
-    public void getMediaFile(Integer id) {
-        //String url = this.url + "media/get?id=" + id;
-        //Todo
-    }
-
-    public void getMediaFileBitmap(MediaFile file) {
-        getMediaFileBitmap(file.getId(), file.getMimetype());
-    }
-
-    public Bitmap getMediaFileBitmap(final Integer id, String mimetype) {
-        String type = getFiletypeFromMime(mimetype);
-        String url = String.format(URL, type, id);
-        if (cache.containsKey(url)) {
-            return cache.get(url);
-        } else {
-
-        }
-        return cache.get(url);
-    }
 
     public static Bitmap getFromCache(String url) {
         if (cache.containsKey(url)) {

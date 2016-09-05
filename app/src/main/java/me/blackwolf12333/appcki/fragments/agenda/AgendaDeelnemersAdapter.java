@@ -38,8 +38,8 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
 
         if(holder.mItem.getPerson().getPhotomediaid() != null) {
             // TODO API: 5/29/16 fix this shit in the api
-            //MediaFile profile = holder.mItem.getPerson().getPhotomediaid();
-            //holder.profile.setImageMediaFile(profile);
+            Integer profile = holder.mItem.getPerson().getPhotomediaid();
+            holder.profile.setImageMediaId(profile);
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {

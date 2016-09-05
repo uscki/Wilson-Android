@@ -216,10 +216,9 @@ public class MainActivity extends AppCompatActivity
 
         TextView name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText(UserHelper.getInstance().getPerson().getName());
-        // TODO API: 5/22/16 profile pic
 
         NetworkImageView profile = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
-        //profile.setImageMediaFile(UserHelper.getInstance().getPerson().getPhotomediaid());
+        profile.setImageMediaId(UserHelper.getInstance().getPerson().getPhotomediaid());
     }
 
     private void initLoggedOutUI() {
@@ -232,7 +231,6 @@ public class MainActivity extends AppCompatActivity
         TextView name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText("");
 
-        // TODO API: 5/22/16 profile pic
         NetworkImageView profile = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
         profile.setDefaultImageResId(android.R.drawable.sym_def_app_icon);
     }

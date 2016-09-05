@@ -1,8 +1,10 @@
 package me.blackwolf12333.appcki.api.media;
 
 import me.blackwolf12333.appcki.generated.media.MediaFile;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -11,4 +13,7 @@ import retrofit2.http.Query;
 public interface MediaService {
     @GET("media/get")
     Call<MediaFile> get(@Query("id") Integer id);
+
+    @GET("media/{id}/{size}")
+    Call<ResponseBody> file(@Path("id") Integer id, @Path("size") String size);
 }

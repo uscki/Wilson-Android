@@ -70,6 +70,43 @@ public class NetworkImageView extends ImageView {
         }
     }
 
+    public void setImageMediaId(Integer id) {
+        final String url = MediaAPI.API_URL + id + "/medium";
+        if (MediaAPI.cacheContains(url)) {
+            setImageBitmap(MediaAPI.getFromCache(url));
+        } else {
+            Call<ResponseBody> call = Services.getInstance().mediaService.file(id, "medium");
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        Log.v("NetworkImageView", "api contacted and has file");
+                        Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
+                        if (bitmap != null) {
+                            setImageBitmap(bitmap);
+                            MediaAPI.putInCache(bitmap, url);
+                            Log.v("NetworkImageView", "file download was a success!");
+                        } else {
+                            Log.v("NetworkImageView", "file download was a failure!");
+                        }
+                        response.body().close();
+                    } else {
+                        Log.v("NetworkImageView", "api contact failed");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    if (t instanceof ConnectException) {
+                        new ConnectionError(t); // handle connection error in MainActivity
+                    } else {
+                        throw new RuntimeException(t);
+                    }
+                }
+            });
+        }
+    }
+
     public void setImageMediaFile(MediaFile file) {
         this.setImageIdAndType(file.getId(), MediaAPI.getFiletypeFromMime(file.getMimetype()));
     }
