@@ -70,13 +70,13 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
     }
 
     private String getStatusString(MeetingItem meeting) {
-        if (meeting.getMyPreferences().isEmpty()) {
-            return "Je hebt nog niet gereageerd.";
+        if (meeting.getMeeting().getActualTime() != null) {
+            return "Deze vergadering is al gepland";
         } else {
-            if (meeting.getMeeting().getActualTime() == null) {
-                return "Deze vergadering is nog niet gepland";
+            if (meeting.getMyPreferences().isEmpty()) {
+                return "Je hebt nog niet gereageerd.";
             } else {
-                return "Deze vergadering is al gepland";
+                return "Deze vergadering is nog niet gepland";
             }
         }
     }
