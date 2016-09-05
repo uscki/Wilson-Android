@@ -35,12 +35,12 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
         holder.name.setText(items.get(position).getPerson());
 
         holder.note.setText(items.get(position).getNote());
+        //TODO set profile pic
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: 5/29/16 bekijk persoon
-                Log.d("MeetingParticipantAdapt", "TODO: bekijk persoon");
             }
         });
     }

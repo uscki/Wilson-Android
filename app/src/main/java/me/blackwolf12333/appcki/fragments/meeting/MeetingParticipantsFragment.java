@@ -22,6 +22,7 @@ import me.blackwolf12333.appcki.generated.meeting.EnrolledPerson;
 import me.blackwolf12333.appcki.generated.meeting.MeetingItem;
 import me.blackwolf12333.appcki.generated.meeting.Preference;
 import me.blackwolf12333.appcki.generated.meeting.Slot;
+import me.blackwolf12333.appcki.generated.organisation.PersonSimple;
 import me.blackwolf12333.appcki.generated.organisation.PersonWithNote;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -88,8 +89,6 @@ public class MeetingParticipantsFragment extends PageableFragment {
                 }
             }
         }
-
-        Log.d("findNonAttending", "found " + personWithNotes.size());
 
         return personWithNotes;
     }
