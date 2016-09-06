@@ -13,10 +13,12 @@ import me.blackwolf12333.appcki.generated.meeting.Slot;
 public class PersonWithNote {
     String person;
     String note;
+    Integer photoid;
 
-    public PersonWithNote(String person, String note) {
+    public PersonWithNote(String person, String note, Integer photoid) {
         this.person = person;
         this.note = note;
+        this.photoid = photoid;
     }
 
     public String getPerson() {
@@ -25,6 +27,10 @@ public class PersonWithNote {
 
     public String getNote() {
         return note;
+    }
+
+    public Integer getPhotoid() {
+        return photoid;
     }
 
     @Override
@@ -39,7 +45,7 @@ public class PersonWithNote {
     public static List<PersonWithNote> fromEnrolledPersons(List<EnrolledPerson> participants) {
         List<PersonWithNote> persons = new ArrayList<>();
         for (EnrolledPerson person : participants) {
-            persons.add(new PersonWithNote(person.getName(), ""));
+            persons.add(new PersonWithNote(person.getName(), "", person.getPhotomediaid()));
         }
         return persons;
     }
@@ -48,7 +54,7 @@ public class PersonWithNote {
         List<PersonWithNote> persons = new ArrayList<>();
         for (Preference p : slot.getPreferences()) {
             if (p.getCanattend()) {
-                persons.add(new PersonWithNote(p.getPerson().getName(), p.getNotes()));
+                persons.add(new PersonWithNote(p.getPerson().getName(), p.getNotes(), p.getPerson().getPhotomediaid()));
             }
         }
         return  persons;
@@ -58,7 +64,7 @@ public class PersonWithNote {
         List<PersonWithNote> persons = new ArrayList<>();
         for (Preference p : slot.getPreferences()) {
             if (!p.getCanattend()) {
-                persons.add(new PersonWithNote(p.getPerson().getName(), p.getNotes()));
+                persons.add(new PersonWithNote(p.getPerson().getName(), p.getNotes(), p.getPerson().getPhotomediaid()));
             }
         }
         return  persons;

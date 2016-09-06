@@ -22,6 +22,8 @@ import retrofit2.Response;
  * Created by peter on 7/12/16.
  */
 public class NetworkImageView extends ImageView {
+    private Integer mediaId;
+
     public NetworkImageView(Context context) {
         this(context, null);
     }
@@ -70,8 +72,9 @@ public class NetworkImageView extends ImageView {
         }
     }
 
-    public void setImageMediaId(Integer id) {
-        final String url = MediaAPI.API_URL + id + "/medium";
+    public void setImageMediaId(Integer id, MediaAPI.MediaSize size) {
+        final String url = MediaAPI.API_URL + id + "/" + size;
+        this.mediaId = id;
         if (MediaAPI.cacheContains(url)) {
             setImageBitmap(MediaAPI.getFromCache(url));
         } else {
@@ -107,6 +110,10 @@ public class NetworkImageView extends ImageView {
         }
     }
 
+    public void setImageMediaId(Integer id) {
+        setImageMediaId(id, MediaAPI.MediaSize.MEDIUM);
+    }
+
     public void setImageMediaFile(MediaFile file) {
         this.setImageIdAndType(file.getId(), MediaAPI.getFiletypeFromMime(file.getMimetype()));
     }
@@ -118,5 +125,9 @@ public class NetworkImageView extends ImageView {
 
     public void setDefaultImageResId(int defaultImage) {
         this.setImageResource(defaultImage);
+    }
+
+    public Integer getMediaId() {
+        return mediaId;
     }
 }

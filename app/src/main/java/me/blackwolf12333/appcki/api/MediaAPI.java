@@ -17,6 +17,17 @@ public class MediaAPI {
     public static String API_URL = App.getContext().getString(R.string.apiurl) + "media/";
     private static HashMap<String, Bitmap> cache = new HashMap<>();
 
+    public enum MediaSize {
+        SMALL,
+        MEDIUM,
+        LARGE;
+
+        @Override
+        public String toString() {
+            return this.name().toLowerCase();
+        }
+    }
+
     public static Bitmap getFromCache(String url) {
         if (cache.containsKey(url)) {
             return cache.get(url);

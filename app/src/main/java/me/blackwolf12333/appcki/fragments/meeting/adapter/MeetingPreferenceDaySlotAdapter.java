@@ -84,9 +84,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
         holder.canAttend.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString()).enqueue(callback);
-                }
+                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), isChecked).enqueue(callback);
             }
         });
 
@@ -95,7 +93,8 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_NULL
                         && event.getAction() == KeyEvent.ACTION_DOWN) {
-                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString()).enqueue(callback);
+                    Boolean checked = holder.canAttend.isChecked();
+                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), checked).enqueue(callback);
                 }
                 return true;
             }

@@ -10,4 +10,6 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="me.blackwolf12333.appcki.fragments.agenda.AgendaDeelnemersFragment"
-    tools:listitem="@layout/fragment_person_list_item" />
+    tools:listitem="@layout/fragment_person_list_item">
+
+    </android.support.v7.widget.RecyclerView>

@@ -1,21 +1,32 @@
 package me.blackwolf12333.appcki.fragments.agenda;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 
 import com.google.gson.Gson;
 
 import java.net.ConnectException;
 
 import de.greenrobot.event.EventBus;
+import me.blackwolf12333.appcki.R;
+import me.blackwolf12333.appcki.api.MediaAPI;
 import me.blackwolf12333.appcki.api.Services;
 import me.blackwolf12333.appcki.error.ConnectionError;
 import me.blackwolf12333.appcki.events.AgendaItemSubscribedEvent;
 import me.blackwolf12333.appcki.events.AgendaSubscribersEvent;
+import me.blackwolf12333.appcki.events.ImageZoomEvent;
 import me.blackwolf12333.appcki.fragments.PageableFragment;
 import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
+import me.blackwolf12333.appcki.views.NetworkImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

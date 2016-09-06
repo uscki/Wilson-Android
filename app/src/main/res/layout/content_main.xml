@@ -15,4 +15,11 @@
         tools:context=".MainActivity"
         android:background="#ffffff" />
 
+    <me.blackwolf12333.appcki.views.NetworkImageView
+        android:id="@+id/image_zoomed"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="invisible"
+        android:background="@drawable/zoomed_image_background" />
+
 </RelativeLayout>

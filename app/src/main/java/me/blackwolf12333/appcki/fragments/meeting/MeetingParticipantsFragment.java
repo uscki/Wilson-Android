@@ -69,7 +69,7 @@ public class MeetingParticipantsFragment extends PageableFragment {
         List<PersonWithNote> personWithNotes = new ArrayList<>();
 
         for (PersonSimple person : item.getEnrolledPersons()) {
-            personWithNotes.add(new PersonWithNote(person.getPostalname(), ""));
+            personWithNotes.add(new PersonWithNote(person.getPostalname(), "", person.getPhotomediaid()));
         }
 
         Log.d("MeetingParticipants", personWithNotes.size() + "");
@@ -82,9 +82,9 @@ public class MeetingParticipantsFragment extends PageableFragment {
 
         for (Slot slot : item.getSlots()) {
             for (Preference pref : slot.getPreferences()) {
-                if (!personWithNotes.contains(new PersonWithNote(pref.getPerson().getName(), ""))) {
+                if (!personWithNotes.contains(new PersonWithNote(pref.getPerson().getName(), "", pref.getPerson().getPhotomediaid()))) {
                     if (!pref.getCanattend()) {
-                        personWithNotes.add(new PersonWithNote(pref.getPerson().getName(), pref.getNotes()));
+                        personWithNotes.add(new PersonWithNote(pref.getPerson().getName(), pref.getNotes(), pref.getPerson().getPhotomediaid()));
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package me.blackwolf12333.appcki.fragments.meeting.adapter;
 
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,7 +10,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import me.blackwolf12333.appcki.R;
+import me.blackwolf12333.appcki.events.ImageZoomEvent;
 import me.blackwolf12333.appcki.fragments.adapters.BaseItemAdapter;
 import me.blackwolf12333.appcki.generated.organisation.PersonWithNote;
 import me.blackwolf12333.appcki.views.NetworkImageView;
@@ -30,12 +33,22 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = items.get(position);
         holder.name.setText(items.get(position).getPerson());
 
         holder.note.setText(items.get(position).getNote());
-        //holder.profile.setImageMediaId(items.get(position));
+        holder.profile.setImageMediaId(items.get(position).getPhotoid());
+
+        final Rect startBounds = new Rect();
+        holder.profile.getGlobalVisibleRect(startBounds);
+
+        holder.profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EventBus.getDefault().post(new ImageZoomEvent(startBounds, holder.profile.getMediaId()));
+            }
+        });
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
