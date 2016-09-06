@@ -44,14 +44,14 @@ public class RoephoekDialogFragment extends DialogFragment {
         builder.setTitle("Nieuwe roep plaatsen").setView(view).setPositiveButton(R.string.roephoek_dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        Services.getInstance().shoutboxService.shout(name.getText().toString(), content.getText().toString()).enqueue(new Callback<Roephoek>() {
+                        Services.getInstance().shoutboxService.shout(name.getText().toString(), content.getText().toString()).enqueue(new Callback<Boolean>() {
                             @Override
-                            public void onResponse(Call<Roephoek> call, Response<Roephoek> response) {
+                            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                                 EventBus.getDefault().post(new RoephoekEvent(response.body()));
                             }
 
                             @Override
-                            public void onFailure(Call<Roephoek> call, Throwable t) {
+                            public void onFailure(Call<Boolean> call, Throwable t) {
                                 if (t instanceof ConnectException) {
                                     new ConnectionError(t); // handle connection error in MainActivity
                                 } else {

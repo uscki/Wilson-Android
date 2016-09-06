@@ -16,5 +16,5 @@ public interface ShoutboxService {
     Call<Roephoek> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
 
     @GET("shoutbox/shout")
-    Call<Roephoek> shout(@Query("nickname") String name, @Query("message") String message);
+    Call<Boolean> shout(@Query("nickname") String name, @Query("message") String message);
 }

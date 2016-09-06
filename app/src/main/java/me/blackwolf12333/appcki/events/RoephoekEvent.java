@@ -6,9 +6,9 @@ import me.blackwolf12333.appcki.generated.roephoek.Roephoek;
  * Created by peter on 1/25/16.
  */
 public class RoephoekEvent {
-    public Roephoek roephoek;
+    public Boolean roephoek;
 
-    public RoephoekEvent(Roephoek roephoek) {
+    public RoephoekEvent(Boolean roephoek) {
         this.roephoek = roephoek;
     }
 }

@@ -18,6 +18,7 @@ import me.blackwolf12333.appcki.api.Services;
 import me.blackwolf12333.appcki.error.ConnectionError;
 import me.blackwolf12333.appcki.events.AgendaEvent;
 import me.blackwolf12333.appcki.events.NewsOverviewEvent;
+import me.blackwolf12333.appcki.events.RoephoekEvent;
 import me.blackwolf12333.appcki.events.RoephoekOlderEvent;
 import me.blackwolf12333.appcki.fragments.adapters.AgendaItemAdapter;
 import me.blackwolf12333.appcki.fragments.adapters.NewsItemAdapter;
@@ -236,6 +237,21 @@ public class HomeSubFragments extends PageableFragment {
     }
 
     // EVENT HANDLING
+
+    public void onEventMainThread(RoephoekEvent event) {
+        if (event.roephoek) {
+            switch (type) {
+                case NEWS:
+                    break;
+                case AGENDA:
+                    Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE, 1000000).enqueue(roephoekCallback);
+                    break;
+                case ROEPHOEK:
+                    Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE, 1000000).enqueue(roephoekCallback);
+                    break;
+            }
+        }
+    }
 
     public void onEventMainThread(RoephoekOlderEvent event) {
         swipeContainer.setRefreshing(false);
