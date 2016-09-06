@@ -41,7 +41,7 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
         holder.title.setText(item.getTitle());
         holder.content.setText(item.getShorttext());
 
-        String iconUrl = "https://www.uscki.nl/modules/News/images/" + item.getType();
+        String iconUrl = "https://www.uscki.nl/modules/News/images/" + item.getType().getIcon();
         holder.category.setImageUrl(iconUrl);
 
         holder.metadata.setText("(" + item.getPerson().getName() + " / " + timestampConversion(item.getTimestamp()));
