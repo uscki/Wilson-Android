@@ -1,11 +1,9 @@
 # Android app
 
-# how to get teh source
+# how to get the source
 
-    git clone https://github.com/uscki/appcki-native-android
+    git clone https://github.com/uscki/appcki-native-android -b development
     cd appcki-native-android
-    git submodule init
-    git submodule update
 
 # how to build
 
