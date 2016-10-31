@@ -17,7 +17,7 @@
         android:layout_marginTop="3dp"
         style="@style/AppTheme.TextSubHeader" />
 
-    <me.blackwolf12333.appcki.views.NetworkImageView
+    <nl.uscki.appcki.android.views.NetworkImageView
         android:id="@+id/agenda_item_poster"
         android:layout_width="120dp"
         android:layout_height="120dp"

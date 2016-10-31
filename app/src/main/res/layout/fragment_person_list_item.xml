@@ -3,7 +3,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/container">
 
-    <me.blackwolf12333.appcki.views.NetworkImageView
+    <nl.uscki.appcki.android.views.NetworkImageView
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:id="@+id/person_list_item_profile"

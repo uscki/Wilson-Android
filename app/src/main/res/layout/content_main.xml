@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="me.blackwolf12333.appcki.MainActivity"
+    tools:context="nl.uscki.appcki.android.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
     <FrameLayout
@@ -15,7 +15,7 @@
         tools:context=".MainActivity"
         android:background="#ffffff" />
 
-    <me.blackwolf12333.appcki.views.NetworkImageView
+    <nl.uscki.appcki.android.views.NetworkImageView
         android:id="@+id/image_zoomed"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

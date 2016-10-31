@@ -18,7 +18,7 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
 
-    <string name="login_request">me.blackwolf12333.appcki.LOGIN_REQUEST</string>
+    <string name="login_request">nl.uscki.appcki.android.LOGIN_REQUEST</string>
     <string name="logout">Logout</string>
     <string name="login">Login</string>
 
