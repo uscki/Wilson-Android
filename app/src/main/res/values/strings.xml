@@ -8,6 +8,7 @@
     <string name="action_roephoek_roep">Roep</string>
     <string name="action_agenda_subscribe">Deelnemen</string>
     <string name="action_agenda_unsubscribe">Uitschrijven</string>
+    <string name="action_meeting_save">Opslaan in agenda</string>
 
     <!-- Strings related to login -->
     <string name="prompt_username">Gebruikersnaam</string>

@@ -1,20 +1,26 @@
 package me.blackwolf12333.appcki.fragments.meeting;
 
 
+import android.Manifest;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.Gson;
+import com.vistrav.ask.Ask;
 
 import me.blackwolf12333.appcki.MainActivity;
 import me.blackwolf12333.appcki.R;
 import me.blackwolf12333.appcki.fragments.meeting.adapter.MeetingDetailAdapter;
 import me.blackwolf12333.appcki.generated.meeting.MeetingItem;
+import me.blackwolf12333.appcki.helpers.calendar.CalendarHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,6 +57,7 @@ public class MeetingDetailTabsFragment extends Fragment {
             tabLayout.addTab(tabLayout.newTab().setText("Overzicht"));
             tabLayout.addTab(tabLayout.newTab().setText("Aanwezig"));
             tabLayout.addTab(tabLayout.newTab().setText("Afwezig"));
+            setHasOptionsMenu(true);
         } else {
             tabLayout.addTab(tabLayout.newTab().setText("Planner"));
             tabLayout.addTab(tabLayout.newTab().setText("Gereageerd"));
@@ -81,7 +88,28 @@ public class MeetingDetailTabsFragment extends Fragment {
         return inflatedView;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.meeting_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_meeting_save) {
+            //TODO save item in agenda
+            Ask.on(this.getActivity())
+                    .forPermissions(Manifest.permission.ACCESS_COARSE_LOCATION
+                            , Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .withRationales("Location permission need for map to work properly",
+                            "In order to save file you will need to grant storage permission") //optional
+                    .go();
+            CalendarHelper.getInstance().addMeeting(this.item);
+            return true; // consume event
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onStart() {

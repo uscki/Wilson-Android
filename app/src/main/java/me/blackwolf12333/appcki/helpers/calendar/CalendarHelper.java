@@ -1,5 +1,7 @@
 package me.blackwolf12333.appcki.helpers.calendar;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -8,6 +10,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
 import android.util.Log;
+
+import com.vistrav.ask.Ask;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -18,6 +22,7 @@ import java.util.TimeZone;
 
 import me.blackwolf12333.appcki.App;
 import me.blackwolf12333.appcki.generated.agenda.AgendaItem;
+import me.blackwolf12333.appcki.generated.meeting.MeetingItem;
 
 import static android.provider.CalendarContract.Events;
 import static android.provider.CalendarContract.Instances;
@@ -89,6 +94,8 @@ public class CalendarHelper {
     private ContentResolver cr;
 
     public long getPrimaryCalendarId() {
+        checkPermissions();
+
         Cursor cur = null;
         Cursor calendarCursor = null;
         Long id = -1L;
@@ -114,6 +121,20 @@ public class CalendarHelper {
             calendarCursor.close();
         }
         return id;
+    }
+
+    private void checkPermissions() {
+
+        /*int permissionCheckWrite = ContextCompat.checkSelfPermission(App.getContext(),
+                Manifest.permission.WRITE_CALENDAR);
+        int permissionCheckRead = ContextCompat.checkSelfPermission(App.getContext(),
+                Manifest.permission.READ_CALENDAR);
+        if (permissionCheckRead != PackageManager.PERMISSION_GRANTED) {
+
+        }
+        if (permissionCheckWrite != PackageManager.PERMISSION_GRANTED) {
+
+        }*/
     }
 
     public static CalendarHelper getInstance() {
@@ -170,7 +191,6 @@ public class CalendarHelper {
             } finally {
                 cur.close();
             }
-            calendarEvent.setReminders(reminderList);
         }
 
         return calendarEvent;
@@ -227,24 +247,17 @@ public class CalendarHelper {
         values.put(Events.ALL_DAY, appointment.isAllDay);
         values.put(Events.EVENT_LOCATION, appointment.location);
         values.put(Events.DESCRIPTION, appointment.notes);
-        if (appointment.getRepeatMode() == FullCalendarEvent.Repetition.NONE) {
-            values.put(Events.DTEND, endMillis);
-            values.put(Events.RRULE, (String) null);
-            values.put(Events.DURATION, (String) null);
-        } else {
-            values.put(Events.RRULE, appointment.repeatRule);
-            String dateString = appointment.startDate.toString(DateTimeFormat.forPattern("YYYYMMdd-HHmmss"));
-            dateString = dateString.replace("-", "T"); // can't put T in the pattern
-            int seconds = (int) ((endMillis - startMillis) / 1000);
-            if (appointment.isAllDay()) {
-                // todo really use days in stead of seconds here
-                values.put(Events.DURATION, String.format("P%dD", seconds / 86400)); // Server wants this instead of P86400S
-            } else {
-                values.put(Events.DURATION, String.format("P%dS", seconds));
-            }
 
-            values.put(Events.DTEND, (Long) null);
+        String dateString = appointment.startDate.toString(DateTimeFormat.forPattern("YYYYMMdd-HHmmss"));
+        dateString = dateString.replace("-", "T"); // can't put T in the pattern
+        int seconds = (int) ((endMillis - startMillis) / 1000);
+        if (appointment.isAllDay()) {
+            // todo really use days in stead of seconds here
+            values.put(Events.DURATION, String.format("P%dD", seconds / 86400)); // Server wants this instead of P86400S
+        } else {
+            values.put(Events.DURATION, String.format("P%dS", seconds));
         }
+        values.put(Events.DTEND, (Long) null);
 
         long id = appointment.getId();
         if (id == -1) {
@@ -258,12 +271,6 @@ public class CalendarHelper {
             Uri uri = Uri.withAppendedPath(Events.CONTENT_URI, Long.toString(id));
             cr.update(uri, values, null, null);
             deleteReminders(id);
-        }
-        try {
-            addReminders(id, appointment.getReminders());
-        } catch (Exception e) {
-            Log.e(TAG, "ignored exception in addReminders");
-            e.printStackTrace();
         }
     }
 
@@ -311,6 +318,16 @@ public class CalendarHelper {
 
     public void removeItemFromCalendar(AgendaItem item) {
         //TODO
+    }
+
+    public long addMeeting(MeetingItem item) {
+        FullCalendarEvent appointment = new FullCalendarEvent();
+        appointment.setTitle(item.getMeeting().getTitle());
+        appointment.setLocation(item.getMeeting().getLocation());
+        appointment.setNotes(item.getMeeting().getAgenda());
+        appointment.setStartDate(item.getMeeting().getStart());
+        appointment.setEndDate(item.getMeeting().getEnd());
+        return appointment.getId();
     }
 
     public List<CalendarReminder> getReminders() {
