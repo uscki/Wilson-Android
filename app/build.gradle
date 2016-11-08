@@ -4,7 +4,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
     defaultConfig {
-        applicationId "me.blackwolf12333.appcki"
+        applicationId "nl.uscki.appcki.android"
         minSdkVersion 14
         targetSdkVersion 24
         versionCode 1
@@ -28,6 +28,9 @@ android {
         }
         development {
         }
+    }
+    lintOptions {
+        lintConfig rootProject.file('gradle/lint.xml')
     }
 }
 

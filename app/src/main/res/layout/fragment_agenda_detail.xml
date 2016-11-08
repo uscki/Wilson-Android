@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="me.blackwolf12333.appcki.fragments.agenda.AgendaDetailFragment">
+    tools:context="nl.uscki.appcki.android.fragments.agenda.AgendaDetailFragment">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -27,7 +27,7 @@
             android:layout_marginStart="16dp"
             style="@style/AppTheme.TextSubHeader" />
 
-        <me.blackwolf12333.appcki.views.BBTextView
+        <nl.uscki.appcki.android.views.BBTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/agenda_detail_longtext"

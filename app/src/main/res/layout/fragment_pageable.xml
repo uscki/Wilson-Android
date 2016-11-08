@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/refreshContainer"
-    tools:context="me.blackwolf12333.appcki.fragments.PageableFragment">
+    tools:context="nl.uscki.appcki.android.fragments.PageableFragment">
 
     <android.support.v7.widget.RecyclerView
         xmlns:app="http://schemas.android.com/apk/res-auto"

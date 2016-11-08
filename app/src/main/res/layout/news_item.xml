@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <me.blackwolf12333.appcki.views.NetworkImageView
+    <nl.uscki.appcki.android.views.NetworkImageView
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:id="@+id/news_item_category"
@@ -35,7 +35,7 @@
         android:layout_marginLeft="5dp"
         android:textColor="#FF616161"/>
 
-    <me.blackwolf12333.appcki.views.BBTextView
+    <nl.uscki.appcki.android.views.BBTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/AppTheme.Text"
