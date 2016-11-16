@@ -15,13 +15,23 @@ public class AgendaItem {
     @Expose
     private Integer id;
     @Expose
-    private String committee;
-    @Expose
     private String costs;
+    @Expose
+    private String who;
     @Expose
     private Boolean hasDeadline;
     @Expose
+    private Boolean hasUnregisterDeadline;
+    @Expose
+    private Integer maxregistrations;
+    @Expose
+    private Boolean alwaysonfrontpage;
+    @Expose
+    private Boolean registrationrequired;
+    @Expose
     private Long deadline;
+    @Expose
+    private Long unregisterDeadline;
     @Expose
     private String location;
     @Expose
@@ -33,17 +43,17 @@ public class AgendaItem {
     @Expose
     private String description;
     @Expose
+    private String what;
+    @Expose
+    private String when;
+    @Expose
+    private Integer posterid;
+    @Expose
     private List<AgendaParticipant> participants;
     @Expose
-    private MediaFile poster;
-
-    public MediaFile getPoster() {
-        return poster;
-    }
-
-    public void setPoster(MediaFile poster) {
-        this.poster = poster;
-    }
+    private List<AgendaParticipant> backupList;
+    @Expose
+    private List<AgendaCategory> categories;
 
     public List<AgendaParticipant> getParticipants() {
         return participants;
@@ -117,12 +127,12 @@ public class AgendaItem {
         this.costs = costs;
     }
 
-    public String getCommittee() {
-        return committee;
+    public String getWho() {
+        return who;
     }
 
-    public void setCommittee(String committee) {
-        this.committee = committee;
+    public void setWho(String who) {
+        this.who = who;
     }
 
     public Integer getId() {
@@ -131,5 +141,85 @@ public class AgendaItem {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Boolean getHasUnregisterDeadline() {
+        return hasUnregisterDeadline;
+    }
+
+    public void setHasUnregisterDeadline(Boolean hasUnregisterDeadline) {
+        this.hasUnregisterDeadline = hasUnregisterDeadline;
+    }
+
+    public Integer getMaxregistrations() {
+        return maxregistrations;
+    }
+
+    public void setMaxregistrations(Integer maxregistrations) {
+        this.maxregistrations = maxregistrations;
+    }
+
+    public Boolean getAlwaysonfrontpage() {
+        return alwaysonfrontpage;
+    }
+
+    public void setAlwaysonfrontpage(Boolean alwaysonfrontpage) {
+        this.alwaysonfrontpage = alwaysonfrontpage;
+    }
+
+    public Boolean getRegistrationrequired() {
+        return registrationrequired;
+    }
+
+    public void setRegistrationrequired(Boolean registrationrequired) {
+        this.registrationrequired = registrationrequired;
+    }
+
+    public Long getUnregisterDeadline() {
+        return unregisterDeadline;
+    }
+
+    public void setUnregisterDeadline(Long unregisterDeadline) {
+        this.unregisterDeadline = unregisterDeadline;
+    }
+
+    public String getWhat() {
+        return what;
+    }
+
+    public void setWhat(String what) {
+        this.what = what;
+    }
+
+    public String getWhen() {
+        return when;
+    }
+
+    public void setWhen(String when) {
+        this.when = when;
+    }
+
+    public Integer getPosterid() {
+        return posterid;
+    }
+
+    public void setPosterid(Integer posterid) {
+        this.posterid = posterid;
+    }
+
+    public List<AgendaParticipant> getBackupList() {
+        return backupList;
+    }
+
+    public void setBackupList(List<AgendaParticipant> backupList) {
+        this.backupList = backupList;
+    }
+
+    public List<AgendaCategory> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<AgendaCategory> categories) {
+        this.categories = categories;
     }
 }

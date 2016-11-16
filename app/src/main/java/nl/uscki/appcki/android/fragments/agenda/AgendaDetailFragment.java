@@ -67,8 +67,8 @@ public class AgendaDetailFragment extends Fragment {
         }
         longText.setText(item.getDescription());
 
-        if (item.getCommittee() != null) {
-            summaryCommissie.setText(item.getCommittee());
+        if (item.getWho() != null) {
+            summaryCommissie.setText(item.getWho());
         } else {
             summaryCommissie.setVisibility(View.GONE);
         }
