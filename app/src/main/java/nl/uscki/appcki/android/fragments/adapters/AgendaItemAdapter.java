@@ -62,9 +62,9 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         }
 
         //holder.itemPoster.setDefaultImageResId(R.drawable.default_poster);
-        if(item.getPoster() != null) {
+        if(item.getPosterid() != null) {
             holder.itemPoster.setVisibility(View.VISIBLE); // als het vorige item in deze holder invisible was moet het weer visible worden
-            holder.itemPoster.setImageIdAndType(item.getPoster().getId(), MediaAPI.getFiletypeFromMime(item.getPoster().getMimetype()));
+            holder.itemPoster.setImageMediaId(item.getPosterid());
         } else {
             holder.itemPoster.setVisibility(View.INVISIBLE);
         }

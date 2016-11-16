@@ -368,7 +368,7 @@ public class MainActivity extends AppCompatActivity
         // Load the high-resolution "zoomed-in" image.
         final NetworkImageView expandedImageView = (NetworkImageView) findViewById(R.id.image_zoomed);
         expandedImageView.setDefaultImageResId(R.drawable.account);
-        expandedImageView.setImageMediaId(id, MediaAPI.MediaSize.MEDIUM);
+        expandedImageView.setImageMediaId(id, MediaAPI.MediaSize.NORMAL);
 
         // Calculate the starting and ending bounds for the zoomed-in image.
         // This step involves lots of math. Yay, math.

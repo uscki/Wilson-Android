@@ -78,7 +78,7 @@ public class NetworkImageView extends ImageView {
         if (MediaAPI.cacheContains(url)) {
             setImageBitmap(MediaAPI.getFromCache(url));
         } else {
-            Call<ResponseBody> call = Services.getInstance().mediaService.file(id, "medium");
+            Call<ResponseBody> call = Services.getInstance().mediaService.file(id, MediaAPI.MediaSize.NORMAL.toString());
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -111,7 +111,7 @@ public class NetworkImageView extends ImageView {
     }
 
     public void setImageMediaId(Integer id) {
-        setImageMediaId(id, MediaAPI.MediaSize.MEDIUM);
+        setImageMediaId(id, MediaAPI.MediaSize.NORMAL);
     }
 
     public void setImageMediaFile(MediaFile file) {

@@ -18,7 +18,7 @@ public class MediaAPI {
 
     public enum MediaSize {
         SMALL,
-        MEDIUM,
+        NORMAL,
         LARGE;
 
         @Override
