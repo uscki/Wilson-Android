@@ -18,6 +18,7 @@ import java.util.List;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.generated.roephoek.RoephoekItem;
+import nl.uscki.appcki.android.views.BBTextView;
 
 /**
  * Created by peter on 5/16/16.
@@ -89,14 +90,14 @@ public class RoephoekItemAdapter extends BaseItemAdapter<RoephoekItemAdapter.Vie
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView nickname;
-        public final TextView message;
+        public final BBTextView message;
         public final TextView time;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             nickname = (TextView) view.findViewById(R.id.roephoek_item_nickname);
-            message = (TextView) view.findViewById(R.id.roephoek_item_message);
+            message = (BBTextView) view.findViewById(R.id.roephoek_item_message);
             time = (TextView) view.findViewById(R.id.roephoek_item_time);
         }
 
