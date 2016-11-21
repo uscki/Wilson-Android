@@ -50,6 +50,8 @@ public class HomeSubFragments extends PageableFragment {
     private final int AGENDA_PAGE_SIZE = 4;
     private final int ROEPHOEK_PAGE_SIZE = 7;
 
+    private static boolean tinyPage = false;
+
     private Callback<NewsOverview> newsOverviewCallback = new Callback<NewsOverview>() {
         @Override
         public void onResponse(Call<NewsOverview> call, Response<NewsOverview> response) {
@@ -92,16 +94,26 @@ public class HomeSubFragments extends PageableFragment {
                 loading = false;
                 if (getAdapter() instanceof AgendaItemAdapter) {
                     if (response.body() != null) {
+                        if(response.body().getNumberOfElements() < AGENDA_PAGE_SIZE) {
+                            tinyPage = true;
+                            Log.e("HomeSubFragments", "tinypage: " + tinyPage);
+                        }
                         getAdapter().addItems(response.body().getContent());
                     } else {
                         //TODO handle failing to load more
-                        Log.d("HomeSubFragments", response.body()+"");
+                        Log.e("HomeSubFragments", "something failed: " + response.body());
                     }
                 }
             } else {
                 if (getAdapter() instanceof AgendaItemAdapter) {
-                    Log.d("HomeSubFragments", response.body().toString());
-                    getAdapter().update(response.body().getContent());
+                    Log.e("HomeSubFragments", "update: " + response.body());
+                    if(response.body() != null) {
+                        if(response.body().getNumberOfElements() < AGENDA_PAGE_SIZE) {
+                            tinyPage = true;
+                            Log.e("HomeSubFragments", "tinypage: " + tinyPage);
+                        }
+                        getAdapter().update(response.body().getContent());
+                    }
                 }
             }
         }
@@ -228,7 +240,8 @@ public class HomeSubFragments extends PageableFragment {
                 Services.getInstance().newsService.overview(page, NEWS_PAGE_SIZE).enqueue(newsOverviewCallback);
                 break;
             case AGENDA:
-                Services.getInstance().agendaService.older(page, AGENDA_PAGE_SIZE, getAdapter().getLastID()).enqueue(agendaCallback);
+                if(!tinyPage)
+                    Services.getInstance().agendaService.older(page, AGENDA_PAGE_SIZE, getAdapter().getLastID()).enqueue(agendaCallback);
                 break;
             case ROEPHOEK:
                 Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE, getAdapter().getLastID()).enqueue(roephoekCallback);
