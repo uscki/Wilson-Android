@@ -16,10 +16,7 @@ import nl.uscki.appcki.android.MainActivity;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.error.ConnectionError;
-import nl.uscki.appcki.android.events.AgendaEvent;
-import nl.uscki.appcki.android.events.NewsOverviewEvent;
 import nl.uscki.appcki.android.events.RoephoekEvent;
-import nl.uscki.appcki.android.events.RoephoekOlderEvent;
 import nl.uscki.appcki.android.fragments.adapters.AgendaItemAdapter;
 import nl.uscki.appcki.android.fragments.adapters.NewsItemAdapter;
 import nl.uscki.appcki.android.fragments.adapters.RoephoekItemAdapter;
@@ -256,49 +253,13 @@ public class HomeSubFragments extends PageableFragment {
             switch (type) {
                 case NEWS:
                     break;
-                case AGENDA:
+                case AGENDA:// ook bij agenda, want dan is roephoek misschien niet zichtbaar maar wel geladen
                     Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE, 1000000).enqueue(roephoekCallback);
                     break;
                 case ROEPHOEK:
                     Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE, 1000000).enqueue(roephoekCallback);
                     break;
             }
-        }
-    }
-
-    public void onEventMainThread(RoephoekOlderEvent event) {
-        swipeContainer.setRefreshing(false);
-        if(loading) {
-            loading = false;
-            if (getAdapter() instanceof RoephoekItemAdapter) {
-                getAdapter().addItems(event.roephoek.getContent());
-            }
-        } else {
-            if (getAdapter() instanceof RoephoekItemAdapter) {
-                getAdapter().update(event.roephoek.getContent());
-            }
-        }
-    }
-
-    public void onEventMainThread(AgendaEvent event) {
-        swipeContainer.setRefreshing(false);
-        if(loading) {
-            loading = false;
-            if (getAdapter() instanceof AgendaItemAdapter) {
-                getAdapter().addItems(event.agenda.getContent());
-            }
-        } else {
-            if (getAdapter() instanceof AgendaItemAdapter) {
-                getAdapter().update(event.agenda.getContent());
-            }
-        }
-
-    }
-
-    public void onEventMainThread(NewsOverviewEvent event) {
-        swipeContainer.setRefreshing(false);
-        if (getAdapter() instanceof NewsItemAdapter) {
-            getAdapter().update(event.newsOverview.getContent());
         }
     }
 
