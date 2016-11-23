@@ -1,6 +1,8 @@
 package nl.uscki.appcki.android.views;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -8,9 +10,6 @@ import android.text.style.URLSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.events.LinkClickedEvent;
@@ -33,9 +32,8 @@ public class BBTextView extends TextView {
 
     @Override
     public void setText(CharSequence text, BufferType type) {
-        String parsed = bbcode(text.toString());
         this.setMovementMethod(LinkMovementMethod.getInstance());
-        super.setText(Html.fromHtml(parsed), type);
+        super.setText(Html.fromHtml(text.toString()), type);
         fixTextView();
     }
 
@@ -52,24 +50,23 @@ public class BBTextView extends TextView {
         }
     }
 
-    public static String bbcode(String text) {
-        String html = text;
-
-        Map<String,String> bbMap = new HashMap<>();
-        bbMap.put("\\[link url=(.+?)\\](.+?)\\[/link\\]", "<a href='$1'>$2</a> ");
-        bbMap.put("(\\r\\n|\\r|\\n|\\n\\r)", "<br/>");
-
-        for (Map.Entry entry: bbMap.entrySet()) {
-            html = html.replaceAll(entry.getKey().toString(), entry.getValue().toString());
-        }
-
-        return html;
-    }
-
     private static class DefensiveURLSpan extends URLSpan {
         public DefensiveURLSpan(String url) {
             super(url);
         }
+
+        public Parcelable.Creator CREATOR = new Parcelable.Creator<DefensiveURLSpan>() {
+
+            @Override
+            public DefensiveURLSpan createFromParcel(Parcel source) {
+                return new DefensiveURLSpan(source.readString());
+            }
+
+            @Override
+            public DefensiveURLSpan[] newArray(int size) {
+                return new DefensiveURLSpan[size];
+            }
+        };
 
         @Override
         public void onClick(View widget) {

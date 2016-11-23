@@ -18,7 +18,7 @@
         android:layout_marginRight="10dp"
         style="@style/AppTheme.TextSubHeader" />
 
-    <TextView
+    <nl.uscki.appcki.android.views.BBTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
