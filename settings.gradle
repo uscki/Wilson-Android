@@ -1,1 +1,1 @@
-include ':app', ':jsonschema2pojo', ':volley'
+include ':app'

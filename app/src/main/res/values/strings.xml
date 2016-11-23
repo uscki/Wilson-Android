@@ -5,19 +5,21 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello World!</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="action_roephoek_roep">Roep</string>
+    <string name="action_agenda_subscribe">Deelnemen</string>
+    <string name="action_agenda_unsubscribe">Uitschrijven</string>
+    <string name="action_meeting_save">Opslaan in agenda</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_username">Username</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="prompt_username">Gebruikersnaam</string>
+    <string name="prompt_password">Wachtwoord</string>
+    <string name="action_sign_in">Inloggen</string>
+    <string name="action_sign_in_short">Log in</string>
     <string name="error_invalid_username">This username address is invalid</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
 
-    <string name="login_request">me.blackwolf12333.appcki.LOGIN_REQUEST</string>
+    <string name="login_request">nl.uscki.appcki.android.LOGIN_REQUEST</string>
     <string name="logout">Logout</string>
     <string name="login">Login</string>
 
@@ -26,6 +28,28 @@
 
     <string name="agenda_inschrijven">Inschrijven</string>
     <string name="agenda_uitschrijven">Uitschrijven</string>
+
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="roephoek_dialog_name_hint">Naam</string>
+    <string name="roephoek_dialog_content_hint">Bericht</string>
+    <string name="roephoek_dialog_ok">Voeg toe!</string>
+    <string name="roephoek_dialog_cancel">Annuleren</string>
+
+    <string name="agenda_dialog_note_hint">Notitie</string>
+    <string name="agenda_dialog_ok">Inschrijven</string>
+    <string name="agenda_dialog_cancel">Annuleren</string>
+
+    <string name="agenda_inschrijven_verplicht">Inschrijven verplicht</string>
+
+    <string name="example_text">Example text</string>
+
+    <string name="meeting_detail_notes">Opmerkingen:</string>
+    <string name="meeting_detail_plannotes">Opmerkingen bij het plannen:</string>
+    <string name="meeting_detail_agenda">Agenda:</string>
+
+    <!-- error handling -->
+    <string name="connection_error">Er ging iets fout tijdens het verbinden met de server!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
