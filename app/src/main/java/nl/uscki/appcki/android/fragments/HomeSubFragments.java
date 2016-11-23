@@ -247,17 +247,17 @@ public class HomeSubFragments extends PageableFragment {
     }
 
     // EVENT HANDLING
-
     public void onEventMainThread(RoephoekEvent event) {
+        // laad page 0 als we een nieuwe roep hebben geplaatst
         if (event.roephoek) {
             switch (type) {
                 case NEWS:
                     break;
                 case AGENDA:// ook bij agenda, want dan is roephoek misschien niet zichtbaar maar wel geladen
-                    Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE, 1000000).enqueue(roephoekCallback);
+                    Services.getInstance().shoutboxService.older(0, ROEPHOEK_PAGE_SIZE, 1000000).enqueue(roephoekCallback);
                     break;
                 case ROEPHOEK:
-                    Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE, 1000000).enqueue(roephoekCallback);
+                    Services.getInstance().shoutboxService.older(0, ROEPHOEK_PAGE_SIZE, 1000000).enqueue(roephoekCallback);
                     break;
             }
         }

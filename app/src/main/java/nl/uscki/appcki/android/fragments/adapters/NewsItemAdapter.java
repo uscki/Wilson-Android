@@ -6,16 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.Hours;
-import org.joda.time.Months;
-import org.joda.time.Weeks;
-import org.joda.time.Years;
-
 import java.util.List;
 
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.generated.news.NewsItem;
 import nl.uscki.appcki.android.views.BBTextView;
 import nl.uscki.appcki.android.views.NetworkImageView;
@@ -44,34 +38,7 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
         String iconUrl = "https://www.uscki.nl/modules/News/images/" + item.getType().getIcon();
         holder.category.setImageUrl(iconUrl);
 
-        holder.metadata.setText("(" + item.getPerson().getName() + " / " + timestampConversion(item.getTimestamp()));
-    }
-
-    private String timestampConversion(Long time) {
-        DateTime now = DateTime.now();
-        DateTime other = new DateTime(time);
-        int hours = Hours.hoursBetween(other, now).getHours();
-        if(hours > 24) {
-            int days = Days.daysBetween(other, now).getDays();
-            if(days > 7) {
-                int weeks = Weeks.weeksBetween(other, now).getWeeks();
-                if(weeks > 3) {
-                    int months = Months.monthsBetween(other, now).getMonths();
-                    if(months > 12) {
-                        int years = Years.yearsBetween(other, now).getYears();
-                        return "± " + years + " jaren geleden)";
-                    } else {
-                        return "± " + months + " maanden geleden)";
-                    }
-                } else {
-                    return "± " + weeks + " weken geleden)";
-                }
-            } else {
-                return "± " + days + " dagen geleden)";
-            }
-        } else {
-            return "± " + hours + " uur geleden)";
-        }
+        holder.metadata.setText("(" + item.getPerson().getName() + " / " + Utils.timestampConversion(item.getTimestamp()));
     }
 
     @Override
