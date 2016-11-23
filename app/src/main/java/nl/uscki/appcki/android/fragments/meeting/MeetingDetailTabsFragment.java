@@ -20,6 +20,7 @@ import nl.uscki.appcki.android.MainActivity;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingDetailAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
+import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 
 /**
  * A simple {@link Fragment} subclass.

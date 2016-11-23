@@ -6,8 +6,6 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
-import nl.uscki.appcki.android.generated.media.MediaFile;
-
 /**
  * Created by peter on 7/17/16.
  */

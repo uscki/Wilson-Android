@@ -37,7 +37,9 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
         holder.name.setText(items.get(position).getPerson());
 
         holder.note.setText(items.get(position).getNote());
-        holder.profile.setImageMediaId(items.get(position).getPhotoid());
+        if(items.get(position).getPhotoid() != null) {
+            holder.profile.setImageMediaId(items.get(position).getPhotoid());
+        }
 
         final Rect startBounds = new Rect();
         holder.profile.getGlobalVisibleRect(startBounds);

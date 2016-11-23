@@ -30,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
-import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.ImageZoomEvent;

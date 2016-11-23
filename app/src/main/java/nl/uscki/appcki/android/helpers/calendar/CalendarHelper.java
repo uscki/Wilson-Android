@@ -23,6 +23,7 @@ import java.util.TimeZone;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
+import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 
 import static android.provider.CalendarContract.Events;
 import static android.provider.CalendarContract.Instances;
