@@ -8,11 +8,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.Gson;
+
+import org.joda.time.DateTime;
 
 import java.net.ConnectException;
 
@@ -21,8 +25,9 @@ import nl.uscki.appcki.android.MainActivity;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.error.ConnectionError;
+import nl.uscki.appcki.android.error.Error;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
-import nl.uscki.appcki.android.fragments.HomeSubFragments;
+import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
 import nl.uscki.appcki.android.generated.agenda.Subscribers;
@@ -39,6 +44,9 @@ public class AgendaDetailTabsFragment extends Fragment {
     ViewPager viewPager;
 
     AgendaItem item;
+    Menu menu;
+
+    private boolean foundUser = false;
 
     public static final int AGENDA = 0;
     public static final int DEELNEMERS = 1;
@@ -51,6 +59,7 @@ public class AgendaDetailTabsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         MainActivity.currentScreen = MainActivity.Screen.AGENDA_DETAIL;
+        setHasOptionsMenu(true);
 
         // Inflate the layout for this fragment
         View inflatedView = inflater.inflate(R.layout.fragment_tabs, container, false);
@@ -84,17 +93,38 @@ public class AgendaDetailTabsFragment extends Fragment {
             }
         });
 
-        // setup menu listeners here, before determining what menu item to show, because once either one is used
-        // it's replaced with the other.
-        HomeSubFragments.m.findItem(R.id.action_agenda_unsubscribe).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        for (AgendaParticipant part : item.getParticipants()) {
+            if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
+                foundUser = true;
+            }
+        }
+
+        return inflatedView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+
+        inflater.inflate(R.menu.agenda_menu, menu);
+
+        // verander visibility pas als we in een detail view zitten
+        if(foundUser) {
+            menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
+            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
+        } else {
+            menu.findItem(R.id.action_agenda_subscribe).setVisible(true);
+            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
+        }
+
+        menu.findItem(R.id.action_agenda_unsubscribe).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 subscribeToAgenda(false);
                 return true;
             }
         });
-
-        HomeSubFragments.m.findItem(R.id.action_agenda_subscribe).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        menu.findItem(R.id.action_agenda_subscribe).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 subscribeToAgenda(true);
@@ -102,18 +132,9 @@ public class AgendaDetailTabsFragment extends Fragment {
             }
         });
 
-        boolean foundUser = false;
-        for (AgendaParticipant part : item.getParticipants()) {
-            if (part.getPerson().getName().equals(UserHelper.getInstance().getPerson().getName())) {
-                foundUser = true;
-                HomeSubFragments.m.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
-            }
-        }
-        if (!foundUser) {
-            HomeSubFragments.m.findItem(R.id.action_agenda_subscribe).setVisible(true);
-        }
+        this.menu = menu;
 
-        return inflatedView;
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void subscribeToAgenda(boolean subscribe) {
@@ -124,11 +145,25 @@ public class AgendaDetailTabsFragment extends Fragment {
             newFragment.setArguments(args);
             newFragment.show(getFragmentManager(), "agenda_subscribe");
         } else {
+            AgendaItem item = AgendaDetailFragment.item;
+            if(item.getHasUnregisterDeadline()) {
+                DateTime deadline = new DateTime(item.getUnregisterDeadline());
+                if(!deadline.isAfterNow()) {
+                    EventBus.getDefault().post(new ErrorEvent(new Error() {
+                        @Override
+                        public String getMessage() {
+                            return "Kan niet unsubscriben door een unsubscribe deadline!";
+                        }
+                    }));
+                    return; // don't still try to unsubscribe
+                }
+            }
+
+            // no deadline for unsubscribing
             Log.d("MainActivity", "unsubscribing for:" + AgendaDetailFragment.item.getId());
             Services.getInstance().agendaService.unsubscribe(AgendaDetailFragment.item.getId()).enqueue(new Callback<Subscribers>() {
                 @Override
                 public void onResponse(Call<Subscribers> call, Response<Subscribers> response) {
-                    //TODO
                     EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body(), true));
                 }
 
@@ -148,11 +183,11 @@ public class AgendaDetailTabsFragment extends Fragment {
 
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
         if(!event.showSubscribe) {
-            HomeSubFragments.m.findItem(R.id.action_agenda_subscribe).setVisible(false);
-            HomeSubFragments.m.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
+            menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
+            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
         } else {
-            HomeSubFragments.m.findItem(R.id.action_agenda_subscribe).setVisible(true);
-            HomeSubFragments.m.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
+            menu.findItem(R.id.action_agenda_subscribe).setVisible(true);
+            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
         }
     }
 

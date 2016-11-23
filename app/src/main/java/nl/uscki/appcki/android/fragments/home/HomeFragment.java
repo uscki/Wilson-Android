@@ -1,4 +1,4 @@
-package nl.uscki.appcki.android.fragments;
+package nl.uscki.appcki.android.fragments.home;
 
 
 import android.os.Bundle;
@@ -18,6 +18,10 @@ import nl.uscki.appcki.android.fragments.adapters.HomeViewPagerAdapter;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment {
+    public static final int NEWS = 0;
+    public static final int AGENDA = 1;
+    public static final int ROEPHOEK = 2;
+
     TabLayout tabLayout;
     ViewPager viewPager;
 

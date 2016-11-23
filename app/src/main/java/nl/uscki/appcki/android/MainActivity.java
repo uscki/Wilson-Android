@@ -39,10 +39,9 @@ import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
-import nl.uscki.appcki.android.fragments.HomeFragment;
-import nl.uscki.appcki.android.fragments.HomeSubFragments;
 import nl.uscki.appcki.android.fragments.LoginFragment;
-import nl.uscki.appcki.android.fragments.RoephoekDialogFragment;
+import nl.uscki.appcki.android.fragments.home.HomeFragment;
+import nl.uscki.appcki.android.fragments.home.RoephoekDialogFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.views.NetworkImageView;
@@ -130,7 +129,7 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             if (currentScreen == Screen.AGENDA_DETAIL) {
-                openTab(HomeSubFragments.AGENDA);
+                openTab(HomeFragment.AGENDA);
             } else if (currentScreen == Screen.MEETING_PLANNER || currentScreen == Screen.MEETING_DETAIL) {
                 openFragment(new MeetingOverviewFragment(), null);
             }
@@ -172,13 +171,13 @@ public class MainActivity extends AppCompatActivity
 
         if (UserHelper.getInstance().isLoggedIn()) {
             if (id == R.id.nav_news) {
-                openTab(HomeSubFragments.NEWS);
+                openTab(HomeFragment.NEWS);
             } else if (id == R.id.nav_agenda) {
-                openTab(HomeSubFragments.AGENDA);
+                openTab(HomeFragment.AGENDA);
             } else if (id == R.id.nav_poll) {
 // TODO: 5/22/16 poll
             } else if (id == R.id.nav_roephoek) {
-                openTab(HomeSubFragments.ROEPHOEK);
+                openTab(HomeFragment.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
                 openFragment(new MeetingOverviewFragment(), null);
             } else if (id == R.id.nav_logout) {
@@ -281,21 +280,21 @@ public class MainActivity extends AppCompatActivity
                 openFragment(loginFragment, null);
                 break;
             case NEWS:
-                openTab(HomeSubFragments.NEWS);
+                openTab(HomeFragment.NEWS);
                 break;
             case AGENDA:
-                openTab(HomeSubFragments.AGENDA);
+                openTab(HomeFragment.AGENDA);
                 break;
             case POLL:
                 break;
             case ROEPHOEK:
-                openTab(HomeSubFragments.ROEPHOEK);
+                openTab(HomeFragment.ROEPHOEK);
                 break;
             case MEETING_OVERVIEW:
                 openFragment(new MeetingOverviewFragment(), null);
                 break;
             default: // UNHANDLED SCREENS eg AGENDA_DETAIL
-                openTab(HomeSubFragments.NEWS);
+                openTab(HomeFragment.NEWS);
                 break;
         }
     }
@@ -318,7 +317,7 @@ public class MainActivity extends AppCompatActivity
 
     public void onEventMainThread(UserLoggedInEvent event) {
         initLoggedInUI();
-        openTab(HomeSubFragments.NEWS);
+        openTab(HomeFragment.NEWS);
         saveState(); // save user
     }
 

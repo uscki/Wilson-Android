@@ -5,8 +5,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import nl.uscki.appcki.android.fragments.HomeSubFragments;
 import nl.uscki.appcki.android.fragments.PageableFragment;
+import nl.uscki.appcki.android.fragments.home.HomeAgendaTab;
+import nl.uscki.appcki.android.fragments.home.HomeFragment;
+import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
+import nl.uscki.appcki.android.fragments.home.HomeRoephoekTab;
 
 /**
  * Created by peter on 5/22/16.
@@ -21,20 +24,14 @@ public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         Bundle bundle = new Bundle();
         switch (position) {
-            case HomeSubFragments.NEWS:
-                PageableFragment newsFragment = new HomeSubFragments();
-                bundle.putInt("type", HomeSubFragments.NEWS);
-                newsFragment.setArguments(bundle);
+            case HomeFragment.NEWS:
+                PageableFragment newsFragment = new HomeNewsTab();
                 return newsFragment;
-            case HomeSubFragments.AGENDA:
-                PageableFragment agendaFragment = new HomeSubFragments();
-                bundle.putInt("type", HomeSubFragments.AGENDA);
-                agendaFragment.setArguments(bundle);
+            case HomeFragment.AGENDA:
+                PageableFragment agendaFragment = new HomeAgendaTab();
                 return agendaFragment;
-            case HomeSubFragments.ROEPHOEK:
-                PageableFragment roephoekFragment = new HomeSubFragments();
-                bundle.putInt("type", HomeSubFragments.ROEPHOEK);
-                roephoekFragment.setArguments(bundle);
+            case HomeFragment.ROEPHOEK:
+                PageableFragment roephoekFragment = new HomeRoephoekTab();
                 return roephoekFragment;
         }
 
