@@ -15,11 +15,10 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.api.MediaAPI;
-import nl.uscki.appcki.android.views.NetworkImageView;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
+import nl.uscki.appcki.android.views.NetworkImageView;
 
 /**
  *
@@ -51,7 +50,12 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         }
 
         holder.itemDeelnemers.setText(item.getParticipants().size() + "");
-        holder.itemWhere.setText(item.getLocation());
+
+        if(item.getLocation() == null || item.getLocation().isEmpty()) {
+            holder.itemWhere.setVisibility(View.GONE);
+        } else {
+            holder.itemWhere.setText(item.getLocation());
+        }
 
         if(item.getHasDeadline()) {
             DateTime dateTime = new DateTime(item.getDeadline());

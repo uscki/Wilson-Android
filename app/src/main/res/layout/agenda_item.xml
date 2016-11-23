@@ -26,54 +26,33 @@
         android:layout_alignParentStart="true"
         android:layout_margin="10dp" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/agenda_item_when_icon"
-        android:layout_below="@+id/agenda_item_title"
-        android:layout_toRightOf="@+id/agenda_item_poster"
-        android:layout_toEndOf="@+id/agenda_item_poster"
-        android:src="@drawable/calendar_clock" />
-
     <TextView
         android:id="@+id/agenda_item_when"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Medium Text"
         android:layout_below="@+id/agenda_item_title"
-        android:layout_toRightOf="@+id/agenda_item_when_icon"
-        android:layout_toEndOf="@+id/agenda_item_when_icon"
-        android:layout_margin="5dp"
-        style="@style/AppTheme.Text" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/agenda_item_deelnemers_icon"
         android:layout_toRightOf="@+id/agenda_item_poster"
         android:layout_toEndOf="@+id/agenda_item_poster"
-        android:layout_below="@+id/agenda_item_when"
-        android:src="@drawable/account_multiple" />
+        style="@style/AppTheme.Text"
+        android:drawableStart="@drawable/calendar_clock"
+        android:drawableLeft="@drawable/calendar_clock"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/agenda_item_deelnemers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Medium Text"
-        android:layout_toEndOf="@+id/agenda_item_deelnemers_icon"
-        android:layout_below="@+id/agenda_item_when"
-        android:layout_margin="5dp"
-        style="@style/AppTheme.Text"
-        android:layout_toRightOf="@+id/agenda_item_deelnemers_icon" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/agenda_item_waar_icon"
-        android:layout_below="@+id/agenda_item_deelnemers"
-        android:layout_toRightOf="@+id/agenda_item_poster"
         android:layout_toEndOf="@+id/agenda_item_poster"
-        android:src="@drawable/earth" />
+        android:layout_below="@+id/agenda_item_when"
+        style="@style/AppTheme.Text"
+        android:layout_toRightOf="@+id/agenda_item_poster"
+        android:drawableLeft="@drawable/account_multiple"
+        android:drawableStart="@drawable/account_multiple"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/agenda_item_waar"
@@ -81,10 +60,13 @@
         android:layout_height="wrap_content"
         android:text="Medium Text"
         android:layout_below="@+id/agenda_item_deelnemers"
-        android:layout_toRightOf="@+id/agenda_item_waar_icon"
-        android:layout_toEndOf="@+id/agenda_item_waar_icon"
-        android:layout_margin="5dp"
-        style="@style/AppTheme.Text" />
+        android:layout_toRightOf="@+id/agenda_item_poster"
+        android:layout_toEndOf="@+id/agenda_item_poster"
+        style="@style/AppTheme.Text"
+        android:drawableLeft="@drawable/earth"
+        android:drawableStart="@drawable/earth"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -96,35 +78,30 @@
         android:layout_margin="4dp"
         android:visibility="gone"
         android:id="@+id/agenda_inschrijven_verplicht">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/inschrijven_verplicht_icon"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:src="@drawable/emoticon_happy"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginRight="5dp" />
 
         <TextView
+            android:id="@+id/inschrijven_verplicht_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/inschrijven_verplicht_icon"
-            android:layout_toEndOf="@+id/inschrijven_verplicht_icon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
             android:text="@string/agenda_inschrijven_verplicht"
             style="@style/AppTheme.Text"
             android:textStyle="bold"
-            android:layout_marginTop="8dp"
-            android:textColor="#FFF" />
+            android:textColor="#FFF"
+            android:drawableLeft="@drawable/emoticon_happy"
+            android:drawableStart="@drawable/emoticon_happy"
+            android:drawablePadding="5dp"
+            android:autoText="false"
+            android:gravity="center_vertical" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/inschrijven_verplicht_date"
             android:text="maandag 20 januari 1979 23:59"
-            android:layout_below="@+id/inschrijven_verplicht_icon"
+            android:layout_below="@+id/inschrijven_verplicht_text"
             android:layout_marginLeft="20dp"
             android:layout_marginBottom="4dp"
             android:textColor="#fff" />

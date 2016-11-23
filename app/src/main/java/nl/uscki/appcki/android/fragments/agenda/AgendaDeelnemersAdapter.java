@@ -40,6 +40,7 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
         holder.name.setText(items.get(position).getPerson().getName());
         holder.note.setText(items.get(position).getNote());
 
+        holder.profile.setDefaultImageResId(R.drawable.account); // set default in case the image can't be loaded
         if(holder.mItem.getPerson().getPhotomediaid() != null) {
             // TODO API: 5/29/16 fix this shit in the api
             Integer profile = holder.mItem.getPerson().getPhotomediaid();

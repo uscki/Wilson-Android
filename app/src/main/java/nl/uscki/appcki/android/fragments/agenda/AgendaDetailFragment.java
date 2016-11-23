@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -24,7 +23,6 @@ public class AgendaDetailFragment extends Fragment {
     BBTextView longText;
 
     TextView summaryCommissie;
-    ImageView summaryCommissieIcon;
     TextView summaryTitle;
     TextView summaryWaar;
     TextView summaryWhen;
@@ -67,36 +65,26 @@ public class AgendaDetailFragment extends Fragment {
         }
         longText.setText(item.getDescription());
 
-        if (item.getWho() != null) {
-            summaryCommissie.setText(item.getWho());
-        } else {
-            summaryCommissie.setVisibility(View.GONE);
-        }
+        setTextView(view, item.getWho(), R.id.agenda_summary_commissie_text);
+        setTextView(view, item.getWhat(), R.id.agenda_summary_title_text);
+        setTextView(view, item.getLocation(), R.id.agenda_summary_waar_text);
 
-        summaryTitle.setText(item.getTitle());
-        summaryWaar.setText(item.getLocation());
         if (item.getEnd() != null) {
             String whenStr = item.getStart().toString("EEEE dd MMMM YYYY HH:mm") + " - " + item.getEnd().toString("EEEE dd MMMM YYYY HH:mm");
-            summaryWhen.setText(whenStr);
+            summaryWhen.setText(item.getWhen());
         } else {
             summaryWhen.setText(item.getStart().toString("EEEE dd MMMM YYYY HH:mm"));
         }
-        summaryCost.setText(item.getCosts());
+        setTextView(view, item.getCosts(), R.id.agenda_summary_cost_text);
 
         return view;
     }
 
-    // EVENT HANDLING
-
-    @Override
-    public void onStart() {
-        //EventBus.getDefault().register(this);
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        //EventBus.getDefault().unregister(this);
-        super.onStop();
+    private void setTextView(View v, String str, int id) {
+        if (str != null && !str.isEmpty()) {
+            ((TextView) v.findViewById(id)).setText(str);
+        } else {
+            v.findViewById(id).setVisibility(View.GONE);
+        }
     }
 }

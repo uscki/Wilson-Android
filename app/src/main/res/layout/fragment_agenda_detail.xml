@@ -53,56 +53,63 @@
                 android:drawableLeft="@drawable/account_multiple"
                 android:drawableStart="@drawable/account_multiple"
                 android:drawablePadding="5dp"
-                style="@style/AppTheme.Text"/>
+                style="@style/AppTheme.Text"
+                android:gravity="center_vertical" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/agenda_summary_title_text"
                 android:layout_below="@+id/agenda_summary_commissie_text"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginBottom="5dp"
                 android:text="@string/example_text"
                 android:drawableLeft="@drawable/label_outline"
                 android:drawableStart="@drawable/label_outline"
                 android:drawablePadding="5dp"
-                style="@style/AppTheme.Text"/>
+                style="@style/AppTheme.Text"
+                android:gravity="center_vertical" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/agenda_summary_waar_text"
                 android:layout_below="@+id/agenda_summary_title_text"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginBottom="5dp"
                 android:text="@string/example_text"
                 android:drawableLeft="@drawable/earth"
                 android:drawableStart="@drawable/earth"
                 android:drawablePadding="5dp"
-                style="@style/AppTheme.Text"/>
+                style="@style/AppTheme.Text"
+                android:gravity="center_vertical" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/agenda_summary_when_text"
                 android:layout_below="@+id/agenda_summary_waar_text"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginBottom="5dp"
                 android:text="@string/example_text"
                 android:drawableLeft="@drawable/calendar"
                 android:drawableStart="@drawable/calendar"
                 android:drawablePadding="5dp"
-                style="@style/AppTheme.Text"/>
+                style="@style/AppTheme.Text"
+                android:gravity="center_vertical" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/agenda_summary_cost_text"
                 android:layout_below="@+id/agenda_summary_when_text"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="10dp"
@@ -110,7 +117,8 @@
                 android:drawableLeft="@drawable/cash_multiple"
                 android:drawableStart="@drawable/cash_multiple"
                 android:drawablePadding="5dp"
-                style="@style/AppTheme.Text"/>
+                style="@style/AppTheme.Text"
+                android:gravity="center_vertical" />
         </RelativeLayout>
     </RelativeLayout>
 </ScrollView>
