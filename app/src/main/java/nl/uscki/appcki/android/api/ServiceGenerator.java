@@ -31,7 +31,7 @@ public class ServiceGenerator {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         // set your desired log level
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        //httpClient.addInterceptor(logging); TODO uncomment voor debug output
+        //httpClient.addInterceptor(logging);// TODO uncomment voor debug output
 
         httpClient.addInterceptor(new Interceptor() {
             @Override
