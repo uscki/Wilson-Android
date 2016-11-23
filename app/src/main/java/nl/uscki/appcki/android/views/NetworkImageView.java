@@ -23,6 +23,7 @@ import retrofit2.Response;
  */
 public class NetworkImageView extends ImageView {
     private Integer mediaId;
+    private int defaultResourceId;
 
     public NetworkImageView(Context context) {
         this(context, null);
@@ -94,7 +95,8 @@ public class NetworkImageView extends ImageView {
                         }
                         response.body().close();
                     } else {
-                        Log.v("NetworkImageView", "api contact failed");
+                        Log.v("NetworkImageView", "error: " + response.message());
+                        setImageResource(defaultResourceId); // set default resource
                     }
                 }
 
@@ -124,6 +126,7 @@ public class NetworkImageView extends ImageView {
     }
 
     public void setDefaultImageResId(int defaultImage) {
+        this.defaultResourceId = defaultImage;
         this.setImageResource(defaultImage);
     }
 
