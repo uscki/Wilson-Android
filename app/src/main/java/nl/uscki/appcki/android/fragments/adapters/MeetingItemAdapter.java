@@ -82,7 +82,7 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
     }
 
     private String getMensenString(MeetingItem meeting) {
-        return String.format(Locale.getDefault(), "%d / %d ( %d )", meeting.getEnrolledPersons().size(), meeting.getParticipation().size(),
+        return String.format(Locale.getDefault(), "%d / %d ( %d %%)", meeting.getEnrolledPersons().size(), meeting.getParticipation().size(),
                 (int)(((float)meeting.getEnrolledPersons().size()/(float)meeting.getParticipation().size()) * 100));
     }
 
