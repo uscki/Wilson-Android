@@ -10,7 +10,7 @@ import retrofit2.http.Query;
  * Created by peter on 7/12/16.
  */
 public interface NewsService {
-    @GET("news/overview?sort=posteddate,desc")
+    @GET("news/overview")
     Call<NewsOverview> overview(@Query("page") Integer page, @Query("size") Integer size);
 
     @GET("news/get")
