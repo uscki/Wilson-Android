@@ -41,21 +41,21 @@ public class HomeAgendaTab extends PageableFragment {
                     if (response.body() != null) {
                         if(response.body().getNumberOfElements() < AGENDA_PAGE_SIZE) {
                             tinyPage = true;
-                            Log.e("HomeSubFragments", "tinypage: " + tinyPage);
+                            Log.e("HomeAgendaTab", "tinypage: " + tinyPage);
                         }
                         getAdapter().addItems(response.body().getContent());
                     } else {
                         //TODO handle failing to load more
-                        Log.e("HomeSubFragments", "something failed: " + response.body());
+                        Log.e("HomeAgendaTab", "something failed: " + response.body());
                     }
                 }
             } else {
                 if (getAdapter() instanceof AgendaItemAdapter) {
-                    Log.e("HomeSubFragments", "update: " + response.body());
+                    Log.e("HomeAgendaTab", "update: " + response.body());
                     if(response.body() != null) {
                         if(response.body().getNumberOfElements() < AGENDA_PAGE_SIZE) {
                             tinyPage = true;
-                            Log.e("HomeSubFragments", "tinypage: " + tinyPage);
+                            Log.e("HomeAgendaTab", "tinypage: " + tinyPage);
                         }
                         getAdapter().update(response.body().getContent());
                     }

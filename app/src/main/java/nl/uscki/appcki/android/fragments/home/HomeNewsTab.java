@@ -38,15 +38,17 @@ public class HomeNewsTab extends PageableFragment {
                 loading = false;
                 if (getAdapter() instanceof NewsItemAdapter) {
                     if (response.body() != null) {
+                        Log.e("HomeNewsTab", "response size: " + response.body().getContent().size());
                         getAdapter().addItems(response.body().getContent());
                     } else {
                         //TODO handle failing to load more
-                        Log.d("HomeSubFragments", response.body()+"");
+                        Log.d("HomeNewsTab", response.body()+"");
                     }
                 }
             }else {
                 if (getAdapter() instanceof NewsItemAdapter) {
                     if (response.body() != null) {
+                        Log.e("HomeNewsTab", "updating: " + response.body());
                         getAdapter().update(response.body().getContent());
                     }
                 }
@@ -68,6 +70,8 @@ public class HomeNewsTab extends PageableFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+
+        Log.d("HomeNewsTab", "creating");
 
         setAdapter(new NewsItemAdapter(new ArrayList<NewsItem>()));
         Services.getInstance().newsService.overview(page, NEWS_PAGE_SIZE).enqueue(newsOverviewCallback);
