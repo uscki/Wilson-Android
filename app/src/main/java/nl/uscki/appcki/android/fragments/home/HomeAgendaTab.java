@@ -43,9 +43,9 @@ public class HomeAgendaTab extends PageableFragment {
                             tinyPage = true;
                         } else {
                             tinyPage = false;
+                            getAdapter().addItems(response.body().getContent());
                         }
                         Log.e("HomeAgendaTab", "tinypage: " + tinyPage);
-                        getAdapter().addItems(response.body().getContent());
                     } else {
                         //TODO handle failing to load more
                         Log.e("HomeAgendaTab", "something failed: " + response.body());
