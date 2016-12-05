@@ -22,7 +22,9 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -155,10 +157,20 @@ public class LoginFragment extends Fragment {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, UserLoginTask.Result> {
 
         private final String mEmail;
         private final String mPassword;
+
+        public class Result {
+            boolean succes;
+            String error;
+
+            public Result(boolean succes, String error) {
+                this.succes = succes;
+                this.error = error;
+            }
+        }
 
         UserLoginTask(String email, String password) throws java.io.UnsupportedEncodingException {
             mEmail = URLEncoder.encode(email, "UTF-8");
@@ -180,7 +192,7 @@ public class LoginFragment extends Fragment {
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Result doInBackground(Void... params) {
             URL api;
             HttpURLConnection connection = null;
             Gson gson = new Gson();
@@ -190,14 +202,13 @@ public class LoginFragment extends Fragment {
                 api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + password); //TODO API: beslissing maken over hash of niet
                 connection = (HttpURLConnection) api.openConnection();
                 connection.setRequestMethod("GET");
+                connection.setConnectTimeout(3*1000); // 3 seconds
 
                 String token = connection.getHeaderField("X-AUTH-TOKEN");
 
                 if (token == null) {
-                    //TODO: handle error
-                    Log.i("LoginActivity", "Error logging in!");
                     connection.disconnect();
-                    return false;
+                    return new Result(false, "Username of password is incorrect!");
                 }
 
                 Log.i("LoginActivity: ", "token: " + token);
@@ -206,25 +217,31 @@ public class LoginFragment extends Fragment {
                 UserHelper.getInstance().login(token, person);
 
                 connection.disconnect();
-            } catch (Exception e) {
+            } catch(SocketTimeoutException e) {
+                return new Result(false, "Connection timed out!");
+            } catch(ConnectException e) {
+                Log.e("LoginFragment", e.getLocalizedMessage());
+                return new Result(false, "Failed to connect to the server!");
+            } catch(Exception e) {
                 e.printStackTrace();
+                return new Result(false, "Some error occured!!");
             } finally {
                 assert connection != null;
                 connection.disconnect();
             }
 
-            return true;
+            return new Result(true, null);
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final Result result) {
             authTask = null;
             animation.end();
 
-            if (success) {
+            if (result.succes) {
                 EventBus.getDefault().post(new UserLoggedInEvent());
             } else {
-                passwordView.setError(getString(R.string.error_incorrect_password));
+                passwordView.setError(result.error);
                 passwordView.requestFocus();
             }
         }
