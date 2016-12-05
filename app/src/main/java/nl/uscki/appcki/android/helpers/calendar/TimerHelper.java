@@ -12,18 +12,19 @@ public class TimerHelper {
 
     public static final int FIVE_MINUTES = 5 * 60 * 1000;
     private static final String SCHEME = "pku-alarm";
+    
+    //// TODO: 11/26/16 LINT: Do not place Android context classes in static fields
+    // (static reference to TimerHelper which has field context pointing to Context); this is a memory leak (and also breaks Instant Run)
     private static TimerHelper instance;
-    private final AlarmManager am;
-    private final Context context;
 
 
     ///////////////////////////////////////////////////////////////////////////
     // timer methods
     ///////////////////////////////////////////////////////////////////////////
 
-    public TimerHelper() {
-        context = App.getContext();
-        am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    private TimerHelper() {
+        Context context = App.getContext();
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
     /*public static Uri makeUri(RegimeReminder reminder) {

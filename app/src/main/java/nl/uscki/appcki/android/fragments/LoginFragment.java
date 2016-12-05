@@ -140,7 +140,7 @@ public class LoginFragment extends Fragment {
             animation.setInterpolator(new LinearInterpolator());
             animation.start();
 
-            EventBus.getDefault().post(new ShowProgressEvent(true));
+            EventBus.getDefault().post(new ShowProgressEvent());
 
             try {
                 authTask = new UserLoginTask(userName, password);
@@ -161,7 +161,7 @@ public class LoginFragment extends Fragment {
         private final String mPassword;
 
         UserLoginTask(String email, String password) throws java.io.UnsupportedEncodingException {
-            mEmail = URLEncoder.encode(email, "UTF-8");;
+            mEmail = URLEncoder.encode(email, "UTF-8");
             mPassword = password;
         }
 
@@ -169,19 +169,19 @@ public class LoginFragment extends Fragment {
             try {
                 java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
                 byte[] array = md.digest(md5.getBytes());
-                StringBuffer sb = new StringBuffer();
-                for (int i = 0; i < array.length; ++i) {
-                    sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
+                StringBuilder sb = new StringBuilder();
+                for (byte anArray : array) {
+                    sb.append(Integer.toHexString((anArray & 0xFF) | 0x100).substring(1, 3));
                 }
                 return sb.toString();
-            } catch (java.security.NoSuchAlgorithmException e) {
+            } catch (java.security.NoSuchAlgorithmException ignored) {
             }
             return null;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            URL api = null;
+            URL api;
             HttpURLConnection connection = null;
             Gson gson = new Gson();
 
@@ -209,6 +209,7 @@ public class LoginFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
+                assert connection != null;
                 connection.disconnect();
             }
 

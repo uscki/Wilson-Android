@@ -26,7 +26,7 @@ public class CalendarReminder {
         DEFAULTS.add(60);
         DEFAULTS.add(600);
         DEFAULTS.add(24*60);
-    };
+    }
 
     private final int minutes;
 

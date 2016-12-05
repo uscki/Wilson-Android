@@ -87,4 +87,14 @@ public class PersonSimple {
     public void setPhotomediaid(Integer photomediaid) {
         this.photomediaid = photomediaid;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Person) {
+            return ((Person)o).getId().equals(this.getId());
+        } else if(o instanceof  PersonSimple) {
+            return ((PersonSimple)o).getId().equals(this.getId());
+        }
+        return false;
+    }
 }

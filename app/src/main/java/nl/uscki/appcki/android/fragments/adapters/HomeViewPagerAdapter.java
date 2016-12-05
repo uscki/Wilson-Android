@@ -1,11 +1,9 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.home.HomeAgendaTab;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
@@ -22,17 +20,13 @@ public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Bundle bundle = new Bundle();
         switch (position) {
             case HomeFragment.NEWS:
-                PageableFragment newsFragment = new HomeNewsTab();
-                return newsFragment;
+                return new HomeNewsTab();
             case HomeFragment.AGENDA:
-                PageableFragment agendaFragment = new HomeAgendaTab();
-                return agendaFragment;
+                return new HomeAgendaTab();
             case HomeFragment.ROEPHOEK:
-                PageableFragment roephoekFragment = new HomeRoephoekTab();
-                return roephoekFragment;
+                return new HomeRoephoekTab();
         }
 
         return null;

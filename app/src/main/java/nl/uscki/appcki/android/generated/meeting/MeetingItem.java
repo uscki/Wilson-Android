@@ -15,16 +15,16 @@ public class MeetingItem {
     private Meeting meeting;
     @SerializedName("enrolledPersons")
     @Expose
-    private List<PersonSimple> enrolledPersons = new ArrayList<PersonSimple>();
+    private List<PersonSimple> enrolledPersons = new ArrayList<>(); // a;le mensen die gereageerd hebben
     @SerializedName("participation")
     @Expose
-    private List<Participation> participation = new ArrayList<Participation>();
+    private List<Participation> participation = new ArrayList<>(); // alle mensen die zijn uitgenodigd
     @SerializedName("slots")
     @Expose
-    private List<Slot> slots = new ArrayList<Slot>();
+    private List<Slot> slots = new ArrayList<>();
     @SerializedName("myPreferences")
     @Expose
-    private List<MyPreference> myPreferences = new ArrayList<MyPreference>();
+    private List<MyPreference> myPreferences = new ArrayList<>();
 
     /**
      *

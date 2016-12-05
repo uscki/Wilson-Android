@@ -1,7 +1,5 @@
 package nl.uscki.appcki.android.helpers.calendar;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -11,15 +9,12 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 import android.util.Log;
 
-import com.vistrav.ask.Ask;
-
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
-
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
@@ -91,7 +86,6 @@ public class CalendarHelper {
 
     private final long calendarId;
     private static CalendarHelper instance;
-    private final Context context;
     private ContentResolver cr;
 
     public long getPrimaryCalendarId() {
@@ -326,8 +320,8 @@ public class CalendarHelper {
         appointment.setTitle(item.getMeeting().getTitle());
         appointment.setLocation(item.getMeeting().getLocation());
         appointment.setNotes(item.getMeeting().getAgenda());
-        appointment.setStartDate(item.getMeeting().getStart());
-        appointment.setEndDate(item.getMeeting().getEnd());
+        appointment.setStartDate(item.getMeeting().getStartdate());
+        appointment.setEndDate(item.getMeeting().getEnddate());
         return appointment.getId();
     }
 
@@ -336,7 +330,7 @@ public class CalendarHelper {
     }
 
     private CalendarHelper() {
-        context = App.getContext();
+        Context context = App.getContext();
         cr = context.getContentResolver();
         calendarId = getPrimaryCalendarId();
     }

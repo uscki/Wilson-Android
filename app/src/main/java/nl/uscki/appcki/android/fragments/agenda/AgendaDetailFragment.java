@@ -18,15 +18,15 @@ import nl.uscki.appcki.android.views.BBTextView;
  * A simple {@link Fragment} subclass.
  */
 public class AgendaDetailFragment extends Fragment {
-    TextView title;
-    TextView when;
-    BBTextView longText;
+    private TextView title;
+    private TextView when;
+    private BBTextView longText;
 
-    TextView summaryCommissie;
-    TextView summaryTitle;
-    TextView summaryWaar;
-    TextView summaryWhen;
-    TextView summaryCost;
+    private TextView summaryCommissie;
+    private TextView summaryTitle;
+    private TextView summaryWaar;
+    private TextView summaryWhen;
+    private TextView summaryCost;
 
     public static AgendaItem item;
 

@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 
-public class Category {
+class Category {
 
     @Expose
     private Integer id;

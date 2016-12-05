@@ -56,7 +56,7 @@ public class MeetingDetailFragment extends Fragment {
     private void setupViews() {
         title.setText(item.getMeeting().getTitle());
 
-        DateTime dateTime = new DateTime(item.getMeeting().getActualTime());
+        DateTime dateTime = new DateTime(item.getMeeting().getStartdate());
         plannedDate.setText(dateTime.toString("EEEE dd MMMM YYYY HH:mm"));
 
         if (item.getMeeting().getLocation() == null || item.getMeeting().getLocation().isEmpty()) {
@@ -67,7 +67,7 @@ public class MeetingDetailFragment extends Fragment {
         mensen.setText(getMensenString(item));
 
         if (item.getMeeting().getNotes() != null && !item.getMeeting().getNotes().isEmpty()) {
-            notes.setText(item.getMeeting().getNotes());
+            notes.setText(item.getMeeting().getNotes().trim());
         }
 
         plannotes.setText(item.getMeeting().getPlannotes());

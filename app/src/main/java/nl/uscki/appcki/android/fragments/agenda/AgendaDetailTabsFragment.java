@@ -30,7 +30,7 @@ import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
-import nl.uscki.appcki.android.generated.agenda.Subscribers;
+import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,11 +40,11 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class AgendaDetailTabsFragment extends Fragment {
-    TabLayout tabLayout;
-    ViewPager viewPager;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
-    AgendaItem item;
-    Menu menu;
+    private AgendaItem item;
+    private Menu menu;
 
     private boolean foundUser = false;
 
@@ -161,14 +161,14 @@ public class AgendaDetailTabsFragment extends Fragment {
 
             // no deadline for unsubscribing
             Log.d("MainActivity", "unsubscribing for:" + AgendaDetailFragment.item.getId());
-            Services.getInstance().agendaService.unsubscribe(AgendaDetailFragment.item.getId()).enqueue(new Callback<Subscribers>() {
+            Services.getInstance().agendaService.unsubscribe(AgendaDetailFragment.item.getId()).enqueue(new Callback<AgendaParticipantLists>() {
                 @Override
-                public void onResponse(Call<Subscribers> call, Response<Subscribers> response) {
+                public void onResponse(Call<AgendaParticipantLists> call, Response<AgendaParticipantLists> response) {
                     EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body(), true));
                 }
 
                 @Override
-                public void onFailure(Call<Subscribers> call, Throwable t) {
+                public void onFailure(Call<AgendaParticipantLists> call, Throwable t) {
                     if (t instanceof ConnectException) {
                         new ConnectionError(t); // handle connection error in MainActivity
                     } else {

@@ -13,14 +13,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
 import com.vistrav.ask.Ask;
+
+import java.net.ConnectException;
 
 import nl.uscki.appcki.android.MainActivity;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingDetailAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +41,39 @@ public class MeetingDetailTabsFragment extends Fragment {
     public static final int AANWEZIG = 1;
     public static final int AFWEZIG = 2;
 
+    private Callback<MeetingItem> meetingCallback = new Callback<MeetingItem>() {
+        @Override
+        public void onResponse(Call<MeetingItem> call, Response<MeetingItem> response) {
+            if(response.body() != null) {
+                item = response.body();
+
+                if (item.getMeeting().getStartdate() != null) {
+                    tabLayout.addTab(tabLayout.newTab().setText("Overzicht"));
+                    tabLayout.addTab(tabLayout.newTab().setText("Aanwezig"));
+                    tabLayout.addTab(tabLayout.newTab().setText("Afwezig"));
+                    setHasOptionsMenu(true);
+                } else {
+                    tabLayout.addTab(tabLayout.newTab().setText("Planner"));
+                    tabLayout.addTab(tabLayout.newTab().setText("Gereageerd"));
+                    tabLayout.addTab(tabLayout.newTab().setText("Niet gereageerd"));
+                }
+
+                viewPager.setAdapter(new MeetingDetailAdapter(getFragmentManager(), item));
+            } else {
+                //// TODO: 11/24/16 error handling
+            }
+        }
+
+        @Override
+        public void onFailure(Call<MeetingItem> call, Throwable t) {
+            if (t instanceof ConnectException) {
+                new ConnectionError(t); // handle connection error in MainActivity
+            } else {
+                throw new RuntimeException(t);
+            }
+        }
+    };
+
     public MeetingDetailTabsFragment() {
         // Required empty public constructor
     }
@@ -47,26 +86,16 @@ public class MeetingDetailTabsFragment extends Fragment {
         // Inflate the layout for this fragment
         View inflatedView = inflater.inflate(R.layout.fragment_tabs, container, false);
 
+        int id = -1;
         if (getArguments() != null) {
-            Gson gson = new Gson();
-            item = gson.fromJson(getArguments().getString("item"), MeetingItem.class);
+            id = getArguments().getInt("id");
         }
+
+        Services.getInstance().meetingService.get(id).enqueue(meetingCallback);
 
         tabLayout = (TabLayout) inflatedView.findViewById(R.id.tabLayout);
-        if (item.getMeeting().getActualTime() != null) {
-            tabLayout.addTab(tabLayout.newTab().setText("Overzicht"));
-            tabLayout.addTab(tabLayout.newTab().setText("Aanwezig"));
-            tabLayout.addTab(tabLayout.newTab().setText("Afwezig"));
-            setHasOptionsMenu(true);
-        } else {
-            tabLayout.addTab(tabLayout.newTab().setText("Planner"));
-            tabLayout.addTab(tabLayout.newTab().setText("Gereageerd"));
-            tabLayout.addTab(tabLayout.newTab().setText("Niet gereageerd"));
-        }
 
         viewPager = (ViewPager) inflatedView.findViewById(R.id.viewpager);
-
-        viewPager.setAdapter(new MeetingDetailAdapter(getFragmentManager(), item));
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

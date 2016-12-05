@@ -19,8 +19,7 @@ import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingParticipantAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
-import nl.uscki.appcki.android.generated.meeting.Preference;
-import nl.uscki.appcki.android.generated.meeting.Slot;
+import nl.uscki.appcki.android.generated.meeting.Participation;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
 import retrofit2.Call;
@@ -79,13 +78,10 @@ public class MeetingParticipantsFragment extends PageableFragment {
     private List<PersonWithNote> findNonAttendingPersons(MeetingItem item) {
         List<PersonWithNote> personWithNotes = new ArrayList<>();
 
-        for (Slot slot : item.getSlots()) {
-            for (Preference pref : slot.getPreferences()) {
-                if (!personWithNotes.contains(new PersonWithNote(pref.getPerson().getName(), "", pref.getPerson().getPhotomediaid()))) {
-                    if (!pref.getCanattend()) {
-                        personWithNotes.add(new PersonWithNote(pref.getPerson().getName(), pref.getNotes(), pref.getPerson().getPhotomediaid()));
-                    }
-                }
+        for(Participation p : item.getParticipation()) {
+            //noinspection SuspiciousMethodCalls
+            if(!item.getEnrolledPersons().contains(p.getPerson())) {
+                personWithNotes.add(new PersonWithNote(p.getPerson().getName(), "", p.getPerson().getPhotomediaid()));
             }
         }
 

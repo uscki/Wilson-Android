@@ -2,7 +2,7 @@ package nl.uscki.appcki.android.api;
 
 import nl.uscki.appcki.android.generated.agenda.Agenda;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
-import nl.uscki.appcki.android.generated.agenda.Subscribers;
+import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -21,10 +21,10 @@ public interface AgendaService {
     Call<Agenda> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
 
     @GET("agenda/subscribe")
-    Call<Subscribers> subscribe(@Query("id") Integer id, @Query("note") String note);
+    Call<AgendaParticipantLists> subscribe(@Query("id") Integer id, @Query("note") String note);
 
     @GET("agenda/unsubscribe")
-    Call<Subscribers> unsubscribe(@Query("id") Integer id);
+    Call<AgendaParticipantLists> unsubscribe(@Query("id") Integer id);
 
     @GET("agenda/subscribed")
     Call<Agenda> subscribed();

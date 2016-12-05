@@ -24,7 +24,7 @@ import retrofit2.Response;
  * A fragment representing a list of AgendaParticipants.
  */
 public class AgendaDeelnemersFragment extends PageableFragment {
-    AgendaItem item;
+    private AgendaItem item;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,7 +83,7 @@ public class AgendaDeelnemersFragment extends PageableFragment {
         swipeContainer.setRefreshing(false);
         if (getAdapter() instanceof AgendaDeelnemersAdapter) {
             if(event.subscribed != null) { //TODO because of dirty hackin MainActivity
-                getAdapter().update(event.subscribed.getContent());
+                getAdapter().update(event.subscribed.getParticipants());
             }
         }
     }

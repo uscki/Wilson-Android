@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import nl.uscki.appcki.android.generated.organisation.Person;
+import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 
 public class Preference {
 
@@ -20,7 +20,7 @@ public class Preference {
     private Boolean canattend;
     @SerializedName("person")
     @Expose
-    private Person person;
+    private PersonSimple person;
 
     /**
      *
@@ -81,7 +81,7 @@ public class Preference {
      * @return
      * The person
      */
-    public Person getPerson() {
+    public PersonSimple getPerson() {
         return person;
     }
 
@@ -90,7 +90,7 @@ public class Preference {
      * @param person
      * The person
      */
-    public void setPerson(Person person) {
+    public void setPerson(PersonSimple person) {
         this.person = person;
     }
 

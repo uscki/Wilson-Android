@@ -2,10 +2,11 @@ package nl.uscki.appcki.android.generated.meeting;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 
-import nl.uscki.appcki.android.generated.organisation.Person;
+import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 
 public class Meeting {
 
@@ -14,55 +15,37 @@ public class Meeting {
     private Integer id;
     @SerializedName("person")
     @Expose
-    private Person person;
+    private PersonSimple person;
     @SerializedName("duration")
     @Expose
-    private Integer duration;
+    private String duration;
     @SerializedName("actual_time")
     @Expose
     private Long actualTime;
+    @SerializedName("actual_slot")
+    @Expose
+    private Slot actual_slot;
     @SerializedName("location")
     @Expose
     private String location;
     @SerializedName("notes")
     @Expose
     private String notes;
-    @SerializedName("reminder_time")
-    @Expose
-    private Integer reminderTime;
     @SerializedName("title")
     @Expose
     private String title;
-    @SerializedName("interval")
-    @Expose
-    private String interval;
     @SerializedName("startdate")
     @Expose
-    private String startdate;
-    @SerializedName("starttime")
-    @Expose
-    private String starttime;
-    @SerializedName("start")
-    @Expose
-    private Long start;
-    @SerializedName("end")
-    @Expose
-    private Long end;
+    private Long startdate;
     @SerializedName("enddate")
     @Expose
-    private String enddate;
-    @SerializedName("endtime")
-    @Expose
-    private String endtime;
+    private Long enddate;
     @SerializedName("agenda")
     @Expose
     private String agenda;
     @SerializedName("plannotes")
     @Expose
     private String plannotes;
-    @SerializedName("notifypct")
-    @Expose
-    private Integer notifypct;
 
     /**
      *
@@ -87,7 +70,7 @@ public class Meeting {
      * @return
      * The person
      */
-    public Person getPerson() {
+    public PersonSimple getPerson() {
         return person;
     }
 
@@ -96,7 +79,7 @@ public class Meeting {
      * @param person
      * The person
      */
-    public void setPerson(Person person) {
+    public void setPerson(PersonSimple person) {
         this.person = person;
     }
 
@@ -105,7 +88,7 @@ public class Meeting {
      * @return
      * The duration
      */
-    public Integer getDuration() {
+    public String getDuration() {
         return duration;
     }
 
@@ -114,7 +97,7 @@ public class Meeting {
      * @param duration
      * The duration
      */
-    public void setDuration(Integer duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
 
@@ -134,6 +117,14 @@ public class Meeting {
      */
     public void setActualTime(Long actualTime) {
         this.actualTime = actualTime;
+    }
+
+    public Slot getActual_slot() {
+        return actual_slot;
+    }
+
+    public void setActual_slot(Slot actual_slot) {
+        this.actual_slot = actual_slot;
     }
 
     /**
@@ -175,24 +166,6 @@ public class Meeting {
     /**
      *
      * @return
-     * The reminderTime
-     */
-    public Integer getReminderTime() {
-        return reminderTime;
-    }
-
-    /**
-     *
-     * @param reminderTime
-     * The reminder_time
-     */
-    public void setReminderTime(Integer reminderTime) {
-        this.reminderTime = reminderTime;
-    }
-
-    /**
-     *
-     * @return
      * The title
      */
     public String getTitle() {
@@ -211,36 +184,13 @@ public class Meeting {
     /**
      *
      * @return
-     * The interval
-     */
-    public String getInterval() {
-        return interval;
-    }
-
-    /**
-     *
-     * @param interval
-     * The interval
-     */
-    public void setInterval(String interval) {
-        this.interval = interval;
-    }
-
-    public DateTime getStart() {
-        return new DateTime(start);
-    }
-
-    public DateTime getEnd() {
-        return new DateTime(end);
-    }
-
-    /**
-     *
-     * @return
      * The startdate
      */
-    public String getStartdate() {
-        return startdate;
+    public DateTime getStartdate() {
+        if(startdate == null) {
+            return null;
+        }
+        return new DateTime(startdate);
     }
 
     /**
@@ -248,26 +198,8 @@ public class Meeting {
      * @param startdate
      * The startdate
      */
-    public void setStartdate(String startdate) {
+    public void setStartdate(Long startdate) {
         this.startdate = startdate;
-    }
-
-    /**
-     *
-     * @return
-     * The starttime
-     */
-    public String getStarttime() {
-        return starttime;
-    }
-
-    /**
-     *
-     * @param starttime
-     * The starttime
-     */
-    public void setStarttime(String starttime) {
-        this.starttime = starttime;
     }
 
     /**
@@ -275,8 +207,11 @@ public class Meeting {
      * @return
      * The enddate
      */
-    public String getEnddate() {
-        return enddate;
+    public DateTime getEnddate() {
+        if(enddate == null) {
+            return null;
+        }
+        return new DateTime(enddate);
     }
 
     /**
@@ -284,26 +219,8 @@ public class Meeting {
      * @param enddate
      * The enddate
      */
-    public void setEnddate(String enddate) {
+    public void setEnddate(Long enddate) {
         this.enddate = enddate;
-    }
-
-    /**
-     *
-     * @return
-     * The endtime
-     */
-    public String getEndtime() {
-        return endtime;
-    }
-
-    /**
-     *
-     * @param endtime
-     * The endtime
-     */
-    public void setEndtime(String endtime) {
-        this.endtime = endtime;
     }
 
     /**
@@ -340,24 +257,6 @@ public class Meeting {
      */
     public void setPlannotes(String plannotes) {
         this.plannotes = plannotes;
-    }
-
-    /**
-     *
-     * @return
-     * The notifypct
-     */
-    public Integer getNotifypct() {
-        return notifypct;
-    }
-
-    /**
-     *
-     * @param notifypct
-     * The notifypct
-     */
-    public void setNotifypct(Integer notifypct) {
-        this.notifypct = notifypct;
     }
 
     @Override

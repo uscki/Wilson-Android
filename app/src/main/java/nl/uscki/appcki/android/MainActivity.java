@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -235,7 +236,7 @@ public class MainActivity extends AppCompatActivity
         name.setText(UserHelper.getInstance().getPerson().getName());
 
         NetworkImageView profile = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
-        profile.setImageMediaId(UserHelper.getInstance().getPerson().getPhotomediaid());
+        profile.setImageMediaId(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL);
     }
 
     private void initLoggedOutUI() {

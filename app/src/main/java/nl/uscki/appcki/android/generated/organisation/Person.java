@@ -40,7 +40,7 @@ public class Person {
     private Integer photomediaid;
     //private MediaFile photomediaid;
     @Expose
-    private List<String> roles = new ArrayList<String>();
+    private List<String> roles = new ArrayList<>();
 
     /**
      * 
@@ -320,4 +320,13 @@ public class Person {
         return ToStringBuilder.reflectionToString(this);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Person) {
+            return ((Person)o).getId().equals(this.getId());
+        } else if(o instanceof  PersonSimple) {
+            return ((PersonSimple)o).getId().equals(this.getId());
+        }
+        return false;
+    }
 }

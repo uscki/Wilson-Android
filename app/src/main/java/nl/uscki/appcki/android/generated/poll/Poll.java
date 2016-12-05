@@ -15,7 +15,7 @@ public class Poll {
     private PollItem pollItem;
     @SerializedName("options")
     @Expose
-    private List<PollOption> options = new ArrayList<PollOption>();
+    private List<PollOption> options = new ArrayList<>();
     @SerializedName("myVote")
     @Expose
     private Integer myVote;

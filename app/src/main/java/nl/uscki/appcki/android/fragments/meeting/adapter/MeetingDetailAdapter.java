@@ -33,7 +33,7 @@ public class MeetingDetailAdapter extends FragmentStatePagerAdapter {
         bundle.putString("item", json);
         switch (position) {
             case MeetingDetailTabsFragment.PLANNER:
-                if (item.getMeeting().getActualTime() != null) {
+                if (item.getMeeting().getStartdate() != null) {
                     fragment = new MeetingDetailFragment();
                 } else {
                     fragment = new MeetingPlannerFragment();

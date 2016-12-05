@@ -93,7 +93,6 @@
             android:drawableLeft="@drawable/emoticon_happy"
             android:drawableStart="@drawable/emoticon_happy"
             android:drawablePadding="5dp"
-            android:autoText="false"
             android:gravity="center_vertical" />
 
         <TextView

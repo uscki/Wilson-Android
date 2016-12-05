@@ -7,8 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -19,6 +17,7 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
+import nl.uscki.appcki.android.helpers.UserHelper;
 
 /**
  * Created by peter on 7/3/16.
@@ -60,9 +59,7 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle();
-                Gson gson = new Gson();
-                String json = gson.toJson(holder.mItem, MeetingItem.class);
-                args.putString("item", json);
+                args.putInt("id", holder.mItem.getMeeting().getId());
                 // TODO: 7/3/16 launch vergaderplanner fragment
                 EventBus.getDefault().post(new OpenFragmentEvent(new MeetingDetailTabsFragment(), args));
             }
@@ -70,10 +67,11 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
     }
 
     private String getStatusString(MeetingItem meeting) {
-        if (meeting.getMeeting().getActualTime() != null) {
+        if (meeting.getMeeting().getStartdate() != null) {
             return "Deze vergadering is al gepland";
         } else {
-            if (meeting.getMyPreferences().isEmpty()) {
+            //noinspection SuspiciousMethodCalls
+            if (!meeting.getEnrolledPersons().contains(UserHelper.getInstance().getPerson())) {
                 return "Je hebt nog niet gereageerd.";
             } else {
                 return "Deze vergadering is nog niet gepland";

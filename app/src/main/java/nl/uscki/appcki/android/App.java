@@ -8,6 +8,7 @@ import android.content.Context;
  */
 public class App extends Application {
 
+    //TODO: LINT: Do not place Android context classes in static fields; this is a memory leak (and also breaks Instant Run)
     private static Context mContext;
 
     @Override

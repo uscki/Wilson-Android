@@ -21,7 +21,7 @@ public class MediaCollection {
     @Expose
     private String location;
     @Expose
-    private List<MediaCollection> subCollections = new ArrayList<MediaCollection>();
+    private List<MediaCollection> subCollections = new ArrayList<>();
     @Expose
     private Size size;
     @Expose
@@ -35,7 +35,7 @@ public class MediaCollection {
     @Expose
     private Person person;
     @Expose
-    private List<MediaFile> mediaFiles = new ArrayList<MediaFile>();
+    private List<MediaFile> mediaFiles = new ArrayList<>();
 
     /**
      * 

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Pageable<T> {
     @Expose
-    private List<T> content = new ArrayList<T>();
+    private List<T> content = new ArrayList<>();
     @Expose
     private Integer totalElements;
     @Expose

@@ -1,6 +1,5 @@
 package nl.uscki.appcki.android.fragments.meeting.adapter;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -25,6 +24,7 @@ import org.joda.time.DateTime;
 import java.net.ConnectException;
 import java.util.List;
 
+import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.error.ConnectionError;
@@ -42,14 +42,15 @@ import retrofit2.Response;
 public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<MeetingPreferenceDaySlotAdapter.ViewHolder> {
     List<Slot> slots;
 
-    private Callback<Boolean> callback = new Callback<Boolean>() {
+    private Callback<Preference> callback = new Callback<Preference>() {
         @Override
-        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-            Log.d("SlotAdapter", "succesfully set slot");
+        public void onResponse(Call<Preference> call, Response<Preference> response) {
+            //TODO: figure out what to do with this
+            Log.d("SlotAdapter", "succesfully set slot: " + response.body().toString());
         }
 
         @Override
-        public void onFailure(Call<Boolean> call, Throwable t) {
+        public void onFailure(Call<Preference> call, Throwable t) {
             if (t instanceof ConnectException) {
                 new ConnectionError(t); // handle connection error in MainActivity
             } else {
@@ -58,11 +59,8 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
         }
     };
 
-    private Context context;
-
-    public MeetingPreferenceDaySlotAdapter(Context context, List<Slot> slots) {
+    public MeetingPreferenceDaySlotAdapter(List<Slot> slots) {
         this.slots = slots;
-        this.context = context;
     }
 
     @Override
@@ -116,12 +114,13 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
         String json = gson.toJson(slot);
         args.putString("slot", json);
         newFragment.setArguments(args);
-        newFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), "slot_preferences");
+        newFragment.show(((AppCompatActivity) App.getContext()).getSupportFragmentManager(), "slot_preferences");
     }
 
     private boolean getChecked(Slot slot) {
         for(Preference p : slot.getPreferences()) {
-            if (p.getPerson() == UserHelper.getInstance().getPerson()) {
+            //noinspection EqualsBetweenInconvertibleTypes
+            if (p.getPerson().equals(UserHelper.getInstance().getPerson())) {
                 return p.getCanattend();
             }
         }

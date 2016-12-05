@@ -1,7 +1,10 @@
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent" >
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".fragments.meeting.MeetingDetailFragment">
 
     <TextView
@@ -94,12 +97,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/meeting_detail_plannotes_text"
-        android:text="@string/meeting_detail_notes"
+        android:text="@string/meeting_detail_plannotes"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="18dp"
         android:layout_marginStart="18dp"
         style="@style/AppTheme.TextSubHeader"
-        android:layout_below="@id/meeting_detail"/>
+        android:layout_below="@id/meeting_detail_notes"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -141,3 +144,4 @@
     </RelativeLayout>
 
 </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

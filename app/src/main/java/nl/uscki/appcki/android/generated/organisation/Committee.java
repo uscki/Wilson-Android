@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-public class Committee {
+class Committee {
 
     @Expose
     private Integer id;

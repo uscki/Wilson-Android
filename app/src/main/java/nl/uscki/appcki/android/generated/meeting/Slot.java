@@ -18,7 +18,7 @@ public class Slot {
     private Long starttime;
     @SerializedName("preferences")
     @Expose
-    private List<Preference> preferences = new ArrayList<Preference>();
+    private List<Preference> preferences = new ArrayList<>();
 
     /**
      *

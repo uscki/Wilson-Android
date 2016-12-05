@@ -54,7 +54,7 @@ public class PersonWithNote {
         List<PersonWithNote> persons = new ArrayList<>();
         for (Preference p : slot.getPreferences()) {
             if (p.getCanattend()) {
-                persons.add(new PersonWithNote(p.getPerson().getName(), p.getNotes(), p.getPerson().getPhotomediaid()));
+                persons.add(new PersonWithNote(p.getPerson().getPostalname(), p.getNotes(), p.getPerson().getPhotomediaid()));
             }
         }
         return  persons;
@@ -64,7 +64,7 @@ public class PersonWithNote {
         List<PersonWithNote> persons = new ArrayList<>();
         for (Preference p : slot.getPreferences()) {
             if (!p.getCanattend()) {
-                persons.add(new PersonWithNote(p.getPerson().getName(), p.getNotes(), p.getPerson().getPhotomediaid()));
+                persons.add(new PersonWithNote(p.getPerson().getPostalname(), p.getNotes(), p.getPerson().getPhotomediaid()));
             }
         }
         return  persons;

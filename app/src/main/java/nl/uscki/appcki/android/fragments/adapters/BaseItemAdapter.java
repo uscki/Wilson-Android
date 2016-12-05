@@ -11,7 +11,7 @@ import java.util.List;
 public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K> extends RecyclerView.Adapter<T> {
     protected List<K> items;
 
-    public BaseItemAdapter(List<K> items) {
+    protected BaseItemAdapter(List<K> items) {
         this.items = items;
     }
 
