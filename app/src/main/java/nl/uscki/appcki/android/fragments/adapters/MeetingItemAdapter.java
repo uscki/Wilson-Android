@@ -40,8 +40,8 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
         holder.mItem = item;
         holder.title.setText(item.getMeeting().getTitle());
 
-        if (item.getMeeting().getActualTime() != null) {
-            DateTime dateTime = new DateTime(item.getMeeting().getActualTime());
+        if (item.getMeeting().getStartdate() != null) {
+            DateTime dateTime = new DateTime(item.getMeeting().getStartdate());
             holder.plannedDate.setText(dateTime.toString("EEEE dd MMMM YYYY HH:mm"));
         } else {
             holder.plannedDate.setVisibility(View.GONE);
