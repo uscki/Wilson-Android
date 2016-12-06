@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import nl.uscki.appcki.android.generated.organisation.Person;
+import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 
 public class Participation {
 
@@ -14,7 +16,7 @@ public class Participation {
     private Integer id;
     @SerializedName("person")
     @Expose
-    private Person person;
+    private PersonSimpleName person;
     @SerializedName("preferences")
     @Expose
     private List<Preference> preferences;
@@ -42,7 +44,7 @@ public class Participation {
      * @return
      * The person
      */
-    public Person getPerson() {
+    public PersonSimpleName getPerson() {
         return person;
     }
 
@@ -51,7 +53,7 @@ public class Participation {
      * @param person
      * The person
      */
-    public void setPerson(Person person) {
+    public void setPerson(PersonSimpleName person) {
         this.person = person;
     }
 

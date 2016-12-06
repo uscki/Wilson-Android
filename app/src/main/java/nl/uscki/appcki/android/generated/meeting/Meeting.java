@@ -7,6 +7,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 
 public class Meeting {
 
@@ -15,7 +16,7 @@ public class Meeting {
     private Integer id;
     @SerializedName("person")
     @Expose
-    private PersonSimple person;
+    private PersonSimpleName person;
     @SerializedName("duration")
     @Expose
     private String duration;
@@ -70,7 +71,7 @@ public class Meeting {
      * @return
      * The person
      */
-    public PersonSimple getPerson() {
+    public PersonSimpleName getPerson() {
         return person;
     }
 
@@ -79,7 +80,7 @@ public class Meeting {
      * @param person
      * The person
      */
-    public void setPerson(PersonSimple person) {
+    public void setPerson(PersonSimpleName person) {
         this.person = person;
     }
 

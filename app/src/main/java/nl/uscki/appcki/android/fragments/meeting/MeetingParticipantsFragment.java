@@ -20,7 +20,9 @@ import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingParticipantAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import nl.uscki.appcki.android.generated.meeting.Participation;
+import nl.uscki.appcki.android.generated.meeting.Preference;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -65,9 +67,14 @@ public class MeetingParticipantsFragment extends PageableFragment {
 
     private List<PersonWithNote> findAttendingPersons(MeetingItem item) {
         List<PersonWithNote> personWithNotes = new ArrayList<>();
-
-        for (PersonSimple person : item.getEnrolledPersons()) {
-            personWithNotes.add(new PersonWithNote(person.getPostalname(), "", person.getPhotomediaid()));
+        if(item.getMeeting().getStartdate() != null) {
+            for(Preference p : item.getMeeting().getActual_slot().getPreferences()) {
+                personWithNotes.add(new PersonWithNote(p.getPerson().getPostalname(), p.getNotes(), p.getPerson().getPhotomediaid()));
+            }
+        } else {
+            for (PersonSimpleName person : item.getEnrolledPersons()) {
+                personWithNotes.add(new PersonWithNote(person.getPostalname(), "", person.getPhotomediaid()));
+            }
         }
 
         Log.d("MeetingParticipants", personWithNotes.size() + "");
@@ -79,9 +86,17 @@ public class MeetingParticipantsFragment extends PageableFragment {
         List<PersonWithNote> personWithNotes = new ArrayList<>();
 
         for(Participation p : item.getParticipation()) {
-            //noinspection SuspiciousMethodCalls
-            if(!item.getEnrolledPersons().contains(p.getPerson())) {
-                personWithNotes.add(new PersonWithNote(p.getPerson().getName(), "", p.getPerson().getPhotomediaid()));
+            if(item.getMeeting().getStartdate() != null) {
+                for(Preference pref : item.getMeeting().getActual_slot().getPreferences()) {
+                    if(pref.getPerson().equals(p.getPerson())) {
+
+                    }
+                }
+            } else {
+                //noinspection SuspiciousMethodCalls
+                if(!item.getEnrolledPersons().contains(p.getPerson())) {
+                    personWithNotes.add(new PersonWithNote(p.getPerson().getPostalname(), "", p.getPerson().getPhotomediaid()));
+                }
             }
         }
 

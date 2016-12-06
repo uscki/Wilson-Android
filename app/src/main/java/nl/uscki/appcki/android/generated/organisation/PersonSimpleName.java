@@ -1,67 +1,34 @@
 package nl.uscki.appcki.android.generated.organisation;
 
+import android.view.ViewDebug;
+
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by peter on 5-9-16.
+ * Created by peter on 5-12-16.
  */
 
-public class PersonSimple {
+public class PersonSimpleName {
     @Expose
-    private Integer id;
+    @SerializedName("id")
+    Integer id;
     @Expose
-    private String username;
+    @SerializedName("nickname")
+    String nickname;
     @Expose
-    private String firstname;
+    @SerializedName("postalname")
+    String postalname;
     @Expose
-    private String middlename;
-    @Expose
-    private String lastname;
-    @Expose
-    private String nickname;
-    @Expose
-    private String postalname;
-    @Expose
-    private Integer photomediaid;
+    @SerializedName("photomediaid")
+    Integer photomediaid;
 
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getMiddlename() {
-        return middlename;
-    }
-
-    public void setMiddlename(String middlename) {
-        this.middlename = middlename;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
     }
 
     public String getNickname() {
@@ -84,7 +51,7 @@ public class PersonSimple {
         return photomediaid;
     }
 
-    public void setPhotomediaid(Integer photomediaid) {
+    public void setPhotomediaid(int photomediaid) {
         this.photomediaid = photomediaid;
     }
 

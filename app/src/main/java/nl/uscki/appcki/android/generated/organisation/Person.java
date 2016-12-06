@@ -326,6 +326,8 @@ public class Person {
             return ((Person)o).getId().equals(this.getId());
         } else if(o instanceof  PersonSimple) {
             return ((PersonSimple)o).getId().equals(this.getId());
+        } else if (o instanceof PersonSimpleName) {
+            return ((PersonSimpleName)o).getId().equals(this.getId());
         }
         return false;
     }

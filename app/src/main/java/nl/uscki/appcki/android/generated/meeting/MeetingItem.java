@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 
 public class MeetingItem {
 
@@ -15,7 +16,7 @@ public class MeetingItem {
     private Meeting meeting;
     @SerializedName("enrolledPersons")
     @Expose
-    private List<PersonSimple> enrolledPersons = new ArrayList<>(); // a;le mensen die gereageerd hebben
+    private List<PersonSimpleName> enrolledPersons = new ArrayList<>(); // a;le mensen die gereageerd hebben
     @SerializedName("participation")
     @Expose
     private List<Participation> participation = new ArrayList<>(); // alle mensen die zijn uitgenodigd
@@ -49,7 +50,7 @@ public class MeetingItem {
      * @return
      * The enrolledPersons
      */
-    public List<PersonSimple> getEnrolledPersons() {
+    public List<PersonSimpleName> getEnrolledPersons() {
         return enrolledPersons;
     }
 
@@ -58,7 +59,7 @@ public class MeetingItem {
      * @param enrolledPersons
      * The enrolledPersons
      */
-    public void setEnrolledPersons(List<PersonSimple> enrolledPersons) {
+    public void setEnrolledPersons(List<PersonSimpleName> enrolledPersons) {
         this.enrolledPersons = enrolledPersons;
     }
 
