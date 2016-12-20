@@ -99,7 +99,14 @@ public class MainActivity extends AppCompatActivity
         UserHelper.getInstance().setPreferences(getPreferences(MODE_PRIVATE));
         UserHelper.getInstance().load();
 
-        loadState();
+        if(savedInstanceState != null) {
+            int ord = savedInstanceState.getInt("screen");
+            Screen screen = Screen.values()[ord];
+            currentScreen = screen;
+            loadState(screen);
+        } else {
+            loadState(Screen.NEWS); // load News if there is no known last screen
+        }
     }
 
     @Override
@@ -109,15 +116,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStop() {
-        saveState();
+    public void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        saveState();
         super.onDestroy();
     }
 
@@ -195,6 +200,12 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("screen", currentScreen.ordinal());
+        super.onSaveInstanceState(outState);
+    }
+
     private void openTab(int index) {
         if (currentScreen == Screen.ROEPHOEK || currentScreen == Screen.NEWS || currentScreen == Screen.AGENDA) {
             // HomeFragment luistert naar dit event om daarin de tab te switchen
@@ -257,23 +268,19 @@ public class MainActivity extends AppCompatActivity
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
-    private void saveState() {
-        UserHelper.getInstance().save();
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        preferences.edit().putString("last_screen", currentScreen.name()).apply();
-        Log.d("MainActivity", "save: " + currentScreen.name());
-    }
-
-    private void loadState() {
+    private void loadState(Screen screen) {
         if (!UserHelper.getInstance().isLoggedIn()) {
             openFragment(loginFragment, null);
             initLoggedOutUI();
             return;
         }
         initLoggedInUI();
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        Screen screen = Screen.valueOf(preferences.getString("last_screen", "NEWS"));
+
         Log.d("MainActivity", "load: " + screen.name());
+        openLastScreen(screen);
+    }
+
+    private void openLastScreen(Screen screen) {
         switch (screen) {
             case LOGIN:
                 initLoggedOutUI();
@@ -318,7 +325,6 @@ public class MainActivity extends AppCompatActivity
     public void onEventMainThread(UserLoggedInEvent event) {
         initLoggedInUI();
         openTab(HomeFragment.NEWS);
-        saveState(); // save user
     }
 
     public void onEventMainThread(OpenFragmentEvent event) {
