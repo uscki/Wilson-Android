@@ -36,28 +36,30 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     private int lastVisibleItem, totalItemCount;
     protected boolean loading;
 
+    // The current page
     protected Integer page;
+    // Whether this page is too small for the requested size
     protected boolean tinyPage;
 
     protected Callback<T> callback = new Callback<T>() {
         @Override
         public void onResponse(Call<T> call, Response<T> response) {
             swipeContainer.setRefreshing(false);
-            if(loading) {
+            if(loading) { // Refresh
                 loading = false;
                 if (response.body() != null) {
                     if(response.body().getNumberOfElements() < getPageSize()) {
                         tinyPage = true;
                     } else {
                         tinyPage = false;
-                        getAdapter().addItems(response.body().getContent());
                     }
+                    getAdapter().addItems(response.body().getContent());
                     Log.e("PageableFragment", "tinypage: " + tinyPage);
                 } else {
                     //TODO handle failing to load more
                     Log.e("PageableFragment", "something failed: " + response.body());
                 }
-            } else {
+            } else { // Scroll
                 Log.e("PageableFragment", "update: " + response.body());
                 if(response.body() != null) {
                     if(response.body().getNumberOfElements() < getPageSize()) {
@@ -110,12 +112,13 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                 LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 totalItemCount = layoutManager.getItemCount();
                 lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+
                 if (!loading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
                     // End has been reached
                     loading = true;
-                    page++;
+                    page++; // update page
                     Log.e("PageableFragment", "Loading page: " + page);
-                    onScrollRefresh();
+                    onScrollRefresh(); // and call
                 }
             }
         });
@@ -139,12 +142,6 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                 android.R.color.holo_red_light);
 
         swipeContainer.setRefreshing(true);
-        /*swipeContainer.post(new Runnable() { // refresh on init TODO dit word gefixt in support v24.2.0
-            @Override
-            public void run() {
-                swipeContainer.setRefreshing(true);
-            }
-        });*/
     }
 
     public BaseItemAdapter getAdapter() {

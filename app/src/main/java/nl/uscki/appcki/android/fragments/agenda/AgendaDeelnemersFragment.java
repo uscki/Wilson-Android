@@ -14,7 +14,7 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.events.AgendaSubscribersEvent;
-import nl.uscki.appcki.android.fragments.PageableFragment;
+import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,7 +23,7 @@ import retrofit2.Response;
 /**
  * A fragment representing a list of AgendaParticipants.
  */
-public class AgendaDeelnemersFragment extends PageableFragment {
+public class AgendaDeelnemersFragment extends RefreshableFragment {
     private AgendaItem item;
 
     @Override
@@ -39,9 +39,7 @@ public class AgendaDeelnemersFragment extends PageableFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        swipeContainer.setRefreshing(false);
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -65,14 +63,6 @@ public class AgendaDeelnemersFragment extends PageableFragment {
             }
         });
     }
-
-    @Override
-    protected int getPageSize() {
-        return 0;
-    }
-
-    @Override
-    public void onScrollRefresh() {}
 
     // EVENT HANDLING
 

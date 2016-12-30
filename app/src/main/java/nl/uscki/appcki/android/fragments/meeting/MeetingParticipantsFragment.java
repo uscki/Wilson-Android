@@ -16,7 +16,7 @@ import java.util.List;
 
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.error.ConnectionError;
-import nl.uscki.appcki.android.fragments.PageableFragment;
+import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingParticipantAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import nl.uscki.appcki.android.generated.meeting.Participation;
@@ -30,7 +30,7 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MeetingParticipantsFragment extends PageableFragment {
+public class MeetingParticipantsFragment extends RefreshableFragment {
     MeetingItem item;
     boolean aanwezig;
 
@@ -59,9 +59,7 @@ public class MeetingParticipantsFragment extends PageableFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        swipeContainer.setRefreshing(false);
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     private List<PersonWithNote> findAttendingPersons(MeetingItem item) {
@@ -103,11 +101,6 @@ public class MeetingParticipantsFragment extends PageableFragment {
     }
 
     @Override
-    protected int getPageSize() {
-        return 0;
-    }
-
-    @Override
     public void onSwipeRefresh() {
         Services.getInstance().meetingService.get(item.getMeeting().getId()).enqueue(new Callback<MeetingItem>() {
             @Override
@@ -132,10 +125,5 @@ public class MeetingParticipantsFragment extends PageableFragment {
                 }
             }
         });
-    }
-
-    @Override
-    public void onScrollRefresh() {
-
     }
 }
