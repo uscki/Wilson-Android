@@ -246,7 +246,10 @@ public class MainActivity extends AppCompatActivity
         name.setText(UserHelper.getInstance().getPerson().getName());
 
         NetworkImageView profile = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
-        //profile.setImageMediaId(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL);
+        profile.setDefaultImageResId(R.drawable.account);
+        if(UserHelper.getInstance().getPerson().getPhotomediaid() != null) {
+            profile.setImageMediaId(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL);
+        }
     }
 
     private void initLoggedOutUI() {

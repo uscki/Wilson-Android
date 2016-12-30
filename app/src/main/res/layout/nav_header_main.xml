@@ -13,13 +13,9 @@
 
     <nl.uscki.appcki.android.views.NetworkImageView
         android:id="@+id/nav_header_profilepic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@drawable/account"
-        android:cropToPadding="false"
-        android:scaleType="fitCenter"
-        android:layout_marginBottom="10dp" />
+        android:layout_height="60dp"
+        android:layout_width="60dp"
+        android:src="@drawable/account" />
 
     <TextView
         android:id="@+id/nav_header_name"
