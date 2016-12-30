@@ -176,21 +176,27 @@ public class MainActivity extends AppCompatActivity
 
         if (UserHelper.getInstance().isLoggedIn()) {
             if (id == R.id.nav_news) {
+                currentScreen = Screen.NEWS;
                 openTab(HomeFragment.NEWS);
             } else if (id == R.id.nav_agenda) {
+                currentScreen = Screen.AGENDA;
                 openTab(HomeFragment.AGENDA);
             } else if (id == R.id.nav_poll) {
 // TODO: 5/22/16 poll
             } else if (id == R.id.nav_roephoek) {
+                currentScreen = Screen.ROEPHOEK;
                 openTab(HomeFragment.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
+                currentScreen = Screen.MEETING_OVERVIEW;
                 openFragment(new MeetingOverviewFragment(), null);
             } else if (id == R.id.nav_logout) {
+                currentScreen = Screen.LOGIN;
                 UserHelper.getInstance().logout();
                 initLoggedOutUI();
             }
         } else {
             if (id == R.id.nav_login) {
+                currentScreen = Screen.LOGIN;
                 openFragment(loginFragment, null);
             }
         }

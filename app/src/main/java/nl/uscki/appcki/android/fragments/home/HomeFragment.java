@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.greenrobot.event.EventBus;
+import nl.uscki.appcki.android.MainActivity;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.fragments.adapters.HomeViewPagerAdapter;
@@ -45,6 +46,7 @@ public class HomeFragment extends Fragment {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                setCurrentScreen(tab.getPosition());
                 viewPager.setCurrentItem(tab.getPosition());
             }
 
@@ -61,6 +63,7 @@ public class HomeFragment extends Fragment {
 
         if (getArguments() != null) {
             int index = getArguments().getInt("index");
+            setCurrentScreen(index);
             viewPager.setCurrentItem(index);
             tabLayout.setScrollPosition(index, 0f, false);
         }
@@ -68,9 +71,24 @@ public class HomeFragment extends Fragment {
         return inflatedView;
     }
 
+    private void setCurrentScreen(int index) {
+        switch (index) {
+            case NEWS:
+                MainActivity.currentScreen = MainActivity.Screen.NEWS;
+                break;
+            case AGENDA:
+                MainActivity.currentScreen = MainActivity.Screen.AGENDA;
+                break;
+            case ROEPHOEK:
+                MainActivity.currentScreen = MainActivity.Screen.ROEPHOEK;
+                break;
+        }
+    }
+
     // EVENT HANDLING
 
     public void onEventMainThread(SwitchTabEvent event) {
+        setCurrentScreen(event.index);
         viewPager.setCurrentItem(event.index);
         tabLayout.setScrollPosition(event.index, 0f, false);
     }
