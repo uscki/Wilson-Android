@@ -51,7 +51,7 @@ public class MediaAPI {
     public static HashMap<String, String> getBitmapHeaders() {
         HashMap<String, String> headers = new HashMap<>();
         if(UserHelper.getInstance().isLoggedIn()) { // avoid nullpointer
-            headers.put("Cookie", "cookiestring=" + UserHelper.getInstance().getPerson().getCookiestring());
+            //headers.put("Cookie", "cookiestring=" + UserHelper.getInstance().getPerson().getCookiestring());
         }
 
         return headers;
