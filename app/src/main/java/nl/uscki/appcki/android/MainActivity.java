@@ -6,7 +6,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -247,7 +246,7 @@ public class MainActivity extends AppCompatActivity
         name.setText(UserHelper.getInstance().getPerson().getName());
 
         NetworkImageView profile = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
-        profile.setImageMediaId(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL);
+        //profile.setImageMediaId(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL);
     }
 
     private void initLoggedOutUI() {

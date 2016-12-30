@@ -21,7 +21,6 @@ import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingParticipantAdapt
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import nl.uscki.appcki.android.generated.meeting.Participation;
 import nl.uscki.appcki.android.generated.meeting.Preference;
-import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
 import retrofit2.Call;
