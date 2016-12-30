@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onStop() {
+        UserHelper.getInstance().save();
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
