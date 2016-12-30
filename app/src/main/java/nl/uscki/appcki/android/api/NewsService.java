@@ -20,5 +20,11 @@ public interface NewsService {
     Call<NewsOverview> newer(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer newer);
 
     @GET("news/older")
+    Call<NewsOverview> older(@Query("page") Integer page, @Query("size") Integer size);
+
+    @GET("news/older")
     Call<NewsOverview> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
+
+    @GET("news/older")
+    Call<NewsOverview> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older, @Query("newsTypeId") Integer type);
 }

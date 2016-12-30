@@ -13,6 +13,9 @@ public interface ShoutboxService {
     Call<Roephoek> newer(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer newer);
 
     @GET("shoutbox/older")
+    Call<Roephoek> older(@Query("page") Integer page, @Query("size") Integer size);
+
+    @GET("shoutbox/older")
     Call<Roephoek> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
 
     @GET("shoutbox/shout")
