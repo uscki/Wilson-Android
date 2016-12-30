@@ -29,8 +29,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.ConnectException;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.api.MediaAPI;
+import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.ImageZoomEvent;
 import nl.uscki.appcki.android.events.LinkClickedEvent;
@@ -42,8 +46,12 @@ import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.RoephoekDialogFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
+import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.views.NetworkImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -250,13 +258,28 @@ public class MainActivity extends AppCompatActivity
         navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
 
         TextView name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
-        name.setText(UserHelper.getInstance().getPerson().getName());
+        name.setText(UserHelper.getInstance().getPerson().getPostalname());
 
-        NetworkImageView profile = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
+        final NetworkImageView profile = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
         profile.setDefaultImageResId(R.drawable.account);
-        if(UserHelper.getInstance().getPerson().getPhotomediaid() != null) {
-            profile.setImageMediaId(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL);
-        }
+
+        // load the users profile picture
+        Services.getInstance().userService.currentUser().enqueue(new Callback<PersonSimple>() {
+            @Override
+            public void onResponse(Call<PersonSimple> call, Response<PersonSimple> response) {
+                UserHelper.getInstance().setPerson(response.body());
+                profile.setImageMediaId(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL);
+            }
+
+            @Override
+            public void onFailure(Call<PersonSimple> call, Throwable t) {
+                if (t instanceof ConnectException) {
+                    new ConnectionError(t); // handle connection error in MainActivity
+                } else {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
     }
 
     private void initLoggedOutUI() {
@@ -270,7 +293,7 @@ public class MainActivity extends AppCompatActivity
         name.setText("");
 
         NetworkImageView profile = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
-        profile.setDefaultImageResId(android.R.drawable.sym_def_app_icon);
+        profile.setDefaultImageResId(R.drawable.account);
     }
 
     public void resizeOnKeyboard() {

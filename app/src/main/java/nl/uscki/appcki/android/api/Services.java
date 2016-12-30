@@ -15,6 +15,7 @@ public class Services {
     public MeetingService meetingService;
     public ImageService imageService;
     public MediaService mediaService;
+    public UserService userService;
 
     private Services() {
         agendaService = ServiceGenerator.createService(AgendaService.class);
@@ -23,6 +24,7 @@ public class Services {
         meetingService = ServiceGenerator.createService(MeetingService.class);
         imageService = ServiceGenerator.createService(ImageService.class);
         mediaService = ServiceGenerator.createService(MediaService.class);
+        userService = ServiceGenerator.createService(UserService.class);
     }
 
     public static Services getInstance() {
