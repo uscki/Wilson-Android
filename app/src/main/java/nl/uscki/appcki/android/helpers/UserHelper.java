@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
 
-import nl.uscki.appcki.android.generated.organisation.Person;
+import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 
 /**
  * Created by peter on 1/31/16.
@@ -16,7 +16,7 @@ import nl.uscki.appcki.android.generated.organisation.Person;
 public class UserHelper {
     private static UserHelper singleton;
     public String TOKEN;
-    private Person person;
+    private PersonSimple person;
     private boolean loggedIn;
     private SharedPreferences preferences;
 
@@ -36,15 +36,15 @@ public class UserHelper {
         this.preferences = preferences;
     }
 
-    public Person getPerson() {
+    public PersonSimple getPerson() {
         return person;
     }
 
-    public void setPerson(Person person) {
+    public void setPerson(PersonSimple person) {
         this.person = person;
     }
 
-    public void login(String token, Person person) {
+    public void login(String token, PersonSimple person) {
         this.TOKEN = token;
         this.person = person;
         this.loggedIn = true;
@@ -85,7 +85,7 @@ public class UserHelper {
             String token = preferences.getString("TOKEN", "null");
             try {
                 if (!token.equals("null")) {
-                    Person person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), Person.class);
+                    PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
                     login(token, person);
                 } else {
                     loggedIn = false;

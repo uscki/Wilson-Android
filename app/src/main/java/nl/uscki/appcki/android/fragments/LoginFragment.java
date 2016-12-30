@@ -33,7 +33,7 @@ import nl.uscki.appcki.android.MainActivity;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.events.ShowProgressEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
-import nl.uscki.appcki.android.generated.organisation.Person;
+import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.UserHelper;
 
 /**
@@ -213,7 +213,7 @@ public class LoginFragment extends Fragment {
 
                 Log.i("LoginActivity: ", "token: " + token);
                 Log.i("LoginActivity: ", "decoded: " + new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
-                Person person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), Person.class);
+                PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
                 UserHelper.getInstance().login(token, person);
 
                 connection.disconnect();
