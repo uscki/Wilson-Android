@@ -201,7 +201,7 @@ public class LoginFragment extends Fragment {
                 String password = MD5(mPassword);
                 api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + password); //TODO API: beslissing maken over hash of niet
                 connection = (HttpURLConnection) api.openConnection();
-                connection.setRequestMethod("GET");
+                connection.setRequestMethod("POST");
                 connection.setConnectTimeout(3*1000); // 3 seconds
 
                 String token = connection.getHeaderField("X-AUTH-TOKEN");
