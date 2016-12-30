@@ -10,14 +10,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.net.ConnectException;
+
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
+import nl.uscki.appcki.android.generated.common.Pageable;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A fragment representing a list of Items.
  * <p>
  */
-public abstract class PageableFragment extends Fragment {
+public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
     private BaseItemAdapter adapter;
     protected RecyclerView recyclerView;
@@ -30,6 +37,50 @@ public abstract class PageableFragment extends Fragment {
     protected boolean loading;
 
     protected Integer page;
+    protected boolean tinyPage;
+
+    protected Callback<T> callback = new Callback<T>() {
+        @Override
+        public void onResponse(Call<T> call, Response<T> response) {
+            swipeContainer.setRefreshing(false);
+            if(loading) {
+                loading = false;
+                if (response.body() != null) {
+                    if(response.body().getNumberOfElements() < getPageSize()) {
+                        tinyPage = true;
+                    } else {
+                        tinyPage = false;
+                        getAdapter().addItems(response.body().getContent());
+                    }
+                    Log.e("PageableFragment", "tinypage: " + tinyPage);
+                } else {
+                    //TODO handle failing to load more
+                    Log.e("PageableFragment", "something failed: " + response.body());
+                }
+            } else {
+                Log.e("PageableFragment", "update: " + response.body());
+                if(response.body() != null) {
+                    if(response.body().getNumberOfElements() < getPageSize()) {
+                        tinyPage = true;
+                    } else {
+                        tinyPage = false;
+                    }
+                    Log.e("PageableFragment", "tinypage: " + tinyPage);
+                    getAdapter().update(response.body().getContent());
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<T> call, Throwable t) {
+            if (t instanceof ConnectException) {
+                new ConnectionError(t); // handle connection error in MainActivity
+            } else {
+                throw new RuntimeException(t);
+            }
+        }
+    };
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -106,4 +157,5 @@ public abstract class PageableFragment extends Fragment {
 
     public abstract void onSwipeRefresh();
     public abstract void onScrollRefresh();
+    protected abstract int getPageSize();
 }
