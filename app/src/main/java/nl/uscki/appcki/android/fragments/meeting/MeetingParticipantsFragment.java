@@ -104,6 +104,11 @@ public class MeetingParticipantsFragment extends PageableFragment {
     }
 
     @Override
+    protected int getPageSize() {
+        return 0;
+    }
+
+    @Override
     public void onSwipeRefresh() {
         Services.getInstance().meetingService.get(item.getMeeting().getId()).enqueue(new Callback<MeetingItem>() {
             @Override

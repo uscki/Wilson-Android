@@ -64,7 +64,11 @@ public class AgendaDeelnemersFragment extends PageableFragment {
                 }
             }
         });
-        //VolleyAgenda.getInstance().getSubscribed(item.getId()); // TODO API: wacht op api implementatie
+    }
+
+    @Override
+    protected int getPageSize() {
+        return 0;
     }
 
     @Override
