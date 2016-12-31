@@ -3,6 +3,8 @@ package nl.uscki.appcki.android.helpers.bbtoviewgroup.elements;
 import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.MetricAffectingSpan;
 import android.text.style.StyleSpan;
 
 import java.util.ArrayList;
@@ -29,6 +31,18 @@ public class Quote extends GenericElement {
         this.type = "Quote";
     }
 
+    MetricAffectingSpan offset = new MetricAffectingSpan() {
+        @Override
+        public void updateMeasureState(TextPaint p) {
+            p.baselineShift += 10;
+        }
+
+        @Override
+        public void updateDrawState(TextPaint tp) {
+
+        }
+    };
+
     @Override
     public SpannableStringBuilder getSpannedText() {
         SpannableStringBuilder str = Parser.parse(getContent(), true);
@@ -40,6 +54,7 @@ public class Quote extends GenericElement {
         }
         str.insert(0, name);
         str.setSpan(new StyleSpan(Typeface.BOLD), 0, name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        str.setSpan(offset, 0, name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         str.setSpan(new QuoteSpan(), name.length(), str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return str;
     }
