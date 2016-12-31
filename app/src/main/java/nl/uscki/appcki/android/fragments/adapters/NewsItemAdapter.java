@@ -11,6 +11,7 @@ import java.util.List;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.generated.news.NewsItem;
+import nl.uscki.appcki.android.helpers.bbtoviewgroup.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
 import nl.uscki.appcki.android.views.NetworkImageView;
 
@@ -33,7 +34,7 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
         NewsItem item = items.get(position);
         holder.mItem = item;
         holder.title.setText(item.getTitle());
-        holder.content.setText(item.getShorttext());
+        holder.content.setText(Parser.parse(item.getShorttextJSON(), true));
 
         String iconUrl = "https://www.uscki.nl/modules/News/images/" + item.getType().getIcon();
         holder.category.setImageUrl(iconUrl);

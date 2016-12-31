@@ -5,6 +5,8 @@ import com.google.gson.annotations.Expose;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import java.util.List;
+
 import nl.uscki.appcki.android.generated.organisation.Person;
 
 public class NewsItem {
@@ -14,7 +16,11 @@ public class NewsItem {
     @Expose
     private String shorttext;
     @Expose
+    private List<Object> shorttextJSON;
+    @Expose
     private String longtext;
+    @Expose
+    private List<Object> longtextJSON;
     @Expose
     private String title;
     @Expose
@@ -66,6 +72,14 @@ public class NewsItem {
         this.shorttext = shorttext;
     }
 
+    public List<Object> getShorttextJSON() {
+        return shorttextJSON;
+    }
+
+    public void setShorttextJSON(List<Object> shorttextJSON) {
+        this.shorttextJSON = shorttextJSON;
+    }
+
     /**
      * 
      * @return
@@ -82,6 +96,14 @@ public class NewsItem {
      */
     public void setLongtext(String longtext) {
         this.longtext = longtext;
+    }
+
+    public List<Object> getLongtextJSON() {
+        return longtextJSON;
+    }
+
+    public void setLongtextJSON(List<Object> longtextJSON) {
+        this.longtextJSON = longtextJSON;
     }
 
     /**

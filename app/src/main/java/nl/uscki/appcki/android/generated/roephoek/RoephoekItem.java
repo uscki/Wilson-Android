@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import java.util.List;
+
 public class RoephoekItem {
 
     @SerializedName("id")
@@ -16,6 +18,9 @@ public class RoephoekItem {
     @SerializedName("message")
     @Expose
     private String message;
+    @SerializedName("messageJSON")
+    @Expose
+    private List<Object> messageJSON;
     @SerializedName("timestamp")
     @Expose
     private String timestamp;
@@ -72,6 +77,14 @@ public class RoephoekItem {
      */
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public List<Object> getMessageJSON() {
+        return messageJSON;
+    }
+
+    public void setMessageJSON(List<Object> messageJSON) {
+        this.messageJSON = messageJSON;
     }
 
     /**
