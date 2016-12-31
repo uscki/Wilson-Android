@@ -79,6 +79,22 @@ public class UserHelper {
         }
     }
 
+    public void load(String token) {
+        if(token != null && !token.isEmpty()) {
+            Gson gson = new Gson();
+            try {
+                PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
+                login(token, person);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        } else {
+            this.person = null;
+            this.TOKEN = null;
+            this.loggedIn = false;
+        }
+    }
+
     public void load() {
         if(preferences.contains("TOKEN")) {
             Gson gson = new Gson();

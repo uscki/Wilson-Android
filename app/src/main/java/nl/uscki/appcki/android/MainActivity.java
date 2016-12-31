@@ -10,6 +10,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
@@ -104,14 +105,15 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         UserHelper.getInstance().setPreferences(getPreferences(MODE_PRIVATE));
-        UserHelper.getInstance().load();
 
         if(savedInstanceState != null) {
             int ord = savedInstanceState.getInt("screen");
             Screen screen = Screen.values()[ord];
             currentScreen = screen;
             loadState(screen);
+            UserHelper.getInstance().load(savedInstanceState.getString("token"));
         } else {
+            UserHelper.getInstance().load();
             loadState(Screen.NEWS); // load News if there is no known last screen
         }
     }
@@ -217,7 +219,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt("screen", currentScreen.ordinal());
+        outState.putString("token", UserHelper.getInstance().TOKEN);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        outPersistentState.putString("token", UserHelper.getInstance().TOKEN);
+        super.onSaveInstanceState(outState, outPersistentState);
     }
 
     private void openTab(int index) {
