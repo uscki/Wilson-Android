@@ -18,6 +18,7 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.events.RoephoekEvent;
+import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,6 +42,8 @@ public class RoephoekDialogFragment extends DialogFragment {
         View view = getActivity().getLayoutInflater().inflate(R.layout.roephoek_add_dialog, null);
         final EditText name = (EditText) view.findViewById(R.id.roephoek_dialog_name);
         final EditText content = (EditText) view.findViewById(R.id.roephoek_dialog_content);
+
+        name.setText(UserHelper.getInstance().getPerson().getFirstname());
 
         builder.setTitle("Nieuwe roep plaatsen").setView(view).setPositiveButton(R.string.roephoek_dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
