@@ -147,6 +147,8 @@ public class GenericElement {
                 return new Code(c, p);
             case "Quote":
                 return new Quote(c, p);
+            case "Spoiler":
+                return new Spoiler(c, p);
             default:
                 return new GenericElement(c, p);
         }

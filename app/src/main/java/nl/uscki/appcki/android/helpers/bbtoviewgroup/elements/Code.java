@@ -38,16 +38,17 @@ public class Code extends GenericElement {
     @Override
     public SpannableStringBuilder getSpannedText() {
         SpannableStringBuilder str = Parser.parse(getContent(), true);
+        String prefix = "Code:\n";
 
         // insert "code" header
-        str.insert(0, "Code:\n");
-        str.setSpan(new StyleSpan(Typeface.BOLD), 0, "Code:\n".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        str.insert(0, prefix);
+        str.setSpan(new StyleSpan(Typeface.BOLD), 0, prefix.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         Log.e("Code", Parser.parse(getContent(), true).toString());
 
         // set spans for actual code field
-        str.setSpan(new TextAppearanceSpan(App.getContext(), R.style.CodeFont), "Code:\n".length(), str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        str.setSpan(new BackgroundColorSpan(ContextCompat.getColor(App.getContext(), R.color.colorCodeBackground)), "Code:\n".length(), str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        str.setSpan(new TextAppearanceSpan(App.getContext(), R.style.CodeFont), prefix.length(), str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        str.setSpan(new BackgroundColorSpan(ContextCompat.getColor(App.getContext(), R.color.colorCodeBackground)), prefix.length(), str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return str;
     }
 }

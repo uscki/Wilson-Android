@@ -13,6 +13,8 @@ import nl.uscki.appcki.android.helpers.bbtoviewgroup.spans.DefensiveURLSpan;
  * Created by peter on 2/7/16.
  */
 public class BBTextView extends TextView {
+    public boolean spoilerVisible = false;
+
     public BBTextView(Context context) {
         super(context);
     }
