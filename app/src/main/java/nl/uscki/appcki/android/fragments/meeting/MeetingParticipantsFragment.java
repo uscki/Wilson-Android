@@ -10,12 +10,11 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 
-import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingParticipantAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
@@ -23,8 +22,6 @@ import nl.uscki.appcki.android.generated.meeting.Participation;
 import nl.uscki.appcki.android.generated.meeting.Preference;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -104,7 +101,7 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
     public void onSwipeRefresh() {
         Services.getInstance().meetingService.get(item.getMeeting().getId()).enqueue(new Callback<MeetingItem>() {
             @Override
-            public void onResponse(Call<MeetingItem> call, Response<MeetingItem> response) {
+            public void onSucces(Response<MeetingItem> response) {
                 swipeContainer.setRefreshing(false);
                 if (getAdapter() instanceof MeetingParticipantAdapter) {
                     MeetingItem item = response.body();
@@ -113,15 +110,6 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
                     } else {
                         getAdapter().update(findNonAttendingPersons(item));
                     }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MeetingItem> call, Throwable t) {
-                if (t instanceof ConnectException) {
-                    new ConnectionError(t); // handle connection error in MainActivity
-                } else {
-                    throw new RuntimeException(t);
                 }
             }
         });
