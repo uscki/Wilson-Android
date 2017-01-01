@@ -10,14 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.net.ConnectException;
-
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.error.ConnectionError;
+import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.common.Pageable;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -43,7 +39,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
     protected Callback<T> callback = new Callback<T>() {
         @Override
-        public void onResponse(Call<T> call, Response<T> response) {
+        public void onSucces(Response<T> response) {
             swipeContainer.setRefreshing(false);
             if(loading) { // Refresh
                 loading = false;
@@ -70,15 +66,6 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                     Log.e("PageableFragment", "tinypage: " + tinyPage);
                     getAdapter().update(response.body().getContent());
                 }
-            }
-        }
-
-        @Override
-        public void onFailure(Call<T> call, Throwable t) {
-            if (t instanceof ConnectException) {
-                new ConnectionError(t); // handle connection error in MainActivity
-            } else {
-                throw new RuntimeException(t);
             }
         }
     };

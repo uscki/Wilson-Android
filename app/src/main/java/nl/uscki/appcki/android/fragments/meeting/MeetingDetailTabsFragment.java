@@ -15,17 +15,13 @@ import android.view.ViewGroup;
 
 import com.vistrav.ask.Ask;
 
-import java.net.ConnectException;
-
 import nl.uscki.appcki.android.MainActivity;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingDetailAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -43,7 +39,7 @@ public class MeetingDetailTabsFragment extends Fragment {
 
     private Callback<MeetingItem> meetingCallback = new Callback<MeetingItem>() {
         @Override
-        public void onResponse(Call<MeetingItem> call, Response<MeetingItem> response) {
+        public void onSucces(Response<MeetingItem> response) {
             if(response.body() != null) {
                 item = response.body();
 
@@ -61,15 +57,6 @@ public class MeetingDetailTabsFragment extends Fragment {
                 viewPager.setAdapter(new MeetingDetailAdapter(getFragmentManager(), item));
             } else {
                 //// TODO: 11/24/16 error handling
-            }
-        }
-
-        @Override
-        public void onFailure(Call<MeetingItem> call, Throwable t) {
-            if (t instanceof ConnectException) {
-                new ConnectionError(t); // handle connection error in MainActivity
-            } else {
-                throw new RuntimeException(t);
             }
         }
     };
