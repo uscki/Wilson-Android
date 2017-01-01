@@ -10,16 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import java.net.ConnectException;
-
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -41,18 +37,9 @@ public class SubscribeDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int id) {
                 Services.getInstance().agendaService.subscribe(agendaId, note.getText().toString()).enqueue(new Callback<AgendaParticipantLists>() {
                     @Override
-                    public void onResponse(Call<AgendaParticipantLists> call, Response<AgendaParticipantLists> response) {
+                    public void onSucces(Response<AgendaParticipantLists> response) {
                         EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body(), false));
                         Log.d("Subscribe", response.body().toString());
-                    }
-
-                    @Override
-                    public void onFailure(Call<AgendaParticipantLists> call, Throwable t) {
-                        if (t instanceof ConnectException) {
-                            new ConnectionError(t); // handle connection error in MainActivity
-                        } else {
-                            throw new RuntimeException(t);
-                        }
                     }
                 });
             }

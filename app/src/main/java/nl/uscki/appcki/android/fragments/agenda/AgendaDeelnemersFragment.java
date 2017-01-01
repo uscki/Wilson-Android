@@ -7,17 +7,13 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 
-import java.net.ConnectException;
-
 import de.greenrobot.event.EventBus;
+import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.events.AgendaSubscribersEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -46,19 +42,10 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
     public void onSwipeRefresh() {
         Services.getInstance().agendaService.get(item.getId()).enqueue(new Callback<AgendaItem>() {
             @Override
-            public void onResponse(Call<AgendaItem> call, Response<AgendaItem> response) {
+            public void onSucces(Response<AgendaItem> response) {
                 swipeContainer.setRefreshing(false);
                 if (getAdapter() instanceof AgendaDeelnemersAdapter) {
                     getAdapter().update(response.body().getParticipants());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AgendaItem> call, Throwable t) {
-                if (t instanceof ConnectException) {
-                    new ConnectionError(t); // handle connection error in MainActivity
-                } else {
-                    throw new RuntimeException(t);
                 }
             }
         });
