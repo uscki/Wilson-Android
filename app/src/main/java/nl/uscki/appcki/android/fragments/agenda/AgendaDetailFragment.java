@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
+import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
 
 /**
@@ -63,7 +64,7 @@ public class AgendaDetailFragment extends Fragment {
         } else {
             when.setText(item.getStart().toString("EEEE dd MMMM YYYY HH:mm"));
         }
-        longText.setText(item.getDescription());
+        longText.setText(Parser.parse(item.getDescriptionJSON(), true, longText));
 
         setTextView(view, item.getWho(), R.id.agenda_summary_commissie_text);
         setTextView(view, item.getWhat(), R.id.agenda_summary_title_text);

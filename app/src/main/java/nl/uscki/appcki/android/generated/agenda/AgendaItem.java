@@ -41,6 +41,8 @@ public class AgendaItem {
     @Expose
     private String description;
     @Expose
+    private List<Object> descriptionJSON;
+    @Expose
     private String what;
     @Expose
     private String when;
@@ -67,6 +69,14 @@ public class AgendaItem {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Object> getDescriptionJSON() {
+        return descriptionJSON;
+    }
+
+    public void setDescriptionJSON(List<Object> descriptionJSON) {
+        this.descriptionJSON = descriptionJSON;
     }
 
     public String getTitle() {
