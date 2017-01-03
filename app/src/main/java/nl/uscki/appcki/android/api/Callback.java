@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.error.ConnectionError;
@@ -29,6 +30,8 @@ public abstract class Callback<T> implements retrofit2.Callback<T> {
     @Override
     public void onFailure(Call<T> call, Throwable t) {
         if (t instanceof ConnectException) {
+            new ConnectionError(t); // handle connection error in MainActivity
+        } else if(t instanceof SocketTimeoutException) {
             new ConnectionError(t); // handle connection error in MainActivity
         } else {
             throw new RuntimeException(t);
