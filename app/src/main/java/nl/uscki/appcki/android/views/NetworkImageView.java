@@ -7,15 +7,12 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
 
-import java.net.ConnectException;
-
+import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.generated.media.MediaFile;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -43,32 +40,20 @@ public class NetworkImageView extends ImageView {
         } else {
             Call<ResponseBody> call = Services.getInstance().imageService.getImage(url);
             call.enqueue(new Callback<ResponseBody>() {
-                             @Override
-                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                 if (response.isSuccessful()) {
-                                     Log.v("NetworkImageView", "server contacted and has file");
-                                     Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
-                                     if (bitmap != null) {
-                                         setImageBitmap(bitmap);
-                                         MediaAPI.putInCache(bitmap, url);
-                                         Log.v("NetworkImageView", "file download was a success!");
-                                     } else {
-                                         Log.v("NetworkImageView", "file download was a failure!");
-                                     }
-                                     response.body().close();
-                                 } else {
-                                     Log.v("NetworkImageView", "server contact failed");
-                                 }
-                             }
-                             @Override
-                             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                 if (t instanceof ConnectException) {
-                                     new ConnectionError(t); // handle connection error in MainActivity
-                                 } else {
-                                     throw new RuntimeException(t);
-                                 }
-                             }
-                         }
+                @Override
+                public void onSucces(Response<ResponseBody> response) {
+                    Log.v("NetworkImageView", "server contacted and has file");
+                    Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
+                    if (bitmap != null) {
+                        setImageBitmap(bitmap);
+                        MediaAPI.putInCache(bitmap, url);
+                        Log.v("NetworkImageView", "file download was a success!");
+                    } else {
+                        Log.v("NetworkImageView", "file download was a failure!");
+                    }
+                    response.body().close();
+                }
+            }
             );
         }
     }
@@ -82,18 +67,25 @@ public class NetworkImageView extends ImageView {
             Call<ResponseBody> call = Services.getInstance().mediaService.file(id, MediaAPI.MediaSize.NORMAL.toString());
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
+                public void onSucces(Response<ResponseBody> response) {
+                    Log.v("NetworkImageView", "api contacted and has file");
+                    Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
+                    if (bitmap != null) {
+                        setImageBitmap(bitmap);
+                        MediaAPI.putInCache(bitmap, url);
+                        Log.v("NetworkImageView", "file download was a success!");
+                    } else {
+                        Log.v("NetworkImageView", "file download was a failure!");
+                    }
+                    response.body().close();
+                }
+
+                //TODO figure out if unsuccesful calls can happen and if so use the retrofit Callback
+                //TODO instead of this one because we need to set de default ImageResource
+                /*@Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
-                        Log.v("NetworkImageView", "api contacted and has file");
-                        Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
-                        if (bitmap != null) {
-                            setImageBitmap(bitmap);
-                            MediaAPI.putInCache(bitmap, url);
-                            Log.v("NetworkImageView", "file download was a success!");
-                        } else {
-                            Log.v("NetworkImageView", "file download was a failure!");
-                        }
-                        response.body().close();
+
                     } else {
                         Log.v("NetworkImageView", "error: " + response.message());
                         setImageResource(defaultResourceId); // set default resource
@@ -107,7 +99,7 @@ public class NetworkImageView extends ImageView {
                     } else {
                         throw new RuntimeException(t);
                     }
-                }
+                }*/
             });
         }
     }
