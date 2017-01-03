@@ -1,4 +1,4 @@
-package nl.uscki.appcki.android.helpers.bbtoviewgroup;
+package nl.uscki.appcki.android.helpers.bbparser;
 
 import android.text.SpannableStringBuilder;
 
@@ -6,15 +6,15 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.List;
 
-import nl.uscki.appcki.android.helpers.bbtoviewgroup.elements.GenericElement;
+import nl.uscki.appcki.android.helpers.bbparser.elements.GenericElement;
+import nl.uscki.appcki.android.views.BBTextView;
 
 /**
  * Created by peter on 12/20/16.
  */
 
 public class Parser {
-
-    public static SpannableStringBuilder parse(List<Object> toParse, boolean parseNewLines)
+    public static SpannableStringBuilder parse(List<Object> toParse, boolean parseNewLines, BBTextView view)
     {
         // Use a stringbuilder to make the string that will be the output
         SpannableStringBuilder output = new SpannableStringBuilder();
@@ -42,8 +42,8 @@ public class Parser {
                 GenericElement element = GenericElement.fromLinkedTreeUnit((LinkedTreeMap) object);
 
                 // Add the result of the element's toHtml function to the Stringbuilder
-                if(element != null)
-                    output.append(element.getSpannedText());
+                if(element != null && view != null)
+                    output.append(element.getSpannedText(view));
             }
         }
 

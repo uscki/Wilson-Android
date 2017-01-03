@@ -13,7 +13,7 @@ import java.util.List;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.generated.roephoek.RoephoekItem;
-import nl.uscki.appcki.android.helpers.bbtoviewgroup.Parser;
+import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
 
 /**
@@ -46,7 +46,7 @@ public class RoephoekItemAdapter extends BaseItemAdapter<RoephoekItemAdapter.Vie
     public void onBindViewHolder(ViewHolder holder, int position) {
         RoephoekItem item = items.get(position);
         Log.d("RoephoekAdapter", item.getMessageJSON().toString());
-        SpannableStringBuilder text = Parser.parse(item.getMessageJSON(), true);
+        SpannableStringBuilder text = Parser.parse(item.getMessageJSON(), true, holder.message);
         holder.nickname.setText(item.getNickname());
         //holder.message.setText(item.getMessage());
         holder.message.setText(trim(text));

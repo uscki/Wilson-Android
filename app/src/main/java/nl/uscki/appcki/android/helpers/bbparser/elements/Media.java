@@ -1,8 +1,13 @@
-package nl.uscki.appcki.android.helpers.bbtoviewgroup.elements;
+package nl.uscki.appcki.android.helpers.bbparser.elements;
 
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.util.Log;
 
 import java.util.ArrayList;
+
+import nl.uscki.appcki.android.helpers.bbparser.spans.NetworkImageSpan;
+import nl.uscki.appcki.android.views.BBTextView;
 
 /**
  * This class describes a medai element. This is different from the Img tag, as this applies only to imagery from USCKI
@@ -28,12 +33,13 @@ public class Media extends GenericElement {
     }
 
     @Override
-    public SpannableStringBuilder getSpannedText() {
-        return null;
-    }
+    public SpannableStringBuilder getSpannedText(BBTextView view) {
+        String content = getContent().get(0).toString();
+        Integer mediaId = Integer.parseInt(content);
 
-    private static boolean isNumeric(String str)
-    {
-        return str.matches("\\d+");
+        SpannableStringBuilder str = new SpannableStringBuilder(content);
+        Log.e("elements.Media", mediaId+"");
+        str.setSpan(new NetworkImageSpan(mediaId, null, view), 0, content.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return str;
     }
 }

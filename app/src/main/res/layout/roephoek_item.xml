@@ -30,8 +30,7 @@
         android:layout_alignParentEnd="false"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
-        style="@style/AppTheme.Text"
-        android:autoLink="all" />
+        style="@style/AppTheme.Text" />
 
     <TextView
         android:layout_width="wrap_content"

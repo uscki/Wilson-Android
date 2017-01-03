@@ -1,11 +1,12 @@
-package nl.uscki.appcki.android.helpers.bbtoviewgroup.elements;
+package nl.uscki.appcki.android.helpers.bbparser.elements;
 
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 
 import java.util.ArrayList;
 
-import nl.uscki.appcki.android.helpers.bbtoviewgroup.Parser;
+import nl.uscki.appcki.android.helpers.bbparser.Parser;
+import nl.uscki.appcki.android.views.BBTextView;
 
 /**
  * This class describes a table container element
@@ -28,8 +29,8 @@ public class Ul extends GenericElement {
     }
 
     @Override
-    public SpannableStringBuilder getSpannedText() {
+    public SpannableStringBuilder getSpannedText(BBTextView view) {
         Log.e("Ul", getContent().toString());
-        return Parser.parse(getContent(), true); // skip this one cause we have bullet span in Li
+        return Parser.parse(getContent(), true, view); // skip this one cause we have bullet span in Li
     }
 }

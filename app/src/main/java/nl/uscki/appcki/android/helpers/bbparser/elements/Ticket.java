@@ -1,36 +1,38 @@
-package nl.uscki.appcki.android.helpers.bbtoviewgroup.elements;
+package nl.uscki.appcki.android.helpers.bbparser.elements;
 
 import android.text.SpannableStringBuilder;
 
 import java.util.ArrayList;
 
+import nl.uscki.appcki.android.views.BBTextView;
+
 /**
- * This class describes a tex element. Please note that we do not support it at this time
+ * This class describes a ticket element
  *
  * @author Ty Mees
  * @version 1
- * @since 0.10
+ * @since 1.2
  */
-public class Tex extends GenericElement {
+public class Ticket extends GenericElement {
 
     /**
      * Static string containing the 'element' name, only usefull because it is returned in the JSON output
      */
-    protected String type = "Tex";
+    protected String type = "Ticket";
 
     /**
      * Basic constructor which sets the parsing settings for this element
      */
-    public Tex(ArrayList<Object> content, String parameter)
+    public Ticket(ArrayList<Object> content, String parameter)
     {
         super(content, parameter);
         this.parseContents = false;
         this.replaceEmoji = false;
-        this.type = "Tex";
+        this.type = "Ticket";
     }
 
     @Override
-    public SpannableStringBuilder getSpannedText() {
+    public SpannableStringBuilder getSpannedText(BBTextView view) {
         return null;
     }
 }

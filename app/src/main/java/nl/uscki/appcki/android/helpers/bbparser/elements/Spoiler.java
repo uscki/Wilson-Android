@@ -1,19 +1,18 @@
-package nl.uscki.appcki.android.helpers.bbtoviewgroup.elements;
+package nl.uscki.appcki.android.helpers.bbparser.elements;
 
 import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
-import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.helpers.bbtoviewgroup.Parser;
+import nl.uscki.appcki.android.helpers.bbparser.Parser;
+import nl.uscki.appcki.android.helpers.bbparser.spans.ClickableSpan;
 import nl.uscki.appcki.android.views.BBTextView;
 
 /**
@@ -37,8 +36,8 @@ public class Spoiler extends GenericElement {
     }
 
     @Override
-    public SpannableStringBuilder getSpannedText() {
-        SpannableStringBuilder str = Parser.parse(getContent(), true);
+    public SpannableStringBuilder getSpannedText(BBTextView view) {
+        SpannableStringBuilder str = Parser.parse(getContent(), true, view);
         final String prefix = "Spoiler:\n";
 
         // insert "code" header
@@ -49,17 +48,16 @@ public class Spoiler extends GenericElement {
         str.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Log.e("Spoiler", "make visible");
                 BBTextView view = (BBTextView) widget;
                 CharSequence text = view.getText();
                 SpannableStringBuilder str = new SpannableStringBuilder(text);
 
-                if(view.spoilerVisible) {
+                if(view.visibilityOfBBUnit) {
                     str.setSpan(new TextAppearanceSpan(App.getContext(), R.style.SpoilerTextInvisible), prefix.length(), str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    view.spoilerVisible = false;
+                    view.visibilityOfBBUnit = false;
                 } else {
                     str.setSpan(new TextAppearanceSpan(App.getContext(), R.style.SpoilerTextVisible), prefix.length(), str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    view.spoilerVisible = true;
+                    view.visibilityOfBBUnit = true;
                 }
 
                 view.setText(str);

@@ -1,4 +1,4 @@
-package nl.uscki.appcki.android.helpers.bbtoviewgroup.spans;
+package nl.uscki.appcki.android.helpers.bbparser.spans;
 
 import android.os.Parcel;
 import android.os.Parcelable;

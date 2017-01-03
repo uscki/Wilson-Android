@@ -1,4 +1,4 @@
-package nl.uscki.appcki.android.helpers.bbtoviewgroup.elements;
+package nl.uscki.appcki.android.helpers.bbparser.elements;
 
 import android.text.SpannableStringBuilder;
 
@@ -6,7 +6,8 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;
 
-import nl.uscki.appcki.android.helpers.bbtoviewgroup.Parser;
+import nl.uscki.appcki.android.helpers.bbparser.Parser;
+import nl.uscki.appcki.android.views.BBTextView;
 
 /**
  * This abstract class contains the basic implementations for the BBCodeElement interface. It is not required for an
@@ -18,6 +19,7 @@ import nl.uscki.appcki.android.helpers.bbtoviewgroup.Parser;
  * @since 0.1
  */
 public class GenericElement {
+    protected BBTextView view;
 
     public GenericElement(ArrayList<Object> content, String parameter) {
         this.content = content;
@@ -120,8 +122,12 @@ public class GenericElement {
         return type;
     }
 
-    public SpannableStringBuilder getSpannedText() {
-        return Parser.parse(getContent(), true);
+    public void setTextView(BBTextView view) {
+        this.view = view;
+    }
+
+    public SpannableStringBuilder getSpannedText(BBTextView view) {
+        return Parser.parse(getContent(), true, view);
     }
 
     public static GenericElement fromLinkedTreeUnit(LinkedTreeMap<String, Object> input) {
@@ -149,6 +155,14 @@ public class GenericElement {
                 return new Quote(c, p);
             case "Spoiler":
                 return new Spoiler(c, p);
+            case "Section":
+                return new Section(c, p);
+            case "Tex":
+                return new Tex(c, p);
+            case "Img":
+                return new Img(c, p);
+            case "Media":
+                return new Media(c, p);
             default:
                 return new GenericElement(c, p);
         }

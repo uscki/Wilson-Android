@@ -1,4 +1,4 @@
-package nl.uscki.appcki.android.helpers.bbtoviewgroup.elements;
+package nl.uscki.appcki.android.helpers.bbparser.elements;
 
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
@@ -13,7 +13,8 @@ import java.util.ArrayList;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.helpers.bbtoviewgroup.Parser;
+import nl.uscki.appcki.android.helpers.bbparser.Parser;
+import nl.uscki.appcki.android.views.BBTextView;
 
 /**
  * This class describes a header element, H1 to be exact.
@@ -36,15 +37,15 @@ public class Code extends GenericElement {
     }
 
     @Override
-    public SpannableStringBuilder getSpannedText() {
-        SpannableStringBuilder str = Parser.parse(getContent(), true);
+    public SpannableStringBuilder getSpannedText(BBTextView view) {
+        SpannableStringBuilder str = Parser.parse(getContent(), true, view);
         String prefix = "Code:\n";
 
         // insert "code" header
         str.insert(0, prefix);
         str.setSpan(new StyleSpan(Typeface.BOLD), 0, prefix.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        Log.e("Code", Parser.parse(getContent(), true).toString());
+        Log.e("Code", str.toString());
 
         // set spans for actual code field
         str.setSpan(new TextAppearanceSpan(App.getContext(), R.style.CodeFont), prefix.length(), str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

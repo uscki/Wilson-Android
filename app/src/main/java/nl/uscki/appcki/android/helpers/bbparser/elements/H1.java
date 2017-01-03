@@ -1,6 +1,5 @@
-package nl.uscki.appcki.android.helpers.bbtoviewgroup.elements;
+package nl.uscki.appcki.android.helpers.bbparser.elements;
 
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.TextAppearanceSpan;
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.views.BBTextView;
 
 /**
  * This class describes a header element, H1 to be exact.
@@ -31,10 +31,10 @@ public class H1 extends GenericElement {
     }
 
     @Override
-    public SpannableStringBuilder getSpannedText() {
+    public SpannableStringBuilder getSpannedText(BBTextView view) {
         String content = (String) getContent().get(0);
-        SpannableString str = new SpannableString(content);
+        SpannableStringBuilder str = new SpannableStringBuilder(content);
         str.setSpan(new TextAppearanceSpan(App.getContext(), R.style.AppTheme_TextHeader), 0, content.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return null;
+        return str;
     }
 }

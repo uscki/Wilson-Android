@@ -7,13 +7,13 @@ import android.text.style.URLSpan;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import nl.uscki.appcki.android.helpers.bbtoviewgroup.spans.DefensiveURLSpan;
+import nl.uscki.appcki.android.helpers.bbparser.spans.DefensiveURLSpan;
 
 /**
  * Created by peter on 2/7/16.
  */
 public class BBTextView extends TextView {
-    public boolean spoilerVisible = false;
+    public boolean visibilityOfBBUnit = false;
 
     public BBTextView(Context context) {
         super(context);
@@ -28,10 +28,16 @@ public class BBTextView extends TextView {
     }
 
     @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+    }
+
+    @Override
     public void setText(CharSequence text, BufferType type) {
         this.setMovementMethod(LinkMovementMethod.getInstance());
         super.setText(text, type);
-        fixTextView();
+        //setupImageViews(); NO CAN DO
+        //fixTextView();
     }
 
     private void fixTextView() {

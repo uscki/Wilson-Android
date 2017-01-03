@@ -1,12 +1,13 @@
-package nl.uscki.appcki.android.helpers.bbtoviewgroup.elements;
+package nl.uscki.appcki.android.helpers.bbparser.elements;
 
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
 import java.util.ArrayList;
 
-import nl.uscki.appcki.android.helpers.bbtoviewgroup.Parser;
-import nl.uscki.appcki.android.helpers.bbtoviewgroup.spans.DefensiveURLSpan;
+import nl.uscki.appcki.android.helpers.bbparser.Parser;
+import nl.uscki.appcki.android.helpers.bbparser.spans.DefensiveURLSpan;
+import nl.uscki.appcki.android.views.BBTextView;
 
 /**
  * This class describes a link element
@@ -29,8 +30,8 @@ public class Link extends GenericElement {
     }
 
     @Override
-    public SpannableStringBuilder getSpannedText() {
-        SpannableStringBuilder str = Parser.parse(getContent(), true);
+    public SpannableStringBuilder getSpannedText(BBTextView view) {
+        SpannableStringBuilder str = Parser.parse(getContent(), true, view);
         str.setSpan(new DefensiveURLSpan(this.getParameter()), 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return str;
     }
