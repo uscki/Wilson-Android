@@ -43,7 +43,7 @@ public class RoephoekDialogFragment extends DialogFragment {
         final EditText name = (EditText) view.findViewById(R.id.roephoek_dialog_name);
         final EditText content = (EditText) view.findViewById(R.id.roephoek_dialog_content);
 
-        name.setText(UserHelper.getInstance().getPerson().getFirstname());
+        name.setText(UserHelper.getInstance().getPerson().getNickname());
 
         builder.setTitle("Nieuwe roep plaatsen").setView(view).setPositiveButton(R.string.roephoek_dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
