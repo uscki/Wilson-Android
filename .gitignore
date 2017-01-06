@@ -34,3 +34,4 @@ app/src/development/res/values/api.xml
 # iml files fucken alleen maar met AS, beter om AS het gewoon lokaal te laten fixen
 .idea/
 *.iml
+app/*.iml
