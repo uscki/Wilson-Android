@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
-import java.util.Date;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.error.ConnectionError;
@@ -42,21 +41,10 @@ public abstract class Callback<T> implements retrofit2.Callback<T> {
     private void handleError(Response<T> response) {
         try {
             Gson gson = new Gson();
-            ServerError error = gson.fromJson(response.raw().body().string(), ServerError.class);
+            ServerError error = gson.fromJson(response.errorBody().string(), ServerError.class);
             EventBus.getDefault().post(new ServerErrorEvent(error));
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (IllegalStateException e)
-        {
-            // In case the call wasn't returning the right data, we have this special error
-            ServerError error = new ServerError();
-            error.setError("Internal Server Error");
-            error.setException("java.lang.IllegalStateException");
-            error.setMessage("Error in parsing error message from server. So meta.");
-            error.setPath("");
-            error.setStatus(500);
-            error.setTimestamp(new Date().getTime());
-            EventBus.getDefault().post(new ServerErrorEvent(error));
         }
     }
 
