@@ -11,14 +11,18 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AgendaDetailFragment extends Fragment {
+public class AgendaDetailFragment extends RefreshableFragment {
     private TextView title;
     private TextView when;
     private BBTextView longText;
@@ -42,21 +46,20 @@ public class AgendaDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_agenda_detail, container, false);
 
+        setupSwipeContainer(view);
+
         if (getArguments() != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getArguments().getString("item"), AgendaItem.class);
         }
 
-        title = (TextView) view.findViewById(R.id.agenda_detail_title);
-        when = (TextView) view.findViewById(R.id.agenda_detail_when);
-        longText = (BBTextView) view.findViewById(R.id.agenda_detail_longtext);
+        findViews(view);
+        setupViews(view);
 
-        summaryCommissie = (TextView) view.findViewById(R.id.agenda_summary_commissie_text);
-        summaryTitle = (TextView) view.findViewById(R.id.agenda_summary_title_text);
-        summaryWaar = (TextView) view.findViewById(R.id.agenda_summary_waar_text);
-        summaryWhen = (TextView) view.findViewById(R.id.agenda_summary_when_text);
-        summaryCost = (TextView) view.findViewById(R.id.agenda_summary_cost_text);
+        return view;
+    }
 
+    private void setupViews(View view) {
         title.setText(item.getTitle());
         if (item.getEnd() != null) {
             String whenStr = item.getStart().toString("EEEE dd MMMM YYYY HH:mm") + " - " + item.getEnd().toString("EEEE dd MMMM YYYY HH:mm");
@@ -71,14 +74,23 @@ public class AgendaDetailFragment extends Fragment {
         setTextView(view, item.getLocation(), R.id.agenda_summary_waar_text);
 
         if (item.getEnd() != null) {
-            String whenStr = item.getStart().toString("EEEE dd MMMM YYYY HH:mm") + " - " + item.getEnd().toString("EEEE dd MMMM YYYY HH:mm");
             summaryWhen.setText(item.getWhen());
         } else {
             summaryWhen.setText(item.getStart().toString("EEEE dd MMMM YYYY HH:mm"));
         }
         setTextView(view, item.getCosts(), R.id.agenda_summary_cost_text);
+    }
 
-        return view;
+    private void findViews(View view) {
+        title = (TextView) view.findViewById(R.id.agenda_detail_title);
+        when = (TextView) view.findViewById(R.id.agenda_detail_when);
+        longText = (BBTextView) view.findViewById(R.id.agenda_detail_longtext);
+
+        summaryCommissie = (TextView) view.findViewById(R.id.agenda_summary_commissie_text);
+        summaryTitle = (TextView) view.findViewById(R.id.agenda_summary_title_text);
+        summaryWaar = (TextView) view.findViewById(R.id.agenda_summary_waar_text);
+        summaryWhen = (TextView) view.findViewById(R.id.agenda_summary_when_text);
+        summaryCost = (TextView) view.findViewById(R.id.agenda_summary_cost_text);
     }
 
     private void setTextView(View v, String str, int id) {
@@ -87,5 +99,17 @@ public class AgendaDetailFragment extends Fragment {
         } else {
             v.findViewById(id).setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onSwipeRefresh() {
+        Services.getInstance().agendaService.get(item.getId()).enqueue(new Callback<AgendaItem>() {
+            @Override
+            public void onSucces(Response<AgendaItem> response) {
+                item = response.body();
+                getView().invalidate();
+                swipeContainer.setRefreshing(false);
+            }
+        });
     }
 }

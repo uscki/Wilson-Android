@@ -15,12 +15,16 @@ import org.joda.time.DateTime;
 import java.util.Locale;
 
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MeetingDetailFragment extends Fragment {
+public class MeetingDetailFragment extends RefreshableFragment {
     MeetingItem item;
 
     TextView title;
@@ -39,16 +43,18 @@ public class MeetingDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_meeting_detail, container, false);
+
+        setupSwipeContainer(view);
+
         // Inflate the layout for this fragment
         if (getArguments() != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getArguments().getString("item"), MeetingItem.class);
         }
 
-        View view = inflater.inflate(R.layout.fragment_meeting_detail, container, false);
         findViews(view);
         setupViews();
-
 
         return view;
     }
@@ -88,5 +94,17 @@ public class MeetingDetailFragment extends Fragment {
     private String getMensenString(MeetingItem meeting) {
         return String.format(Locale.getDefault(), "%d / %d ( %d %%)", meeting.getEnrolledPersons().size(), meeting.getParticipation().size(),
                 (int)(((float)meeting.getEnrolledPersons().size()/(float)meeting.getParticipation().size()) * 100));
+    }
+
+    @Override
+    public void onSwipeRefresh() {
+        Services.getInstance().meetingService.get(item.getMeeting().getId()).enqueue(new Callback<MeetingItem>() {
+            @Override
+            public void onSucces(Response<MeetingItem> response) {
+                item = response.body();
+                getView().invalidate();
+                swipeContainer.setRefreshing(false);
+            }
+        });
     }
 }
