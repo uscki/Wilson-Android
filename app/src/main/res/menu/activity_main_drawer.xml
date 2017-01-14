@@ -4,35 +4,35 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_news"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/newspaper"
             android:title="News" />
         <item
             android:id="@+id/nav_agenda"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/calendar"
             android:title="Agenda" />
         <item
             android:id="@+id/nav_poll"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/format_list_bulleted"
             android:title="Poll" />
         <item
             android:id="@+id/nav_roephoek"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/message_text"
             android:title="Roephoek" />
         <item
             android:id="@+id/nav_meeting"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/account_multiple"
             android:title="Vergaderplanner" />
     </group>
 
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_login"
-            android:icon="@drawable/ic_menu_share"
+            android:icon="@drawable/lock_open"
             android:title="@string/login" />
 
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_menu_share"
+            android:icon="@drawable/lock"
             android:title="@string/logout"
             android:visible="false"/>
     </group>
