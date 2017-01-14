@@ -7,7 +7,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.List;
 
-import nl.uscki.appcki.android.generated.organisation.Person;
+import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 
 public class NewsItem {
 
@@ -26,7 +26,7 @@ public class NewsItem {
     @Expose
     private String posteddate;
     @Expose
-    private Person person;
+    private PersonSimpleName person;
     @Expose
     private String link;
     @Expose
@@ -147,7 +147,7 @@ public class NewsItem {
      * @return
      *     The person
      */
-    public Person getPerson() {
+    public PersonSimpleName getPerson() {
         return person;
     }
 
@@ -156,7 +156,7 @@ public class NewsItem {
      * @param person
      *     The person
      */
-    public void setPerson(Person person) {
+    public void setPerson(PersonSimpleName person) {
         this.person = person;
     }
 
