@@ -37,7 +37,7 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = items.get(position);
-        holder.name.setText(items.get(position).getPerson().getName());
+        holder.name.setText(items.get(position).getPerson().getPostalname());
         holder.note.setText(items.get(position).getNote());
 
         holder.profile.setDefaultImageResId(R.drawable.account); // set default in case the image can't be loaded

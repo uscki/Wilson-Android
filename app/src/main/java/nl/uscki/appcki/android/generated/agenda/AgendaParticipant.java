@@ -2,17 +2,18 @@
 package nl.uscki.appcki.android.generated.agenda;
 
 import com.google.gson.annotations.Expose;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 
-import nl.uscki.appcki.android.generated.organisation.Person;
+import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 
 public class AgendaParticipant {
 
     @Expose
     private Integer id;
     @Expose
-    private Person person;
+    private PersonSimpleName person;
     @Expose
     private String note;
     @Expose
@@ -45,7 +46,7 @@ public class AgendaParticipant {
      * @return
      *     The person
      */
-    public Person getPerson() {
+    public PersonSimpleName getPerson() {
         return person;
     }
 
@@ -54,7 +55,7 @@ public class AgendaParticipant {
      * @param person
      *     The person
      */
-    public void setPerson(Person person) {
+    public void setPerson(PersonSimpleName person) {
         this.person = person;
     }
 
