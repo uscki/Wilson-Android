@@ -36,8 +36,6 @@ public class BBTextView extends TextView {
     public void setText(CharSequence text, BufferType type) {
         this.setMovementMethod(LinkMovementMethod.getInstance());
         super.setText(text, type);
-        //setupImageViews(); NO CAN DO
-        //fixTextView();
     }
 
     private void fixTextView() {

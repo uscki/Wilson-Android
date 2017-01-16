@@ -11,16 +11,13 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
 
-import java.net.ConnectException;
-
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.events.RoephoekEvent;
+import nl.uscki.appcki.android.generated.roephoek.RoephoekItem;
 import nl.uscki.appcki.android.helpers.UserHelper;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -48,19 +45,10 @@ public class RoephoekDialogFragment extends DialogFragment {
         builder.setTitle("Nieuwe roep plaatsen").setView(view).setPositiveButton(R.string.roephoek_dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        Services.getInstance().shoutboxService.shout(name.getText().toString(), content.getText().toString()).enqueue(new Callback<Boolean>() {
+                        Services.getInstance().shoutboxService.shout(name.getText().toString(), content.getText().toString()).enqueue(new Callback<RoephoekItem>() {
                             @Override
-                            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                            public void onSucces(Response<RoephoekItem> response) {
                                 EventBus.getDefault().post(new RoephoekEvent(response.body()));
-                            }
-
-                            @Override
-                            public void onFailure(Call<Boolean> call, Throwable t) {
-                                if (t instanceof ConnectException) {
-                                    new ConnectionError(t); // handle connection error in MainActivity
-                                } else {
-                                    throw new RuntimeException(t);
-                                }
                             }
                         });
                     }
