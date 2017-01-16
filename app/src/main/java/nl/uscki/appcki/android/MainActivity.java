@@ -49,6 +49,7 @@ import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.views.NetworkImageView;
 import retrofit2.Response;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -389,6 +390,11 @@ public class MainActivity extends AppCompatActivity
 
     public void onEventMainThread(ImageZoomEvent event) {
         zoomImageFromThumb(event.startBounds, event.id);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     private void zoomImageFromThumb(final Rect startBounds, Integer id) {
