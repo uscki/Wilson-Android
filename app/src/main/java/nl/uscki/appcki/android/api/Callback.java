@@ -1,6 +1,7 @@
 package nl.uscki.appcki.android.api;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -45,6 +46,9 @@ public abstract class Callback<T> implements retrofit2.Callback<T> {
             EventBus.getDefault().post(new ServerErrorEvent(error));
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (JsonSyntaxException e) {
+            // NOT A CORRECTLY FORMATTED SERVER ERROR
+            // gebeurt bijvoorbeeld bij het ophalen van de news icons
         }
     }
 
