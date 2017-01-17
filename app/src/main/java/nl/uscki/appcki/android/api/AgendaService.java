@@ -5,6 +5,7 @@ import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 /**
@@ -20,10 +21,10 @@ public interface AgendaService {
     @GET("agenda/older")
     Call<Agenda> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
 
-    @GET("agenda/subscribe")
+    @POST("agenda/subscribe")
     Call<AgendaParticipantLists> subscribe(@Query("id") Integer id, @Query("note") String note);
 
-    @GET("agenda/unsubscribe")
+    @POST("agenda/unsubscribe")
     Call<AgendaParticipantLists> unsubscribe(@Query("id") Integer id);
 
     @GET("agenda/subscribed")
