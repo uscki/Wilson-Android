@@ -1,16 +1,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="3dp"
     android:id="@+id/container">
 
-    <nl.uscki.appcki.android.views.NetworkImageView
+    <nl.uscki.appcki.android.views.RoundedProfileImageView
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:id="@+id/person_list_item_profile"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:src="@drawable/account" />
+        android:src="@drawable/account"
+        android:layout_marginRight="6dp"
+        android:layout_marginEnd="6dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -33,5 +36,15 @@
         android:layout_toEndOf="@+id/person_list_item_profile"
         android:layout_marginBottom="16dp"
         style="@style/AppTheme.Text"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="65dp"
+        android:layout_marginStart="65dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_below="@id/person_list_item_profile"
+        android:src="@drawable/list_divider"/>
 
 </RelativeLayout>

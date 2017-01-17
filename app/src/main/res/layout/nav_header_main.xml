@@ -11,7 +11,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <nl.uscki.appcki.android.views.NetworkImageView
+    <nl.uscki.appcki.android.views.RoundedProfileImageView
         android:id="@+id/nav_header_profilepic"
         android:layout_height="60dp"
         android:layout_width="60dp"
