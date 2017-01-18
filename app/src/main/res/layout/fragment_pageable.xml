@@ -18,11 +18,12 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:id="@+id/empty_text"
         android:visibility="gone"
         android:gravity="center"
+        android:textSize="@dimen/text_subheader_size"
         android:textColor="@color/colorCodeBackground"
         android:text="@string/meeting_no_new_meetings" />
 </FrameLayout>
