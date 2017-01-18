@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
@@ -25,6 +26,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     private BaseItemAdapter adapter;
     protected RecyclerView recyclerView;
     protected SwipeRefreshLayout swipeContainer;
+    protected TextView emptyText;
 
     // The minimum amount of items to have below your current scroll position
     // before loading more.
@@ -44,10 +46,15 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
             if(loading) { // Refresh
                 loading = false;
                 if (response.body() != null) {
-                    if(response.body().getNumberOfElements() < getPageSize()) {
+                    if(response.body().getNumberOfElements() == 0) {
+                        //emptyText.setText(getEmptyText());
+                        emptyText.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
                         tinyPage = true;
                     } else {
-                        tinyPage = false;
+                        emptyText.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        tinyPage = response.body().getNumberOfElements() < getPageSize();
                     }
                     getAdapter().addItems(response.body().getContent());
                     Log.e("PageableFragment", "tinypage: " + tinyPage);
@@ -58,10 +65,15 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
             } else { // Scroll
                 Log.e("PageableFragment", "update: " + response.body());
                 if(response.body() != null) {
-                    if(response.body().getNumberOfElements() < getPageSize()) {
+                    if(response.body().getNumberOfElements() == 0) {
+                        emptyText.setText(getEmptyText());
+                        emptyText.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
                         tinyPage = true;
                     } else {
-                        tinyPage = false;
+                        emptyText.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        tinyPage = response.body().getNumberOfElements() < getPageSize();
                     }
                     Log.e("PageableFragment", "tinypage: " + tinyPage);
                     getAdapter().update(response.body().getContent());
@@ -85,6 +97,8 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         View view = inflater.inflate(R.layout.fragment_pageable, container, false);
         setupSwipeContainer(view);
         setupRecyclerView(view);
+
+        emptyText = (TextView) view.findViewById(R.id.empty_text);
         return view;
     }
 
@@ -141,5 +155,6 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
     public abstract void onSwipeRefresh();
     public abstract void onScrollRefresh();
+    public abstract String getEmptyText();
     protected abstract int getPageSize();
 }

@@ -61,4 +61,9 @@ public class HomeAgendaTab extends PageableFragment<Agenda> {
         if(!tinyPage)
             Services.getInstance().agendaService.newer(page, AGENDA_PAGE_SIZE).enqueue(callback);
     }
+
+    @Override
+    public String getEmptyText() {
+        return getString(R.string.agenda_no_new_agendas);
+    }
 }

@@ -61,6 +61,11 @@ public class HomeRoephoekTab extends PageableFragment<Roephoek> {
             Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE).enqueue(callback);
     }
 
+    @Override
+    public String getEmptyText() {
+        return getString(R.string.roephoek_no_new_shouts);
+    }
+
     // EVENT HANDLING
     public void onEventMainThread(RoephoekEvent event) {
         page = 0;

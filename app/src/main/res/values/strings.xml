@@ -31,14 +31,18 @@
 
     <string name="title_activity_main">MainActivity</string>
 
+    <string name="news_no_new_news">Er is geen nieuws meer.</string>
+
     <string name="roephoek_dialog_name_hint">Naam</string>
     <string name="roephoek_dialog_content_hint">Bericht</string>
     <string name="roephoek_dialog_ok">Voeg toe!</string>
     <string name="roephoek_dialog_cancel">Annuleren</string>
+    <string name="roephoek_no_new_shouts">Er zijn geen roepen meer.</string>
 
     <string name="agenda_dialog_note_hint">Notitie</string>
     <string name="agenda_dialog_ok">Inschrijven</string>
     <string name="agenda_dialog_cancel">Annuleren</string>
+    <string name="agenda_no_new_agendas">Er zijn geen evenementen meer.</string>
 
     <string name="agenda_inschrijven_verplicht">Inschrijven verplicht</string>
 
@@ -47,6 +51,7 @@
     <string name="meeting_detail_notes">Opmerkingen:</string>
     <string name="meeting_detail_plannotes">Opmerkingen bij het plannen:</string>
     <string name="meeting_detail_agenda">Agenda:</string>
+    <string name="meeting_no_new_meetings">Er zijn geen nieuwe vergaderplanners.</string>
 
     <!-- error handling -->
     <string name="connection_error">Er ging iets fout tijdens het verbinden met de server!</string>

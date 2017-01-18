@@ -66,4 +66,9 @@ public class MeetingOverviewFragment extends PageableFragment<MeetingOverview> {
         //if(!tinyPage)
             Services.getInstance().meetingService.older(page, MEETING_PAGE_SIZE).enqueue(callback);
     }
+
+    @Override
+    public String getEmptyText() {
+        return getString(R.string.meeting_no_new_meetings);
+    }
 }

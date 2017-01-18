@@ -55,4 +55,9 @@ public class HomeNewsTab extends PageableFragment<NewsOverview> {
         if(!tinyPage)
             Services.getInstance().newsService.older(page, NEWS_PAGE_SIZE).enqueue(callback);
     }
+
+    @Override
+    public String getEmptyText() {
+        return getString(R.string.news_no_new_news);
+    }
 }

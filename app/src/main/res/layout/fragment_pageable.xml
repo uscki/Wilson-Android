@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/refreshContainer"
-    tools:context="nl.uscki.appcki.android.fragments.PageableFragment">
-
-    <android.support.v7.widget.RecyclerView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recyclerView"
-        app:layoutManager="LinearLayoutManager" />
+        android:id="@+id/refreshContainer"
+        tools:context="nl.uscki.appcki.android.fragments.PageableFragment">
 
-</android.support.v4.widget.SwipeRefreshLayout>
+        <android.support.v7.widget.RecyclerView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recyclerView"
+            app:layoutManager="LinearLayoutManager" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/empty_text"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textColor="@color/colorCodeBackground"
+        android:text="@string/meeting_no_new_meetings" />
+</FrameLayout>
