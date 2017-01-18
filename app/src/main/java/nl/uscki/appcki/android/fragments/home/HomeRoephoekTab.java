@@ -23,7 +23,7 @@ import nl.uscki.appcki.android.generated.roephoek.RoephoekItem;
  */
 
 public class HomeRoephoekTab extends PageableFragment<Roephoek> {
-    private final int ROEPHOEK_PAGE_SIZE = 7;
+    private final int ROEPHOEK_PAGE_SIZE = 10;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
