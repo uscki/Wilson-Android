@@ -106,4 +106,13 @@
             android:textColor="#fff" />
     </RelativeLayout>
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/list_divider"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"/>
 </RelativeLayout>
