@@ -16,6 +16,8 @@
         android:theme="@style/AppTheme">
         <receiver android:name="nl.uscki.appcki.android.helpers.AlarmReceiver"/>
 
+        <receiver android:name=".OnetimeAlarmReceiver"/>
+
         <activity
             android:name="nl.uscki.appcki.android.MainActivity"
             android:label="@string/app_name"

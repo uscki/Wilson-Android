@@ -1,6 +1,10 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
@@ -22,6 +26,7 @@ import java.net.ConnectException;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.MainActivity;
+import nl.uscki.appcki.android.OnetimeAlarmReceiver;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.error.ConnectionError;
@@ -179,15 +184,47 @@ public class AgendaDetailTabsFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets an alarm for 30 minutes before the start time of this event.
+     * @param item
+     */
+    private void setAlarmForEvent(AgendaItem item) {
+        DateTime time = item.getStart().minusMinutes(30);
+        //time = new DateTime().plusMinutes(2); // FOR DEBUGGING PURPOSES
+        Log.e("AgendaDetailTabs", "Setting alarm for id: " + item.getId() + " at time: " + time.toString());
+        Gson gson = new Gson();
+
+        Intent myIntent = new Intent(this.getActivity(), OnetimeAlarmReceiver.class);
+        myIntent.putExtra("item", gson.toJson(item));
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getActivity(), item.getId(), myIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        AlarmManager alarmManager = (AlarmManager)this.getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC, time.getMillis(), pendingIntent);
+    }
+
+    private void unsetAlarmForEvent(AgendaItem item) {
+        Log.e("AgendaDetailTabs", "Unsetting alarm for id: " + item.getId());
+        Gson gson = new Gson();
+
+        Intent myIntent = new Intent(this.getActivity(), OnetimeAlarmReceiver.class);
+        myIntent.putExtra("item", gson.toJson(item));
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getActivity(), item.getId(), myIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        AlarmManager alarmManager = (AlarmManager)this.getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+    }
+
     // EVENT HANDLING
 
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
-        if(!event.showSubscribe) {
-            menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
-            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
-        } else {
+        if(event.showSubscribe) {
+            unsetAlarmForEvent(item);
             menu.findItem(R.id.action_agenda_subscribe).setVisible(true);
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
+        } else{
+            setAlarmForEvent(item);
+            menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
+            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
         }
     }
 

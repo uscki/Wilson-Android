@@ -4,10 +4,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.icu.util.Calendar;
+import android.icu.util.TimeZone;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -30,6 +34,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
@@ -42,6 +48,7 @@ import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.fragments.LoginFragment;
+import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.RoephoekDialogFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
@@ -95,7 +102,7 @@ public class MainActivity extends AppCompatActivity
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -104,14 +111,20 @@ public class MainActivity extends AppCompatActivity
         UserHelper.getInstance().setPreferences(getPreferences(MODE_PRIVATE));
 
         if(savedInstanceState != null) {
+            UserHelper.getInstance().load(savedInstanceState.getString("token"));
             int ord = savedInstanceState.getInt("screen");
             Screen screen = Screen.values()[ord];
             currentScreen = screen;
             loadState(screen);
-            UserHelper.getInstance().load(savedInstanceState.getString("token"));
         } else {
             UserHelper.getInstance().load();
             loadState(Screen.NEWS); // load News if there is no known last screen
+        }
+
+        if(getIntent().getAction().equals(Intent.ACTION_VIEW)) {
+            Bundle args = new Bundle();
+            args.putString("item", getIntent().getStringExtra("item"));
+            openFragment(new AgendaDetailTabsFragment(), args);
         }
     }
 
@@ -119,6 +132,12 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         EventBus.getDefault().register(this);
         super.onStart();
+    }
+
+    @Override
+    protected void onPause() {
+        UserHelper.getInstance().save();
+        super.onPause();
     }
 
     @Override
