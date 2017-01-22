@@ -113,10 +113,10 @@ public class MainActivity extends AppCompatActivity
 
         if(savedInstanceState != null) {
             Log.e("Main", "Loading with saved instance");
-            UserHelper.getInstance().load(savedInstanceState.getString("token"));
             int ord = savedInstanceState.getInt("screen");
             Screen screen = Screen.values()[ord];
             currentScreen = screen;
+            UserHelper.getInstance().load(savedInstanceState.getString("token"));
             loadState(screen);
         } else {
             Log.e("Main", "Loading without saved instance");
