@@ -107,8 +107,8 @@ public class MainActivity extends AppCompatActivity
             int ord = savedInstanceState.getInt("screen");
             Screen screen = Screen.values()[ord];
             currentScreen = screen;
-            loadState(screen);
             UserHelper.getInstance().load(savedInstanceState.getString("token"));
+            loadState(screen);
         } else {
             UserHelper.getInstance().load();
             loadState(Screen.NEWS); // load News if there is no known last screen
