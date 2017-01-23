@@ -13,7 +13,7 @@ import android.util.Log;
 
 import org.joda.time.DateTime;
 
-import nl.uscki.appcki.android.MainActivity;
+import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.helpers.calendar.ReminderPeriod;
 

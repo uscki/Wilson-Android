@@ -3,6 +3,7 @@ package nl.uscki.appcki.android.fragments.agenda;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,8 @@ public class AgendaDetailFragment extends RefreshableFragment {
         View view = inflater.inflate(R.layout.fragment_agenda_detail, container, false);
 
         setupSwipeContainer(view);
+
+        Log.e("DetailFragment", "test");
 
         if (getArguments() != null) {
             Gson gson = new Gson();

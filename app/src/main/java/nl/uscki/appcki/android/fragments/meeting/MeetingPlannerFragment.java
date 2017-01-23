@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 
-import nl.uscki.appcki.android.MainActivity;
+import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.fragments.meeting.adapter.DaySlots;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingPreferenceDayAdapter;

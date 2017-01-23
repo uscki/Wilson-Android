@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 import com.vistrav.ask.Ask;
 
-import nl.uscki.appcki.android.MainActivity;
+import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;

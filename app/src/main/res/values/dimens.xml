@@ -11,4 +11,5 @@
     <dimen name="text_header_size">25dp</dimen>
     <dimen name="text_subheader_size">20dp</dimen>
     <dimen name="text_subsubheader_size">16dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
 </resources>

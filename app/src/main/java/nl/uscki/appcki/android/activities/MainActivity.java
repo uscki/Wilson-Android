@@ -1,4 +1,4 @@
-package nl.uscki.appcki.android;
+package nl.uscki.appcki.android.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
+import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
@@ -42,6 +43,7 @@ import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.fragments.LoginFragment;
+import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.RoephoekDialogFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
@@ -104,12 +106,14 @@ public class MainActivity extends AppCompatActivity
         UserHelper.getInstance().setPreferences(getPreferences(MODE_PRIVATE));
 
         if(savedInstanceState != null) {
+            Log.e("Main", "Loading with saved instance");
             int ord = savedInstanceState.getInt("screen");
             Screen screen = Screen.values()[ord];
             currentScreen = screen;
-            loadState(screen);
             UserHelper.getInstance().load(savedInstanceState.getString("token"));
+            loadState(screen);
         } else {
+            Log.e("Main", "Loading without saved instance");
             UserHelper.getInstance().load();
             loadState(Screen.NEWS); // load News if there is no known last screen
         }
@@ -117,6 +121,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onStart() {
+        Log.e("Main", "Loading onStart");
+        UserHelper.getInstance().setPreferences(getPreferences(MODE_PRIVATE));
+        UserHelper.getInstance().load();
         EventBus.getDefault().register(this);
         super.onStart();
     }
@@ -131,6 +138,20 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        Log.e("Main", "Low memory! onLow");
+        UserHelper.getInstance().save(); // save before the app gets removed from memory(?)
+        super.onLowMemory();
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        Log.e("Main", "Low memory! onTrim");
+        UserHelper.getInstance().save(); // save before the app gets removed from memory(?)
+        super.onTrimMemory(level);
     }
 
     @Override
@@ -355,6 +376,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onEventMainThread(OpenFragmentEvent event) {
+        if(event.screen instanceof AgendaDetailTabsFragment) {
+            Intent agenda = new Intent(this, AgendaActivity.class);
+            agenda.putExtra("item", event.arguments);
+            startActivity(agenda);
+            return;
+        }
         openFragment(event.screen, event.arguments);
     }
 

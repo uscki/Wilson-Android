@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.greenrobot.event.EventBus;
-import nl.uscki.appcki.android.MainActivity;
+import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.fragments.adapters.HomeViewPagerAdapter;

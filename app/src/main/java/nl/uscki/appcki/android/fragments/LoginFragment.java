@@ -29,7 +29,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import de.greenrobot.event.EventBus;
-import nl.uscki.appcki.android.MainActivity;
+import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.events.ShowProgressEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;

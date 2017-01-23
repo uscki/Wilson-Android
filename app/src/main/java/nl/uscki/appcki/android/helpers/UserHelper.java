@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
 
+import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 
 /**
@@ -51,6 +52,7 @@ public class UserHelper {
     }
 
     public void logout() {
+        ServiceGenerator.client.dispatcher().cancelAll();
         if(preferences.contains("TOKEN")) {
             Log.d("UserHelper", "token in place, removing it");
             SharedPreferences.Editor editor = preferences.edit();
@@ -80,11 +82,13 @@ public class UserHelper {
     }
 
     public void load(String token) {
+        Log.e("UserHelper", "got token from savedInstance");
         if(token != null && !token.isEmpty()) {
             Gson gson = new Gson();
             try {
                 PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
                 login(token, person);
+                Log.e("UserHelper", "succesfully logged in");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -97,12 +101,14 @@ public class UserHelper {
 
     public void load() {
         if(preferences.contains("TOKEN")) {
+            Log.e("UserHelper", "prefrences contains token");
             Gson gson = new Gson();
             String token = preferences.getString("TOKEN", "null");
             try {
                 if (!token.equals("null")) {
                     PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
                     login(token, person);
+                    Log.e("UserHelper", "succesfully logged in");
                 } else {
                     loggedIn = false;
                 }

@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="nl.uscki.appcki.android.MainActivity"
+    tools:context="nl.uscki.appcki.android.activities.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity"
+        tools:context=".activities.MainActivity"
         android:background="#ffffff" />
 
     <nl.uscki.appcki.android.views.NetworkImageView
