@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.google.gson.Gson;
 
+import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 
 /**
@@ -21,7 +22,7 @@ public class OnetimeAlarmReceiver extends BroadcastReceiver {
         // prepare intent which is triggered if the
         // notification is selected
 
-        Intent intent2 = new Intent(context, MainActivity.class);
+        Intent intent2 = new Intent(context, AgendaActivity.class);
         intent2.putExtra("item", originalIntent.getStringExtra("item"));
         intent2.setAction(Intent.ACTION_VIEW);
         PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent2, 0);
