@@ -9,7 +9,6 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -27,16 +26,22 @@ public class ServiceGenerator {
                     .baseUrl(API_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create());
 
+    public static OkHttpClient client;
+
     public static <S> S createService(Class<S> serviceClass) {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        LoggingInterceptor logging = new LoggingInterceptor();
         // set your desired log level
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        logging.setLevel(LoggingInterceptor.Level.BODY);
+        logging.addFilter("www.uscki.nl").addFilter("api/media/");
         httpClient.addInterceptor(logging);// TODO uncomment voor debug output
 
         httpClient.addInterceptor(new Interceptor() {
             @Override
             public Response intercept(Interceptor.Chain chain) throws IOException {
                 Request original = chain.request();
+                if(UserHelper.getInstance().TOKEN == null) {
+                    return chain.proceed(original);
+                }
                 Request.Builder requestBuilder = original.newBuilder()
                         .header("X-AUTH-TOKEN", UserHelper.getInstance().TOKEN)
                         .method(original.method(), original.body());
@@ -45,7 +50,7 @@ public class ServiceGenerator {
             }
         });
 
-        OkHttpClient client = httpClient.build();
+        client = httpClient.build();
         Retrofit retrofit = builder.client(client).build();
         return retrofit.create(serviceClass);
     }
