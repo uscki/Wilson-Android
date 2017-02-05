@@ -412,7 +412,7 @@ public class MainActivity extends AppCompatActivity
             case 403: // Forbidden
                 toast = Toast.makeText(getApplicationContext(), getString(R.string.notloggedin), Toast.LENGTH_SHORT);
                 toast.show();
-                openFragment(new LoginFragment(), null);
+                initLoggedOutUI();
                 break;
             case 404: // Not found
                 toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
