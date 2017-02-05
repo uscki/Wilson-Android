@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 
-import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 
 public class Meeting {
@@ -47,6 +46,12 @@ public class Meeting {
     @SerializedName("plannotes")
     @Expose
     private String plannotes;
+    @SerializedName("endPlanningPeriod")
+    @Expose
+    private Long endPlanningPeriod;
+    @SerializedName("startPlanningPeriod")
+    @Expose
+    private Long startPlanningPeriod;
 
     /**
      *
@@ -258,6 +263,22 @@ public class Meeting {
      */
     public void setPlannotes(String plannotes) {
         this.plannotes = plannotes;
+    }
+
+    public DateTime getEndPlanningPeriod() {
+        return new DateTime(endPlanningPeriod);
+    }
+
+    public void setEndPlanningPeriod(Long endPlanningPeriod) {
+        this.endPlanningPeriod = endPlanningPeriod;
+    }
+
+    public DateTime getStartPlanningPeriod() {
+        return new DateTime(startPlanningPeriod);
+    }
+
+    public void setStartPlanningPeriod(Long startPlanningPeriod) {
+        this.startPlanningPeriod = startPlanningPeriod;
     }
 
     @Override

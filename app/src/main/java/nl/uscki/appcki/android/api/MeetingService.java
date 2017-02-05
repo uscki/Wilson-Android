@@ -22,7 +22,7 @@ public interface MeetingService {
     @GET("meetings/newer")
     Call<MeetingOverview> newer(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer id);
 
-    @GET("meetings/{id}")
+    @GET("meetings/get/{id}")
     Call<MeetingItem> get(@Path("id") Integer id);
 
     @POST("meetings/slots/{id}")

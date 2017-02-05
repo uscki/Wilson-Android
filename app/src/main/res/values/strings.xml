@@ -51,7 +51,7 @@
     <string name="meeting_detail_notes">Opmerkingen:</string>
     <string name="meeting_detail_plannotes">Opmerkingen bij het plannen:</string>
     <string name="meeting_detail_agenda">Agenda:</string>
-    <string name="meeting_no_new_meetings">Er zijn geen nieuwe vergaderplanners.</string>
+    <string name="meeting_no_new_meetings">Er zijn geen actieve vergaderplanners.</string>
 
     <!-- error handling -->
     <string name="connection_error">Er ging iets fout tijdens het verbinden met de server!</string>
