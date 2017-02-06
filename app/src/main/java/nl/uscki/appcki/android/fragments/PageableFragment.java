@@ -11,8 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import retrofit2.Response;
@@ -162,4 +164,20 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     public abstract void onScrollRefresh();
     public abstract String getEmptyText();
     protected abstract int getPageSize();
+
+    public void onEventMainThread(ErrorEvent e) {
+        swipeContainer.setRefreshing(false);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
 }
