@@ -103,6 +103,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         setupRecyclerView(view);
 
         emptyText = (TextView) view.findViewById(R.id.empty_text);
+        emptyText.setText(getEmptyText());
         return view;
     }
 
