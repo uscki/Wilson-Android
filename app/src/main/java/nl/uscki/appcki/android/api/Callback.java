@@ -37,7 +37,7 @@ public abstract class Callback<T> implements retrofit2.Callback<T> {
         } else if(t instanceof IOException) {
             // just ignore this
         } else {
-            throw new RuntimeException(t);
+            t.printStackTrace(); // don't just crash on an error
         }
     }
 
