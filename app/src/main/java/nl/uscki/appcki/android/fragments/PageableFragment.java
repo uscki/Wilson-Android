@@ -56,7 +56,11 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                         recyclerView.setVisibility(View.VISIBLE);
                         tinyPage = response.body().getNumberOfElements() < getPageSize();
                     }
-                    getAdapter().addItems(response.body().getContent());
+
+                    if(!tinyPage)
+                        getAdapter().addItems(response.body().getContent());
+                    else
+                        getAdapter().update(response.body().getContent());
                     Log.e("PageableFragment", "tinypage: " + tinyPage);
                 } else {
                     //TODO handle failing to load more
