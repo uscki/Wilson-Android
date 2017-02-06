@@ -35,7 +35,7 @@ public abstract class Callback<T> implements retrofit2.Callback<T> {
         } else if(t instanceof SocketTimeoutException) {
             new ConnectionError(t); // handle connection error in MainActivity
         } else {
-            throw new RuntimeException(t);
+            t.printStackTrace(); // don't just crash on an error
         }
     }
 
