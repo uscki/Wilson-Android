@@ -30,6 +30,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.crash.FirebaseCrash;
+import com.google.gson.Gson;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
@@ -87,6 +90,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseCrash.log("Creating MainActivity");
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
@@ -104,12 +108,14 @@ public class MainActivity extends AppCompatActivity
         UserHelper.getInstance().setPreferences(getPreferences(MODE_PRIVATE));
 
         if(savedInstanceState != null) {
+            FirebaseCrash.log("savedInstanceState != null");
             int ord = savedInstanceState.getInt("screen");
             Screen screen = Screen.values()[ord];
             currentScreen = screen;
             UserHelper.getInstance().load(savedInstanceState.getString("token"));
             loadState(screen);
         } else {
+            FirebaseCrash.log("savedInstanceState == null");
             UserHelper.getInstance().load();
             loadState(Screen.NEWS); // load News if there is no known last screen
         }
@@ -219,11 +225,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        FirebaseCrash.log("onSaveInstanceState persistable bundle");
         outPersistentState.putString("token", UserHelper.getInstance().TOKEN);
         super.onSaveInstanceState(outState, outPersistentState);
     }
 
     private void openTab(int index) {
+        FirebaseCrash.log("openTab(" + index + ")");
         if (currentScreen == Screen.ROEPHOEK || currentScreen == Screen.NEWS || currentScreen == Screen.AGENDA) {
             // HomeFragment luistert naar dit event om daarin de tab te switchen
             EventBus.getDefault().post(new SwitchTabEvent(index));
@@ -236,6 +244,7 @@ public class MainActivity extends AppCompatActivity
 
     private void openFragment(Fragment fragment, Bundle arguments) {
         if (fragment instanceof LoginFragment) {
+            FirebaseCrash.log("openFragment: setting soft input mode");
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         } else {
             // TODO: 5/28/16 currently keyboard overlaps in agenda detail, but this needs a new
@@ -244,9 +253,11 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (arguments != null) {
+            FirebaseCrash.log("openFragment: adding a bundle to this fragment");
             fragment.setArguments(arguments);
         }
 
+        FirebaseCrash.log("openFragment: beginTransition.replace");
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
@@ -304,6 +315,7 @@ public class MainActivity extends AppCompatActivity
         initLoggedInUI();
 
         Log.d("MainActivity", "load: " + screen.name());
+        FirebaseCrash.log("loadState: opening screen " + screen.name());
         openLastScreen(screen);
     }
 
@@ -378,7 +390,8 @@ public class MainActivity extends AppCompatActivity
             case 500: // Internal error
                 toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
                 toast.show();
-                //TODO stuur een bericht naar de AppCKI over een interne server error
+                Gson gson = new Gson();
+                FirebaseCrash.report(new Exception(gson.toJson(event.error))); // just log this server error to firebase
         }
     }
 
