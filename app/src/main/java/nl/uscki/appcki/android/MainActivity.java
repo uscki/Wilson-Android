@@ -218,7 +218,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt("screen", currentScreen.ordinal());
+        FirebaseCrash.log("onSaveInstanceState");
+        if(currentScreen != null)
+            outState.putInt("screen", currentScreen.ordinal());
         outState.putString("token", UserHelper.getInstance().TOKEN);
         super.onSaveInstanceState(outState);
     }
@@ -292,6 +294,7 @@ public class MainActivity extends AppCompatActivity
         toolbar.setVisibility(View.GONE);
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         openFragment(new LoginFragment(), null);
+        currentScreen = Screen.LOGIN;
         navigationView.getMenu().findItem(R.id.nav_login).setVisible(true);
         navigationView.getMenu().findItem(R.id.nav_logout).setVisible(false);
 
@@ -306,9 +309,9 @@ public class MainActivity extends AppCompatActivity
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
-    private void loadState(Screen screen) {
+    private void loadState(@NonNull Screen screen) {
         if (!UserHelper.getInstance().isLoggedIn()) {
-            openFragment(loginFragment, null);
+            FirebaseCrash.log("loadState: not logged in");
             initLoggedOutUI();
             return;
         }
@@ -323,7 +326,6 @@ public class MainActivity extends AppCompatActivity
         switch (screen) {
             case LOGIN:
                 initLoggedOutUI();
-                openFragment(loginFragment, null);
                 break;
             case NEWS:
                 openTab(HomeFragment.NEWS);
