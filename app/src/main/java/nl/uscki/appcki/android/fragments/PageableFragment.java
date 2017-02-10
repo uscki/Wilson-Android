@@ -32,7 +32,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
     // The minimum amount of items to have below your current scroll position
     // before loading more.
-    private int visibleThreshold = 1;
+    private int visibleThreshold = 3;
     private int lastVisibleItem, totalItemCount;
     protected boolean loading;
 
@@ -46,10 +46,10 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         public void onSucces(Response<T> response) {
             swipeContainer.setRefreshing(false);
             if(loading) { // Refresh
+                Log.e("PageableFragment", "Load update");
                 loading = false;
                 if (response.body() != null) {
-                    if(response.body().getNumberOfElements() == 0) {
-                        //emptyText.setText(getEmptyText());
+                    if(response.body().getNumberOfElements() == 0 && !response.body().getLast()) {
                         emptyText.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
                         tinyPage = true;
@@ -59,20 +59,16 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                         tinyPage = response.body().getNumberOfElements() < getPageSize();
                     }
 
-                    if(!tinyPage)
-                        getAdapter().addItems(response.body().getContent());
-                    else
-                        getAdapter().update(response.body().getContent());
+                    getAdapter().addItems(response.body().getContent());
                     Log.e("PageableFragment", "tinypage: " + tinyPage);
                 } else {
                     //TODO handle failing to load more
                     Log.e("PageableFragment", "something failed: " + response.body());
                 }
             } else { // Scroll
-                Log.e("PageableFragment", "update: " + response.body());
+                Log.e("PageableFragment", "Scroll update");
                 if(response.body() != null) {
-                    if(response.body().getNumberOfElements() == 0) {
-                        emptyText.setText(getEmptyText());
+                    if(response.body().getNumberOfElements() == 0 && !response.body().getLast()) {
                         emptyText.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
                         tinyPage = true;
