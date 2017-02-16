@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,19 +20,16 @@ import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
 
-import java.net.ConnectException;
 import java.util.List;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.fragments.meeting.SlotPreferenceDialog;
 import nl.uscki.appcki.android.generated.meeting.Preference;
 import nl.uscki.appcki.android.generated.meeting.Slot;
 import nl.uscki.appcki.android.helpers.UserHelper;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -41,23 +37,6 @@ import retrofit2.Response;
  */
 public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<MeetingPreferenceDaySlotAdapter.ViewHolder> {
     List<Slot> slots;
-
-    private Callback<Preference> callback = new Callback<Preference>() {
-        @Override
-        public void onResponse(Call<Preference> call, Response<Preference> response) {
-            //TODO: figure out what to do with this
-            Log.d("SlotAdapter", "succesfully set slot: " + response.body().toString());
-        }
-
-        @Override
-        public void onFailure(Call<Preference> call, Throwable t) {
-            if (t instanceof ConnectException) {
-                new ConnectionError(t); // handle connection error in MainActivity
-            } else {
-                throw new RuntimeException(t);
-            }
-        }
-    };
 
     public MeetingPreferenceDaySlotAdapter(List<Slot> slots) {
         this.slots = slots;
@@ -82,7 +61,20 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
         holder.canAttend.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), isChecked).enqueue(callback);
+                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), isChecked).enqueue(new Callback<Preference>() {
+                        @Override
+                        public void onSucces(Response<Preference> response) {
+                            //TODO set colorcode to new color
+                            for (Preference p : holder.slot.getPreferences()) {
+                                if(p.getId() == response.body().getId()) {
+                                    holder.slot.getPreferences().remove(p);
+                                    holder.slot.getPreferences().add(response.body());
+                                }
+                            }
+                            holder.colorcode.setColorFilter(getColorForSlot(holder.slot), PorterDuff.Mode.MULTIPLY);
+                            holder.colorcode.postInvalidate();
+                        }
+                    });
             }
         });
 
@@ -92,7 +84,12 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
                 if (actionId == EditorInfo.IME_NULL
                         && event.getAction() == KeyEvent.ACTION_DOWN) {
                     Boolean checked = holder.canAttend.isChecked();
-                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), checked).enqueue(callback);
+                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), checked).enqueue(new Callback<Preference>() {
+                        @Override
+                        public void onSucces(Response<Preference> response) {
+                            //TODO set colorcode to new color
+                        }
+                    });
                 }
                 return true;
             }

@@ -14,6 +14,7 @@ import nl.uscki.appcki.android.generated.meeting.Slot;
 public class DaySlots {
     List<Slot> slots;
     String day;
+    boolean isCollapsed;
 
     public DaySlots() {
 
@@ -22,6 +23,7 @@ public class DaySlots {
     public DaySlots(String day, List<Slot> slots) {
         this.day = day;
         this.slots = slots;
+        this.isCollapsed = false;
     }
 
     public static List<DaySlots> fromSlots(List<Slot> slots) {

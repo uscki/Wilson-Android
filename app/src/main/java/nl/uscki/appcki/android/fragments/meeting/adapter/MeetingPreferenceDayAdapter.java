@@ -40,13 +40,13 @@ public class MeetingPreferenceDayAdapter extends RecyclerView.Adapter<MeetingPre
         holder.collapse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.collapsed) {
+                if (holder.daySlots.isCollapsed) {
                     holder.slots.setVisibility(View.VISIBLE);
-                    holder.collapsed = false;
+                    holder.daySlots.isCollapsed = false;
                     holder.collapse.setImageDrawable(App.getContext().getResources().getDrawable(R.drawable.minus));
                 } else {
                     holder.slots.setVisibility(View.GONE);
-                    holder.collapsed = true;
+                    holder.daySlots.isCollapsed = true;
                     holder.collapse.setImageDrawable(App.getContext().getResources().getDrawable(R.drawable.plus_dark));
                 }
             }
@@ -60,7 +60,6 @@ public class MeetingPreferenceDayAdapter extends RecyclerView.Adapter<MeetingPre
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public DaySlots daySlots;
-        public boolean collapsed = false;
         public final View mView;
         public final TextView date;
         public final RecyclerView slots;
