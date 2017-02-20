@@ -3,6 +3,7 @@ package nl.uscki.appcki.android.fragments.meeting;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +46,7 @@ public class MeetingPlannerFragment extends Fragment {
         if (view instanceof RecyclerView) {
             recyclerView = (RecyclerView) view;
             //recyclerView.setAdapter(new MeetingPreferenceDayAdapter(new ArrayList<DaySlots>()));
-            recyclerView.setAdapter(new MeetingPreferenceDayAdapter(DaySlots.fromSlots(item.getSlots())));
+            recyclerView.setAdapter(new MeetingPreferenceDayAdapter((AppCompatActivity) getActivity(), DaySlots.fromSlots(item.getSlots())));
            /* Services.getInstance().meetingService.get(meetingItemId).enqueue(new Callback<MeetingItem>() {
                 @Override
                 public void onResponse(Call<MeetingItem> call, Response<MeetingItem> response) {

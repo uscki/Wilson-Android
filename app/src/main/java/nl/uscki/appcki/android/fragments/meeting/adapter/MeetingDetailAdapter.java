@@ -32,7 +32,7 @@ public class MeetingDetailAdapter extends FragmentStatePagerAdapter {
         String json = gson.toJson(item, MeetingItem.class);
         bundle.putString("item", json);
         switch (position) {
-            case MeetingDetailTabsFragment.PLANNER:
+            case MeetingDetailTabsFragment.ITEM:
                 if (item.getMeeting().getStartdate() != null) {
                     fragment = new MeetingDetailFragment();
                 } else {

@@ -33,7 +33,7 @@ public class MeetingDetailTabsFragment extends Fragment {
 
     MeetingItem item;
 
-    public static final int PLANNER = 0;
+    public static final int ITEM = 0;
     public static final int AANWEZIG = 1;
     public static final int AFWEZIG = 2;
 

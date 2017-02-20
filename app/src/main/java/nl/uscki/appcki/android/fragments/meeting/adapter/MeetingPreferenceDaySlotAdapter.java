@@ -22,7 +22,6 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
-import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
@@ -37,9 +36,11 @@ import retrofit2.Response;
  */
 public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<MeetingPreferenceDaySlotAdapter.ViewHolder> {
     List<Slot> slots;
+    AppCompatActivity context;
 
-    public MeetingPreferenceDaySlotAdapter(List<Slot> slots) {
+    public MeetingPreferenceDaySlotAdapter(AppCompatActivity context, List<Slot> slots) {
         this.slots = slots;
+        this.context = context;
     }
 
     @Override
@@ -53,6 +54,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
     public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
         if (!payloads.isEmpty()) {
             Slot slot = (Slot) payloads.get(0);
+            holder.slot = slot;
             holder.canAttend.setChecked(getChecked(slot));
             holder.colorcode.setColorFilter(getColorForSlot(slot), PorterDuff.Mode.MULTIPLY);
         } else {
@@ -101,7 +103,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
         holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                displayPreferences(slot);
+                displayPreferences(holder.slot);
                 return false;
             }
         });
@@ -114,7 +116,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
         String json = gson.toJson(slot);
         args.putString("slot", json);
         newFragment.setArguments(args);
-        newFragment.show(((AppCompatActivity) App.getContext()).getSupportFragmentManager(), "slot_preferences");
+        newFragment.show(context.getSupportFragmentManager(), "slot_preferences");
     }
 
     private boolean getChecked(Slot slot) {
