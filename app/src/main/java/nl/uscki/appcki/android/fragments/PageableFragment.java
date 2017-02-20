@@ -59,7 +59,12 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                         tinyPage = response.body().getNumberOfElements() < getPageSize();
                     }
 
-                    getAdapter().addItems(response.body().getContent());
+                    if(tinyPage && response.body().getNumber() == 0) {
+                        getAdapter().update(response.body().getContent());
+                    } else {
+                        getAdapter().addItems(response.body().getContent());
+                    }
+
                     Log.e("PageableFragment", "tinypage: " + tinyPage);
                 } else {
                     //TODO handle failing to load more
