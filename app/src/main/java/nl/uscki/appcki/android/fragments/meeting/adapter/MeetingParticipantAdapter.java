@@ -5,16 +5,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.events.ImageZoomEvent;
+import nl.uscki.appcki.android.api.MediaAPI;
+import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
-import nl.uscki.appcki.android.views.NetworkImageView;
 
 /**
  * Created by peter on 7/30/16.
@@ -37,9 +37,10 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
         holder.name.setText(items.get(position).getPerson());
 
         holder.note.setText(items.get(position).getNote());
-        if(items.get(position).getPhotoid() != null) {
-            holder.profile.setImageMediaId(items.get(position).getPhotoid());
-        }
+        Services.getInstance().picasso
+                .load(MediaAPI.getMediaUrl(items.get(position).getPhotoid(), MediaAPI.MediaSize.SMALL))
+                .placeholder(R.drawable.account)
+                .into(holder.profile);
 
         final Rect startBounds = new Rect();
         holder.profile.getGlobalVisibleRect(startBounds);
@@ -47,7 +48,7 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
         holder.profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EventBus.getDefault().post(new ImageZoomEvent(startBounds, holder.profile.getMediaId()));
+                //EventBus.getDefault().post(new ImageZoomEvent(startBounds, holder.profile.getMediaId()));
             }
         });
 
@@ -71,7 +72,7 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final NetworkImageView profile;
+        public final ImageView profile;
         public final TextView name;
         public final TextView note;
         public PersonWithNote mItem;
@@ -79,8 +80,7 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            profile = (NetworkImageView) view.findViewById(R.id.person_list_item_profile);
-            profile.setDefaultImageResId(R.drawable.account);
+            profile = (ImageView) view.findViewById(R.id.person_list_item_profile);
 
             name = (TextView) view.findViewById(R.id.person_list_item_name);
             note = (TextView) view.findViewById(R.id.person_list_item_note);

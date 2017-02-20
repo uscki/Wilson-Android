@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,7 +57,6 @@ import nl.uscki.appcki.android.fragments.home.RoephoekDialogFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.UserHelper;
-import nl.uscki.appcki.android.views.NetworkImageView;
 import retrofit2.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -311,8 +311,7 @@ public class MainActivity extends AppCompatActivity
         TextView name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText(UserHelper.getInstance().getPerson().getPostalname());
 
-        final NetworkImageView profile = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
-        profile.setDefaultImageResId(R.drawable.account);
+        final ImageView profile = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
 
         // load the users profile picture
         Services.getInstance().userService.currentUser().enqueue(new Callback<PersonSimple>() {
@@ -320,7 +319,10 @@ public class MainActivity extends AppCompatActivity
             public void onSucces(Response<PersonSimple> response) {
                 Log.e(TAG, response.body().toString());
                 UserHelper.getInstance().setPerson(response.body());
-                profile.setImageMediaId(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL);
+                Services.getInstance().picasso
+                        .load(MediaAPI.getMediaUrl(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL))
+                        .placeholder(R.drawable.account)
+                        .into(profile);
             }
         });
     }
@@ -336,8 +338,8 @@ public class MainActivity extends AppCompatActivity
         TextView name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText("");
 
-        NetworkImageView profile = (NetworkImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
-        profile.setDefaultImageResId(R.drawable.account);
+        ImageView profile = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
+        profile.setImageResource(R.drawable.account);
     }
 
     public void resizeOnKeyboard() {
@@ -445,7 +447,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onEventMainThread(ImageZoomEvent event) {
-        zoomImageFromThumb(event.startBounds, event.id);
+        //zoomImageFromThumb(event.startBounds, event.id);
     }
 
     @Override
@@ -453,7 +455,7 @@ public class MainActivity extends AppCompatActivity
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
-    private void zoomImageFromThumb(final Rect startBounds, Integer id) {
+    /*private void zoomImageFromThumb(final Rect startBounds, Integer id) {
         // If there's an animation in progress, cancel it
         // immediately and proceed with this one.
         if (mCurrentAnimator != null) {
@@ -589,5 +591,5 @@ public class MainActivity extends AppCompatActivity
                 mCurrentAnimator = set;
             }
         });
-    }
+    }*/
 }

@@ -11,12 +11,13 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 
 /**
  * Created by peter on 1/17/17.
  */
 
-public class RoundedProfileImageView extends NetworkImageView {
+public class RoundedProfileImageView extends ImageView {
     public RoundedProfileImageView(Context context) {
         super(context);
     }

@@ -1,10 +1,12 @@
 package nl.uscki.appcki.android.api;
 
+import java.io.File;
 import java.io.IOException;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -50,7 +52,9 @@ public class ServiceGenerator {
             }
         });
 
-        client = httpClient.build();
+        client = httpClient
+                .cache(new Cache(new File(App.getContext().getCacheDir(), "http-cache"), 10 * 1024 * 1024))
+                .build();
         Retrofit retrofit = builder.client(client).build();
         return retrofit.create(serviceClass);
     }

@@ -6,17 +6,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
-import nl.uscki.appcki.android.events.ImageZoomEvent;
+import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
-import nl.uscki.appcki.android.views.NetworkImageView;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link AgendaParticipant}
@@ -40,12 +39,14 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
         holder.name.setText(items.get(position).getPerson().getPostalname());
         holder.note.setText(items.get(position).getNote());
 
-        holder.profile.setDefaultImageResId(R.drawable.account); // set default in case the image can't be loaded
-        if(holder.mItem.getPerson().getPhotomediaid() != null) {
-            // TODO API: 5/29/16 fix this shit in the api
-            Integer profile = holder.mItem.getPerson().getPhotomediaid();
-            holder.profile.setImageMediaId(profile, MediaAPI.MediaSize.SMALL);
+        Integer profile = holder.mItem.getPerson().getPhotomediaid();
+        if(profile == null) {
+            profile = 0;
         }
+        Services.getInstance().picasso
+                .load(MediaAPI.getMediaUrl(profile, MediaAPI.MediaSize.SMALL))
+                .placeholder(R.drawable.account)
+                .into(holder.profile);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +69,7 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final NetworkImageView profile;
+        public final ImageView profile;
         public final TextView name;
         public final TextView note;
         public AgendaParticipant mItem;
@@ -76,8 +77,7 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            profile = (NetworkImageView) view.findViewById(R.id.person_list_item_profile);
-            profile.setDefaultImageResId(R.drawable.account);
+            profile = (ImageView) view.findViewById(R.id.person_list_item_profile);
             profile.setOnClickListener(zoomClickListener);
 
             name = (TextView) view.findViewById(R.id.person_list_item_name);
@@ -90,7 +90,8 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
             public void onClick(View view) {
                 final Rect startBounds = new Rect();
                 profile.getGlobalVisibleRect(startBounds);
-                EventBus.getDefault().post(new ImageZoomEvent(startBounds, profile.getMediaId()));
+                //TODO implement a nicer big image viewer
+                //EventBus.getDefault().post(new ImageZoomEvent(startBounds, profile.getMediaId()));
             }
         };
 

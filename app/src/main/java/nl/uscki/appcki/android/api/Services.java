@@ -1,7 +1,11 @@
 package nl.uscki.appcki.android.api;
 
+import com.squareup.picasso.Picasso;
+
+import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.api.media.ImageService;
 import nl.uscki.appcki.android.api.media.MediaService;
+import nl.uscki.appcki.android.api.media.PicassaMediaDownloader;
 
 /**
  * Created by peter on 7/12/16.
@@ -16,6 +20,7 @@ public class Services {
     public ImageService imageService;
     public MediaService mediaService;
     public UserService userService;
+    public Picasso picasso;
 
     private Services() {
         agendaService = ServiceGenerator.createService(AgendaService.class);
@@ -25,6 +30,9 @@ public class Services {
         imageService = ServiceGenerator.createService(ImageService.class);
         mediaService = ServiceGenerator.createService(MediaService.class);
         userService = ServiceGenerator.createService(UserService.class);
+        picasso = new Picasso.Builder(App.getContext())
+                .downloader(new PicassaMediaDownloader(ServiceGenerator.client))
+                .build();
     }
 
     public static Services getInstance() {
