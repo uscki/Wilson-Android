@@ -2,7 +2,7 @@ package nl.uscki.appcki.android.api;
 
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import nl.uscki.appcki.android.generated.meeting.MeetingOverview;
-import nl.uscki.appcki.android.generated.meeting.Preference;
+import nl.uscki.appcki.android.generated.meeting.Slot;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -26,5 +26,5 @@ public interface MeetingService {
     Call<MeetingItem> get(@Path("id") Integer id);
 
     @POST("meetings/slots/{id}")
-    Call<Preference> setSlot(@Path("id") Integer id, @Query("notes") String notes, @Query("canAttend") Boolean canAttend);
+    Call<Slot> setSlot(@Path("id") Integer id, @Query("notes") String notes, @Query("canAttend") Boolean canAttend);
 }

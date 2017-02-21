@@ -22,7 +22,6 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
-import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
@@ -37,9 +36,11 @@ import retrofit2.Response;
  */
 public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<MeetingPreferenceDaySlotAdapter.ViewHolder> {
     List<Slot> slots;
+    AppCompatActivity context;
 
-    public MeetingPreferenceDaySlotAdapter(List<Slot> slots) {
+    public MeetingPreferenceDaySlotAdapter(AppCompatActivity context, List<Slot> slots) {
         this.slots = slots;
+        this.context = context;
     }
 
     @Override
@@ -47,6 +48,18 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.meeting_slot, parent, false);
         return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+        if (!payloads.isEmpty()) {
+            Slot slot = (Slot) payloads.get(0);
+            holder.slot = slot;
+            holder.canAttend.setChecked(getChecked(slot));
+            holder.colorcode.setColorFilter(getColorForSlot(slot), PorterDuff.Mode.MULTIPLY);
+        } else {
+            super.onBindViewHolder(holder, position, payloads);
+        }
     }
 
     @Override
@@ -61,18 +74,10 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
         holder.canAttend.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), isChecked).enqueue(new Callback<Preference>() {
+                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), isChecked).enqueue(new Callback<Slot>() {
                         @Override
-                        public void onSucces(Response<Preference> response) {
-                            //TODO set colorcode to new color
-                            for (Preference p : holder.slot.getPreferences()) {
-                                if(p.getId() == response.body().getId()) {
-                                    holder.slot.getPreferences().remove(p);
-                                    holder.slot.getPreferences().add(response.body());
-                                }
-                            }
-                            holder.colorcode.setColorFilter(getColorForSlot(holder.slot), PorterDuff.Mode.MULTIPLY);
-                            holder.colorcode.postInvalidate();
+                        public void onSucces(Response<Slot> response) {
+                            notifyItemChanged(holder.getAdapterPosition(), response.body());
                         }
                     });
             }
@@ -84,10 +89,10 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
                 if (actionId == EditorInfo.IME_NULL
                         && event.getAction() == KeyEvent.ACTION_DOWN) {
                     Boolean checked = holder.canAttend.isChecked();
-                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), checked).enqueue(new Callback<Preference>() {
+                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), checked).enqueue(new Callback<Slot>() {
                         @Override
-                        public void onSucces(Response<Preference> response) {
-                            //TODO set colorcode to new color
+                        public void onSucces(Response<Slot> response) {
+                            notifyItemChanged(holder.getAdapterPosition(), response.body());
                         }
                     });
                 }
@@ -98,7 +103,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
         holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                displayPreferences(slot);
+                displayPreferences(holder.slot);
                 return false;
             }
         });
@@ -111,7 +116,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
         String json = gson.toJson(slot);
         args.putString("slot", json);
         newFragment.setArguments(args);
-        newFragment.show(((AppCompatActivity) App.getContext()).getSupportFragmentManager(), "slot_preferences");
+        newFragment.show(context.getSupportFragmentManager(), "slot_preferences");
     }
 
     private boolean getChecked(Slot slot) {
