@@ -56,8 +56,7 @@ public class HomeRoephoekTab extends PageableFragment<Roephoek> {
 
     @Override
     public void onScrollRefresh() {
-        if(!tinyPage)
-            Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE).enqueue(callback);
     }
 
     @Override

@@ -52,8 +52,7 @@ public class HomeNewsTab extends PageableFragment<NewsOverview> {
     }
 
     public void onScrollRefresh() {
-        if(!tinyPage)
-            Services.getInstance().newsService.older(page, NEWS_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().newsService.older(page, NEWS_PAGE_SIZE).enqueue(callback);
     }
 
     @Override

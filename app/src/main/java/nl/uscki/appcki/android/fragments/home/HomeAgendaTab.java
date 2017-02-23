@@ -58,8 +58,7 @@ public class HomeAgendaTab extends PageableFragment<Agenda> {
 
     @Override
     public void onScrollRefresh() {
-        if(!tinyPage)
-            Services.getInstance().agendaService.newer(page, AGENDA_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().agendaService.newer(page, AGENDA_PAGE_SIZE).enqueue(callback);
     }
 
     @Override

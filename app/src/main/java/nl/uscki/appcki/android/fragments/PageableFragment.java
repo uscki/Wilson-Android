@@ -38,8 +38,6 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
     // The current page
     protected Integer page;
-    // Whether this page is too small for the requested size
-    protected boolean tinyPage;
     private boolean noMoreContent;
     private boolean refresh;
     private boolean scrollLoad;
@@ -63,10 +61,8 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                     } else {
                         emptyText.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
-                        tinyPage = response.body().getNumberOfElements() < getPageSize();
-                        Log.e("pageablefragment", "tinypage is " + tinyPage);
+                        noMoreContent = response.body().getNumberOfElements() < getPageSize();
                     }
-                    Log.e("pageablefragment", "nomorecontent: " + scrollLoad);
 
                     Log.e("pageablefragment", "clearing items and adding this page");
                     getAdapter().update(response.body().getContent());
@@ -79,6 +75,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                 noMoreContent = false;
                 Log.e("PageableFragment", "Scroll update: " +  requestUrl);
                 if(response.body() != null) {
+                    Log.e("pageablefragment", "totalpages: " + response.body().getTotalPages());
                     if(response.body().getNumberOfElements() == 0 && response.body().getFirst()) {
                         emptyText.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
@@ -86,7 +83,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                     } else {
                         emptyText.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
-                        tinyPage = response.body().getNumberOfElements() < getPageSize();
+                        noMoreContent = response.body().getNumberOfElements() < getPageSize();
                     }
 
                     Log.e("pageablefragment", "adding items to the bottom");

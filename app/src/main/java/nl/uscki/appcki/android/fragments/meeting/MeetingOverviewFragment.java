@@ -58,8 +58,7 @@ public class MeetingOverviewFragment extends PageableFragment<MeetingOverview> {
 
     @Override
     public void onScrollRefresh() {
-        if(!tinyPage)
-            Services.getInstance().meetingService.older(page, MEETING_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().meetingService.older(page, MEETING_PAGE_SIZE).enqueue(callback);
     }
 
     @Override
