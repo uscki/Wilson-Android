@@ -23,6 +23,7 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.meeting.SlotPreferenceDialog;
@@ -71,6 +72,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
         holder.canAttend.setChecked(getChecked(slot));
         holder.colorcode.setColorFilter(getColorForSlot(slot), PorterDuff.Mode.MULTIPLY);
 
+
         holder.canAttend.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -83,12 +85,27 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
             }
         });
 
+        holder.note.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    Boolean checked = holder.canAttend.isChecked();
+                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), checked).enqueue(new Callback<Slot>() {
+                        @Override
+                        public void onSucces(Response<Slot> response) {
+                            notifyItemChanged(holder.getAdapterPosition(), response.body());
+                        }
+                    });
+                }
+            }
+        });
+
         holder.note.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_NULL
-                        && event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     Boolean checked = holder.canAttend.isChecked();
+                    MainActivity.hideKeyboard(v);
                     Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), checked).enqueue(new Callback<Slot>() {
                         @Override
                         public void onSucces(Response<Slot> response) {
