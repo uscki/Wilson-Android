@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -59,7 +61,9 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle();
-                args.putInt("id", holder.mItem.getMeeting().getId());
+                Gson gson = new Gson();
+                String json = gson.toJson(holder.mItem, MeetingItem.class);
+                args.putString("item", json);
                 // TODO: 7/3/16 launch vergaderplanner fragment
                 EventBus.getDefault().post(new OpenFragmentEvent(new MeetingDetailTabsFragment(), args));
             }

@@ -54,6 +54,7 @@ import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.RoephoekDialogFragment;
+import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -410,6 +411,11 @@ public class MainActivity extends AppCompatActivity
             Intent agenda = new Intent(this, AgendaActivity.class);
             agenda.putExtra("item", event.arguments);
             startActivity(agenda);
+            return;
+        } else if(event.screen instanceof MeetingDetailTabsFragment) {
+            Intent meeting = new Intent(this, MeetingActivity.class);
+            meeting.putExtra("item", event.arguments);
+            startActivity(meeting);
             return;
         }
         openFragment(event.screen, event.arguments);

@@ -36,6 +36,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="nl.uscki.appcki.android.activities.MainActivity" />
         </activity>
+
+        <activity
+            android:name=".activities.MeetingActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="nl.uscki.appcki.android.activities.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
