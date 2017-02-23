@@ -53,10 +53,10 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
 
         holder.itemDeelnemers.setText(item.getParticipants().size() + "");
 
-        //Log.e("AgendaAdapter", "location: " + item.getLocation());
         if(item.getLocation() == null || item.getLocation().isEmpty()) {
             holder.itemWhere.setVisibility(View.GONE);
         } else {
+            holder.itemWhere.setVisibility(View.VISIBLE);
             holder.itemWhere.setText(item.getLocation());
         }
 
