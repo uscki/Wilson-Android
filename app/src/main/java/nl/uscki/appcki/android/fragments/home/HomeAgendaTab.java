@@ -21,7 +21,7 @@ import nl.uscki.appcki.android.generated.agenda.AgendaItem;
  */
 
 public class HomeAgendaTab extends PageableFragment<Agenda> {
-    private final int AGENDA_PAGE_SIZE = 4;
+    private final int AGENDA_PAGE_SIZE = 5;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

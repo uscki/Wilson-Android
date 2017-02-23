@@ -65,11 +65,6 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
         return items.size();
     }
 
-    @Override
-    public Integer getLastID() {
-        return -1;
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final ImageView profile;

@@ -89,11 +89,6 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
         return items.size();
     }
 
-    @Override
-    public Integer getLastID() {
-        return items.get(items.size()-1).getMeeting().getId();
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public MeetingItem mItem;

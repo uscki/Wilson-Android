@@ -53,6 +53,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
 
         holder.itemDeelnemers.setText(item.getParticipants().size() + "");
 
+        //Log.e("AgendaAdapter", "location: " + item.getLocation());
         if(item.getLocation() == null || item.getLocation().isEmpty()) {
             holder.itemWhere.setVisibility(View.GONE);
         } else {
@@ -87,11 +88,6 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
     @Override
     public int getItemCount() {
         return items.size();
-    }
-
-    @Override
-    public Integer getLastID() {
-        return items.get(items.size()-1).getId();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

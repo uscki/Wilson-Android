@@ -17,8 +17,10 @@ import retrofit2.Response;
  */
 
 public abstract class Callback<T> implements retrofit2.Callback<T> {
+    protected String requestUrl = "";
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
+        requestUrl = call.request().url().toString();
         if(response.isSuccessful()) {
             onSucces(response);
         } else {

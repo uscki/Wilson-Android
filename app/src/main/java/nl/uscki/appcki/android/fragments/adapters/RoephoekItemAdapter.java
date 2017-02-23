@@ -38,14 +38,9 @@ public class RoephoekItemAdapter extends BaseItemAdapter<RoephoekItemAdapter.Vie
     }
 
     @Override
-    public Integer getLastID() {
-        return items.get(items.size()-1).getId();
-    }
-
-    @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         RoephoekItem item = items.get(position);
-        Log.d("RoephoekAdapter", item.getMessageJSON().toString());
+        //Log.d("RoephoekAdapter", item.getMessageJSON().toString());
         SpannableStringBuilder text = Parser.parse(item.getMessageJSON(), true, holder.message);
         holder.nickname.setText(item.getNickname());
         //holder.message.setText(item.getMessage());

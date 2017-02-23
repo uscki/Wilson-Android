@@ -47,11 +47,6 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
         return items.size();
     }
 
-    @Override
-    public Integer getLastID() {
-        return items.get(items.size()-1).getId();
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView title;

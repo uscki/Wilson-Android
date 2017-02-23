@@ -25,6 +25,4 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K> exte
         this.items.addAll(items);
         this.notifyDataSetChanged();
     }
-
-    public abstract Integer getLastID();
 }

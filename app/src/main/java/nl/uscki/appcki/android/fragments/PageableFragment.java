@@ -32,7 +32,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
     // The minimum amount of items to have below your current scroll position
     // before loading more.
-    private int visibleThreshold = 3;
+    private int visibleThreshold = 1;
     private int lastVisibleItem, totalItemCount;
     protected boolean loading;
 
@@ -40,50 +40,57 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     protected Integer page;
     // Whether this page is too small for the requested size
     protected boolean tinyPage;
+    private boolean noMoreContent;
+    private boolean refresh;
+    private boolean scrollLoad;
 
     protected Callback<T> callback = new Callback<T>() {
         @Override
         public void onSucces(Response<T> response) {
-            swipeContainer.setRefreshing(false);
-            if(loading) { // Refresh
-                Log.e("PageableFragment", "Load update");
-                loading = false;
+            if(refresh) {
+                refresh = false;
+                noMoreContent = false; // reset noMoreContent because we are loading the first page
+                scrollLoad = false; // reset scrollLoad because we are loading the first page
+                swipeContainer.setRefreshing(false);
+
+                Log.e("PageableFragment", "Reload update: " + requestUrl);
                 if (response.body() != null) {
-                    if(response.body().getNumberOfElements() == 0 && !response.body().getLast()) {
+                    // empty first page meaning there are no elements at all, also not on other pages
+                    if(response.body().getNumberOfElements() == 0 && response.body().getFirst()) {
                         emptyText.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
-                        tinyPage = true;
+                        noMoreContent = true;
                     } else {
                         emptyText.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                         tinyPage = response.body().getNumberOfElements() < getPageSize();
+                        Log.e("pageablefragment", "tinypage is " + tinyPage);
                     }
+                    Log.e("pageablefragment", "nomorecontent: " + scrollLoad);
 
-                    if(tinyPage && response.body().getNumber() == 0) {
-                        getAdapter().update(response.body().getContent());
-                    } else {
-                        getAdapter().addItems(response.body().getContent());
-                    }
-
-                    Log.e("PageableFragment", "tinypage: " + tinyPage);
+                    Log.e("pageablefragment", "clearing items and adding this page");
+                    getAdapter().update(response.body().getContent());
                 } else {
                     //TODO handle failing to load more
                     Log.e("PageableFragment", "something failed: " + response.body());
                 }
-            } else { // Scroll
-                Log.e("PageableFragment", "Scroll update");
+            } else if(scrollLoad) {
+                scrollLoad = false;
+                noMoreContent = false;
+                Log.e("PageableFragment", "Scroll update: " +  requestUrl);
                 if(response.body() != null) {
-                    if(response.body().getNumberOfElements() == 0 && !response.body().getLast()) {
+                    if(response.body().getNumberOfElements() == 0 && response.body().getFirst()) {
                         emptyText.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
-                        tinyPage = true;
+                        noMoreContent = true;
                     } else {
                         emptyText.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                         tinyPage = response.body().getNumberOfElements() < getPageSize();
                     }
-                    Log.e("PageableFragment", "tinypage: " + tinyPage);
-                    getAdapter().update(response.body().getContent());
+
+                    Log.e("pageablefragment", "adding items to the bottom");
+                    getAdapter().addItems(response.body().getContent());
                 }
             }
         }
@@ -107,6 +114,9 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
         emptyText = (TextView) view.findViewById(R.id.empty_text);
         emptyText.setText(getEmptyText());
+
+        refresh = true; // always start with a refreshing view
+        scrollLoad = false;
         return view;
     }
 
@@ -122,11 +132,13 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                 totalItemCount = layoutManager.getItemCount();
                 lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
-                if (!loading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                if (!scrollLoad // we are not already loading a new page
+                        && totalItemCount <= (lastVisibleItem + visibleThreshold) // we should be loading a new page
+                        && !noMoreContent) { // there is still content to load
                     // End has been reached
-                    loading = true;
-                    page++; // update page
+                    scrollLoad = true;
                     Log.e("PageableFragment", "Loading page: " + page);
+                    page++; // update page
                     onScrollRefresh(); // and call
                 }
             }
@@ -141,6 +153,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
             @Override
             public void onRefresh() {
                 page = 0;
+                refresh = true;
                 onSwipeRefresh();
             }
         });
