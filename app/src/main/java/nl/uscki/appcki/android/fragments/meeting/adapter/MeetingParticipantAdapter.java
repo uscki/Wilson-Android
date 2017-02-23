@@ -37,10 +37,13 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
         holder.name.setText(items.get(position).getPerson());
 
         holder.note.setText(items.get(position).getNote());
-        Services.getInstance().picasso
-                .load(MediaAPI.getMediaUrl(items.get(position).getPhotoid(), MediaAPI.MediaSize.SMALL))
-                .placeholder(R.drawable.account)
-                .into(holder.profile);
+
+        if(items.get(position).getPhotoid() != null) {
+            Services.getInstance().picasso
+                    .load(MediaAPI.getMediaUrl(items.get(position).getPhotoid(), MediaAPI.MediaSize.SMALL))
+                    .placeholder(R.drawable.account)
+                    .into(holder.profile);
+        }
 
         final Rect startBounds = new Rect();
         holder.profile.getGlobalVisibleRect(startBounds);
