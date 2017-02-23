@@ -117,6 +117,9 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
             }
         });
 
+
+        holder.note.setText(getNoteText(slot));
+
         holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -124,6 +127,15 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
                 return false;
             }
         });
+    }
+
+    private String getNoteText(Slot slot) {
+        for(Preference p : slot.getPreferences()) {
+            if(p.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
+                return p.getNotes();
+            }
+        }
+        return "";
     }
 
     private void displayPreferences(Slot slot) {
