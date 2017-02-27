@@ -1,11 +1,11 @@
 # Android app
 
-# how to get the source
+# How to get the source
 
     git clone https://github.com/uscki/appcki-native-android -b development
     cd appcki-native-android
 
-# how to build
+# How to build
 
 Open Android Studio, als je nog een project open hebt, sluit het. Open nu een bestaand android studio project en zoek de directory op waar je het project hebt gecloned. Als het goed is doet android studio nu de rest.
 
