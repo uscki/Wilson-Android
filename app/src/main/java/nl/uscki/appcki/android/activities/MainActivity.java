@@ -320,10 +320,12 @@ public class MainActivity extends AppCompatActivity
             public void onSucces(Response<PersonSimple> response) {
                 Log.e(TAG, response.body().toString());
                 UserHelper.getInstance().setPerson(response.body());
-                Services.getInstance().picasso
-                        .load(MediaAPI.getMediaUrl(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL))
-                        .placeholder(R.drawable.account)
-                        .into(profile);
+                if(UserHelper.getInstance().getPerson().getPhotomediaid() != null) {
+                    Services.getInstance().picasso
+                            .load(MediaAPI.getMediaUrl(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL))
+                            .placeholder(R.drawable.account)
+                            .into(profile);
+                }
             }
         });
     }
