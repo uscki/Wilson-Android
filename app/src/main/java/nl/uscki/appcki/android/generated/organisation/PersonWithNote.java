@@ -3,7 +3,6 @@ package nl.uscki.appcki.android.generated.organisation;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.uscki.appcki.android.generated.meeting.EnrolledPerson;
 import nl.uscki.appcki.android.generated.meeting.Preference;
 import nl.uscki.appcki.android.generated.meeting.Slot;
 
@@ -11,14 +10,20 @@ import nl.uscki.appcki.android.generated.meeting.Slot;
  * Created by peter on 7/30/16.
  */
 public class PersonWithNote {
+    Integer id;
     String person;
     String note;
     Integer photoid;
 
-    public PersonWithNote(String person, String note, Integer photoid) {
+    public PersonWithNote(Integer id, String person, String note, Integer photoid) {
+        this.id = id;
         this.person = person;
         this.note = note;
         this.photoid = photoid;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getPerson() {
@@ -42,19 +47,19 @@ public class PersonWithNote {
         return false;
     }
 
-    public static List<PersonWithNote> fromEnrolledPersons(List<EnrolledPerson> participants) {
+    /*public static List<PersonWithNote> fromEnrolledPersons(List<EnrolledPerson> participants) {
         List<PersonWithNote> persons = new ArrayList<>();
         for (EnrolledPerson person : participants) {
-            persons.add(new PersonWithNote(person.getName(), "", person.getPhotomediaid()));
+            persons.add(new PersonWithNote(person.getId(), person.getName(), "", person.getPhotomediaid()));
         }
         return persons;
-    }
+    }*/
 
     public static List<PersonWithNote> fromSlotPreferencesAvailable(Slot slot) {
         List<PersonWithNote> persons = new ArrayList<>();
         for (Preference p : slot.getPreferences()) {
             if (p.getCanattend()) {
-                persons.add(new PersonWithNote(p.getPerson().getPostalname(), p.getNotes(), p.getPerson().getPhotomediaid()));
+                persons.add(new PersonWithNote(p.getPerson().getId(), p.getPerson().getPostalname(), p.getNotes(), p.getPerson().getPhotomediaid()));
             }
         }
         return  persons;
@@ -64,7 +69,7 @@ public class PersonWithNote {
         List<PersonWithNote> persons = new ArrayList<>();
         for (Preference p : slot.getPreferences()) {
             if (!p.getCanattend()) {
-                persons.add(new PersonWithNote(p.getPerson().getPostalname(), p.getNotes(), p.getPerson().getPhotomediaid()));
+                persons.add(new PersonWithNote(p.getPerson().getId(), p.getPerson().getPostalname(), p.getNotes(), p.getPerson().getPhotomediaid()));
             }
         }
         return  persons;

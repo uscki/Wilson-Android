@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="nl.uscki.appcki.android.activities.SmoboActivity"
+    tools:showIn="@layout/activity_smobo">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/smobo_name"
+            android:layout_alignParentTop="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:text="Menno Veen"/>
+
+        <TextView
+            android:id="@+id/smobo_address"
+            android:layout_below="@id/smobo_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:text="Drift 21, Kamer 1.03"/>
+
+        <TextView
+            android:id="@+id/smobo_phone"
+            android:layout_below="@id/smobo_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:text="030-2538127"/>
+
+        <TextView
+            android:id="@+id/smobo_birthday"
+            android:layout_below="@id/smobo_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:text="235346435634523463454356"/>
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

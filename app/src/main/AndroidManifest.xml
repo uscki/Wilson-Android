@@ -44,6 +44,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="nl.uscki.appcki.android.activities.MainActivity" />
         </activity>
+        <activity
+            android:name=".activities.SmoboActivity"
+            android:label="@string/title_activity_smobo"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="nl.uscki.appcki.android.activities.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

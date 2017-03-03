@@ -11,9 +11,9 @@
             android:icon="@drawable/calendar"
             android:title="Agenda" />
         <item
-            android:id="@+id/nav_poll"
-            android:icon="@drawable/format_list_bulleted"
-            android:title="Poll" />
+            android:id="@+id/nav_quotes"
+            android:icon="@drawable/format_quote_close"
+            android:title="Quotes" />
         <item
             android:id="@+id/nav_roephoek"
             android:icon="@drawable/message_text"

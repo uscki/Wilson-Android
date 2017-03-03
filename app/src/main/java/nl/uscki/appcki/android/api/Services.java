@@ -20,6 +20,8 @@ public class Services {
     public ImageService imageService;
     public MediaService mediaService;
     public UserService userService;
+    public PeopleService peopleService;
+    public QuoteService quoteService;
     public Picasso picasso;
 
     private Services() {

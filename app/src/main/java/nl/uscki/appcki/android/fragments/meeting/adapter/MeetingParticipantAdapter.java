@@ -1,7 +1,9 @@
 package nl.uscki.appcki.android.fragments.meeting.adapter;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.activities.SmoboActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
@@ -32,7 +35,7 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mItem = items.get(position);
         holder.name.setText(items.get(position).getPerson());
 
@@ -59,6 +62,10 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
             @Override
             public void onClick(View v) {
                 // TODO: 5/29/16 bekijk persoon
+                Intent smoboIntent = new Intent(v.getContext(), SmoboActivity.class);
+                smoboIntent.putExtra("id", items.get(position).getId());
+                Log.e("partadapter", "id: " + items.get(position).getId());
+                v.getContext().startActivity(smoboIntent);
             }
         });
     }

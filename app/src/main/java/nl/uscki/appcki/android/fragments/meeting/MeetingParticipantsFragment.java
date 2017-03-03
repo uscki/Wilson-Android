@@ -63,11 +63,11 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
         List<PersonWithNote> personWithNotes = new ArrayList<>();
         if(item.getMeeting().getStartdate() != null) {
             for(Preference p : item.getMeeting().getActual_slot().getPreferences()) {
-                personWithNotes.add(new PersonWithNote(p.getPerson().getPostalname(), p.getNotes(), p.getPerson().getPhotomediaid()));
+                personWithNotes.add(new PersonWithNote(p.getPerson().getId(), p.getPerson().getPostalname(), p.getNotes(), p.getPerson().getPhotomediaid()));
             }
         } else {
             for (PersonSimpleName person : item.getEnrolledPersons()) {
-                personWithNotes.add(new PersonWithNote(person.getPostalname(), "", person.getPhotomediaid()));
+                personWithNotes.add(new PersonWithNote(person.getId(), person.getPostalname(), "", person.getPhotomediaid()));
             }
         }
 
@@ -89,7 +89,7 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
             } else {
                 //noinspection SuspiciousMethodCalls
                 if(!item.getEnrolledPersons().contains(p.getPerson())) {
-                    personWithNotes.add(new PersonWithNote(p.getPerson().getPostalname(), "", p.getPerson().getPhotomediaid()));
+                    personWithNotes.add(new PersonWithNote(p.getPerson().getId(), p.getPerson().getPostalname(), "", p.getPerson().getPhotomediaid()));
                 }
             }
         }
