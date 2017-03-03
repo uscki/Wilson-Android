@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <nl.uscki.appcki.android.views.BBTextView
+        android:id="@+id/quote_quote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:text="These are the three tapes of our Turing Machine. They look like baguettes. - Benjamin Rin"/>
+
+    <ImageButton
+        android:id="@+id/quote_vote_minus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/text_margin"
+        android:layout_marginRight="@dimen/text_margin"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/quote_quote"
+        android:src="@drawable/minus"
+        android:background="@drawable/minus" />
+
+    <ImageButton
+        android:id="@+id/quote_vote_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/plus_dark"
+        android:background="@drawable/plus_dark"
+        android:layout_margin="@dimen/text_margin"
+        android:layout_toLeftOf="@id/quote_vote_minus"
+        android:layout_below="@id/quote_quote"/>
+
+    <!-- max, progress: default waardes voor dingen die nog geen votes hebben -->
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/quote_votes_graph"
+        android:layout_below="@id/quote_quote"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="@dimen/text_margin"
+        android:layout_marginTop="@dimen/text_margin"
+        android:layout_marginRight="90dp"
+        android:layout_marginBottom="10dp"
+        android:progressBackgroundTint="@color/colorRed"
+        android:progressTint="@color/colorGreen"
+        android:progressBackgroundTintMode="src_over"
+        android:minWidth="16dp"
+        android:max="2"
+        android:progress="1"
+        android:layout_alignBottom="@+id/quote_vote_plus" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/list_divider"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"/>
+</RelativeLayout>

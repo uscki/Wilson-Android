@@ -32,9 +32,18 @@ public class Services {
         imageService = ServiceGenerator.createService(ImageService.class);
         mediaService = ServiceGenerator.createService(MediaService.class);
         userService = ServiceGenerator.createService(UserService.class);
+        peopleService = ServiceGenerator.createService(PeopleService.class);
+        quoteService = ServiceGenerator.createService(QuoteService.class);
         picasso = new Picasso.Builder(App.getContext())
                 .downloader(new PicassaMediaDownloader(ServiceGenerator.client))
                 .build();
+    }
+
+    // after calling this, the next time getInstance is called all services will be regenerated
+    public static void invalidate() {
+        if(instance != null) {
+            instance = null;
+        }
     }
 
     public static Services getInstance() {

@@ -8,5 +8,7 @@
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorListDivider">#e0e0e0</color>
+    <color name="colorRed">#d50000</color>
+    <color name="colorGreen">#00c853</color>
 
 </resources>

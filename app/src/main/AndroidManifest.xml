@@ -15,8 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <receiver android:name=".helpers.AlarmReceiver" />
-
-        <receiver android:name=".OnetimeAlarmReceiver"/>
+        <receiver android:name=".OnetimeAlarmReceiver" />
 
         <activity
             android:name=".activities.MainActivity"
@@ -36,7 +35,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="nl.uscki.appcki.android.activities.MainActivity" />
         </activity>
-
         <activity
             android:name=".activities.MeetingActivity"
             android:theme="@style/AppTheme.NoActionBar">

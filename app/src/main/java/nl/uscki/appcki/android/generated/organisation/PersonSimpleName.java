@@ -1,7 +1,5 @@
 package nl.uscki.appcki.android.generated.organisation;
 
-import android.view.ViewDebug;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

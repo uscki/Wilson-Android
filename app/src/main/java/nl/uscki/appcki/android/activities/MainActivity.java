@@ -56,6 +56,7 @@ import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.RoephoekDialogFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
+import nl.uscki.appcki.android.fragments.quotes.QuoteFragment;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Response;
@@ -89,7 +90,8 @@ public class MainActivity extends AppCompatActivity
         AGENDA_DETAIL,
         MEETING_OVERVIEW,
         MEETING_PLANNER,
-        MEETING_DETAIL
+        MEETING_DETAIL,
+        QUOTE_OVERVIEW
     }
 
     public static Screen currentScreen;
@@ -228,8 +230,8 @@ public class MainActivity extends AppCompatActivity
                 openTab(HomeFragment.NEWS);
             } else if (id == R.id.nav_agenda) {
                 openTab(HomeFragment.AGENDA);
-            } else if (id == R.id.nav_poll) {
-// TODO: 5/22/16 poll
+            } else if (id == R.id.nav_quotes) {
+                openFragment(new QuoteFragment(), null);
             } else if (id == R.id.nav_roephoek) {
                 openTab(HomeFragment.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
