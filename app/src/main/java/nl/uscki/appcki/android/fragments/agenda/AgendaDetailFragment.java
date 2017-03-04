@@ -3,13 +3,10 @@ package nl.uscki.appcki.android.fragments.agenda;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.google.gson.Gson;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
@@ -33,6 +30,7 @@ public class AgendaDetailFragment extends RefreshableFragment {
     private TextView summaryWaar;
     private TextView summaryWhen;
     private TextView summaryCost;
+    private View root;
 
     public static AgendaItem item;
 
@@ -45,19 +43,27 @@ public class AgendaDetailFragment extends RefreshableFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_agenda_detail, container, false);
+        final View view = inflater.inflate(R.layout.fragment_agenda_detail, container, false);
 
         setupSwipeContainer(view);
 
-        Log.e("DetailFragment", "test");
-
         if (getArguments() != null) {
-            Gson gson = new Gson();
-            item = gson.fromJson(getArguments().getString("item"), AgendaItem.class);
+            int id = getArguments().getInt("id");
+            swipeContainer.setRefreshing(true);
+            Services.getInstance().agendaService.get(id).enqueue(new Callback<AgendaItem>() {
+                @Override
+                public void onSucces(Response<AgendaItem> response) {
+                    swipeContainer.setRefreshing(false);
+                    item = response.body();
+                    root.setVisibility(View.VISIBLE);
+                    findViews(view);
+                    setupViews(view);
+                }
+            });
         }
 
         findViews(view);
-        setupViews(view);
+        root.setVisibility(View.INVISIBLE);
 
         return view;
     }
@@ -85,6 +91,8 @@ public class AgendaDetailFragment extends RefreshableFragment {
     }
 
     private void findViews(View view) {
+        root = view.findViewById(R.id.agenda_detail_root);
+
         title = (TextView) view.findViewById(R.id.agenda_detail_title);
         when = (TextView) view.findViewById(R.id.agenda_detail_when);
         longText = (BBTextView) view.findViewById(R.id.agenda_detail_longtext);

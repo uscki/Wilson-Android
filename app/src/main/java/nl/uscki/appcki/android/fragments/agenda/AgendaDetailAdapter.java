@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
-
-import com.google.gson.Gson;
 
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 
@@ -24,10 +21,7 @@ public class AgendaDetailAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Bundle bundle = new Bundle();
-        Gson gson = new Gson();
-        String json = gson.toJson(item, AgendaItem.class);
-        bundle.putString("item", json);
-        Log.e("AgendaDetailAdapter", json);
+        bundle.putInt("id", item.getId());
         switch (position) {
             case AgendaDetailTabsFragment.AGENDA:
                 AgendaDetailFragment fragment = new AgendaDetailFragment();

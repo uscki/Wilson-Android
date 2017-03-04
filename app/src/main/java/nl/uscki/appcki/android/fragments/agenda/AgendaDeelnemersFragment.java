@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
+import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.api.Callback;
@@ -14,6 +14,7 @@ import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.events.AgendaSubscribersEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
+import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
 import retrofit2.Response;
 
 /**
@@ -22,13 +23,22 @@ import retrofit2.Response;
 public class AgendaDeelnemersFragment extends RefreshableFragment {
     private AgendaItem item;
 
+    private Callback<AgendaItem> refreshCallback = new Callback<AgendaItem>() {
+        @Override
+        public void onSucces(Response<AgendaItem> response) {
+            swipeContainer.setRefreshing(false);
+            if (getAdapter() instanceof AgendaDeelnemersAdapter) {
+                getAdapter().update(response.body().getParticipants());
+            }
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            Gson gson = new Gson();
-            item = gson.fromJson(getArguments().getString("item"), AgendaItem.class);
-            setAdapter(new AgendaDeelnemersAdapter(item.getParticipants()));
+            Services.getInstance().agendaService.get(getArguments().getInt("id")).enqueue(refreshCallback);
+            setAdapter(new AgendaDeelnemersAdapter(new ArrayList<AgendaParticipant>()));
         }
     }
 
@@ -40,15 +50,7 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().agendaService.get(item.getId()).enqueue(new Callback<AgendaItem>() {
-            @Override
-            public void onSucces(Response<AgendaItem> response) {
-                swipeContainer.setRefreshing(false);
-                if (getAdapter() instanceof AgendaDeelnemersAdapter) {
-                    getAdapter().update(response.body().getParticipants());
-                }
-            }
-        });
+        Services.getInstance().agendaService.get(item.getId()).enqueue(refreshCallback);
     }
 
     // EVENT HANDLING
