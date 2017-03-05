@@ -1,18 +1,10 @@
 package nl.uscki.appcki.android.activities;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.icu.util.Calendar;
-import android.icu.util.TimeZone;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
@@ -29,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -133,6 +124,14 @@ public class MainActivity extends AppCompatActivity
             Bundle args = new Bundle();
             args.putString("item", getIntent().getStringExtra("item"));
             openFragment(new AgendaDetailTabsFragment(), args);
+        }
+
+        // Check if we're running on Android 5.0 or higher
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Call some material design APIs here
+            setTheme(R.style.AppThemeLollipop);
+        } else {
+            // Implement this feature without material design
         }
     }
 

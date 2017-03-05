@@ -13,16 +13,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/smobo_name"
-            android:layout_alignParentTop="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:text="Menno Veen"/>
-
-        <TextView
             android:id="@+id/smobo_address"
-            android:layout_below="@id/smobo_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"

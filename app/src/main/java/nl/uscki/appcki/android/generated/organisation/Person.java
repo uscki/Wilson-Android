@@ -5,43 +5,59 @@ import com.google.gson.annotations.Expose;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Person {
-
+    /*
+"id": 1583,
+"lastname": "Veen",
+"middlename": "van",
+"mobilenumber": "string",
+"nickname": "Math",
+"phonenumber": "030-2538127",
+"photomediaid": 0,
+"postalname": "Menno Veen",
+"signature": "Ty is zo geweldig, niet normaal meer man",
+"zipcode": "1234 AB"
+}*/
     @Expose
-    private Integer id;
+    String address1;
     @Expose
-    private String username;
+    String address2;
     @Expose
-    private Long expires;
+    Long birthdate;
     @Expose
-    private String firstname;
+    String city;
     @Expose
-    private String middlename;
+    String country;
     @Expose
-    private String lastname;
+    boolean displayonline;
     @Expose
-    private String firstletters;
+    String emailaddress;
     @Expose
-    private String address2;
+    String firstname;
     @Expose
-    private String gender;
+    String gender;
     @Expose
-    private String signature;
+    String homepage;
     @Expose
-    private Boolean displayonline;
+    Integer id;
     @Expose
-    private String nickname;
+    String lastname;
     @Expose
-    private String cookiestring;
+    String middlename;
     @Expose
-    private Integer photomediaid;
-    //private MediaFile photomediaid;
+    String mobilenumber;
     @Expose
-    private List<String> roles = new ArrayList<>();
-
+    String nickname;
+    @Expose
+    String phonenumber;
+    @Expose
+    Integer photomediaid;
+    @Expose
+    String postalname;
+    @Expose
+    String signature;
+    @Expose
+    String zipcode;
     /**
      * 
      * @return
@@ -58,42 +74,6 @@ public class Person {
      */
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    /**
-     * 
-     * @return
-     *     The username
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * 
-     * @param username
-     *     The username
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
-     * 
-     * @return
-     *     The expires
-     */
-    public Long getExpires() {
-        return expires;
-    }
-
-    /**
-     * 
-     * @param expires
-     *     The expires
-     */
-    public void setExpires(Long expires) {
-        this.expires = expires;
     }
 
     /**
@@ -148,24 +128,6 @@ public class Person {
      */
     public void setLastname(String lastname) {
         this.lastname = lastname;
-    }
-
-    /**
-     * 
-     * @return
-     *     The firstletters
-     */
-    public String getFirstletters() {
-        return firstletters;
-    }
-
-    /**
-     * 
-     * @param firstletters
-     *     The firstletters
-     */
-    public void setFirstletters(String firstletters) {
-        this.firstletters = firstletters;
     }
 
     /**
@@ -278,41 +240,93 @@ public class Person {
     public void setPhotomediaid(Integer photomediaid) {
         this.photomediaid = photomediaid;
     }
-    /*public void setPhotomediaid(MediaFile photomediaid) {
-        this.photomediaid = photomediaid;
-    }*/
 
-    /**
-     * 
-     * @return
-     *     The roles
-     */
-    public List<String> getRoles() {
-        return roles;
+    public String getAddress1() {
+        return address1;
     }
 
-    /**
-     * 
-     * @param roles
-     *     The roles
-     */
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
+    public void setAddress1(String address1) {
+        this.address1 = address1;
     }
 
-    public String getName() {
-        if (middlename != null) {
-            return getFirstname() + " " + getMiddlename() + " " + getLastname();
-        }
-        return firstname + " " + lastname;
+    public Long getBirthdate() {
+        return birthdate;
     }
 
-    public String getCookiestring() {
-        return cookiestring;
+    public void setBirthdate(Long birthdate) {
+        this.birthdate = birthdate;
     }
 
-    public void setCookiestring(String cookiestring) {
-        this.cookiestring = cookiestring;
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public boolean isDisplayonline() {
+        return displayonline;
+    }
+
+    public void setDisplayonline(boolean displayonline) {
+        this.displayonline = displayonline;
+    }
+
+    public String getEmailaddress() {
+        return emailaddress;
+    }
+
+    public void setEmailaddress(String emailaddress) {
+        this.emailaddress = emailaddress;
+    }
+
+    public String getHomepage() {
+        return homepage;
+    }
+
+    public void setHomepage(String homepage) {
+        this.homepage = homepage;
+    }
+
+    public String getMobilenumber() {
+        return mobilenumber;
+    }
+
+    public void setMobilenumber(String mobilenumber) {
+        this.mobilenumber = mobilenumber;
+    }
+
+    public String getPhonenumber() {
+        return phonenumber;
+    }
+
+    public void setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber;
+    }
+
+    public String getPostalname() {
+        return postalname;
+    }
+
+    public void setPostalname(String postalname) {
+        this.postalname = postalname;
+    }
+
+    public String getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(String zipcode) {
+        this.zipcode = zipcode;
     }
 
     @Override

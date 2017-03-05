@@ -1,8 +1,7 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
-import android.graphics.Rect;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.activities.AgendaActivity;
+import nl.uscki.appcki.android.activities.SmoboActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
@@ -21,6 +22,8 @@ import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
  * {@link RecyclerView.Adapter} that can display a {@link AgendaParticipant}
  */
 public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAdapter.ViewHolder, AgendaParticipant> {
+
+    AgendaActivity activity;
 
     public AgendaDeelnemersAdapter(List<AgendaParticipant> items) {
         super(items);
@@ -51,8 +54,22 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 5/29/16 bekijk persoon
-                Log.d("AgendaDeelnemersAdapter", "TODO: bekijk persoon");
+                Intent smoboIntent = new Intent(activity, SmoboActivity.class);
+                smoboIntent.putExtra("id", holder.mItem.getPerson().getId());
+                smoboIntent.putExtra("name", holder.mItem.getPerson().getPostalname());
+                /*ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation(activity, holder.profile, "profile");
+                Log.e("partadapter", "id: " + holder.mItem.getPerson().getId());
+                // Check if we're running on Android 5.0 or higher
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    // Call some material design APIs here
+                    activity.startActivity(smoboIntent, options.toBundle());
+                } else {
+                    // Implement this feature without material design
+                    activity.startActivity(smoboIntent);
+                }*/
+                activity.startActivity(smoboIntent);
+
             }
         });
     }
@@ -73,22 +90,11 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
             super(view);
             mView = view;
             profile = (ImageView) view.findViewById(R.id.person_list_item_profile);
-            profile.setOnClickListener(zoomClickListener);
 
             name = (TextView) view.findViewById(R.id.person_list_item_name);
             note = (TextView) view.findViewById(R.id.person_list_item_note);
             note.setVisibility(View.VISIBLE);
         }
-
-        private View.OnClickListener zoomClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final Rect startBounds = new Rect();
-                profile.getGlobalVisibleRect(startBounds);
-                //TODO implement a nicer big image viewer
-                //EventBus.getDefault().post(new ImageZoomEvent(startBounds, profile.getMediaId()));
-            }
-        };
 
         @Override
         public String toString() {

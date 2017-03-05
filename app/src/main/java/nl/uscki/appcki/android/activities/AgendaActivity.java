@@ -46,6 +46,14 @@ public class AgendaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Check if we're running on Android 5.0 or higher
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        } else {
+            // Implement this feature without material design
+        }*/
+
         setContentView(R.layout.activity_agenda);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);

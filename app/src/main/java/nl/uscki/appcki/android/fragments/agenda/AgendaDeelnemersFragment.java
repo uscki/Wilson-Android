@@ -1,5 +1,6 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
+import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
@@ -38,7 +40,6 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Services.getInstance().agendaService.get(getArguments().getInt("id")).enqueue(refreshCallback);
-            setAdapter(new AgendaDeelnemersAdapter(new ArrayList<AgendaParticipant>()));
         }
     }
 
@@ -51,6 +52,16 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
     @Override
     public void onSwipeRefresh() {
         Services.getInstance().agendaService.get(item.getId()).enqueue(refreshCallback);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        if (context instanceof AgendaActivity) {
+            AgendaDeelnemersAdapter adapter = new AgendaDeelnemersAdapter(new ArrayList<AgendaParticipant>());
+            adapter.activity = (AgendaActivity) context;
+            setAdapter(adapter);
+        }
+        super.onAttach(context);
     }
 
     // EVENT HANDLING

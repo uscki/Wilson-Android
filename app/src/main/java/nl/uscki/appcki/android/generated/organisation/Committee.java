@@ -1,56 +1,57 @@
-
 package nl.uscki.appcki.android.generated.organisation;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.joda.time.DateTime;
 
-class Committee {
+/**
+ * Created by peter on 3/4/17.
+ */
 
+public class Committee {
     @Expose
-    private Integer id;
+    @SerializedName("committeeId")
+    private int id;
     @Expose
-    private Group grp;
+    @SerializedName("start")
+    Long start;
+    @Expose
+    @SerializedName("name")
+    String name;
+    @Expose
+    @SerializedName("end")
+    Long end;
 
-    /**
-     * 
-     * @return
-     *     The id
-     */
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    /**
-     * 
-     * @param id
-     *     The id
-     */
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    /**
-     * 
-     * @return
-     *     The grp
-     */
-    public Group getGroup() {
-        return grp;
+    public DateTime getStart() {
+        return new DateTime(start);
     }
 
-    /**
-     * 
-     * @param grp
-     *     The grp
-     */
-    public void setGroup(Group grp) {
-        this.grp = grp;
+    public void setStart(Long start) {
+        this.start = start;
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+    public String getName() {
+        return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public DateTime getEnd() {
+        return new DateTime(end);
+    }
+
+    public void setEnd(Long end) {
+        this.end = end;
+    }
 }
