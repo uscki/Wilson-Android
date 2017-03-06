@@ -23,7 +23,7 @@ import retrofit2.Response;
  * A fragment representing a list of AgendaParticipants.
  */
 public class AgendaDeelnemersFragment extends RefreshableFragment {
-    private AgendaItem item;
+    private int id;
 
     private Callback<AgendaItem> refreshCallback = new Callback<AgendaItem>() {
         @Override
@@ -39,6 +39,7 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            id = getArguments().getInt("id");
             Services.getInstance().agendaService.get(getArguments().getInt("id")).enqueue(refreshCallback);
         }
     }
@@ -51,7 +52,7 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().agendaService.get(item.getId()).enqueue(refreshCallback);
+        Services.getInstance().agendaService.get(id).enqueue(refreshCallback);
     }
 
     @Override
