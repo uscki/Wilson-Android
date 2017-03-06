@@ -29,9 +29,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import de.greenrobot.event.EventBus;
-import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.events.ShowProgressEvent;
+import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -140,8 +139,6 @@ public class LoginFragment extends Fragment {
             animation.setRepeatCount(ObjectAnimator.INFINITE);
             animation.setInterpolator(new LinearInterpolator());
             animation.start();
-
-            EventBus.getDefault().post(new ShowProgressEvent());
 
             try {
                 authTask = new UserLoginTask(userName, password);
