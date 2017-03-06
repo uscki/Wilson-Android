@@ -2,6 +2,7 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -13,18 +14,48 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/smobo_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.TextHeader"
+            android:layout_marginTop="@dimen/text_margin"
+            android:layout_marginLeft="@dimen/text_margin"
+            android:text="Contact"/>
+
+        <TextView
             android:id="@+id/smobo_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
+            android:layout_marginTop="@dimen/text_margin"
+            android:layout_marginLeft="@dimen/text_margin"
+            android:layout_below="@id/smobo_contact"
             android:text="Drift 21, Kamer 1.03"/>
 
         <TextView
-            android:id="@+id/smobo_phone"
-            android:layout_below="@id/smobo_address"
+            android:id="@+id/smobo_zipcode"
+            android:layout_marginTop="@dimen/text_margin"
+            android:layout_marginLeft="@dimen/text_margin"
+            android:layout_below="@+id/smobo_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
+            android:text="3524HS"/>
+
+        <TextView
+            android:id="@+id/smobo_city"
+            android:layout_below="@+id/smobo_address"
+            android:layout_toRightOf="@id/smobo_zipcode"
+            android:layout_marginTop="@dimen/text_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Utrecht"/>
+
+        <TextView
+            android:id="@+id/smobo_phone"
+            android:layout_below="@id/smobo_zipcode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/text_margin"
+            android:layout_marginLeft="@dimen/text_margin"
             android:text="030-2538127"/>
 
         <TextView
@@ -32,7 +63,16 @@
             android:layout_below="@id/smobo_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
+            android:layout_marginTop="@dimen/text_margin"
+            android:layout_marginLeft="@dimen/text_margin"
             android:text="235346435634523463454356"/>
+
+        <TextView
+            android:id="@+id/smobo_email"
+            android:layout_below="@id/smobo_birthday"
+            android:layout_marginTop="@dimen/text_margin"
+            android:layout_marginLeft="@dimen/text_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

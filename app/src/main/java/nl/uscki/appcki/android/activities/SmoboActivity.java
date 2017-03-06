@@ -7,12 +7,15 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,31 +30,26 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
 
     @BindView(R.id.smobo_swiperefresh)
     SwipeRefreshLayout swipeRefreshLayout;
-
     @BindView(R.id.scrollView)
     NestedScrollView scrollView;
-
     @BindView(R.id.appbar)
     AppBarLayout appBarLayout;
-
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
     @BindView(R.id.smobo_profile)
     ImageView profile;
-
     @BindView(R.id.smobo_address)
     TextView address;
-
     @BindView(R.id.smobo_phone)
     TextView phone;
-
     @BindView(R.id.smobo_birthday)
     TextView birthday;
-
+    @BindView(R.id.smobo_zipcode)
+    TextView zipcode;
+    @BindView(R.id.smobo_city)
+    TextView city;
     boolean collapsed = false;
 
     private Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
@@ -62,8 +60,20 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
             scrollView.setVisibility(View.VISIBLE);
 
             address.setText(p.getPerson().getAddress1());
-            phone.setText(p.getPerson().getPhonenumber());
-            String birthdayStr = new DateTime(p.getPerson().getBirthdate()).toString();
+            zipcode.setText(p.getPerson().getZipcode() + ", ");
+            city.setText(p.getPerson().getCity());
+
+            Log.e("SmoboActivity", p.getPerson().getMobilenumber());
+            if(p.getPerson().getPhonenumber() != null && !p.getPerson().getPhonenumber().isEmpty()) {
+                phone.setText(p.getPerson().getPhonenumber());
+            } else if(p.getPerson().getMobilenumber() != null && !p.getPerson().getMobilenumber().isEmpty()) {
+                phone.setText(p.getPerson().getMobilenumber());
+            } else {
+                phone.setVisibility(View.GONE);
+            }
+
+            DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy");
+            String birthdayStr = new DateTime(p.getPerson().getBirthdate()).toString(fmt);
             birthday.setText(birthdayStr);
 
             Services.getInstance().picasso.load(MediaAPI.getMediaUrl(p.getPerson().getPhotomediaid())).into(profile);
