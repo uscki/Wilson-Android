@@ -1,0 +1,9 @@
+<resources>
+    <declare-styleable name="VotesGraphView">
+        <attr name="direction" format="enum">
+            <enum name="left" value="0"/>
+            <enum name="right" value="1"/>
+        </attr>
+        <attr name="barColor" format="color" />
+    </declare-styleable>
+</resources>

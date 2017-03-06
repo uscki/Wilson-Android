@@ -21,13 +21,6 @@ import nl.uscki.appcki.android.generated.quotes.QuotesPage;
 public class QuoteFragment extends PageableFragment<QuotesPage> {
     private final int QUOTES_PAGE_SIZE = 5;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public QuoteFragment() {
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
