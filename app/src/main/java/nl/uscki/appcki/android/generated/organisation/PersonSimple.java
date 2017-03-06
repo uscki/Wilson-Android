@@ -1,6 +1,7 @@
 package nl.uscki.appcki.android.generated.organisation;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by peter on 5-9-16.
@@ -23,6 +24,9 @@ public class PersonSimple {
     private String postalname;
     @Expose
     private Integer photomediaid;
+    @Expose
+    @SerializedName("displayonline")
+    Boolean displayonline;
 
     public Integer getId() {
         return id;
@@ -86,6 +90,14 @@ public class PersonSimple {
 
     public void setPhotomediaid(Integer photomediaid) {
         this.photomediaid = photomediaid;
+    }
+
+    public Boolean getDisplayonline() {
+        return displayonline;
+    }
+
+    public void setDisplayonline(Boolean displayonline) {
+        this.displayonline = displayonline;
     }
 
     @Override

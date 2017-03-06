@@ -2,22 +2,11 @@
 package nl.uscki.appcki.android.generated.organisation;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class Person {
-    /*
-"id": 1583,
-"lastname": "Veen",
-"middlename": "van",
-"mobilenumber": "string",
-"nickname": "Math",
-"phonenumber": "030-2538127",
-"photomediaid": 0,
-"postalname": "Menno Veen",
-"signature": "Ty is zo geweldig, niet normaal meer man",
-"zipcode": "1234 AB"
-}*/
     @Expose
     String address1;
     @Expose
@@ -44,10 +33,12 @@ public class Person {
     String lastname;
     @Expose
     String middlename;
+    @SerializedName("mobilenumber")
     @Expose
     String mobilenumber;
     @Expose
     String nickname;
+    @SerializedName("phonenumber")
     @Expose
     String phonenumber;
     @Expose

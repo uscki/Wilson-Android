@@ -10,23 +10,15 @@ import nl.uscki.appcki.android.generated.meeting.Slot;
  * Created by peter on 7/30/16.
  */
 public class PersonWithNote {
-    Integer id;
-    String person;
+    PersonSimpleName person;
     String note;
-    Integer photoid;
 
-    public PersonWithNote(Integer id, String person, String note, Integer photoid) {
-        this.id = id;
+    public PersonWithNote(PersonSimpleName person, String note) {
         this.person = person;
         this.note = note;
-        this.photoid = photoid;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public String getPerson() {
+    public PersonSimpleName getPerson() {
         return person;
     }
 
@@ -34,9 +26,6 @@ public class PersonWithNote {
         return note;
     }
 
-    public Integer getPhotoid() {
-        return photoid;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -59,7 +48,7 @@ public class PersonWithNote {
         List<PersonWithNote> persons = new ArrayList<>();
         for (Preference p : slot.getPreferences()) {
             if (p.getCanattend()) {
-                persons.add(new PersonWithNote(p.getPerson().getId(), p.getPerson().getPostalname(), p.getNotes(), p.getPerson().getPhotomediaid()));
+                persons.add(new PersonWithNote(PersonSimpleName.from(p.getPerson()), p.getNotes()));
             }
         }
         return  persons;
@@ -69,7 +58,7 @@ public class PersonWithNote {
         List<PersonWithNote> persons = new ArrayList<>();
         for (Preference p : slot.getPreferences()) {
             if (!p.getCanattend()) {
-                persons.add(new PersonWithNote(p.getPerson().getId(), p.getPerson().getPostalname(), p.getNotes(), p.getPerson().getPhotomediaid()));
+                persons.add(new PersonWithNote(PersonSimpleName.from(p.getPerson()), p.getNotes()));
             }
         }
         return  persons;
