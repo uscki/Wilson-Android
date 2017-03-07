@@ -77,7 +77,9 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
             String birthdayStr = new DateTime(p.getPerson().getBirthdate()).toString(fmt);
             birthday.setText(birthdayStr);
 
-            profile.setImageURI(MediaAPI.getMediaUri(p.getPerson().getPhotomediaid()));
+            if (p.getPerson().getPhotomediaid() != null) {
+                profile.setImageURI(MediaAPI.getMediaUri(p.getPerson().getPhotomediaid()));
+            }
         }
     };
 
