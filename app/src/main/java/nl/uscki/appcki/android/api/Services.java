@@ -23,6 +23,7 @@ public class Services {
     public PeopleService peopleService;
     public QuoteService quoteService;
     public SmoboService smoboService;
+    public PollService pollService;
     public Picasso picasso;
 
     private Services() {
@@ -36,6 +37,7 @@ public class Services {
         peopleService = ServiceGenerator.createService(PeopleService.class);
         quoteService = ServiceGenerator.createService(QuoteService.class);
         smoboService = ServiceGenerator.createService(SmoboService.class);
+        pollService = ServiceGenerator.createService(PollService.class);
         picasso = new Picasso.Builder(App.getContext())
                 .downloader(new PicassaMediaDownloader(ServiceGenerator.client))
                 .build();
