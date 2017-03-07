@@ -26,7 +26,7 @@
                 app:contentScrim="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                <ImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/smobo_profile"
                     android:transitionName="profile"
                     android:layout_width="match_parent"

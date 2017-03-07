@@ -5,15 +5,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.BasicActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
-import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
 
@@ -40,21 +40,11 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
         holder.note.setText(items.get(position).getNote());
 
         if(items.get(position).getPerson().getPhotomediaid() != null) {
-            Services.getInstance().picasso
-                    .load(MediaAPI.getMediaUrl(items.get(position).getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL))
-                    .placeholder(R.drawable.account)
-                    .into(holder.profile);
+            holder.profile.setImageURI(MediaAPI.getMediaUri(items.get(position).getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL));
         }
 
         final Rect startBounds = new Rect();
         holder.profile.getGlobalVisibleRect(startBounds);
-
-        holder.profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //EventBus.getDefault().post(new ImageZoomEvent(startBounds, holder.profile.getMediaId()));
-            }
-        });
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +65,7 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final ImageView profile;
+        public final SimpleDraweeView profile;
         public final TextView name;
         public final TextView note;
         public PersonWithNote mItem;
@@ -83,7 +73,7 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            profile = (ImageView) view.findViewById(R.id.person_list_item_profile);
+            profile = (SimpleDraweeView) view.findViewById(R.id.person_list_item_profile);
 
             name = (TextView) view.findViewById(R.id.person_list_item_name);
             note = (TextView) view.findViewById(R.id.person_list_item_note);

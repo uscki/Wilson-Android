@@ -1,5 +1,7 @@
 package nl.uscki.appcki.android.api;
 
+import android.net.Uri;
+
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 
@@ -26,5 +28,13 @@ public class MediaAPI {
 
     public static String getMediaUrl(int id, MediaSize size) {
         return API_URL + id + "/" + size.toString();
+    }
+
+    public static Uri getMediaUri(int id) {
+        return Uri.parse(getMediaUrl(id));
+    }
+
+    public static Uri getMediaUri(int id, MediaSize size) {
+        return Uri.parse(getMediaUrl(id, size));
     }
 }

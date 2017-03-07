@@ -10,8 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -39,7 +40,7 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.smobo_profile)
-    ImageView profile;
+    SimpleDraweeView profile;
     @BindView(R.id.smobo_address)
     TextView address;
     @BindView(R.id.smobo_phone)
@@ -76,7 +77,7 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
             String birthdayStr = new DateTime(p.getPerson().getBirthdate()).toString(fmt);
             birthday.setText(birthdayStr);
 
-            Services.getInstance().picasso.load(MediaAPI.getMediaUrl(p.getPerson().getPhotomediaid())).into(profile);
+            profile.setImageURI(MediaAPI.getMediaUri(p.getPerson().getPhotomediaid()));
         }
     };
 

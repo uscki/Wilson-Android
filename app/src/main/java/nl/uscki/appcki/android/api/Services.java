@@ -1,11 +1,7 @@
 package nl.uscki.appcki.android.api;
 
-import com.squareup.picasso.Picasso;
-
-import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.api.media.ImageService;
 import nl.uscki.appcki.android.api.media.MediaService;
-import nl.uscki.appcki.android.api.media.PicassaMediaDownloader;
 
 /**
  * Created by peter on 7/12/16.
@@ -23,7 +19,6 @@ public class Services {
     public PeopleService peopleService;
     public QuoteService quoteService;
     public SmoboService smoboService;
-    public Picasso picasso;
 
     private Services() {
         agendaService = ServiceGenerator.createService(AgendaService.class);
@@ -36,9 +31,6 @@ public class Services {
         peopleService = ServiceGenerator.createService(PeopleService.class);
         quoteService = ServiceGenerator.createService(QuoteService.class);
         smoboService = ServiceGenerator.createService(SmoboService.class);
-        picasso = new Picasso.Builder(App.getContext())
-                .downloader(new PicassaMediaDownloader(ServiceGenerator.client))
-                .build();
     }
 
     // after calling this, the next time getInstance is called all services will be regenerated

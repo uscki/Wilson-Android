@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.Gson;
 
@@ -313,7 +314,7 @@ public class MainActivity extends BasicActivity
         TextView name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText(UserHelper.getInstance().getPerson().getPostalname());
 
-        final ImageView profile = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
+        final SimpleDraweeView profile = (SimpleDraweeView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
 
         // load the users profile picture
         Services.getInstance().userService.currentUser().enqueue(new Callback<PersonSimple>() {
@@ -322,10 +323,7 @@ public class MainActivity extends BasicActivity
                 Log.e(TAG, response.body().toString());
                 UserHelper.getInstance().setPerson(response.body());
                 if(UserHelper.getInstance().getPerson().getPhotomediaid() != null) {
-                    Services.getInstance().picasso
-                            .load(MediaAPI.getMediaUrl(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL))
-                            .placeholder(R.drawable.account)
-                            .into(profile);
+                    profile.setImageURI(MediaAPI.getMediaUri(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL));
                 }
             }
         });

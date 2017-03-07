@@ -3,6 +3,11 @@ package nl.uscki.appcki.android;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
+
+import nl.uscki.appcki.android.api.ServiceGenerator;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -23,6 +28,13 @@ public class App extends Application {
                 .setFontAttrId(R.attr.fontPath)
                 .build()
         );
+
+        ServiceGenerator.init(); // initialise our OkHttp3 client for Fresco
+
+        ImagePipelineConfig config = OkHttpImagePipelineConfigFactory
+                .newBuilder(this, ServiceGenerator.client)
+                .build();
+        Fresco.initialize(this, config);
     }
 
     public static Context getContext() {

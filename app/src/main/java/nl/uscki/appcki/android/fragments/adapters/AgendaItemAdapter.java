@@ -5,9 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
@@ -17,7 +17,6 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
-import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
@@ -68,10 +67,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             holder.inschrijvenVerplicht.setVisibility(View.GONE);
         }
 
-        Services.getInstance().picasso
-                .load(MediaAPI.getMediaUrl(item.getPosterid(), MediaAPI.MediaSize.SMALL))
-                .noPlaceholder()
-                .into(holder.itemPoster);
+        holder.itemPoster.setImageURI(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.SMALL));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,7 +92,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         public final TextView itemWhen;
         public final TextView itemWhere;
         public final TextView itemDeelnemers;
-        public final ImageView itemPoster;
+        public final SimpleDraweeView itemPoster;
         public final TextView itemDeadline;
         public final View inschrijvenVerplicht;
         public AgendaItem mItem;
@@ -108,7 +104,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             itemWhen = (TextView) view.findViewById(R.id.agenda_item_when);
             itemWhere = (TextView) view.findViewById(R.id.agenda_item_waar);
             itemDeelnemers = (TextView) view.findViewById(R.id.agenda_item_deelnemers);
-            itemPoster = (ImageView) view.findViewById(R.id.agenda_item_poster);
+            itemPoster = (SimpleDraweeView) view.findViewById(R.id.agenda_item_poster);
             itemDeadline = (TextView) view.findViewById(R.id.inschrijven_verplicht_date);
             inschrijvenVerplicht = view.findViewById(R.id.agenda_inschrijven_verplicht);
         }

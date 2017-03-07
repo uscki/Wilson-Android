@@ -30,7 +30,7 @@ public class ServiceGenerator {
 
     public static OkHttpClient client;
 
-    public static <S> S createService(Class<S> serviceClass) {
+    public static void init() {
         LoggingInterceptor logging = new LoggingInterceptor();
         // set your desired log level
         logging.setLevel(LoggingInterceptor.Level.BODY);
@@ -55,6 +55,9 @@ public class ServiceGenerator {
         client = httpClient
                 .cache(new Cache(new File(App.getContext().getCacheDir(), "http-cache"), 10 * 1024 * 1024))
                 .build();
+    }
+
+    public static <S> S createService(Class<S> serviceClass) {
         Retrofit retrofit = builder.client(client).build();
         return retrofit.create(serviceClass);
     }

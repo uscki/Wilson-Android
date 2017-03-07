@@ -4,15 +4,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
-import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
 
@@ -41,13 +41,9 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
         holder.note.setText(items.get(position).getNote());
 
         Integer profile = holder.mItem.getPerson().getPhotomediaid();
-        if(profile == null) {
-            profile = 0;
+        if(profile != null) {
+            holder.profile.setImageURI(MediaAPI.getMediaUri(profile, MediaAPI.MediaSize.SMALL));
         }
-        Services.getInstance().picasso
-                .load(MediaAPI.getMediaUrl(profile, MediaAPI.MediaSize.SMALL))
-                .placeholder(R.drawable.account)
-                .into(holder.profile);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +60,7 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final ImageView profile;
+        public final SimpleDraweeView profile;
         public final TextView name;
         public final TextView note;
         public AgendaParticipant mItem;
@@ -72,7 +68,7 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            profile = (ImageView) view.findViewById(R.id.person_list_item_profile);
+            profile = (SimpleDraweeView) view.findViewById(R.id.person_list_item_profile);
 
             name = (TextView) view.findViewById(R.id.person_list_item_name);
             note = (TextView) view.findViewById(R.id.person_list_item_note);

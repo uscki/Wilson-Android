@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingBottom="4dp">
@@ -17,7 +18,7 @@
         android:layout_marginTop="3dp"
         style="@style/AppTheme.TextSubHeader" />
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/agenda_item_poster"
         android:layout_width="120dp"
         android:layout_height="120dp"
