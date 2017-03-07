@@ -2,11 +2,14 @@ package nl.uscki.appcki.android.fragments.quotes;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.PageableFragment;
@@ -29,11 +32,22 @@ public class QuoteFragment extends PageableFragment<QuotesPage> {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+
         MainActivity.currentScreen = MainActivity.Screen.QUOTE_OVERVIEW;
 
         setAdapter(new QuoteAdapter(new ArrayList<Quote>()));
         Services.getInstance().quoteService.older(page, getPageSize()).enqueue(callback);
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+
+        inflater.inflate(R.menu.main, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
