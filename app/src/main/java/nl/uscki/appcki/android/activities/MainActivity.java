@@ -231,6 +231,8 @@ public class MainActivity extends BasicActivity
                 openTab(HomeFragment.AGENDA);
             } else if (id == R.id.nav_quotes) {
                 openFragment(new QuoteFragment(), null);
+            } else if (id == R.id.nav_poll) {
+
             } else if (id == R.id.nav_roephoek) {
                 openTab(HomeFragment.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
