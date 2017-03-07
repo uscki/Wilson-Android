@@ -25,4 +25,9 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K> exte
         this.items.addAll(items);
         this.notifyDataSetChanged();
     }
+
+    public void insert(int position, K item) {
+        this.items.add(position, item);
+        this.notifyDataSetChanged();
+    }
 }

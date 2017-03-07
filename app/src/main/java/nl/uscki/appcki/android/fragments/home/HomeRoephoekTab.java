@@ -67,6 +67,9 @@ public class HomeRoephoekTab extends PageableFragment<Roephoek> {
     // EVENT HANDLING
     public void onEventMainThread(RoephoekEvent event) {
         page = 0;
+        //TODO figure out why this doesn't actually work when you remove the
+        // getAdapter line below
         Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE).enqueue(callback);
+        getAdapter().insert(0, event.roephoek);
     }
 }
