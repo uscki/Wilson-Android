@@ -79,6 +79,8 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
 
             if (p.getPerson().getPhotomediaid() != null) {
                 profile.setImageURI(MediaAPI.getMediaUri(p.getPerson().getPhotomediaid()));
+            } else {
+                appBarLayout.setExpanded(false);
             }
         }
     };
