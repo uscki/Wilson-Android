@@ -24,7 +24,8 @@
                 android:layout_height="300dp"
                 android:fitsSystemWindows="true"
                 app:contentScrim="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:expandedTitleTextAppearance="@style/AppTheme.CollapsingToolbarTitle">
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/smobo_profile"

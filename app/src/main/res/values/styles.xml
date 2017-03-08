@@ -71,4 +71,10 @@
         <item name="android:typeface">monospace</item>
     </style>
 
+    <style name="AppTheme.CollapsingToolbarTitle" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:singleLine">false</item>
+    </style>
 </resources>

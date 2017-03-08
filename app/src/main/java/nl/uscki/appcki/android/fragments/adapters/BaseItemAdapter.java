@@ -30,4 +30,9 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K> exte
         this.items.add(position, item);
         this.notifyDataSetChanged();
     }
+
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
 }

@@ -1,22 +1,22 @@
 package nl.uscki.appcki.android.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.FrameLayout;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,10 +24,13 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
+import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
+import nl.uscki.appcki.android.views.SmoboInfoWidget;
 import retrofit2.Response;
 
-public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
+public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, SmoboInfoWidget.OnContextButtonClickListener {
 
     @BindView(R.id.smobo_swiperefresh)
     SwipeRefreshLayout swipeRefreshLayout;
@@ -39,18 +42,22 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
     CollapsingToolbarLayout collapsingToolbarLayout;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     @BindView(R.id.smobo_profile)
     SimpleDraweeView profile;
-    @BindView(R.id.smobo_address)
-    TextView address;
-    @BindView(R.id.smobo_phone)
-    TextView phone;
-    @BindView(R.id.smobo_birthday)
-    TextView birthday;
-    @BindView(R.id.smobo_zipcode)
-    TextView zipcode;
-    @BindView(R.id.smobo_city)
-    TextView city;
+
+    @BindView(R.id.smobo_media_gridview)
+    HorizontalGridView mediaGrid;
+
+    @BindView(R.id.smobo_address_info)
+    FrameLayout addressInfo;
+    @BindView(R.id.smobo_email_info)
+    FrameLayout emailInfo;
+    @BindView(R.id.smobo_phone_info)
+    FrameLayout phoneInfo;
+    @BindView(R.id.smobo_mobile_info)
+    FrameLayout mobileInfo;
+
     boolean collapsed = false;
 
     private Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
@@ -60,22 +67,12 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
             swipeRefreshLayout.setRefreshing(false);
             scrollView.setVisibility(View.VISIBLE);
 
-            address.setText(p.getPerson().getAddress1());
-            zipcode.setText(p.getPerson().getZipcode() + ", ");
-            city.setText(p.getPerson().getCity());
+            ((BaseItemAdapter) mediaGrid.getAdapter()).update(p.getPhotos());
 
-            Log.e("SmoboActivity", p.getPerson().getMobilenumber());
-            if(p.getPerson().getPhonenumber() != null && !p.getPerson().getPhonenumber().isEmpty()) {
-                phone.setText(p.getPerson().getPhonenumber());
-            } else if(p.getPerson().getMobilenumber() != null && !p.getPerson().getMobilenumber().isEmpty()) {
-                phone.setText(p.getPerson().getMobilenumber());
-            } else {
-                phone.setVisibility(View.GONE);
-            }
-
-            DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy");
-            String birthdayStr = new DateTime(p.getPerson().getBirthdate()).toString(fmt);
-            birthday.setText(birthdayStr);
+            createAddressInfoWidget(p);
+            createEmailInfoWidget(p);
+            createPhoneInfoWidget(p);
+            createMobileInfoWidget(p);
 
             if (p.getPerson().getPhotomediaid() != null) {
                 profile.setImageURI(MediaAPI.getMediaUri(p.getPerson().getPhotomediaid()));
@@ -84,6 +81,66 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
             }
         }
     };
+
+    private void createAddressInfoWidget(SmoboItem p) {
+        Bundle bundle = new Bundle();
+        bundle.putString("maintext", p.getPerson().getAddress1() + "\n" + p.getPerson().getZipcode() + ", " + p.getPerson().getCity());
+        bundle.putString("subtext", "Home");
+        bundle.putInt("infotype", SmoboInfoWidget.InfoType.ADRESS.ordinal());
+
+        SmoboInfoWidget widget = new SmoboInfoWidget();
+        widget.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.smobo_address_info, widget)
+                .commit();
+    }
+
+    private void createEmailInfoWidget(SmoboItem p) {
+        Bundle bundle = new Bundle();
+        bundle.putString("maintext", p.getPerson().getEmailaddress());
+        bundle.putString("subtext", "Home");
+        bundle.putInt("infotype", SmoboInfoWidget.InfoType.EMAIL.ordinal());
+
+        SmoboInfoWidget widget = new SmoboInfoWidget();
+        widget.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.smobo_email_info, widget)
+                .commit();
+    }
+
+    private void createPhoneInfoWidget(SmoboItem p) {
+        if(p.getPerson().getPhonenumber() != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString("maintext", p.getPerson().getPhonenumber());
+            bundle.putString("subtext", "Home");
+            bundle.putInt("infotype", SmoboInfoWidget.InfoType.PHONE.ordinal());
+
+            SmoboInfoWidget widget = new SmoboInfoWidget();
+            widget.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.smobo_phone_info, widget)
+                    .commit();
+        } else {
+            phoneInfo.setPadding(0,0,0,0);
+        }
+    }
+
+    private void createMobileInfoWidget(SmoboItem p) {
+        if (p.getPerson().getMobilenumber() != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString("maintext", p.getPerson().getMobilenumber());
+            bundle.putString("subtext", "Mobile");
+            bundle.putInt("infotype", SmoboInfoWidget.InfoType.PHONE.ordinal());
+
+            SmoboInfoWidget widget = new SmoboInfoWidget();
+            widget.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.smobo_mobile_info, widget)
+                    .commit();
+        } else {
+            mobileInfo.setPadding(0,0,0,0);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +159,7 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
 
         if(getIntent().getStringExtra("name") != null) {
             collapsingToolbarLayout.setTitle(getIntent().getStringExtra("name"));
+            collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.AppTheme_CollapsingToolbarTitle);
         }
         toolbar.setTitle(" ");
 
@@ -122,6 +180,8 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
                 }
             });
         }
+
+        mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<Integer>()));
     }
 
     @Override
@@ -146,6 +206,31 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
         }
         else {
             collapsed = false;
+        }
+    }
+
+    @Override
+    public void onClick(String mainText, SmoboInfoWidget.InfoType type) {
+        if (type == SmoboInfoWidget.InfoType.ADRESS) {
+            String address = mainText.replaceAll("\\s", "+");
+            Uri gmmIntentUri = Uri.parse(String.format("geo:0,0?q=%s", address));
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+
+            if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(mapIntent);
+            }
+        } else if (type == SmoboInfoWidget.InfoType.PHONE) {
+            Intent messagingIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + mainText));
+
+            startActivity(Intent.createChooser(messagingIntent, "Send message..."));
+        } else if (type == SmoboInfoWidget.InfoType.EMAIL) {
+            final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+            emailIntent.setType("plain/text");
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{mainText});
+
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
         }
     }
 }

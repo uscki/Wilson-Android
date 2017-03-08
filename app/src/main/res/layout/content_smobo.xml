@@ -2,6 +2,7 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,70 +10,88 @@
     tools:context="nl.uscki.appcki.android.activities.SmoboActivity"
     tools:showIn="@layout/activity_smobo">
 
-    <RelativeLayout
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view_media"
+            android:layout_gravity="top"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            card_view:cardCornerRadius="0dp">
 
-        <TextView
-            android:id="@+id/smobo_contact"
-            android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/smobo_media_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/text_margin"
+                    android:layout_marginStart="@dimen/text_margin"
+                    android:layout_marginTop="@dimen/cards_margin_top"
+                    android:text="Laatste vijf foto's"
+                    android:textAppearance="@style/AppTheme.Text"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp" />
+
+                <android.support.v17.leanback.widget.HorizontalGridView
+                    android:id="@+id/smobo_media_gridview"
+                    android:layout_below="@id/smobo_media_text"
+                    android:layout_marginStart="@dimen/text_margin"
+                    android:layout_marginTop="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view_contact_info"
+            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/AppTheme.TextHeader"
-            android:layout_marginTop="@dimen/text_margin"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:text="Contact"/>
+            android:layout_marginLeft="@dimen/cards_margin_sides"
+            android:layout_marginStart="@dimen/cards_margin_sides"
+            android:layout_marginRight="@dimen/cards_margin_sides"
+            android:layout_marginEnd="@dimen/cards_margin_sides"
+            android:layout_marginTop="@dimen/cards_margin_top"
+            card_view:cardCornerRadius="4dp">
 
-        <TextView
-            android:id="@+id/smobo_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/text_margin"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:layout_below="@id/smobo_contact"
-            android:text="Drift 21, Kamer 1.03"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/smobo_zipcode"
-            android:layout_marginTop="@dimen/text_margin"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:layout_below="@+id/smobo_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3524HS"/>
+                <FrameLayout
+                    android:id="@+id/smobo_address_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/text_margin"/>
 
-        <TextView
-            android:id="@+id/smobo_city"
-            android:layout_below="@+id/smobo_address"
-            android:layout_toRightOf="@id/smobo_zipcode"
-            android:layout_marginTop="@dimen/text_margin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Utrecht"/>
+                <FrameLayout
+                    android:id="@+id/smobo_email_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/smobo_address_info"
+                    android:layout_marginLeft="@dimen/text_margin"/>
 
-        <TextView
-            android:id="@+id/smobo_phone"
-            android:layout_below="@id/smobo_zipcode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/text_margin"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:text="030-2538127"/>
+                <FrameLayout
+                    android:id="@+id/smobo_phone_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/smobo_email_info"
+                    android:paddingLeft="@dimen/text_margin"/>
 
-        <TextView
-            android:id="@+id/smobo_birthday"
-            android:layout_below="@id/smobo_phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/text_margin"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:text="235346435634523463454356"/>
+                <FrameLayout
+                    android:id="@+id/smobo_mobile_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/smobo_phone_info"
+                    android:paddingLeft="@dimen/text_margin"/>
+            </RelativeLayout>
 
-        <TextView
-            android:id="@+id/smobo_email"
-            android:layout_below="@id/smobo_birthday"
-            android:layout_marginTop="@dimen/text_margin"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
+        </android.support.v7.widget.CardView>
+    </android.support.v7.widget.LinearLayoutCompat>
 </android.support.v4.widget.NestedScrollView>

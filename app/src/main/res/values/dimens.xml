@@ -19,4 +19,7 @@
     <dimen name="header_view_start_margin_bottom">14dp</dimen>
     <dimen name="header_view_start_text_size">32sp</dimen>
     <dimen name="header_view_end_text_size">18sp</dimen>
+
+    <dimen name="cards_margin_sides">6dp</dimen>
+    <dimen name="cards_margin_top">12dp</dimen>
 </resources>
