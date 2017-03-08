@@ -43,6 +43,8 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
         Integer profile = holder.mItem.getPerson().getPhotomediaid();
         if(profile != null) {
             holder.profile.setImageURI(MediaAPI.getMediaUri(profile, MediaAPI.MediaSize.SMALL));
+        } else {
+            holder.profile.setImageURI((String)null);
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {

@@ -1,6 +1,5 @@
 package nl.uscki.appcki.android.fragments.meeting.adapter;
 
-import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,10 +40,9 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
 
         if(items.get(position).getPerson().getPhotomediaid() != null) {
             holder.profile.setImageURI(MediaAPI.getMediaUri(items.get(position).getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL));
+        } else {
+            holder.profile.setImageURI((String)null);
         }
-
-        final Rect startBounds = new Rect();
-        holder.profile.getGlobalVisibleRect(startBounds);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
