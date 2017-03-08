@@ -33,15 +33,18 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.mItem = items.get(position);
-        holder.name.setText(items.get(position).getPerson().getPostalname());
+        unsetViews(holder);
+        resetViews(holder, items.get(position));
+    }
 
-        holder.note.setText(items.get(position).getNote());
+    private void resetViews(final ViewHolder holder, PersonWithNote item) {
+        holder.mItem = item;
+        holder.name.setText(item.getPerson().getPostalname());
 
-        if(items.get(position).getPerson().getPhotomediaid() != null) {
-            holder.profile.setImageURI(MediaAPI.getMediaUri(items.get(position).getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL));
-        } else {
-            holder.profile.setImageURI((String)null);
+        holder.note.setText(item.getNote());
+
+        if(item.getPerson().getPhotomediaid() != null) {
+            holder.profile.setImageURI(MediaAPI.getMediaUri(item.getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL));
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -54,6 +57,13 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
                 }
             }
         });
+    }
+
+    private void unsetViews(ViewHolder vh) {
+        vh.mItem = null;
+        vh.name.setText("");
+        vh.note.setText("");
+        vh.profile.setImageURI("");
     }
 
     @Override

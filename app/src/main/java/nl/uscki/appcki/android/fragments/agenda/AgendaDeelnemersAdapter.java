@@ -36,15 +36,18 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = items.get(position);
-        holder.name.setText(items.get(position).getPerson().getPostalname());
-        holder.note.setText(items.get(position).getNote());
+        unsetViews(holder);
+        resetViews(holder, items.get(position));
+    }
+
+    private void resetViews(final ViewHolder holder, AgendaParticipant item) {
+        holder.mItem = item;
+        holder.name.setText(item.getPerson().getPostalname());
+        holder.note.setText(item.getNote());
 
         Integer profile = holder.mItem.getPerson().getPhotomediaid();
         if(profile != null) {
             holder.profile.setImageURI(MediaAPI.getMediaUri(profile, MediaAPI.MediaSize.SMALL));
-        } else {
-            holder.profile.setImageURI((String)null);
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +56,13 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
                 activity.openSmoboFor(holder.mItem.getPerson());
             }
         });
+    }
+
+    private void unsetViews(ViewHolder vh) {
+        vh.mItem = null;
+        vh.name.setText("");
+        vh.note.setText("");
+        vh.profile.setImageURI("");
     }
 
     @Override
