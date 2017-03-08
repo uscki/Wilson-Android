@@ -9,6 +9,7 @@ import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +26,9 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
+import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
+import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
 import retrofit2.Response;
@@ -58,6 +61,9 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
     @BindView(R.id.smobo_mobile_info)
     FrameLayout mobileInfo;
 
+    @BindView(R.id.smobo_groups)
+    RecyclerView smoboGroups;
+
     boolean collapsed = false;
 
     private Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
@@ -73,6 +79,8 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
             createEmailInfoWidget(p);
             createPhoneInfoWidget(p);
             createMobileInfoWidget(p);
+
+            ((BaseItemAdapter) smoboGroups.getAdapter()).update(p.getGroups());
 
             if (p.getPerson().getPhotomediaid() != null) {
                 profile.setImageURI(MediaAPI.getMediaUri(p.getPerson().getPhotomediaid()));
@@ -182,6 +190,7 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
         }
 
         mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<Integer>()));
+        smoboGroups.setAdapter(new SmoboCommissieAdapter(new ArrayList<Committee>()));
     }
 
     @Override
