@@ -39,7 +39,11 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        AgendaItem item = items.get(position);
+        unsetViews(holder);
+        resetViews(holder, items.get(position));
+    }
+
+    private void resetViews(final ViewHolder holder, AgendaItem item) {
         holder.mItem = item;
         holder.mContentView.setText(item.getTitle());
 
@@ -55,14 +59,12 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         if(item.getLocation() == null || item.getLocation().isEmpty()) {
             holder.itemWhere.setVisibility(View.GONE);
         } else {
-            holder.itemWhere.setVisibility(View.VISIBLE);
             holder.itemWhere.setText(item.getLocation());
         }
 
         if(item.getHasDeadline()) {
             DateTime dateTime = new DateTime(item.getDeadline());
             holder.itemDeadline.setText(dateTime.toString("EEEE dd MMMM YYYY HH:mm")); // TODO API: richard gaat hier nog shit aan veranderen
-            holder.inschrijvenVerplicht.setVisibility(View.VISIBLE);
         } else {
             holder.inschrijvenVerplicht.setVisibility(View.GONE);
         }
@@ -79,6 +81,19 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
                 EventBus.getDefault().post(new OpenFragmentEvent(new AgendaDetailTabsFragment(), args));
             }
         });
+    }
+
+    private void unsetViews(ViewHolder holder) {
+        holder.mItem = null;
+        holder.itemPoster.setImageURI("");
+        holder.itemWhere.setText("");
+        holder.itemDeadline.setText("");
+        holder.itemDeelnemers.setText("");
+        holder.itemWhen.setText("");
+        holder.mContentView.setText("");
+
+        holder.inschrijvenVerplicht.setVisibility(View.VISIBLE);
+        holder.itemWhere.setVisibility(View.VISIBLE);
     }
 
     @Override
