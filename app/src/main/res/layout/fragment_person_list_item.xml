@@ -16,7 +16,8 @@
         android:layout_marginRight="6dp"
         android:layout_marginEnd="6dp"
         fresco:roundAsCircle="true"
-        fresco:placeholderImage="@drawable/account"/>
+        fresco:placeholderImage="@drawable/account"
+        fresco:placeholderImageScaleType="fitCenter" />
 
     <TextView
         android:layout_width="wrap_content"
