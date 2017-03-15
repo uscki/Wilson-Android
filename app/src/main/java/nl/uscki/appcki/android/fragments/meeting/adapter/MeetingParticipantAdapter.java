@@ -11,7 +11,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.List;
 
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.activities.BasicActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
@@ -51,10 +50,6 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
             @Override
             public void onClick(View v) {
                 // TODO: 5/29/16 bekijk persoon
-                if(v.getContext() instanceof BasicActivity) {
-                    BasicActivity act = (BasicActivity) v.getContext();
-                    act.openSmoboFor(holder.mItem);
-                }
             }
         });
     }

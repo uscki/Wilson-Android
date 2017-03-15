@@ -3,6 +3,7 @@ package nl.uscki.appcki.android.activities;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
@@ -15,7 +16,7 @@ import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingDetailAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import retrofit2.Response;
 
-public class MeetingActivity extends BasicActivity {
+public class MeetingActivity extends AppCompatActivity {
     MeetingItem item;
     TabLayout tabLayout;
     ViewPager viewPager;

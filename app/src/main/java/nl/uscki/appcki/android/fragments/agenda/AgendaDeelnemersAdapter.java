@@ -53,7 +53,7 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.openSmoboFor(holder.mItem.getPerson());
+                //TODO open smobo
             }
         });
     }
