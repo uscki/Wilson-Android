@@ -73,7 +73,9 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
             swipeRefreshLayout.setRefreshing(false);
             scrollView.setVisibility(View.VISIBLE);
 
-            ((BaseItemAdapter) mediaGrid.getAdapter()).update(p.getPhotos());
+            if (p.getNumOfPhotos() > 0) {
+                ((BaseItemAdapter) mediaGrid.getAdapter()).update(p.getPhotos());
+            }
 
             createAddressInfoWidget(p);
             createEmailInfoWidget(p);
