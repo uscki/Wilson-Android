@@ -14,12 +14,9 @@ import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
 
-import java.net.ConnectException;
-
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.error.Error;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.events.ErrorEvent;
@@ -30,8 +27,6 @@ import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
 import nl.uscki.appcki.android.helpers.UserHelper;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AgendaActivity extends AppCompatActivity {
@@ -158,19 +153,10 @@ public class AgendaActivity extends AppCompatActivity {
 
             // no deadline for unsubscribing
             Log.d("MainActivity", "unsubscribing for:" + AgendaDetailFragment.item.getId());
-            Services.getInstance().agendaService.unsubscribe(AgendaDetailFragment.item.getId()).enqueue(new Callback<AgendaParticipantLists>() {
+            Services.getInstance().agendaService.unsubscribe(AgendaDetailFragment.item.getId()).enqueue(new nl.uscki.appcki.android.api.Callback<AgendaParticipantLists>() {
                 @Override
-                public void onResponse(Call<AgendaParticipantLists> call, Response<AgendaParticipantLists> response) {
+                public void onSucces(Response<AgendaParticipantLists> response) {
                     EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body(), true));
-                }
-
-                @Override
-                public void onFailure(Call<AgendaParticipantLists> call, Throwable t) {
-                    if (t instanceof ConnectException) {
-                        new ConnectionError(t); // handle connection error in MainActivity
-                    } else {
-                        throw new RuntimeException(t);
-                    }
                 }
             });
         }
