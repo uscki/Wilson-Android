@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
+
+    <nl.uscki.appcki.android.views.BBTextView
+        android:id="@+id/quote_quote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/text_margin"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:text="These are the three tapes of our Turing Machine. They look like baguettes. - Benjamin Rin"
+        android:textAlignment="center" />
+
+    <LinearLayout
+        android:id="@+id/quote_graph"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_below="@id/quote_quote">
+        <nl.uscki.appcki.android.views.VotesGraphView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/votes_positive"
+            android:src="@drawable/left_bar_votes"
+            android:paddingLeft="@dimen/text_margin"
+            android:paddingStart="@dimen/text_margin"
+            app:direction="left"
+            app:barColor="@color/colorGreen"/>
+        <nl.uscki.appcki.android.views.VotesGraphView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/votes_negative"
+            android:src="@drawable/right_bar_votes"
+            android:paddingRight="@dimen/text_margin"
+            android:paddingEnd="@dimen/text_margin"
+            app:barColor="@color/colorRed" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/quote_vote_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/quote_graph"
+        android:layout_marginTop="26dp"
+        android:layout_marginLeft="@dimen/text_margin"
+        android:background="@android:color/transparent"
+        android:src="@drawable/thumb_up_outline"/>
+
+    <TextView
+        android:id="@+id/quote_toonkans"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/quote_graph"
+        android:layout_margin="30dp"
+        android:text="toonkans: 0.20%"/>
+
+    <ImageButton
+        android:id="@+id/quote_vote_minus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/quote_graph"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="26dp"
+        android:paddingEnd="@dimen/text_margin"
+        android:paddingRight="@dimen/text_margin"
+        android:background="@android:color/transparent"
+        android:src="@drawable/thumb_down_outline"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/list_divider"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"/>
+</RelativeLayout>

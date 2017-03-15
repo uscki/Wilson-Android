@@ -7,4 +7,19 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+
+    <dimen name="text_header_size">25dp</dimen>
+    <dimen name="text_subheader_size">20dp</dimen>
+    <dimen name="text_subsubheader_size">16dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+
+    <dimen name="header_view_start_margin_left">16dp</dimen>
+    <dimen name="header_view_end_margin_left">40dp</dimen>
+    <dimen name="header_view_end_margin_right">14dp</dimen>
+    <dimen name="header_view_start_margin_bottom">14dp</dimen>
+    <dimen name="header_view_start_text_size">32sp</dimen>
+    <dimen name="header_view_end_text_size">18sp</dimen>
+
+    <dimen name="cards_margin_sides">6dp</dimen>
+    <dimen name="cards_margin_top">12dp</dimen>
 </resources>

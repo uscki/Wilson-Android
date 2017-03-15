@@ -29,4 +29,9 @@ proguard/
 app/src/main/res/values/api.xml
 app/src/master/res/values/api.xml
 app/src/development/res/values/api.xml
+
+# IDEA shit
+# iml files fucken alleen maar met AS, beter om AS het gewoon lokaal te laten fixen
 .idea/
+*.iml
+app/*.iml
