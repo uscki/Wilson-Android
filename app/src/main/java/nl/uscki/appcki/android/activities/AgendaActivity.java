@@ -93,7 +93,7 @@ public class AgendaActivity extends AppCompatActivity {
         });
 
         for (AgendaParticipant part : item.getParticipants()) {
-            if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
+            if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId()) && part.getAttends()) {
                 foundUser = true;
             }
         }
