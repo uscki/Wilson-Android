@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -20,6 +21,7 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.error.Error;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.events.ErrorEvent;
+import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailAdapter;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailFragment;
 import nl.uscki.appcki.android.fragments.agenda.SubscribeDialogFragment;
@@ -163,6 +165,14 @@ public class AgendaActivity extends AppCompatActivity {
     }
 
     // EVENT HANDLING
+
+    public void onEventMainThread(ServerErrorEvent event) {
+        switch (event.error.getStatus()) {
+            case 412:
+                //TODO translate error message
+                Toast.makeText(this, event.error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
 
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
         if(!event.showSubscribe) {
