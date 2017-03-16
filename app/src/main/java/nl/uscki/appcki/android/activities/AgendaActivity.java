@@ -71,6 +71,15 @@ public class AgendaActivity extends BasicActivity {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), AgendaItem.class);
             viewPager.setAdapter(new AgendaDetailAdapter(getSupportFragmentManager(), item));
+
+            for (AgendaParticipant part : item.getParticipants()) {
+                if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
+                    foundUser = true;
+                }
+            }
+        } else {
+            // the item is no longer loaded so we can't open this activity, thus we'll close it
+            finish();
         }
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -90,12 +99,6 @@ public class AgendaActivity extends BasicActivity {
 
             }
         });
-
-        for (AgendaParticipant part : item.getParticipants()) {
-            if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
-                foundUser = true;
-            }
-        }
     }
 
     @Override
