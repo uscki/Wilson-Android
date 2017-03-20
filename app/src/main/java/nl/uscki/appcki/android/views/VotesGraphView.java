@@ -185,4 +185,8 @@ public class VotesGraphView extends View {
     public void setVotesTotal(int votesTotal) {
         this.votesTotal = votesTotal;
     }
+
+    public void setBarColor(int barColor) {
+        this.barColor = barColor;
+    }
 }

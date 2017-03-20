@@ -48,6 +48,7 @@ import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.RoephoekDialogFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
+import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
 import nl.uscki.appcki.android.fragments.quotes.QuoteFragment;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -77,13 +78,15 @@ public class MainActivity extends BasicActivity
         LOGIN,
         NEWS,
         AGENDA,
-        POLL,
+        POLL_OVERVIEW,
         ROEPHOEK,
         AGENDA_DETAIL,
         MEETING_OVERVIEW,
         MEETING_PLANNER,
         MEETING_DETAIL,
-        QUOTE_OVERVIEW
+        QUOTE_OVERVIEW,
+        POLL_VOTE,
+        POLL_RESULT
     }
 
     public static Screen currentScreen;
@@ -188,6 +191,8 @@ public class MainActivity extends BasicActivity
                 openTab(HomeFragment.AGENDA);
             } else if (currentScreen == Screen.MEETING_PLANNER || currentScreen == Screen.MEETING_DETAIL) {
                 openFragment(new MeetingOverviewFragment(), null);
+            } else if (currentScreen == Screen.POLL_VOTE) {
+                openFragment(new PollOverviewFragment(), null);
             }
             else {
                 super.onBackPressed();
@@ -232,6 +237,8 @@ public class MainActivity extends BasicActivity
                 openTab(HomeFragment.AGENDA);
             } else if (id == R.id.nav_quotes) {
                 openFragment(new QuoteFragment(), null);
+            } else if (id == R.id.nav_poll) {
+                openFragment(new PollOverviewFragment(), null);
             } else if (id == R.id.nav_roephoek) {
                 openTab(HomeFragment.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
@@ -372,7 +379,8 @@ public class MainActivity extends BasicActivity
             case AGENDA:
                 openTab(HomeFragment.AGENDA);
                 break;
-            case POLL:
+            case POLL_OVERVIEW:
+                openFragment(new PollOverviewFragment(), null);
                 break;
             case ROEPHOEK:
                 openTab(HomeFragment.ROEPHOEK);
@@ -408,6 +416,7 @@ public class MainActivity extends BasicActivity
     }
 
     public void onEventMainThread(OpenFragmentEvent event) {
+        //TODO refactor this
         if(event.screen instanceof AgendaDetailTabsFragment) {
             Intent agenda = new Intent(this, AgendaActivity.class);
             agenda.putExtra("item", event.arguments);

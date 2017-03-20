@@ -3,164 +3,44 @@ package nl.uscki.appcki.android.generated.poll;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import java.util.List;
 
-import nl.uscki.appcki.android.generated.media.MediaFile;
-import nl.uscki.appcki.android.generated.organisation.Person;
+/**
+ * Created by peter on 3/7/17.
+ */
 
 public class PollItem {
-    @SerializedName("id")
     @Expose
-    private Integer id;
-    @SerializedName("createdate")
+    @SerializedName("myVote")
+    Integer myVote;
     @Expose
-    private String createdate;
-    @SerializedName("title")
+    @SerializedName("options")
+    List<PollOption> options;
     @Expose
-    private String title;
-    @SerializedName("active")
-    @Expose
-    private Boolean active;
-    @SerializedName("bgcolor")
-    @Expose
-    private String bgcolor;
-    @SerializedName("file")
-    @Expose
-    private MediaFile file;
-    @SerializedName("person")
-    @Expose
-    private Person person;
+    @SerializedName("poll")
+    PollMetadata poll;
 
-
-    /**
-     *
-     * @return
-     * The id
-     */
-    public Integer getId() {
-        return id;
+    public Integer getMyVote() {
+        return myVote;
     }
 
-    /**
-     *
-     * @param id
-     * The id
-     */
-    public void setId(Integer id) {
-        this.id = id;
+    public void setMyVote(Integer myVote) {
+        this.myVote = myVote;
     }
 
-    /**
-     *
-     * @return
-     * The createdate
-     */
-    public String getCreatedate() {
-        return createdate;
+    public List<PollOption> getOptions() {
+        return options;
     }
 
-    /**
-     *
-     * @param createdate
-     * The createdate
-     */
-    public void setCreatedate(String createdate) {
-        this.createdate = createdate;
+    public void setOptions(List<PollOption> options) {
+        this.options = options;
     }
 
-    /**
-     *
-     * @return
-     * The title
-     */
-    public String getTitle() {
-        return title;
+    public PollMetadata getPoll() {
+        return poll;
     }
 
-    /**
-     *
-     * @param title
-     * The title
-     */
-    public void setTitle(String title) {
-        this.title = title;
+    public void setPoll(PollMetadata poll) {
+        this.poll = poll;
     }
-
-    /**
-     *
-     * @return
-     * The active
-     */
-    public Boolean getActive() {
-        return active;
-    }
-
-    /**
-     *
-     * @param active
-     * The active
-     */
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
-    /**
-     *
-     * @return
-     * The bgcolor
-     */
-    public String getBgcolor() {
-        return bgcolor;
-    }
-
-    /**
-     *
-     * @param bgcolor
-     * The bgcolor
-     */
-    public void setBgcolor(String bgcolor) {
-        this.bgcolor = bgcolor;
-    }
-
-    /**
-     *
-     * @return
-     * The file
-     */
-    public MediaFile getFile() {
-        return file;
-    }
-
-    /**
-     *
-     * @param file
-     * The file
-     */
-    public void setFile(MediaFile file) {
-        this.file = file;
-    }
-
-    /**
-     *
-     * @return
-     * The person
-     */
-    public Person getPerson() {
-        return person;
-    }
-
-    /**
-     *
-     * @param person
-     * The person
-     */
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
 }
