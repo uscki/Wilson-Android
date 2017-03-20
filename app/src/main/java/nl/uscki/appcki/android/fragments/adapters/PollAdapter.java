@@ -65,7 +65,7 @@ public class PollAdapter extends BaseItemAdapter<PollAdapter.ViewHolder, PollIte
                 Bundle bundle = new Bundle();
                 String item = new Gson().toJson(holder.mItem);
                 bundle.putString("item", item);
-                if (holder.mItem.getMyVote() == null) {
+                if (holder.mItem.getMyVote() == null && holder.mItem.getPoll().getActive()) {
                     EventBus.getDefault().post(new OpenFragmentEvent(new PollVoteFragment(), bundle));
                 } else {
                     EventBus.getDefault().post(new OpenFragmentEvent(new PollResultFragment(), bundle));
