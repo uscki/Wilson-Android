@@ -178,6 +178,9 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
     public void onEventMainThread(ErrorEvent e) {
         swipeContainer.setRefreshing(false);
+        emptyText.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        noMoreContent = true;
     }
 
     @Override

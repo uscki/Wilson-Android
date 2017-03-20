@@ -191,7 +191,7 @@ public class MainActivity extends BasicActivity
                 openTab(HomeFragment.AGENDA);
             } else if (currentScreen == Screen.MEETING_PLANNER || currentScreen == Screen.MEETING_DETAIL) {
                 openFragment(new MeetingOverviewFragment(), null);
-            } else if (currentScreen == Screen.POLL_VOTE) {
+            } else if (currentScreen == Screen.POLL_VOTE || currentScreen == Screen.POLL_RESULT) {
                 openFragment(new PollOverviewFragment(), null);
             }
             else {
