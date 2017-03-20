@@ -195,5 +195,7 @@ public class VotesGraphView extends View {
 
     public void setBarColor(int barColor) {
         this.barColor = barColor;
+        barPaint.setColor(this.barColor);
+        postInvalidate();
     }
 }
