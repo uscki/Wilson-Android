@@ -84,6 +84,8 @@ public class MainActivity extends BasicActivity
         MEETING_PLANNER,
         MEETING_DETAIL,
         QUOTE_OVERVIEW,
+        POLL_VOTE,
+        POLL_RESULT
     }
 
     public static Screen currentScreen;
@@ -188,6 +190,8 @@ public class MainActivity extends BasicActivity
                 openTab(HomeFragment.AGENDA);
             } else if (currentScreen == Screen.MEETING_PLANNER || currentScreen == Screen.MEETING_DETAIL) {
                 openFragment(new MeetingOverviewFragment(), null);
+            } else if (currentScreen == Screen.POLL_VOTE) {
+                openFragment(new PollOverviewFragment(), null);
             }
             else {
                 super.onBackPressed();
@@ -414,6 +418,7 @@ public class MainActivity extends BasicActivity
     }
 
     public void onEventMainThread(OpenFragmentEvent event) {
+        //TODO refactor this
         if(event.screen instanceof AgendaDetailTabsFragment) {
             Intent agenda = new Intent(this, AgendaActivity.class);
             agenda.putExtra("item", event.arguments);

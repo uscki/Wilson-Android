@@ -3,6 +3,8 @@ package nl.uscki.appcki.android.generated.poll;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.joda.time.DateTime;
+
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 
 /**
@@ -41,8 +43,8 @@ public class PollMetadata {
         this.active = active;
     }
 
-    public Long getCreation() {
-        return creation;
+    public DateTime getCreation() {
+        return new DateTime(creation);
     }
 
     public void setCreation(Long creation) {

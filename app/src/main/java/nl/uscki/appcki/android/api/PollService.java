@@ -18,6 +18,9 @@ public interface PollService {
     @GET("poll/get")
     Call<PollItem> get(@Query("id") Integer id);
 
+    @GET("poll/overview")
+    Call<PollPage> overview(@Query("page") Integer page, @Query("size") Integer size);
+
     @GET("poll/newer")
     Call<PollPage> newer(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer newer);
 

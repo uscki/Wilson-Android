@@ -2,11 +2,14 @@ package nl.uscki.appcki.android.fragments.poll;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.PageableFragment;
@@ -19,16 +22,26 @@ import nl.uscki.appcki.android.generated.poll.PollPage;
  */
 
 public class PollOverviewFragment extends PageableFragment<PollPage> {
-    private final int POLL_PAGE_SIZE = 10;
+    private final int POLL_PAGE_SIZE = 14;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         MainActivity.currentScreen = MainActivity.Screen.POLL_OVERVIEW;
+        setHasOptionsMenu(true);
 
         setAdapter(new PollAdapter(new ArrayList<PollItem>()));
-        Services.getInstance().pollService.older(page, getPageSize()).enqueue(callback);
+        Services.getInstance().pollService.overview(page, getPageSize()).enqueue(callback);
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+
+        inflater.inflate(R.menu.main, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -43,11 +56,11 @@ public class PollOverviewFragment extends PageableFragment<PollPage> {
 
     @Override
     public void onScrollRefresh() {
-        Services.getInstance().pollService.older(page, getPageSize()).enqueue(callback);
+        Services.getInstance().pollService.overview(page, getPageSize()).enqueue(callback);
     }
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().pollService.older(page, getPageSize()).enqueue(callback);
+        Services.getInstance().pollService.overview(page, getPageSize()).enqueue(callback);
     }
 }
