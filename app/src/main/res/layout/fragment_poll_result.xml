@@ -18,11 +18,19 @@
             android:textSize="16sp"
             style="@style/AppTheme.Text"/>
 
+        <ImageView
+            android:id="@+id/poll_separator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/list_divider"
+            android:layout_marginTop="6dp"
+            android:layout_below="@id/poll_result_question"/>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/poll_result_options"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/poll_result_question"
+            android:layout_below="@id/poll_separator"
             app:layoutManager="LinearLayoutManager"/>
 
     </RelativeLayout>
