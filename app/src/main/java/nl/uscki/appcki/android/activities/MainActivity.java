@@ -274,13 +274,6 @@ public class MainActivity extends BasicActivity
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        FirebaseCrash.log("onSaveInstanceState persistable bundle");
-        outPersistentState.putString("token", UserHelper.getInstance().TOKEN);
-        super.onSaveInstanceState(outState, outPersistentState);
-    }
-
     private void openTab(int index) {
         FirebaseCrash.log("openTab(" + index + ")");
         if (currentScreen == Screen.ROEPHOEK || currentScreen == Screen.NEWS || currentScreen == Screen.AGENDA) {
