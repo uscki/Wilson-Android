@@ -60,6 +60,8 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
     FrameLayout phoneInfo;
     @BindView(R.id.smobo_mobile_info)
     FrameLayout mobileInfo;
+    @BindView(R.id.smobo_birthday_info)
+    FrameLayout birthdayInfo;
 
     @BindView(R.id.smobo_groups)
     RecyclerView smoboGroups;
@@ -81,6 +83,7 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
             createEmailInfoWidget(p);
             createPhoneInfoWidget(p);
             createMobileInfoWidget(p);
+            createBirthdayInfoWidget(p);
 
             ((BaseItemAdapter) smoboGroups.getAdapter()).update(p.getGroups());
 
@@ -141,6 +144,24 @@ public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnO
             bundle.putString("maintext", p.getPerson().getMobilenumber());
             bundle.putString("subtext", "Mobile");
             bundle.putInt("infotype", SmoboInfoWidget.InfoType.PHONE.ordinal());
+
+            SmoboInfoWidget widget = new SmoboInfoWidget();
+            widget.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.smobo_mobile_info, widget)
+                    .commit();
+        } else {
+            mobileInfo.setPadding(0,0,0,0);
+        }
+    }
+
+    private void createBirthdayInfoWidget(SmoboItem p) {
+        if (p.getPerson().getMobilenumber() != null) {
+            Bundle bundle = new Bundle();
+            String birthday = p.getPerson().getBirthdate().toString("dd-MM-yyyy");
+            bundle.putString("maintext", birthday);
+            bundle.putString("subtext", "Verjaardag");
+            bundle.putInt("infotype", SmoboInfoWidget.InfoType.BIRTHDAY.ordinal());
 
             SmoboInfoWidget widget = new SmoboInfoWidget();
             widget.setArguments(bundle);

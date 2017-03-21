@@ -3,8 +3,10 @@ package nl.uscki.appcki.android.generated.organisation;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.internal.bind.DateTypeAdapter;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.joda.time.DateTime;
 
 public class Person {
     @Expose
@@ -240,8 +242,8 @@ public class Person {
         this.address1 = address1;
     }
 
-    public Long getBirthdate() {
-        return birthdate;
+    public DateTime getBirthdate() {
+        return new DateTime(birthdate);
     }
 
     public void setBirthdate(Long birthdate) {

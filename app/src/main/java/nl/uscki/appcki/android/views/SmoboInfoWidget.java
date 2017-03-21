@@ -35,7 +35,8 @@ public class SmoboInfoWidget extends Fragment {
     public enum InfoType {
         PHONE,
         EMAIL,
-        ADRESS
+        ADRESS,
+        BIRTHDAY
     }
 
     public SmoboInfoWidget() {
@@ -78,6 +79,9 @@ public class SmoboInfoWidget extends Fragment {
             case ADRESS:
                 this.infoIcon.setImageResource(R.drawable.map_marker);
                 this.contextButton.setImageResource(R.drawable.directions);
+                break;
+            case BIRTHDAY:
+                this.infoIcon.setImageResource(R.drawable.cake);
                 break;
         }
     }
