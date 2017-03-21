@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.crash.FirebaseCrash;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 
 import de.greenrobot.event.EventBus;
@@ -137,6 +138,9 @@ public class MainActivity extends BasicActivity
         } else {
             // Implement this feature without material design
         }
+
+        // TODO configure shit for this server side
+        FirebaseMessaging.getInstance().subscribeToTopic("meetings");
     }
 
     @Override

@@ -1,4 +1,4 @@
-package nl.uscki.appcki.android;
+package nl.uscki.appcki.android.services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.google.gson.Gson;
 
+import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 

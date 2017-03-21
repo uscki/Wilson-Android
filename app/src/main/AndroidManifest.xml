@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <receiver android:name=".helpers.AlarmReceiver" />
-        <receiver android:name=".OnetimeAlarmReceiver" />
+        <receiver android:name=".services.OnetimeAlarmReceiver" />
 
         <activity
             android:name=".activities.MainActivity"
@@ -51,6 +51,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="nl.uscki.appcki.android.activities.MainActivity" />
         </activity>
-    </application>
 
+        <service
+            android:name=".services.NotificationReceiver">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".services.FCMInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+    </application>
 </manifest>
