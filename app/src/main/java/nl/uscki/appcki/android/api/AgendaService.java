@@ -19,6 +19,9 @@ public interface AgendaService {
     Call<Agenda> newer(@Query("page") Integer page, @Query("size") Integer size);
 
     @GET("agenda/older")
+    Call<Agenda> older(@Query("page") Integer page, @Query("size") Integer size);
+
+    @GET("agenda/older")
     Call<Agenda> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
 
     @POST("agenda/subscribe")

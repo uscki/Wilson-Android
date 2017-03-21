@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -22,6 +23,8 @@ import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 
 public class HomeAgendaTab extends PageableFragment<Agenda> {
     private final int AGENDA_PAGE_SIZE = 5;
+
+    boolean showArchive = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,18 +50,36 @@ public class HomeAgendaTab extends PageableFragment<Agenda> {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_agenda_archive) {
+            showArchive = true;
+
+            page = 0; // reset page in case user has scrolled with newer
+            getAdapter().clear();
+            Services.getInstance().agendaService.older(page, AGENDA_PAGE_SIZE).enqueue(callback);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected int getPageSize() {
         return AGENDA_PAGE_SIZE;
     }
 
     @Override
     public void onSwipeRefresh() {
+        showArchive = false;
         Services.getInstance().agendaService.newer(page, AGENDA_PAGE_SIZE).enqueue(callback);
     }
 
     @Override
     public void onScrollRefresh() {
-        Services.getInstance().agendaService.newer(page, AGENDA_PAGE_SIZE).enqueue(callback);
+        if (showArchive) {
+            Services.getInstance().agendaService.older(page, AGENDA_PAGE_SIZE).enqueue(callback);
+        } else {
+            Services.getInstance().agendaService.newer(page, AGENDA_PAGE_SIZE).enqueue(callback);
+        }
     }
 
     @Override

@@ -25,7 +25,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_margin="10dp" />
+        android:layout_margin="10dp"
+        fresco:actualImageScaleType="fitCenter"/>
 
     <TextView
         android:id="@+id/agenda_item_when"
