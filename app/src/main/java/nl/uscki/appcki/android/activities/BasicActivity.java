@@ -20,7 +20,7 @@ public abstract class BasicActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         Log.e("Main", "Loading onStart");
-        if (!UserHelper.getInstance().isLoggedIn()) {
+        if (!UserHelper.getInstance().isLoggedIn() || UserHelper.getInstance().getPerson() == null) {
             UserHelper.getInstance().setPreferences(getPreferences(MODE_PRIVATE));
             UserHelper.getInstance().load();
         }

@@ -70,7 +70,7 @@ public class AgendaActivity extends BasicActivity {
         if (getIntent().getBundleExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), AgendaItem.class);
-            if (item == null) {
+            if (item == null || UserHelper.getInstance().getPerson() == null) {
                 finish();
             }
 
@@ -81,6 +81,8 @@ public class AgendaActivity extends BasicActivity {
                     if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
                         foundUser = true;
                     }
+                } else {
+                    finish();
                 }
             }
         } else {
