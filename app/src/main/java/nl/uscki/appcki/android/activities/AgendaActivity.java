@@ -77,7 +77,7 @@ public class AgendaActivity extends BasicActivity {
             viewPager.setAdapter(new AgendaDetailAdapter(getSupportFragmentManager(), item));
 
             for (AgendaParticipant part : item.getParticipants()) {
-                if (part.getPerson().getId() != null && UserHelper.getInstance().getPerson().getId() != null) {
+                if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
                     if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
                         foundUser = true;
                     }
