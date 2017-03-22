@@ -144,33 +144,6 @@ public class MainActivity extends BasicActivity
     }
 
     @Override
-    protected void onStart() {
-        Log.e("Main", "Loading onStart");
-        UserHelper.getInstance().setPreferences(getPreferences(MODE_PRIVATE));
-        UserHelper.getInstance().load();
-        EventBus.getDefault().register(this);
-        super.onStart();
-    }
-
-    @Override
-    protected void onPause() {
-        UserHelper.getInstance().save();
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        UserHelper.getInstance().save();
-        EventBus.getDefault().unregister(this);
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void onLowMemory() {
         Log.e("Main", "Low memory! onLow");
         UserHelper.getInstance().save(); // save before the app gets removed from memory(?)
@@ -263,15 +236,6 @@ public class MainActivity extends BasicActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        FirebaseCrash.log("onSaveInstanceState");
-        if(currentScreen != null)
-            outState.putInt("screen", currentScreen.ordinal());
-        outState.putString("token", UserHelper.getInstance().TOKEN);
-        super.onSaveInstanceState(outState);
     }
 
     private void openTab(int index) {
