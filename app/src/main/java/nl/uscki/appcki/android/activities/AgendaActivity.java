@@ -70,11 +70,17 @@ public class AgendaActivity extends BasicActivity {
         if (getIntent().getBundleExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), AgendaItem.class);
+            if (item == null) {
+                finish();
+            }
+
             viewPager.setAdapter(new AgendaDetailAdapter(getSupportFragmentManager(), item));
 
             for (AgendaParticipant part : item.getParticipants()) {
-                if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
-                    foundUser = true;
+                if (part.getPerson().getId() != null && UserHelper.getInstance().getPerson().getId() != null) {
+                    if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
+                        foundUser = true;
+                    }
                 }
             }
         } else {
