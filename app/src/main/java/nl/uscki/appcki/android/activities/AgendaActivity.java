@@ -189,16 +189,4 @@ public class AgendaActivity extends BasicActivity {
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
         }
     }
-
-    @Override
-    public void onStart() {
-        EventBus.getDefault().register(this);
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
-    }
 }
