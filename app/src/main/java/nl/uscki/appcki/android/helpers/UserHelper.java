@@ -1,5 +1,6 @@
 package nl.uscki.appcki.android.helpers;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
@@ -8,6 +9,7 @@ import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
 
+import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 
@@ -25,16 +27,13 @@ public class UserHelper {
         this.TOKEN = null;
         this.person = null;
         this.loggedIn = false;
+        preferences = App.getContext().getSharedPreferences("userinfo", Context.MODE_PRIVATE);
     }
 
     public static synchronized UserHelper getInstance( ) {
         if (singleton == null)
             singleton=new UserHelper();
         return singleton;
-    }
-
-    public void setPreferences(SharedPreferences preferences) {
-        this.preferences = preferences;
     }
 
     public PersonSimple getPerson() {
@@ -100,6 +99,8 @@ public class UserHelper {
     }
 
     public void load() {
+        if(preferences == null) return;
+
         if(preferences.contains("TOKEN")) {
             Log.e("UserHelper", "prefrences contains token");
             Gson gson = new Gson();

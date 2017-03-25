@@ -8,6 +8,7 @@ import android.util.Log;
 import com.google.firebase.crash.FirebaseCrash;
 
 import de.greenrobot.event.EventBus;
+import de.greenrobot.event.EventBusException;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -21,11 +22,15 @@ public abstract class BasicActivity extends AppCompatActivity {
     protected void onStart() {
         Log.e("Main", "Loading onStart");
         if (!UserHelper.getInstance().isLoggedIn() || UserHelper.getInstance().getPerson() == null) {
-            UserHelper.getInstance().setPreferences(getPreferences(MODE_PRIVATE));
             UserHelper.getInstance().load();
         }
 
-        EventBus.getDefault().register(this);
+        try {
+            EventBus.getDefault().register(this);
+        } catch (EventBusException e) {
+            e.printStackTrace(); // just ignore eventbus exceptions, they are not very relevant
+        }
+
         super.onStart();
     }
 
@@ -38,7 +43,11 @@ public abstract class BasicActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         UserHelper.getInstance().save();
-        EventBus.getDefault().unregister(this);
+        try {
+            EventBus.getDefault().unregister(this);
+        } catch (EventBusException e) {
+            e.printStackTrace(); // just ignore eventbus exceptions, they are not very relevant
+        }
         super.onStop();
     }
 
