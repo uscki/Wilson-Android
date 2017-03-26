@@ -23,6 +23,7 @@ public abstract class BasicActivity extends AppCompatActivity {
         Log.e("Main", "Loading onStart");
         if (!UserHelper.getInstance().isLoggedIn() || UserHelper.getInstance().getPerson() == null) {
             UserHelper.getInstance().load();
+            UserHelper.getInstance().loadCurrentUser();
         }
 
         try {
@@ -37,6 +38,7 @@ public abstract class BasicActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         UserHelper.getInstance().save();
+        UserHelper.getInstance().saveCurrentUser();
         super.onPause();
     }
 

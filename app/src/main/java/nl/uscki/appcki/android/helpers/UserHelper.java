@@ -67,6 +67,28 @@ public class UserHelper {
         return loggedIn;
     }
 
+    public void loadCurrentUser() {
+        if (preferences.contains("current_user")) {
+            String user = preferences.getString("current_user", "null");
+            if (!user.equals("null")) {
+                this.person = new Gson().fromJson(user, PersonSimple.class);
+            }
+        }
+    }
+
+    public void saveCurrentUser() {
+        if (!preferences.contains("current_user")) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("current_user", new Gson().toJson(person));
+            editor.apply();
+        } else {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.remove("current_user");
+            editor.putString("current_user", TOKEN);
+            editor.apply();
+        }
+    }
+
     public void save() {
         if(!preferences.contains("TOKEN")) {
             SharedPreferences.Editor editor = preferences.edit();
