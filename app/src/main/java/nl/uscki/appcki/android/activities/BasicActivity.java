@@ -2,6 +2,7 @@ package nl.uscki.appcki.android.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -9,6 +10,7 @@ import com.google.firebase.crash.FirebaseCrash;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.EventBusException;
+import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -18,6 +20,19 @@ import nl.uscki.appcki.android.helpers.UserHelper;
  */
 
 public abstract class BasicActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        if(savedInstanceState != null) {
+            FirebaseCrash.log("savedInstanceState != null");
+            UserHelper.getInstance().load(savedInstanceState.getString("token"));
+        } else {
+            FirebaseCrash.log("savedInstanceState == null");
+            UserHelper.getInstance().load();
+        }
+
+        super.onCreate(savedInstanceState);
+    }
+
     @Override
     protected void onStart() {
         Log.e("Main", "Loading onStart");
@@ -37,6 +52,7 @@ public abstract class BasicActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        ServiceGenerator.client.dispatcher().cancelAll();
         UserHelper.getInstance().save();
         UserHelper.getInstance().saveCurrentUser();
         super.onPause();
@@ -44,6 +60,7 @@ public abstract class BasicActivity extends AppCompatActivity {
 
     @Override
     public void onStop() {
+        ServiceGenerator.client.dispatcher().cancelAll();
         UserHelper.getInstance().save();
         try {
             EventBus.getDefault().unregister(this);

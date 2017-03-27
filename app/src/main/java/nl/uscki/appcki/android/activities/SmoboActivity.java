@@ -33,7 +33,7 @@ import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
 import retrofit2.Response;
 
-public class SmoboActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, SmoboInfoWidget.OnContextButtonClickListener {
+public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffsetChangedListener, SmoboInfoWidget.OnContextButtonClickListener {
 
     @BindView(R.id.smobo_swiperefresh)
     SwipeRefreshLayout swipeRefreshLayout;

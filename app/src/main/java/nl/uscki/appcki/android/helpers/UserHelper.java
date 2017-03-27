@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.api.ServiceGenerator;
+import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 
 /**
@@ -48,6 +49,8 @@ public class UserHelper {
         this.TOKEN = token;
         this.person = person;
         this.loggedIn = true;
+
+        Services.invalidate();
     }
 
     public void logout() {
@@ -71,6 +74,7 @@ public class UserHelper {
         if (preferences.contains("current_user")) {
             String user = preferences.getString("current_user", "null");
             if (!user.equals("null")) {
+                Log.e("UserHelper", user);
                 this.person = new Gson().fromJson(user, PersonSimple.class);
             }
         }
@@ -84,7 +88,7 @@ public class UserHelper {
         } else {
             SharedPreferences.Editor editor = preferences.edit();
             editor.remove("current_user");
-            editor.putString("current_user", TOKEN);
+            editor.putString("current_user", new Gson().toJson(person));
             editor.apply();
         }
     }
