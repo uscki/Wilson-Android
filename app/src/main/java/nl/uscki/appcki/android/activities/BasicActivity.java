@@ -5,12 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.EventBusException;
-import nl.uscki.appcki.android.api.ServiceGenerator;
+import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -52,7 +53,6 @@ public abstract class BasicActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        ServiceGenerator.client.dispatcher().cancelAll();
         UserHelper.getInstance().save();
         UserHelper.getInstance().saveCurrentUser();
         super.onPause();
@@ -60,7 +60,6 @@ public abstract class BasicActivity extends AppCompatActivity {
 
     @Override
     public void onStop() {
-        ServiceGenerator.client.dispatcher().cancelAll();
         UserHelper.getInstance().save();
         try {
             EventBus.getDefault().unregister(this);
@@ -95,5 +94,10 @@ public abstract class BasicActivity extends AppCompatActivity {
             smoboIntent.putExtra("name", person.getPerson().getPostalname());
             startActivity(smoboIntent);
         }
+    }
+
+    public void onEventMainThread(ErrorEvent event) {
+        Toast toast = Toast.makeText(getApplicationContext(), event.error.getMessage(), Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

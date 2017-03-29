@@ -1,6 +1,5 @@
 package nl.uscki.appcki.android.activities;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -34,7 +33,6 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.ImageZoomEvent;
 import nl.uscki.appcki.android.events.LinkClickedEvent;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
@@ -309,10 +307,6 @@ public class MainActivity extends BasicActivity
     }
 
     // EVENT HANDLING
-    public void onEventMainThread(ErrorEvent event) {
-        Toast toast = Toast.makeText(getApplicationContext(), event.error.getMessage(), Toast.LENGTH_SHORT);
-        toast.show();
-    }
 
     public void onEventMainThread(UserLoggedInEvent event) {
         initLoggedInUI();
