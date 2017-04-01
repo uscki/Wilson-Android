@@ -207,6 +207,7 @@ public class LoginFragment extends Fragment {
                     return new Result(false, "Username of password is incorrect!");
                 }
 
+                //TODO REMOVE THIS IN PRODUCTION
                 Log.i("LoginActivity: ", "token: " + token);
                 Log.i("LoginActivity: ", "decoded: " + new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
                 PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);

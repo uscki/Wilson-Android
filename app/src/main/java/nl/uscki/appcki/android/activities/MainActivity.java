@@ -114,7 +114,7 @@ public class MainActivity extends BasicActivity
         // Check if we're running on Android 5.0 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Call some material design APIs here
-            setTheme(R.style.AppThemeLollipop);
+            //setTheme(R.style.AppThemeLollipop);
         } else {
             // Implement this feature without material design
         }
