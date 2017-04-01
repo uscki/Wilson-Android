@@ -111,16 +111,16 @@ public class VotesGraphView extends View {
         drawBar(canvas);
     }
 
-    private final int round_bar_offset = 20;
-    private final int round_bar_radius = 20;
-    private final int round_bar_size = 40;
+    private final int round_bar_offset = (int)convertDpToPixel(6.6666665f);
+    private final int round_bar_radius = (int)convertDpToPixel(6.6666665f);
+    private final int round_bar_size = (int)convertDpToPixel(13.333333f);
 
     private void drawBar(Canvas canvas) {
         RectF rect;
 
         int contentHeight = getHeight() - paddingTop - paddingBottom;
         if(direction == DIRECTION_LEFT) {
-            int contentWidth = barSize + paddingLeft - 5;
+            int contentWidth = barSize + paddingLeft - (int)convertDpToPixel(1.666666f);
             int x = paddingLeft + round_bar_offset;
             rect = new RectF(x, 0, contentWidth, BAR_HEIGHT);
             canvas.drawRect(rect, barPaint);
@@ -130,11 +130,11 @@ public class VotesGraphView extends View {
 
             canvas.drawText(votesStr,
                     paddingLeft + mTextWidth,
-                    paddingTop + (contentHeight + mTextHeight) - 25,
+                    paddingTop + (contentHeight + mTextHeight) - (int)convertDpToPixel(8.333333f),
                     mTextPaint);
         } else if(direction == DIRECTION_RIGHT) {
             int contentWidth = barSize - paddingRight;
-            int x = 5;
+            int x = (int)convertDpToPixel(1.666666f);
             rect = new RectF(x, 0, contentWidth - round_bar_offset, BAR_HEIGHT);
             canvas.drawRect(rect, barPaint);
 
@@ -143,7 +143,7 @@ public class VotesGraphView extends View {
 
             canvas.drawText(votesStr,
                     contentWidth - mTextWidth - round_bar_offset,
-                    paddingTop + (contentHeight + mTextHeight) - 25,
+                    paddingTop + (contentHeight + mTextHeight) - (int)convertDpToPixel(8.333333f),
                     mTextPaint);
         }
     }
@@ -151,9 +151,9 @@ public class VotesGraphView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if(votes == 0) {
-            barSize = 40;
+            barSize = (int)convertDpToPixel(6.6666665f);
         } else if (votes == votesTotal) {
-            barSize = width - 40;
+            barSize = width - (int)convertDpToPixel(6.6666665f);
         } else {
             float percent = ((float)votes / (float)votesTotal) * 100;
             barSize = (width * (int)percent) / 100;
