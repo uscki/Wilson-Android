@@ -1,5 +1,9 @@
 package nl.uscki.appcki.android.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
@@ -29,6 +33,7 @@ import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import nl.uscki.appcki.android.services.OnetimeAlarmReceiver;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,6 +75,24 @@ public class AgendaActivity extends BasicActivity {
         if (getIntent().getBundleExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), AgendaItem.class);
+            if (item == null || UserHelper.getInstance().getPerson() == null) {
+                finish();
+            }
+
+            viewPager.setAdapter(new AgendaDetailAdapter(getSupportFragmentManager(), item));
+
+            for (AgendaParticipant part : item.getParticipants()) {
+                if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
+                    if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
+                        foundUser = true;
+                    }
+                } else {
+                    finish();
+                }
+            }
+        } else if (getIntent().getStringExtra("item") != null) {
+            Gson gson = new Gson();
+            item = gson.fromJson(getIntent().getStringExtra("item"), AgendaItem.class);
             if (item == null || UserHelper.getInstance().getPerson() == null) {
                 finish();
             }
@@ -144,6 +167,36 @@ public class AgendaActivity extends BasicActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Sets an alarm for 30 minutes before the start time of this event.
+     * @param item
+     */
+    private void setAlarmForEvent(AgendaItem item) {
+        DateTime time = item.getStart().minusMinutes(30);
+        time = new DateTime().plusMinutes(2); // FOR DEBUGGING PURPOSES
+        Log.e("AgendaDetailTabs", "Setting alarm for id: " + item.getId() + " at time: " + time.toString());
+        Gson gson = new Gson();
+
+        Intent myIntent = new Intent(this, OnetimeAlarmReceiver.class);
+        myIntent.putExtra("item", gson.toJson(item));
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, item.getId(), myIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC, time.getMillis(), pendingIntent);
+    }
+
+    private void unsetAlarmForEvent(AgendaItem item) {
+        Log.e("AgendaDetailTabs", "Unsetting alarm for id: " + item.getId());
+        Gson gson = new Gson();
+
+        Intent myIntent = new Intent(this, OnetimeAlarmReceiver.class);
+        myIntent.putExtra("item", gson.toJson(item));
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, item.getId(), myIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+    }
+
     private void subscribeToAgenda(boolean subscribe) {
         if(subscribe) {
             DialogFragment newFragment = new SubscribeDialogFragment();
@@ -190,9 +243,11 @@ public class AgendaActivity extends BasicActivity {
 
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
         if(!event.showSubscribe) {
+            setAlarmForEvent(item);
             menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
         } else {
+            unsetAlarmForEvent(item);
             menu.findItem(R.id.action_agenda_subscribe).setVisible(true);
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
         }
