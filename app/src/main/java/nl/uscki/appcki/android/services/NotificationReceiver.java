@@ -64,17 +64,20 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
         Intent intent = null;
 
-        switch (type) {
-            case "meeting":
-                intent = new Intent(App.getContext(), MeetingActivity.class);
-                break;
-        }
+        if(type != null)
+        {
+            switch (type) {
+                case "meeting":
+                    intent = new Intent(App.getContext(), MeetingActivity.class);
+                    break;
+            }
 
-        if (intent != null) {
-            intent.putExtra("id", Integer.parseInt(remoteMessage.getData().get("id")));
-            intent.setAction(Intent.ACTION_VIEW);
-            PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, intent, 0);
-            n.setContentIntent(pIntent);
+            if (intent != null) {
+                intent.putExtra("id", Integer.parseInt(remoteMessage.getData().get("id")));
+                intent.setAction(Intent.ACTION_VIEW);
+                PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, intent, 0);
+                n.setContentIntent(pIntent);
+            }
         }
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(App.getContext());
