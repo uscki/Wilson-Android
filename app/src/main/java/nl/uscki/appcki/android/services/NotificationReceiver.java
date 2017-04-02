@@ -3,6 +3,7 @@ package nl.uscki.appcki.android.services;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
@@ -69,6 +70,13 @@ public class NotificationReceiver extends FirebaseMessagingService {
             switch (type) {
                 case "meeting":
                     intent = new Intent(App.getContext(), MeetingActivity.class);
+                    break;
+                case "forum":
+                    Intent forumIntent = new Intent(Intent.ACTION_VIEW);
+                    forumIntent.setData(Uri.parse(String.format("https://www.uscki.nl/?pagina=Forum/ViewTopic&topicId=%d&newest=true#newest",
+                            Integer.parseInt(remoteMessage.getData().get("id"))).trim()));
+                    PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, forumIntent, 0);
+                    n.setContentIntent(pIntent);
                     break;
             }
 
