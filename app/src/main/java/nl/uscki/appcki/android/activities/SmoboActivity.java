@@ -9,8 +9,11 @@ import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -28,12 +31,23 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
+import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
 import retrofit2.Response;
 
 public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffsetChangedListener, SmoboInfoWidget.OnContextButtonClickListener {
+
+    // The minimum amount of items to have below your current scroll position
+    // before loading more.
+    private Integer id;
+    private int visibleThreshold = 9;
+    private int lastVisibleItem, totalItemCount;
+    protected Integer page = 0;
+    private int pageSize = 20;
+    private boolean scrollLoad;
+    private boolean noMoreContent;
 
     @BindView(R.id.smobo_swiperefresh)
     SwipeRefreshLayout swipeRefreshLayout;
@@ -68,16 +82,21 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
 
     boolean collapsed = false;
 
+    private Callback<Pageable<Integer>> photosCallback = new Callback<Pageable<Integer>>() {
+        @Override
+        public void onSucces(Response<Pageable<Integer>> response) {
+            noMoreContent = response.body().getLast();
+            scrollLoad = false;
+            ((BaseItemAdapter) mediaGrid.getAdapter()).addItems(response.body().getContent());
+        }
+    };
+
     private Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
         @Override
         public void onSucces(Response<SmoboItem> response) {
             SmoboItem p = response.body();
             swipeRefreshLayout.setRefreshing(false);
             scrollView.setVisibility(View.VISIBLE);
-
-            if (p.getNumOfPhotos() > 0) {
-                ((BaseItemAdapter) mediaGrid.getAdapter()).update(p.getPhotos());
-            }
 
             createAddressInfoWidget(p);
             createEmailInfoWidget(p);
@@ -199,21 +218,50 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (getIntent().getIntExtra("id", 0) != 0) {
-            final Integer id = getIntent().getIntExtra("id", 0);
+            id = getIntent().getIntExtra("id", 0);
             swipeRefreshLayout.setRefreshing(true);
             scrollView.setVisibility(View.INVISIBLE);
             Services.getInstance().smoboService.get(id).enqueue(smoboCallback);
+            Services.getInstance().smoboService.photos(id, page, pageSize).enqueue(photosCallback);
 
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
                     Services.getInstance().smoboService.get(id).enqueue(smoboCallback);
+                    Services.getInstance().smoboService.photos(id, page, pageSize).enqueue(photosCallback);
                 }
             });
         }
 
-        mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<Integer>()));
+        setupMediaGrid();
         smoboGroups.setAdapter(new SmoboCommissieAdapter(new ArrayList<Committee>()));
+    }
+
+    private void setupMediaGrid() {
+        HorizontalGridView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mediaGrid.setLayoutManager(layoutManager);
+
+        mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<Integer>()));
+        mediaGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                LinearLayoutManager layoutManager = (LinearLayoutManager) mediaGrid.getLayoutManager();
+                totalItemCount = layoutManager.getItemCount();
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+
+                if (!scrollLoad // we are not already loading a new page
+                        && totalItemCount <= (lastVisibleItem + visibleThreshold) // we should be loading a new page
+                        && !noMoreContent) { // there is still content to load
+                    // End has been reached
+                    scrollLoad = true;
+                    Log.e("mediagrid", "Loading page: " + page);
+                    page++; // update pageE
+                    Services.getInstance().smoboService.photos(id, page, pageSize).enqueue(photosCallback);
+                }
+            }
+        });
     }
 
     @Override
