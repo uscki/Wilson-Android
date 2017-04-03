@@ -15,7 +15,9 @@ import com.google.firebase.messaging.RemoteMessage;
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
+import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.activities.MeetingActivity;
+import nl.uscki.appcki.android.generated.agenda.Agenda;
 
 /**
  * Created by peter on 3/21/17.
@@ -44,7 +46,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
         String title = remoteMessage.getData().get("title");
         String content = remoteMessage.getData().get("content");
-        String type = remoteMessage.getData().get("type");
+        NotificationType type = NotificationType.valueOf(remoteMessage.getData().get("type"));
 
         // Because androids default BitmapFactory doesn't work with vector drawables
         Bitmap bm = Utils.getBitmapFromVectorDrawable(getApplicationContext(), R.drawable.ic_wilson);
@@ -65,18 +67,32 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
         Intent intent = null;
 
-        if(type != null)
-        {
+        if(type != null) {
             switch (type) {
-                case "meeting":
+                case meeting_filledin:
+                case meeting_planned:
+                case meeting_new:
                     intent = new Intent(App.getContext(), MeetingActivity.class);
                     break;
-                case "forum":
+                case forum_reply:
+                case forum_new_topic:
                     Intent forumIntent = new Intent(Intent.ACTION_VIEW);
                     forumIntent.setData(Uri.parse(String.format("https://www.uscki.nl/?pagina=Forum/ViewTopic&topicId=%d&newest=true#newest",
                             Integer.parseInt(remoteMessage.getData().get("id"))).trim()));
                     PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, forumIntent, 0);
                     n.setContentIntent(pIntent);
+                    break;
+                case agenda_announcement:
+                case agenda_new:
+                case agenda_reply:
+                    intent = new Intent(App.getContext(), AgendaActivity.class);
+                    break;
+                case news: // TODO fix #23
+                    //intent = new Intent(App.getContext(), MeetingActivity.class);
+                    break;
+                case achievement: // what do?
+                    break;
+                case other: // what we do?
                     break;
             }
 
