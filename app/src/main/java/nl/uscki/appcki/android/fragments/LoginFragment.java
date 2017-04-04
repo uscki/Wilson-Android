@@ -133,7 +133,6 @@ public class LoginFragment extends Fragment {
 
             password = MD5(password);
             Services.getInstance().userService.login(userName, password).enqueue(new Callback<Void>() {
-
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
                     showError("Failed to connect to server!");
@@ -142,8 +141,7 @@ public class LoginFragment extends Fragment {
 
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
-                    if(response.isSuccessful())
-                    {
+                    if(response.isSuccessful()) {
                         Headers headers = response.headers();
                         String token = headers.get("X-AUTH-TOKEN");
 
@@ -157,20 +155,17 @@ public class LoginFragment extends Fragment {
                             UserHelper.getInstance().login(token, person);
 
                             EventBus.getDefault().post(new UserLoggedInEvent());
-                        } catch (UnsupportedEncodingException e)
-                        {
+                        } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
-                            showError("Username contains invalid characters");
+                            showError("Token contains invalid characters, please sent help");
                         }
                     }
                     else
                     {
-                        if(response.code() == 401)
-                        {
+                        if(response.code() == 401) {
                             showError("Username or password is incorrect!");
                         }
-                        else
-                        {
+                        else {
                             showError("Unknown error encountered from server");
                         }
                     }
@@ -193,8 +188,7 @@ public class LoginFragment extends Fragment {
         return null;
     }
 
-    private void showError(String error)
-    {
+    private void showError(String error) {
         animation.end();
         passwordView.setError(error);
         passwordView.requestFocus();
