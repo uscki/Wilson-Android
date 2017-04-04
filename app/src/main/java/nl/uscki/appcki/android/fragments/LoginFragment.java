@@ -148,13 +148,13 @@ public class LoginFragment extends Fragment {
                         Log.i("LoginActivity: ", "decoded: " + new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
                         PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
                         UserHelper.getInstance().login(token, person);
+
+                        EventBus.getDefault().post(new UserLoggedInEvent());
                     } catch (UnsupportedEncodingException e)
                     {
                         e.printStackTrace();
                         showError("Username contains invalid characters");
                     }
-
-                    EventBus.getDefault().post(new UserLoggedInEvent());
                 }
 
                 @Override
