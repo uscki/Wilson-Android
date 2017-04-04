@@ -5,6 +5,10 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
+import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.Services;
+import retrofit2.Response;
+
 /**
  * Created by peter on 3/21/17.
  */
@@ -22,8 +26,12 @@ public class FCMInstanceIdService extends FirebaseInstanceIdService {
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
         //sendRegistrationToServer(refreshedToken);
-        //TODO add this in the api, this token needs to be registered in the database for the server
-        // to be able to send messages to this app instance
+        Services.getInstance().userService.registerDeviceId(refreshedToken).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onSucces(Response<Boolean> response) {
+                // what do?
+            }
+        });
 
         super.onTokenRefresh();
     }

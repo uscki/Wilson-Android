@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.crash.FirebaseCrash;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 
@@ -311,6 +312,13 @@ public class MainActivity extends BasicActivity
     public void onEventMainThread(UserLoggedInEvent event) {
         initLoggedInUI();
         openTab(HomeFragment.NEWS);
+
+        Services.getInstance().userService.registerDeviceId(FirebaseInstanceId.getInstance().getToken()).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onSucces(Response<Boolean> response) {
+
+            }
+        });
     }
 
     public void onEventMainThread(OpenFragmentEvent event) {
