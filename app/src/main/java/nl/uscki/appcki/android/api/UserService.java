@@ -14,6 +14,10 @@ import retrofit2.http.Query;
  */
 
 public interface UserService {
+    @FormUrlEncoded
+    @POST("login")
+    Call<Void> login(@Field("username") String username, @Field("password") String password);
+
     @GET("user/current")
     Call<PersonSimple> currentUser();
 

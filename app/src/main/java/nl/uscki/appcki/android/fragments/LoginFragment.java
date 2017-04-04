@@ -22,18 +22,18 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-import java.net.ConnectException;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.io.IOException;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
+import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import okhttp3.Headers;
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -169,7 +169,7 @@ public class LoginFragment extends Fragment {
         }
 
         UserLoginTask(String email, String password) throws java.io.UnsupportedEncodingException {
-            mEmail = URLEncoder.encode(email, "UTF-8");
+            mEmail = email;
             mPassword = password;
         }
 
@@ -189,42 +189,27 @@ public class LoginFragment extends Fragment {
 
         @Override
         protected Result doInBackground(Void... params) {
-            URL api;
-            HttpURLConnection connection = null;
             Gson gson = new Gson();
 
             try {
                 String password = MD5(mPassword);
-                api = new URL(getString(R.string.apiurl) + "login?username=" + mEmail + "&password=" + password); //TODO API: beslissing maken over hash of niet
-                connection = (HttpURLConnection) api.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setConnectTimeout(3*1000); // 3 seconds
+                Call<Void> call = Services.getInstance().userService.login(mEmail, password);
+                Response<Void> response = call.execute();
 
-                String token = connection.getHeaderField("X-AUTH-TOKEN");
-
-                if (token == null) {
-                    connection.disconnect();
-                    return new Result(false, "Username of password is incorrect!");
-                }
+                Headers headers = response.headers();
+                String token = headers.get("X-AUTH-TOKEN");
 
                 //TODO REMOVE THIS IN PRODUCTION
                 Log.i("LoginActivity: ", "token: " + token);
                 Log.i("LoginActivity: ", "decoded: " + new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
                 PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
                 UserHelper.getInstance().login(token, person);
-
-                connection.disconnect();
-            } catch(SocketTimeoutException e) {
-                return new Result(false, "Connection timed out!");
-            } catch(ConnectException e) {
+            } catch(IOException e) {
                 Log.e("LoginFragment", e.getLocalizedMessage());
                 return new Result(false, "Failed to connect to the server!");
             } catch(Exception e) {
                 e.printStackTrace();
                 return new Result(false, "Some error occured!!");
-            } finally {
-                assert connection != null;
-                connection.disconnect();
             }
 
             return new Result(true, null);
