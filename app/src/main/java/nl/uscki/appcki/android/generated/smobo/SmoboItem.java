@@ -23,12 +23,6 @@ public class SmoboItem {
     @SerializedName("person")
     Person person;
     @Expose
-    @SerializedName("numOfPhotos")
-    Integer numOfPhotos;
-    @Expose
-    @SerializedName("photos")
-    List<Integer> photos;
-    @Expose
     @SerializedName("wickiPage")
     List<Object> wickiPage;
 
@@ -54,22 +48,6 @@ public class SmoboItem {
 
     public void setPerson(Person person) {
         this.person = person;
-    }
-
-    public Integer getNumOfPhotos() {
-        return numOfPhotos;
-    }
-
-    public void setNumOfPhotos(Integer numOfPhotos) {
-        this.numOfPhotos = numOfPhotos;
-    }
-
-    public List<Integer> getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(List<Integer> photos) {
-        this.photos = photos;
     }
 
     public List<Object> getWickiPage() {

@@ -4,6 +4,8 @@ import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import nl.uscki.appcki.android.generated.meeting.MeetingOverview;
 import nl.uscki.appcki.android.generated.meeting.Slot;
 import retrofit2.Call;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -25,6 +27,7 @@ public interface MeetingService {
     @GET("meetings/get/{id}")
     Call<MeetingItem> get(@Path("id") Integer id);
 
+    @FormUrlEncoded
     @POST("meetings/slots/{id}")
-    Call<Slot> setSlot(@Path("id") Integer id, @Query("notes") String notes, @Query("canAttend") Boolean canAttend);
+    Call<Slot> setSlot(@Path("id") Integer id, @Field("notes") String notes, @Field("canAttend") Boolean canAttend);
 }

@@ -1,3 +1,5 @@
+package nl.uscki.appcki.android.services;
+
 /*
  * B.A.D.W.O.L.F.
  * AppCKI der USCKI Incognito
@@ -5,8 +7,6 @@
  * Copyright (c) 2017 USCKI Incognito. All rights reserved.
  *
  */
-
-package nl.uscki.api.service.notifications;
 
 public enum NotificationType {
     achievement,
@@ -18,5 +18,6 @@ public enum NotificationType {
     other,
     meeting_filledin,
     meeting_new,
-    meeting_planned
+    meeting_planned,
+    news
 }

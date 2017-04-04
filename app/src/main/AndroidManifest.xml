@@ -52,18 +52,26 @@
                 android:value="nl.uscki.appcki.android.activities.MainActivity" />
         </activity>
 
-        <service
-            android:name=".services.NotificationReceiver">
+        <service android:name=".services.NotificationReceiver">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".services.FCMInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
-        <service
-            android:name=".services.FCMInstanceIdService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-            </intent-filter>
-        </service>
+        <activity
+            android:name=".activities.NewsActivity"
+            android:label="@string/title_activity_news"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="nl.uscki.appcki.android.activities.MainActivity" />
+        </activity>
     </application>
+
 </manifest>

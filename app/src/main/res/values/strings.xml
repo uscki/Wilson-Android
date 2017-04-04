@@ -149,4 +149,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="title_activity_smobo">SmoboActivity</string>
+    <string name="title_activity_news">NewsActivity</string>
 </resources>
