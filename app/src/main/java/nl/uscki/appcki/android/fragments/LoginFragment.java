@@ -23,10 +23,12 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
+import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
@@ -39,12 +41,6 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class LoginFragment extends Fragment {
-
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask authTask = null;
-
     EditText passwordView;
     AutoCompleteTextView userView;
     ImageView logoTop;
@@ -96,9 +92,6 @@ public class LoginFragment extends Fragment {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (authTask != null) {
-            return;
-        }
 
         // Reset errors.
         userView.setError(null);
@@ -140,97 +133,67 @@ public class LoginFragment extends Fragment {
             animation.setInterpolator(new LinearInterpolator());
             animation.start();
 
-            try {
-                authTask = new UserLoginTask(userName, password);
-                authTask.execute();
-            } catch (java.io.UnsupportedEncodingException e) {
-                passwordView.setError("Username contains invalid characters");
-            }
+            password = MD5(password);
+            Services.getInstance().userService.login(userName, password).enqueue(new Callback<Void>() {
+                @Override
+                public void onSucces(Response<Void> response) {
+                    Headers headers = response.headers();
+                    String token = headers.get("X-AUTH-TOKEN");
+
+                    Gson gson = new Gson();
+
+                    try {
+                        //TODO REMOVE THIS IN PRODUCTION
+                        Log.i("LoginActivity: ", "token: " + token);
+                        Log.i("LoginActivity: ", "decoded: " + new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
+                        PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
+                        UserHelper.getInstance().login(token, person);
+                    } catch (UnsupportedEncodingException e)
+                    {
+                        e.printStackTrace();
+                        showError("Username contains invalid characters");
+                    }
+
+                    EventBus.getDefault().post(new UserLoggedInEvent());
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    showError("Failed to connect to server!");
+                    Log.e("LoginFragment", t.getLocalizedMessage());
+                }
+
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if(response.code() == 401)
+                    {
+                        showError("Username or password is incorrect!");
+                    }
+
+                    super.onResponse(call, response);
+                }
+            });
         }
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, UserLoginTask.Result> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        public class Result {
-            boolean succes;
-            String error;
-
-            public Result(boolean succes, String error) {
-                this.succes = succes;
-                this.error = error;
+    public String MD5(String md5) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+            byte[] array = md.digest(md5.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte anArray : array) {
+                sb.append(Integer.toHexString((anArray & 0xFF) | 0x100).substring(1, 3));
             }
+            return sb.toString();
+        } catch (java.security.NoSuchAlgorithmException ignored) {
         }
+        return null;
+    }
 
-        UserLoginTask(String email, String password) throws java.io.UnsupportedEncodingException {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        public String MD5(String md5) {
-            try {
-                java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
-                byte[] array = md.digest(md5.getBytes());
-                StringBuilder sb = new StringBuilder();
-                for (byte anArray : array) {
-                    sb.append(Integer.toHexString((anArray & 0xFF) | 0x100).substring(1, 3));
-                }
-                return sb.toString();
-            } catch (java.security.NoSuchAlgorithmException ignored) {
-            }
-            return null;
-        }
-
-        @Override
-        protected Result doInBackground(Void... params) {
-            Gson gson = new Gson();
-
-            try {
-                String password = MD5(mPassword);
-                Call<Void> call = Services.getInstance().userService.login(mEmail, password);
-                Response<Void> response = call.execute();
-
-                Headers headers = response.headers();
-                String token = headers.get("X-AUTH-TOKEN");
-
-                //TODO REMOVE THIS IN PRODUCTION
-                Log.i("LoginActivity: ", "token: " + token);
-                Log.i("LoginActivity: ", "decoded: " + new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
-                PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
-                UserHelper.getInstance().login(token, person);
-            } catch(IOException e) {
-                Log.e("LoginFragment", e.getLocalizedMessage());
-                return new Result(false, "Failed to connect to the server!");
-            } catch(Exception e) {
-                e.printStackTrace();
-                return new Result(false, "Some error occured!!");
-            }
-
-            return new Result(true, null);
-        }
-
-        @Override
-        protected void onPostExecute(final Result result) {
-            authTask = null;
-            animation.end();
-
-            if (result.succes) {
-                EventBus.getDefault().post(new UserLoggedInEvent());
-            } else {
-                passwordView.setError(result.error);
-                passwordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            authTask = null;
-        }
+    private void showError(String error)
+    {
+        animation.end();
+        passwordView.setError(error);
+        passwordView.requestFocus();
     }
 }
