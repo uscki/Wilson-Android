@@ -1,7 +1,6 @@
 package nl.uscki.appcki.android.fragments;
 
 import android.animation.ObjectAnimator;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -22,19 +21,18 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
-import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import okhttp3.Headers;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -135,27 +133,6 @@ public class LoginFragment extends Fragment {
 
             password = MD5(password);
             Services.getInstance().userService.login(userName, password).enqueue(new Callback<Void>() {
-                @Override
-                public void onSucces(Response<Void> response) {
-                    Headers headers = response.headers();
-                    String token = headers.get("X-AUTH-TOKEN");
-
-                    Gson gson = new Gson();
-
-                    try {
-                        //TODO REMOVE THIS IN PRODUCTION
-                        Log.i("LoginActivity: ", "token: " + token);
-                        Log.i("LoginActivity: ", "decoded: " + new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
-                        PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
-                        UserHelper.getInstance().login(token, person);
-
-                        EventBus.getDefault().post(new UserLoggedInEvent());
-                    } catch (UnsupportedEncodingException e)
-                    {
-                        e.printStackTrace();
-                        showError("Username contains invalid characters");
-                    }
-                }
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
@@ -165,12 +142,38 @@ public class LoginFragment extends Fragment {
 
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
-                    if(response.code() == 401)
+                    if(response.isSuccessful())
                     {
-                        showError("Username or password is incorrect!");
-                    }
+                        Headers headers = response.headers();
+                        String token = headers.get("X-AUTH-TOKEN");
 
-                    super.onResponse(call, response);
+                        Gson gson = new Gson();
+
+                        try {
+                            //TODO REMOVE THIS IN PRODUCTION
+                            Log.i("LoginActivity: ", "token: " + token);
+                            Log.i("LoginActivity: ", "decoded: " + new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
+                            PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
+                            UserHelper.getInstance().login(token, person);
+
+                            EventBus.getDefault().post(new UserLoggedInEvent());
+                        } catch (UnsupportedEncodingException e)
+                        {
+                            e.printStackTrace();
+                            showError("Username contains invalid characters");
+                        }
+                    }
+                    else
+                    {
+                        if(response.code() == 401)
+                        {
+                            showError("Username or password is incorrect!");
+                        }
+                        else
+                        {
+                            showError("Unknown error encountered from server");
+                        }
+                    }
                 }
             });
         }
