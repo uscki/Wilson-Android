@@ -83,6 +83,7 @@ public abstract class BasicActivity extends AppCompatActivity {
             Intent smoboIntent = new Intent(this, SmoboActivity.class);
             smoboIntent.putExtra("id", person.getId());
             smoboIntent.putExtra("name", person.getPostalname());
+            smoboIntent.putExtra("photo", person.getPhotomediaid());
             startActivity(smoboIntent);
         }
     }
@@ -92,6 +93,7 @@ public abstract class BasicActivity extends AppCompatActivity {
             Intent smoboIntent = new Intent(this, SmoboActivity.class);
             smoboIntent.putExtra("id", person.getPerson().getId());
             smoboIntent.putExtra("name", person.getPerson().getPostalname());
+            smoboIntent.putExtra("photo", person.getPerson().getPhotomediaid());
             startActivity(smoboIntent);
         }
     }
