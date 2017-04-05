@@ -18,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
+import nl.uscki.appcki.android.activities.BasicActivity;
 import nl.uscki.appcki.android.activities.NewsActivity;
 import nl.uscki.appcki.android.generated.news.NewsItem;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
@@ -48,6 +49,15 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
         //holder.category.setImageUrl(iconUrl);
 
         holder.metadata.setText("(" + item.getPerson().getPostalname() + " / " + Utils.timestampConversion(item.getTimestamp()));
+        holder.metadata.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getContext() instanceof BasicActivity) {
+                    BasicActivity c = (BasicActivity) v.getContext();
+                    c.openSmoboFor(item.getPerson());
+                }
+            }
+        });
 
         if (item.getLongtextJSON() != null) {
             holder.readmore.setVisibility(View.VISIBLE);
