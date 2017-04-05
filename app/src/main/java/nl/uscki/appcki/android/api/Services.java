@@ -20,6 +20,7 @@ public class Services {
     public QuoteService quoteService;
     public SmoboService smoboService;
     public PollService pollService;
+    public PermissionsService permissionsService;
 
     private Services() {
         agendaService = ServiceGenerator.createService(AgendaService.class);
@@ -33,6 +34,7 @@ public class Services {
         quoteService = ServiceGenerator.createService(QuoteService.class);
         smoboService = ServiceGenerator.createService(SmoboService.class);
         pollService = ServiceGenerator.createService(PollService.class);
+        permissionsService = ServiceGenerator.createService(PermissionsService.class);
     }
 
     // after calling this, the next time getInstance is called all services will be regenerated

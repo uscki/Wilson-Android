@@ -11,10 +11,13 @@ import com.google.firebase.crash.FirebaseCrash;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.EventBusException;
+import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import retrofit2.Response;
 
 /**
  * Created by peter on 3/5/17.
@@ -78,24 +81,23 @@ public abstract class BasicActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-    public void openSmoboFor(PersonSimpleName person) {
-        if(person.getDisplayonline()) {
-            Intent smoboIntent = new Intent(this, SmoboActivity.class);
-            smoboIntent.putExtra("id", person.getId());
-            smoboIntent.putExtra("name", person.getPostalname());
-            smoboIntent.putExtra("photo", person.getPhotomediaid());
-            startActivity(smoboIntent);
-        }
+    public void openSmoboFor(final PersonSimpleName person) {
+        Services.getInstance().permissionsService.hasPermission("useradmin", "admin").enqueue(new Callback<Boolean>() {
+            @Override
+            public void onSucces(Response<Boolean> response) {
+                if(person.getDisplayonline() || response.body()) {
+                    Intent smoboIntent = new Intent(BasicActivity.this, SmoboActivity.class);
+                    smoboIntent.putExtra("id", person.getId());
+                    smoboIntent.putExtra("name", person.getPostalname());
+                    smoboIntent.putExtra("photo", person.getPhotomediaid());
+                    startActivity(smoboIntent);
+                }
+            }
+        });
     }
 
     public void openSmoboFor(PersonWithNote person) {
-        if (person.getPerson().getDisplayonline()) {
-            Intent smoboIntent = new Intent(this, SmoboActivity.class);
-            smoboIntent.putExtra("id", person.getPerson().getId());
-            smoboIntent.putExtra("name", person.getPerson().getPostalname());
-            smoboIntent.putExtra("photo", person.getPerson().getPhotomediaid());
-            startActivity(smoboIntent);
-        }
+        openSmoboFor(person.getPerson());
     }
 
     public void onEventMainThread(ErrorEvent event) {
