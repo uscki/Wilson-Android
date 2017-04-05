@@ -150,4 +150,5 @@
     </string>
     <string name="title_activity_smobo">SmoboActivity</string>
     <string name="title_activity_news">NewsActivity</string>
+    <string name="news_read_more">Read more</string>
 </resources>
