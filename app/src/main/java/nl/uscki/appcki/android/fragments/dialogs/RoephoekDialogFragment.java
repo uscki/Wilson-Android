@@ -1,4 +1,4 @@
-package nl.uscki.appcki.android.fragments.home;
+package nl.uscki.appcki.android.fragments.dialogs;
 
 
 import android.app.Dialog;
