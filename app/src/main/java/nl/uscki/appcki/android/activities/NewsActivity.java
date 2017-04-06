@@ -1,11 +1,7 @@
 package nl.uscki.appcki.android.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -13,9 +9,12 @@ import com.google.gson.Gson;
 import butterknife.BindView;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
+import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.generated.news.NewsItem;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
+import retrofit2.Response;
 
 public class NewsActivity extends BasicActivity {
     NewsItem item;
@@ -40,10 +39,24 @@ public class NewsActivity extends BasicActivity {
             item = new Gson().fromJson(getIntent().getStringExtra("item"), NewsItem.class);
             initViews();
         }
+        if (getIntent().getIntExtra("id", 0) != 0) {
+            Services.getInstance().newsService.get(getIntent().getIntExtra("id", 0)).enqueue(new Callback<NewsItem>() {
+                @Override
+                public void onSucces(Response<NewsItem> response) {
+                    item = response.body();
+                    initViews();
+                }
+            });
+        }
     }
 
     private void initViews() {
-        newsLong.setText(Parser.parse(item.getLongtextJSON(), true, newsLong));
+        if (item.getLongtextJSON() != null) {
+            newsLong.setText(Parser.parse(item.getLongtextJSON(), true, newsLong));
+        } else {
+            newsLong.setText(Parser.parse(item.getShorttextJSON(), true, newsLong));
+        }
+
         title.setText(item.getTitle());
         metadata.setText("(" + item.getPerson().getPostalname() + " / " + Utils.timestampConversion(item.getTimestamp()));
     }

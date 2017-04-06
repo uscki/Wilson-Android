@@ -17,7 +17,7 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.activities.MeetingActivity;
-import nl.uscki.appcki.android.generated.agenda.Agenda;
+import nl.uscki.appcki.android.activities.NewsActivity;
 
 /**
  * Created by peter on 3/21/17.
@@ -74,7 +74,6 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 case meeting_new:
                     intent = new Intent(App.getContext(), MeetingActivity.class);
                     break;
-                case "forum":
                 case forum_reply:
                 case forum_new_topic:
                     Intent forumIntent = new Intent(Intent.ACTION_VIEW);
@@ -88,8 +87,8 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 case agenda_reply:
                     intent = new Intent(App.getContext(), AgendaActivity.class);
                     break;
-                case news: // TODO fix #23
-                    //intent = new Intent(App.getContext(), MeetingActivity.class);
+                case news:
+                    intent = new Intent(App.getContext(), NewsActivity.class);
                     break;
                 case achievement: // what do?
                     break;
