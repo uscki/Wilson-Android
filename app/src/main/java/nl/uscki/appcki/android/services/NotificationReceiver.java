@@ -67,41 +67,39 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
         Intent intent = null;
 
-        if(type != null) {
-            switch (type) {
-                case meeting_filledin:
-                case meeting_planned:
-                case meeting_new:
-                    intent = new Intent(App.getContext(), MeetingActivity.class);
-                    break;
-                case forum_reply:
-                case forum_new_topic:
-                    Intent forumIntent = new Intent(Intent.ACTION_VIEW);
-                    forumIntent.setData(Uri.parse(String.format("https://www.uscki.nl/?pagina=Forum/ViewTopic&topicId=%d&newest=true#newest",
-                            Integer.parseInt(remoteMessage.getData().get("id"))).trim()));
-                    PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, forumIntent, 0);
-                    n.setContentIntent(pIntent);
-                    break;
-                case agenda_announcement:
-                case agenda_new:
-                case agenda_reply:
-                    intent = new Intent(App.getContext(), AgendaActivity.class);
-                    break;
-                case news:
-                    intent = new Intent(App.getContext(), NewsActivity.class);
-                    break;
-                case achievement: // what do?
-                    break;
-                case other: // what we do?
-                    break;
-            }
-
-            if (intent != null) {
-                intent.putExtra("id", Integer.parseInt(remoteMessage.getData().get("id")));
-                intent.setAction(Intent.ACTION_VIEW);
-                PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, intent, 0);
+        switch (type) {
+            case meeting_filledin:
+            case meeting_planned:
+            case meeting_new:
+                intent = new Intent(App.getContext(), MeetingActivity.class);
+                break;
+            case forum_reply:
+            case forum_new_topic:
+                Intent forumIntent = new Intent(Intent.ACTION_VIEW);
+                forumIntent.setData(Uri.parse(String.format("https://www.uscki.nl/?pagina=Forum/ViewTopic&topicId=%d&newest=true#newest",
+                        Integer.parseInt(remoteMessage.getData().get("id"))).trim()));
+                PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, forumIntent, 0);
                 n.setContentIntent(pIntent);
-            }
+                break;
+            case agenda_announcement:
+            case agenda_new:
+            case agenda_reply:
+                intent = new Intent(App.getContext(), AgendaActivity.class);
+                break;
+            case news:
+                intent = new Intent(App.getContext(), NewsActivity.class);
+                break;
+            case achievement: // what do?
+                break;
+            case other: // what we do?
+                break;
+        }
+
+        if (intent != null) {
+            intent.putExtra("id", Integer.parseInt(remoteMessage.getData().get("id")));
+            intent.setAction(Intent.ACTION_VIEW);
+            PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, intent, 0);
+            n.setContentIntent(pIntent);
         }
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(App.getContext());
