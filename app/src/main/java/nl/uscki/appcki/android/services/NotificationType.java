@@ -21,4 +21,3 @@ public enum NotificationType {
     meeting_planned,
     news
 }
-
