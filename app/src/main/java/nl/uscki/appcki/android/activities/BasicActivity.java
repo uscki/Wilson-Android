@@ -8,12 +8,15 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
+import com.google.gson.Gson;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.EventBusException;
+import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.ErrorEvent;
+import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -103,5 +106,30 @@ public abstract class BasicActivity extends AppCompatActivity {
     public void onEventMainThread(ErrorEvent event) {
         Toast toast = Toast.makeText(getApplicationContext(), event.error.getMessage(), Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    public void onEventMainThread(ServerErrorEvent event) {
+        Toast toast;
+        switch (event.error.getStatus()) {
+            case 401: // Unauthorized
+                // TODO what zijn permissions even?
+                break;
+            case 403: // Forbidden
+                toast = Toast.makeText(getApplicationContext(), getString(R.string.notloggedin), Toast.LENGTH_SHORT);
+                toast.show();
+                //initLoggedOutUI();
+                break;
+            case 404: // Not found
+                toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
+                toast.show();
+                break;
+            case 405:
+                break;
+            case 500: // Internal error
+                toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
+                toast.show();
+                Gson gson = new Gson();
+                FirebaseCrash.report(new Exception(gson.toJson(event.error))); // just log this server error to firebase
+        }
     }
 }

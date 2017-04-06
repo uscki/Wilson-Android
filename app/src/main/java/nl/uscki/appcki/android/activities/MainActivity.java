@@ -2,7 +2,6 @@ package nl.uscki.appcki.android.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,29 +20,24 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.gson.Gson;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.events.ImageZoomEvent;
-import nl.uscki.appcki.android.events.LinkClickedEvent;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
-import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
-import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.dialogs.RoephoekDialogFragment;
+import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
@@ -335,41 +329,6 @@ public class MainActivity extends BasicActivity
             return;
         }
         openFragment(event.screen, event.arguments);
-    }
-
-    public void onEventMainThread(ServerErrorEvent event) {
-        Toast toast;
-        switch (event.error.getStatus()) {
-            case 401: // Unauthorized
-                // TODO what zijn permissions even?
-                break;
-            case 403: // Forbidden
-                toast = Toast.makeText(getApplicationContext(), getString(R.string.notloggedin), Toast.LENGTH_SHORT);
-                toast.show();
-                initLoggedOutUI();
-                break;
-            case 404: // Not found
-                toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
-                toast.show();
-                break;
-            case 405:
-                break;
-            case 500: // Internal error
-                toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
-                toast.show();
-                Gson gson = new Gson();
-                FirebaseCrash.report(new Exception(gson.toJson(event.error))); // just log this server error to firebase
-        }
-    }
-
-    public void onEventMainThread(LinkClickedEvent event) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(event.url.replace('\"',' ').trim()));
-        startActivity(intent);
-    }
-
-    public void onEventMainThread(ImageZoomEvent event) {
-        //zoomImageFromThumb(event.startBounds, event.id);
     }
 
     @Override
