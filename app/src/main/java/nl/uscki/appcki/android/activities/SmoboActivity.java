@@ -3,9 +3,13 @@ package nl.uscki.appcki.android.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.FloatRange;
+import android.support.annotation.IntRange;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v17.leanback.widget.HorizontalGridView;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -31,6 +36,7 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
+import nl.uscki.appcki.android.fragments.adapters.SmoboViewPagerAdapter;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
@@ -39,20 +45,9 @@ import retrofit2.Response;
 
 public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffsetChangedListener, SmoboInfoWidget.OnContextButtonClickListener {
 
-    // The minimum amount of items to have below your current scroll position
-    // before loading more.
-    private Integer id;
-    private int visibleThreshold = 9;
-    private int lastVisibleItem, totalItemCount;
-    protected Integer page = 0;
-    private int pageSize = 20;
-    private boolean scrollLoad;
-    private boolean noMoreContent;
+    public static final int PERSON = 0;
+    public static final int WICKI = 1;
 
-    @BindView(R.id.smobo_swiperefresh)
-    SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.scrollView)
-    NestedScrollView scrollView;
     @BindView(R.id.appbar)
     AppBarLayout appBarLayout;
     @BindView(R.id.collapsing_toolbar)
@@ -63,134 +58,12 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
     @BindView(R.id.smobo_profile)
     SimpleDraweeView profile;
 
-    @BindView(R.id.smobo_media_gridview)
-    HorizontalGridView mediaGrid;
-
-    @BindView(R.id.smobo_address_info)
-    FrameLayout addressInfo;
-    @BindView(R.id.smobo_email_info)
-    FrameLayout emailInfo;
-    @BindView(R.id.smobo_phone_info)
-    FrameLayout phoneInfo;
-    @BindView(R.id.smobo_mobile_info)
-    FrameLayout mobileInfo;
-    @BindView(R.id.smobo_birthday_info)
-    FrameLayout birthdayInfo;
-
-    @BindView(R.id.smobo_groups)
-    RecyclerView smoboGroups;
+    @BindView(R.id.tabs)
+    TabLayout tabLayout;
+    @BindView(R.id.smobo_viewpager)
+    ViewPager viewPager;
 
     boolean collapsed = false;
-
-    private Callback<Pageable<Integer>> photosCallback = new Callback<Pageable<Integer>>() {
-        @Override
-        public void onSucces(Response<Pageable<Integer>> response) {
-            noMoreContent = response.body().getLast();
-            scrollLoad = false;
-            ((BaseItemAdapter) mediaGrid.getAdapter()).addItems(response.body().getContent());
-        }
-    };
-
-    private Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
-        @Override
-        public void onSucces(Response<SmoboItem> response) {
-            SmoboItem p = response.body();
-            swipeRefreshLayout.setRefreshing(false);
-            scrollView.setVisibility(View.VISIBLE);
-
-            createAddressInfoWidget(p);
-            createEmailInfoWidget(p);
-            createPhoneInfoWidget(p);
-            createMobileInfoWidget(p);
-            createBirthdayInfoWidget(p);
-
-            ((BaseItemAdapter) smoboGroups.getAdapter()).update(p.getGroups());
-
-            if (p.getPerson().getPhotomediaid() != null) {
-                profile.setImageURI(MediaAPI.getMediaUri(p.getPerson().getPhotomediaid()));
-            } else {
-                appBarLayout.setExpanded(false);
-            }
-        }
-    };
-
-    private void createAddressInfoWidget(SmoboItem p) {
-        Bundle bundle = new Bundle();
-        bundle.putString("maintext", p.getPerson().getAddress1() + "\n" + p.getPerson().getZipcode() + ", " + p.getPerson().getCity());
-        bundle.putString("subtext", "Home");
-        bundle.putInt("infotype", SmoboInfoWidget.InfoType.ADRESS.ordinal());
-
-        SmoboInfoWidget widget = new SmoboInfoWidget();
-        widget.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.smobo_address_info, widget)
-                .commit();
-    }
-
-    private void createEmailInfoWidget(SmoboItem p) {
-        Bundle bundle = new Bundle();
-        bundle.putString("maintext", p.getPerson().getEmailaddress());
-        bundle.putString("subtext", "Home");
-        bundle.putInt("infotype", SmoboInfoWidget.InfoType.EMAIL.ordinal());
-
-        SmoboInfoWidget widget = new SmoboInfoWidget();
-        widget.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.smobo_email_info, widget)
-                .commit();
-    }
-
-    private void createPhoneInfoWidget(SmoboItem p) {
-        if(p.getPerson().getPhonenumber() != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString("maintext", p.getPerson().getPhonenumber());
-            bundle.putString("subtext", "Home");
-            bundle.putInt("infotype", SmoboInfoWidget.InfoType.PHONE.ordinal());
-
-            SmoboInfoWidget widget = new SmoboInfoWidget();
-            widget.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.smobo_phone_info, widget)
-                    .commit();
-        } else {
-            phoneInfo.setPadding(0,0,0,0);
-        }
-    }
-
-    private void createMobileInfoWidget(SmoboItem p) {
-        if (p.getPerson().getMobilenumber() != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString("maintext", p.getPerson().getMobilenumber());
-            bundle.putString("subtext", "Mobile");
-            bundle.putInt("infotype", SmoboInfoWidget.InfoType.PHONE.ordinal());
-
-            SmoboInfoWidget widget = new SmoboInfoWidget();
-            widget.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.smobo_mobile_info, widget)
-                    .commit();
-        } else {
-            mobileInfo.setPadding(0,0,0,0);
-        }
-    }
-
-    private void createBirthdayInfoWidget(SmoboItem p) {
-        if (p.getPerson().getMobilenumber() != null) {
-            Bundle bundle = new Bundle();
-            String birthday = p.getPerson().getBirthdate().toString("dd-MM-yyyy");
-            bundle.putString("maintext", birthday);
-            bundle.putString("subtext", "Verjaardag");
-            bundle.putInt("infotype", SmoboInfoWidget.InfoType.BIRTHDAY.ordinal());
-
-            SmoboInfoWidget widget = new SmoboInfoWidget();
-            widget.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.smobo_mobile_info, widget)
-                    .commit();
-        } else {
-            mobileInfo.setPadding(0,0,0,0);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,10 +80,6 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
         setContentView(R.layout.activity_smobo);
         ButterKnife.bind(this);
 
-        if(getIntent().getStringExtra("name") != null) {
-            collapsingToolbarLayout.setTitle(getIntent().getStringExtra("name"));
-            collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.AppTheme_CollapsingToolbarTitle);
-        }
         toolbar.setTitle(" ");
 
         setSupportActionBar(toolbar);
@@ -218,50 +87,43 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (getIntent().getIntExtra("id", 0) != 0) {
-            id = getIntent().getIntExtra("id", 0);
-            swipeRefreshLayout.setRefreshing(true);
-            scrollView.setVisibility(View.INVISIBLE);
-            Services.getInstance().smoboService.get(id).enqueue(smoboCallback);
-            Services.getInstance().smoboService.photos(id, page, pageSize).enqueue(photosCallback);
+            if(getIntent().getStringExtra("name") != null) {
+                collapsingToolbarLayout.setTitle(" ");
+                tabLayout.addTab(tabLayout.newTab().setText(getIntent().getStringExtra("name")), PERSON);
+                collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.AppTheme_CollapsingToolbarTitle);
+            }
 
-            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            int id = getIntent().getIntExtra("id", 0);
+
+
+            tabLayout.addTab(tabLayout.newTab().setText("WiCKI"), WICKI);
+            viewPager.setAdapter(new SmoboViewPagerAdapter(getSupportFragmentManager(), id));
+
+            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
-                public void onRefresh() {
-                    Services.getInstance().smoboService.get(id).enqueue(smoboCallback);
-                    Services.getInstance().smoboService.photos(id, page, pageSize).enqueue(photosCallback);
+                public void onTabSelected(TabLayout.Tab tab) {
+                    //setCurrentScreen(tab.getPosition());
+                    viewPager.setCurrentItem(tab.getPosition());
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+
                 }
             });
         }
 
-        setupMediaGrid();
-        smoboGroups.setAdapter(new SmoboCommissieAdapter(new ArrayList<Committee>()));
-    }
-
-    private void setupMediaGrid() {
-        HorizontalGridView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        mediaGrid.setLayoutManager(layoutManager);
-
-        mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<Integer>()));
-        mediaGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                LinearLayoutManager layoutManager = (LinearLayoutManager) mediaGrid.getLayoutManager();
-                totalItemCount = layoutManager.getItemCount();
-                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-
-                if (!scrollLoad // we are not already loading a new page
-                        && totalItemCount <= (lastVisibleItem + visibleThreshold) // we should be loading a new page
-                        && !noMoreContent) { // there is still content to load
-                    // End has been reached
-                    scrollLoad = true;
-                    Log.e("mediagrid", "Loading page: " + page);
-                    page++; // update pageE
-                    Services.getInstance().smoboService.photos(id, page, pageSize).enqueue(photosCallback);
-                }
-            }
-        });
+        if (getIntent().getIntExtra("photo", 0) != 0) {
+            profile.setImageURI(MediaAPI.getMediaUri(getIntent().getIntExtra("photo", 0)));
+        } else {
+            appBarLayout.setExpanded(false);
+        }
     }
 
     @Override
