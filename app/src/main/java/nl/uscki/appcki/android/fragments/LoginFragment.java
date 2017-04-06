@@ -159,9 +159,7 @@ public class LoginFragment extends Fragment {
                             e.printStackTrace();
                             showError("Token contains invalid characters, please sent help");
                         }
-                    }
-                    else
-                    {
+                    } else {
                         if(response.code() == 401) {
                             showError("Username or password is incorrect!");
                         }
