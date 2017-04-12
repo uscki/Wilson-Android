@@ -304,15 +304,19 @@ public class MainActivity extends BasicActivity
     // EVENT HANDLING
 
     public void onEventMainThread(UserLoggedInEvent event) {
-        initLoggedInUI();
-        openTab(HomeFragment.NEWS);
+        if (event.loggedIn) {
+            initLoggedInUI();
+            openTab(HomeFragment.NEWS);
 
-        Services.getInstance().userService.registerDeviceId(FirebaseInstanceId.getInstance().getToken()).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onSucces(Response<Boolean> response) {
+            Services.getInstance().userService.registerDeviceId(FirebaseInstanceId.getInstance().getToken()).enqueue(new Callback<Boolean>() {
+                @Override
+                public void onSucces(Response<Boolean> response) {
 
-            }
-        });
+                }
+            });
+        } else {
+            initLoggedOutUI();
+        }
     }
 
     public void onEventMainThread(OpenFragmentEvent event) {

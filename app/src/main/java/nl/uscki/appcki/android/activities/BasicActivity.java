@@ -1,6 +1,7 @@
 package nl.uscki.appcki.android.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +17,9 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.ErrorEvent;
+import nl.uscki.appcki.android.events.LinkClickedEvent;
 import nl.uscki.appcki.android.events.ServerErrorEvent;
+import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -117,7 +120,7 @@ public abstract class BasicActivity extends AppCompatActivity {
             case 403: // Forbidden
                 toast = Toast.makeText(getApplicationContext(), getString(R.string.notloggedin), Toast.LENGTH_SHORT);
                 toast.show();
-                //initLoggedOutUI();
+                EventBus.getDefault().post(new UserLoggedInEvent(false)); // initialise logged out ui when in main activity
                 break;
             case 404: // Not found
                 toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
@@ -131,5 +134,11 @@ public abstract class BasicActivity extends AppCompatActivity {
                 Gson gson = new Gson();
                 FirebaseCrash.report(new Exception(gson.toJson(event.error))); // just log this server error to firebase
         }
+    }
+
+    public void onEventMainThread(LinkClickedEvent event) {
+        Intent urlIntent = new Intent(Intent.ACTION_VIEW);
+        urlIntent.setData(Uri.parse(event.url.replace('\"',' ').trim()));
+        startActivity(urlIntent);
     }
 }

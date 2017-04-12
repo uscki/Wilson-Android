@@ -154,7 +154,7 @@ public class LoginFragment extends Fragment {
                             PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
                             UserHelper.getInstance().login(token, person);
 
-                            EventBus.getDefault().post(new UserLoggedInEvent());
+                            EventBus.getDefault().post(new UserLoggedInEvent(true));
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                             showError("Token contains invalid characters, please sent help");
