@@ -12,10 +12,7 @@ import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.fragments.RefreshableFragment;
-import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
-import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
 import retrofit2.Response;
 
@@ -33,7 +30,7 @@ public class SmoboWickiFragment extends Fragment {
             //swipeContainer.setRefreshing(false);
 
             if (p.getWickiPage() != null)
-                wickiText.setText(Parser.parse(p.getWickiPage(), true, wickiText));
+                wickiText.setText(p.getWickiPage(), true);
         }
     };
 
