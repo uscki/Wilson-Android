@@ -26,6 +26,10 @@
             android:id="@+id/nav_meeting"
             android:icon="@drawable/account_multiple"
             android:title="Vergaderplanner" />
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/account_multiple"
+            android:title="Zoeken" />
     </group>
 
     <group android:checkableBehavior="single">

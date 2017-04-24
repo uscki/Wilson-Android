@@ -43,7 +43,7 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
 
         holder.note.setText(item.getNote());
 
-        if(item.getPerson().getPhotomediaid() != null) {
+        if(item.getPerson().getPhotomediaid() != 0) {
             holder.profile.setImageURI(MediaAPI.getMediaUri(item.getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL));
         }
 

@@ -19,7 +19,7 @@ public class PersonSimpleName {
     String postalname;
     @Expose
     @SerializedName("photomediaid")
-    Integer photomediaid;
+    int photomediaid;
     @Expose
     @SerializedName("displayonline")
     Boolean displayonline;
@@ -48,7 +48,7 @@ public class PersonSimpleName {
         this.postalname = postalname;
     }
 
-    public Integer getPhotomediaid() {
+    public int getPhotomediaid() {
         return photomediaid;
     }
 

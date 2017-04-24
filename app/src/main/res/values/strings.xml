@@ -31,6 +31,7 @@
 
     <string name="title_activity_main">MainActivity</string>
 
+    <string name="search_no_results">We konden niemand vinden.</string>
     <string name="news_no_new_news">Er is geen nieuws meer.</string>
 
     <string name="roephoek_dialog_name_hint">Naam</string>

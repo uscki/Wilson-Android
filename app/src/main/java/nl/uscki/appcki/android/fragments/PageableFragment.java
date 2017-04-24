@@ -39,7 +39,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     // The current page
     protected Integer page;
     private boolean noMoreContent;
-    private boolean refresh;
+    protected boolean refresh;
     private boolean scrollLoad;
 
     protected Callback<T> callback = new Callback<T>() {

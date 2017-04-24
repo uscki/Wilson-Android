@@ -5,12 +5,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.Gson;
 
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.EventBusException;
 import nl.uscki.appcki.android.R;
@@ -30,6 +32,9 @@ import retrofit2.Response;
  */
 
 public abstract class BasicActivity extends AppCompatActivity {
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if(savedInstanceState != null) {

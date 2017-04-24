@@ -1,5 +1,6 @@
 package nl.uscki.appcki.android.activities;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -42,6 +43,7 @@ import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
 import nl.uscki.appcki.android.fragments.quotes.QuoteFragment;
+import nl.uscki.appcki.android.fragments.search.SmoboSearch;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Response;
@@ -69,7 +71,8 @@ public class MainActivity extends BasicActivity
         MEETING_DETAIL,
         QUOTE_OVERVIEW,
         POLL_VOTE,
-        POLL_RESULT
+        POLL_RESULT,
+        SMOBO_SEARCH
     }
 
     public static Screen currentScreen;
@@ -100,18 +103,12 @@ public class MainActivity extends BasicActivity
             openTab(HomeFragment.NEWS);
         }
 
-        if(getIntent().getAction().equals(Intent.ACTION_VIEW)) {
+        // Get the intent, verify the action and get the query
+        Intent intent = getIntent();
+        if(Intent.ACTION_VIEW.equals(intent.getAction())) {
             Bundle args = new Bundle();
             args.putString("item", getIntent().getStringExtra("item"));
             openFragment(new AgendaDetailTabsFragment(), args);
-        }
-
-        // Check if we're running on Android 5.0 or higher
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // Call some material design APIs here
-            //setTheme(R.style.AppThemeLollipop);
-        } else {
-            // Implement this feature without material design
         }
 
         // TODO configure shit for this server side
@@ -196,6 +193,9 @@ public class MainActivity extends BasicActivity
             } else if (id == R.id.nav_meeting) {
                 openFragment(new MeetingOverviewFragment(), null);
                 currentScreen = Screen.MEETING_OVERVIEW;
+            } else if (id == R.id.nav_search) {
+                openFragment(new SmoboSearch(), null);
+                currentScreen = Screen.SMOBO_SEARCH;
             } else if (id == R.id.nav_logout) {
                 UserHelper.getInstance().logout();
                 initLoggedOutUI();
