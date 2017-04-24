@@ -27,7 +27,7 @@ public class SmoboWickiFragment extends Fragment {
         @Override
         public void onSucces(Response<SmoboItem> response) {
             SmoboItem p = response.body();
-            //swipeContainer.setRefreshing(false);
+            swipeContainer.setRefreshing(false);
 
             if (p.getWickiPage() != null)
                 wickiText.setText(p.getWickiPage(), true);
