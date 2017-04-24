@@ -55,14 +55,12 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/colorWhite</item>
-        <item name="android:typeface">monospace</item>
     </style>
 
     <style name="SpoilerTextVisible" parent="@android:style/TextAppearance.Small">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/colorNormalText</item>
-        <item name="android:typeface">monospace</item>
     </style>
 
     <style name="AppTheme.CollapsingToolbarTitle" parent="TextAppearance.AppCompat">

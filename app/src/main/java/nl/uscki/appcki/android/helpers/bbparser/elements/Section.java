@@ -35,7 +35,7 @@ public class Section extends GenericElement {
 
     @Override
     public SpannableStringBuilder getSpannedText(BBTextView view) {
-        SpannableStringBuilder str = Parser.parse(getContent(), true, view);
+        final SpannableStringBuilder str = Parser.parse(getContent(), true, view);
         final String prefix = getParameter();
 
         // insert "Section" header
@@ -48,17 +48,21 @@ public class Section extends GenericElement {
             public void onClick(View widget) {
                 BBTextView view = (BBTextView) widget;
                 CharSequence text = view.getText();
-                SpannableStringBuilder str = new SpannableStringBuilder(text);
+                SpannableStringBuilder str2 = new SpannableStringBuilder(text);
+
+                // this still won't work when sections have the same title
+                int start = str2.toString().indexOf(prefix) + prefix.length();
+                int end = str2.toString().indexOf(str.toString()) + str.length();
 
                 if(view.visibilityOfBBUnit) {
-                    str.setSpan(new TextAppearanceSpan(App.getContext(), R.style.SpoilerTextVisible), prefix.length(), str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    str2.setSpan(new TextAppearanceSpan(App.getContext(), R.style.SpoilerTextVisible), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     view.visibilityOfBBUnit = false;
                 } else {
-                    str.setSpan(new TextAppearanceSpan(App.getContext(), R.style.SpoilerTextInvisible), prefix.length(), str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    str2.setSpan(new TextAppearanceSpan(App.getContext(), R.style.SpoilerTextInvisible), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     view.visibilityOfBBUnit = true;
                 }
 
-                view.setText(str);
+                view.setText(str2);
             }
         }, 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         str.setSpan(new TextAppearanceSpan(App.getContext(), R.style.SpoilerTextVisible), prefix.length(), str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
