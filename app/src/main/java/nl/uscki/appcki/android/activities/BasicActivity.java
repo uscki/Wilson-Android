@@ -17,6 +17,7 @@ import de.greenrobot.event.EventBus;
 import de.greenrobot.event.EventBusException;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.LinkClickedEvent;
@@ -86,6 +87,7 @@ public abstract class BasicActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         FirebaseCrash.log("onSaveInstanceState");
+        ServiceGenerator.client.dispatcher().cancelAll(); // somehow the app crashes without this
         if(MainActivity.currentScreen != null)
             outState.putInt("screen", MainActivity.currentScreen.ordinal());
         outState.putString("token", UserHelper.getInstance().TOKEN);
