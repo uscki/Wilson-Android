@@ -11,6 +11,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.List;
 
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.activities.BasicActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDeelnemersAdapter;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
@@ -46,11 +47,20 @@ public class SmoboSearchResultAdapter extends BaseItemAdapter<SmoboSearchResultA
         holder.profile.setImageURI("");
     }
 
-    private void resetViews(ViewHolder holder, PersonSimpleName person) {
+    private void resetViews(ViewHolder holder, final PersonSimpleName person) {
         holder.mItem = person;
         holder.name.setText(person.getPostalname());
         holder.note.setText("");
         holder.profile.setImageURI(MediaAPI.getMediaUri(person.getPhotomediaid(), MediaAPI.MediaSize.SMALL));
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getContext() instanceof BasicActivity) {
+                    BasicActivity o = (BasicActivity) v.getContext();
+                    o.openSmoboFor(person);
+                }
+            }
+        });
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
