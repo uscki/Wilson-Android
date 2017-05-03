@@ -25,17 +25,31 @@ public class Utils {
         DateTime now = DateTime.now();
         DateTime other = new DateTime(time);
         int minutes = Minutes.minutesBetween(other, now).getMinutes();
-        if (minutes > 60) {
+        if (minutes == 1) {
+            return "(± 1 minuut geleden)";
+        } else if (minutes > 60) {
             int hours = Hours.hoursBetween(other, now).getHours();
-            if(hours > 24) {
+            if (hours == 1) {
+                return "(± 1 uur geleden)";
+            } else if(hours > 24) {
                 int days = Days.daysBetween(other, now).getDays();
-                if(days > 7) {
+                if (days == 1) {
+                    return "(± 1 dag geleden)";
+                } else if(days > 7) {
                     int weeks = Weeks.weeksBetween(other, now).getWeeks();
-                    if(weeks > 4) {
+                    if (weeks == 1) {
+                        return "(± 1 week geleden)";
+                    } else if(weeks > 4) {
                         int months = Months.monthsBetween(other, now).getMonths();
-                        if(months > 12) {
+                        if (months == 1) {
+                            return "(± 1 maand geleden)";
+                        } else if(months > 12) {
                             int years = Years.yearsBetween(other, now).getYears();
-                            return "(± " + years + " jaren geleden)";
+                            if (years == 1) {
+                                return "(± 1 jaar geleden)";
+                            } else {
+                                return "(± " + years + " jaren geleden)";
+                            }
                         } else {
                             return "(± " + months + " maanden geleden)";
                         }
