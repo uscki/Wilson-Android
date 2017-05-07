@@ -20,9 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
-import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
@@ -164,7 +162,7 @@ public class SmoboPersonFragment extends Fragment {
             SmoboInfoWidget widget = new SmoboInfoWidget();
             widget.setArguments(bundle);
             context.getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.smobo_mobile_info, widget)
+                    .replace(R.id.smobo_birthday_info, widget)
                     .commit();
         } else {
             mobileInfo.setPadding(0,0,0,0);
