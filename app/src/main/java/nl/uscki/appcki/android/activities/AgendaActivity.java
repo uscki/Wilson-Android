@@ -1,15 +1,13 @@
 package nl.uscki.appcki.android.activities;
 
-import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.PermissionChecker;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,13 +16,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
-import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.error.Error;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
@@ -40,14 +41,19 @@ import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 import nl.uscki.appcki.android.services.OnetimeAlarmReceiver;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AgendaActivity extends AppCompatActivity {
     AgendaItem item;
+    @BindView(R.id.tabLayout)
     TabLayout tabLayout;
+    @BindView(R.id.viewpager)
     ViewPager viewPager;
+    @BindView(R.id.agenda_poster)
+    SimpleDraweeView poster;
+    @BindView(R.id.appbar)
+    AppBarLayout appBarLayout;
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     boolean foundUser = false;
@@ -57,66 +63,51 @@ public class AgendaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Check if we're running on Android 5.0 or higher
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        } else {
-            // Implement this feature without material design
-        }*/
-
         setContentView(R.layout.activity_agenda);
+        ButterKnife.bind(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         MainActivity.currentScreen = MainActivity.Screen.AGENDA_DETAIL;
 
-        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        tabLayout.addTab(tabLayout.newTab().setText("Agenda"));
-        tabLayout.addTab(tabLayout.newTab().setText("Deelnemers"));
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-
         if (getIntent().getBundleExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), AgendaItem.class);
-            if (item == null || UserHelper.getInstance().getPerson() == null) {
-                finish();
-            }
-
-            viewPager.setAdapter(new AgendaDetailAdapter(getSupportFragmentManager(), item));
-
-            for (AgendaParticipant part : item.getParticipants()) {
-                if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
-                    if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
-                        foundUser = true;
-                    }
-                } else {
-                    finish();
-                }
-            }
         } else if (getIntent().getStringExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getStringExtra("item"), AgendaItem.class);
-            if (item == null || UserHelper.getInstance().getPerson() == null) {
-                finish();
-            }
-
-            viewPager.setAdapter(new AgendaDetailAdapter(getSupportFragmentManager(), item));
-
-            for (AgendaParticipant part : item.getParticipants()) {
-                if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
-                    if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
-                        foundUser = true;
-                    }
-                } else {
-                    finish();
-                }
-            }
         } else {
             // the item is no longer loaded so we can't open this activity, thus we'll close it
             finish();
+        }
+
+        if (item == null || UserHelper.getInstance().getPerson() == null) {
+            finish();
+        }
+
+        // from this point onward item should not be null
+
+        if (item.getPosterid() != null) {
+            poster.setImageURI(MediaAPI.getMediaUri(item.getPosterid()));
+        } else {
+            appBarLayout.setBackground(getDrawable(R.color.colorPrimary));
+        }
+
+        getSupportActionBar().setTitle(item.getTitle());
+        tabLayout.addTab(tabLayout.newTab().setText("Details"));
+        tabLayout.addTab(tabLayout.newTab().setText("Deelnemers"));
+
+        viewPager.setAdapter(new AgendaDetailAdapter(getSupportFragmentManager(), item));
+
+        for (AgendaParticipant part : item.getParticipants()) {
+            if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
+                if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
+                    foundUser = true;
+                }
+            } else {
+                finish();
+            }
         }
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -234,7 +225,7 @@ public class AgendaActivity extends AppCompatActivity {
      */
     private void setAlarmForEvent(AgendaItem item) {
         DateTime time = item.getStart().minusMinutes(30);
-        time = new DateTime().plusMinutes(2); // FOR DEBUGGING PURPOSES
+        time = new DateTime().plusMinutes(2); // TODO FOR DEBUGGING PURPOSES
         Log.e("AgendaDetailTabs", "Setting alarm for id: " + item.getId() + " at time: " + time.toString());
         Gson gson = new Gson();
 
