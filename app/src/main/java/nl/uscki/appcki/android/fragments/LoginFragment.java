@@ -131,7 +131,6 @@ public class LoginFragment extends Fragment {
             animation.setInterpolator(new LinearInterpolator());
             animation.start();
 
-            //password = MD5(password);
             Services.getInstance().userService.login(userName, password).enqueue(new Callback<Void>() {
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
@@ -170,20 +169,6 @@ public class LoginFragment extends Fragment {
                 }
             });
         }
-    }
-
-    public String MD5(String md5) {
-        try {
-            java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
-            byte[] array = md.digest(md5.getBytes());
-            StringBuilder sb = new StringBuilder();
-            for (byte anArray : array) {
-                sb.append(Integer.toHexString((anArray & 0xFF) | 0x100).substring(1, 3));
-            }
-            return sb.toString();
-        } catch (java.security.NoSuchAlgorithmException ignored) {
-        }
-        return null;
     }
 
     private void showError(String error) {
