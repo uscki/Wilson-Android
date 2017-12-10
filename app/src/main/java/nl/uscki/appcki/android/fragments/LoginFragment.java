@@ -131,7 +131,7 @@ public class LoginFragment extends Fragment {
             animation.setInterpolator(new LinearInterpolator());
             animation.start();
 
-            password = MD5(password);
+            //password = MD5(password);
             Services.getInstance().userService.login(userName, password).enqueue(new Callback<Void>() {
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
