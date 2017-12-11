@@ -69,7 +69,7 @@ public class SmoboPersonFragment extends Fragment {
     FrameLayout birthdayInfo;
     @BindView(R.id.smobo_groups)
     RecyclerView smoboGroups;
-    @BindView(R.id.smobo_media_gridview)
+    //@BindView(R.id.smobo_media_gridview)
     HorizontalGridView mediaGrid;
     @BindView(R.id.smobo_swiperefresh)
     SwipeRefreshLayout swipeContainer;
@@ -177,13 +177,13 @@ public class SmoboPersonFragment extends Fragment {
         if (getArguments() != null) {
             this.id = getArguments().getInt("id");
 
-            setupMediaGrid();
+            //setupMediaGrid();
             setupSwipeContainer();
             smoboGroups.setAdapter(new SmoboCommissieAdapter(new ArrayList<Committee>()));
 
             swipeContainer.setRefreshing(true);
             Services.getInstance().smoboService.get(id).enqueue(smoboCallback);
-            Services.getInstance().smoboService.photos(id, page, pageSize).enqueue(photosCallback);
+            //Services.getInstance().smoboService.photos(id, page, pageSize).enqueue(photosCallback);
         }
 
         return view;
