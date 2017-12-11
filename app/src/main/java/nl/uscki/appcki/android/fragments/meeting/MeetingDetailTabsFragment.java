@@ -112,22 +112,6 @@ public class MeetingDetailTabsFragment extends Fragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_meeting_save) {
-            //TODO save item in agenda
-            Ask.on(this.getActivity())
-                    .forPermissions(Manifest.permission.ACCESS_COARSE_LOCATION
-                            , Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    .withRationales("Location permission need for map to work properly",
-                            "In order to save file you will need to grant storage permission") //optional
-                    .go();
-            CalendarHelper.getInstance().addMeeting(this.item);
-            return true; // consume event
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onStart() {
        // EventBus.getDefault().register(this);
         super.onStart();
