@@ -27,6 +27,7 @@ import java.net.ConnectException;
 import de.greenrobot.event.EventBus;
 
 import nl.uscki.appcki.android.activities.MainActivity;
+import nl.uscki.appcki.android.fragments.dialogs.ConfirmationDialog;
 import nl.uscki.appcki.android.services.OnetimeAlarmReceiver;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
@@ -45,7 +46,7 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AgendaDetailTabsFragment extends Fragment {
+public class AgendaDetailTabsFragment extends Fragment implements ConfirmationDialog.ConfirmationDialogListener {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
@@ -126,7 +127,12 @@ public class AgendaDetailTabsFragment extends Fragment {
         menu.findItem(R.id.action_agenda_unsubscribe).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                subscribeToAgenda(false);
+                ConfirmationDialog dialog = new ConfirmationDialog();
+                Bundle args = new Bundle();
+                args.putInt("messageId", R.string.agenda_confirm_unsubscribe_message);
+                args.putInt("positiveId", R.string.agenda_confirm_unsubscribe_positive);
+                dialog.setArguments(args);
+                dialog.show(getFragmentManager(), "");
                 return true;
             }
         });
@@ -166,7 +172,7 @@ public class AgendaDetailTabsFragment extends Fragment {
             }
 
             // no deadline for unsubscribing
-            Log.d("MainActivity", "unsubscribing for:" + AgendaDetailFragment.item.getId());
+            Log.d("AgendaDetailTabs", "unsubscribing for:" + AgendaDetailFragment.item.getId());
             Services.getInstance().agendaService.unsubscribe(AgendaDetailFragment.item.getId()).enqueue(new Callback<AgendaParticipantLists>() {
                 @Override
                 public void onResponse(Call<AgendaParticipantLists> call, Response<AgendaParticipantLists> response) {
@@ -183,6 +189,11 @@ public class AgendaDetailTabsFragment extends Fragment {
                 }
             });
         }
+    }
+
+    @Override
+    public void onPositive() {
+        subscribeToAgenda(false);
     }
 
     /**
