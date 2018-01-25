@@ -11,17 +11,25 @@
             android:icon="@drawable/calendar"
             android:title="Agenda" />
         <item
-            android:id="@+id/nav_quotes"
-            android:icon="@drawable/format_quote_close"
-            android:title="Quotes" />
-        <item
             android:id="@+id/nav_roephoek"
             android:icon="@drawable/message_text"
             android:title="Roephoek" />
         <item
+            android:id="@+id/nav_poll"
+            android:icon="@drawable/format_list_bulleted"
+            android:title="Poll" />
+        <item
+            android:id="@+id/nav_quotes"
+            android:icon="@drawable/format_quote_close"
+            android:title="Quotes" />
+        <item
             android:id="@+id/nav_meeting"
             android:icon="@drawable/account_multiple"
             android:title="Vergaderplanner" />
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/account_multiple"
+            android:title="Zoeken" />
     </group>
 
     <group android:checkableBehavior="single">

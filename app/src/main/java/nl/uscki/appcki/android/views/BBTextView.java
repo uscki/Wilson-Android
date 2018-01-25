@@ -1,18 +1,22 @@
 package nl.uscki.appcki.android.views;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import java.util.List;
+
+import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.helpers.bbparser.spans.DefensiveURLSpan;
 
 /**
  * Created by peter on 2/7/16.
  */
-public class BBTextView extends TextView {
+public class BBTextView extends AppCompatTextView {
     public boolean visibilityOfBBUnit = false;
 
     public BBTextView(Context context) {
@@ -38,16 +42,8 @@ public class BBTextView extends TextView {
         super.setText(text, type);
     }
 
-    private void fixTextView() {
-        SpannableString current = (SpannableString) this.getText();
-        URLSpan[] spans = current.getSpans(0, current.length(), URLSpan.class);
-
-        for (URLSpan span : spans) {
-            int start = current.getSpanStart(span);
-            int end = current.getSpanEnd(span);
-
-            current.removeSpan(span);
-            current.setSpan(new DefensiveURLSpan(span.getURL()), start, end, 0);
-        }
+    //TODO start using this, cause it's easier you dumb bitch
+    public void setText(List<Object> textJson, boolean parseNewLines) {
+        this.setText(Parser.parse(textJson, parseNewLines, this));
     }
 }

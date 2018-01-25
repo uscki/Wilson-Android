@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <receiver android:name=".helpers.AlarmReceiver" />
-        <receiver android:name=".OnetimeAlarmReceiver" />
+        <receiver android:name=".services.OnetimeAlarmReceiver" />
 
         <activity
             android:name=".activities.MainActivity"
@@ -24,9 +24,12 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/smobo_searchable"/>
         </activity>
         <activity
             android:name=".activities.AgendaActivity"
@@ -45,6 +48,27 @@
         <activity
             android:name=".activities.SmoboActivity"
             android:label="@string/title_activity_smobo"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="nl.uscki.appcki.android.activities.MainActivity" />
+        </activity>
+
+        <service android:name=".services.NotificationReceiver">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".services.FCMInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".activities.NewsActivity"
+            android:label="@string/title_activity_news"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

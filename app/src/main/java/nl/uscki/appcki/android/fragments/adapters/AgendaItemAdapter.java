@@ -69,7 +69,10 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             holder.inschrijvenVerplicht.setVisibility(View.GONE);
         }
 
-        holder.itemPoster.setImageURI(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.SMALL));
+        if (item.getPosterid() != null) {
+            holder.itemPoster.setImageURI(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.SMALL));
+            //TODO open media browser with normal size poster
+        }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

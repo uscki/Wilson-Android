@@ -1,8 +1,9 @@
 package nl.uscki.appcki.android.events;
 
 /**
- * Created by peter on 2/7/16.
+ * Created by peter on 4/6/17.
  */
+
 public class LinkClickedEvent {
     public String url;
 

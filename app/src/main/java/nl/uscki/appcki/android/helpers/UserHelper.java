@@ -1,14 +1,19 @@
 package nl.uscki.appcki.android.helpers;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.api.ServiceGenerator;
+import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 
 /**
@@ -25,16 +30,13 @@ public class UserHelper {
         this.TOKEN = null;
         this.person = null;
         this.loggedIn = false;
+        preferences = App.getContext().getSharedPreferences("userinfo", Context.MODE_PRIVATE);
     }
 
     public static synchronized UserHelper getInstance( ) {
         if (singleton == null)
             singleton=new UserHelper();
         return singleton;
-    }
-
-    public void setPreferences(SharedPreferences preferences) {
-        this.preferences = preferences;
     }
 
     public PersonSimple getPerson() {
@@ -49,10 +51,20 @@ public class UserHelper {
         this.TOKEN = token;
         this.person = person;
         this.loggedIn = true;
+
+        Services.invalidate();
     }
 
     public void logout() {
         ServiceGenerator.client.dispatcher().cancelAll();
+
+        try {
+            // unregister this device from fcm
+            FirebaseInstanceId.getInstance().deleteInstanceId();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         if(preferences.contains("TOKEN")) {
             Log.d("UserHelper", "token in place, removing it");
             SharedPreferences.Editor editor = preferences.edit();
@@ -66,6 +78,29 @@ public class UserHelper {
 
     public boolean isLoggedIn() {
         return loggedIn;
+    }
+
+    public void loadCurrentUser() {
+        if (preferences.contains("current_user")) {
+            String user = preferences.getString("current_user", "null");
+            if (!user.equals("null")) {
+                Log.e("UserHelper", user);
+                this.person = new Gson().fromJson(user, PersonSimple.class);
+            }
+        }
+    }
+
+    public void saveCurrentUser() {
+        if (!preferences.contains("current_user")) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("current_user", new Gson().toJson(person));
+            editor.apply();
+        } else {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.remove("current_user");
+            editor.putString("current_user", new Gson().toJson(person));
+            editor.apply();
+        }
     }
 
     public void save() {
@@ -100,6 +135,8 @@ public class UserHelper {
     }
 
     public void load() {
+        if(preferences == null) return;
+
         if(preferences.contains("TOKEN")) {
             Log.e("UserHelper", "prefrences contains token");
             Gson gson = new Gson();

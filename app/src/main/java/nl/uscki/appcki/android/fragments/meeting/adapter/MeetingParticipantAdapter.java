@@ -1,5 +1,6 @@
 package nl.uscki.appcki.android.fragments.meeting.adapter;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +12,15 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.List;
 
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.activities.BasicActivity;
+import nl.uscki.appcki.android.activities.MeetingActivity;
+import nl.uscki.appcki.android.activities.SmoboActivity;
+import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
+import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
+import retrofit2.Response;
 
 /**
  * Created by peter on 7/30/16.
@@ -42,14 +49,36 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
 
         holder.note.setText(item.getNote());
 
-        if(item.getPerson().getPhotomediaid() != null) {
+        if(item.getPerson().getPhotomediaid() != 0) {
             holder.profile.setImageURI(MediaAPI.getMediaUri(item.getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL));
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 // TODO: 5/29/16 bekijk persoon
+
+                Intent smoboIntent = new Intent(v.getContext(), SmoboActivity.class);
+                smoboIntent.putExtra("id", holder.mItem.getPerson().getId());
+                smoboIntent.putExtra("name", holder.mItem.getPerson().getPostalname());
+                smoboIntent.putExtra("photo", holder.mItem.getPerson().getPhotomediaid());
+                v.getContext().startActivity(smoboIntent);
+                /*if (v.getContext() instanceof MeetingActivity) {
+                    MeetingActivity act = (MeetingActivity) v.getContext();
+
+                    *//*Services.getInstance().permissionsService.hasPermission("useradmin", "admin").enqueue(new Callback<Boolean>() {
+                        @Override
+                        public void onSucces(Response<Boolean> response) {
+                            if(holder.mItem.getDisplayonline() || response.body()) {*//*
+
+                    *//*        }
+                        }
+                    });*//*
+                    //act.openSmoboFor(holder.mItem);
+                } else if(v.getContext() instanceof BasicActivity) {
+                    BasicActivity act = (BasicActivity) v.getContext();
+                    act.openSmoboFor(holder.mItem);
+                }*/
             }
         });
     }

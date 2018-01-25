@@ -60,9 +60,13 @@ public class MeetingActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
 
         if (getIntent().getBundleExtra("item") != null) {
+            // this happens when this activity is launched from the overview
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), MeetingItem.class);
             Services.getInstance().meetingService.get(item.getMeeting().getId()).enqueue(meetingCallback);
+        } else if (getIntent().getIntExtra("id", -1) != -1) {
+            // this happens on receiving a notification from the server
+            Services.getInstance().meetingService.get(getIntent().getIntExtra("id", -1)).enqueue(meetingCallback);
         }
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

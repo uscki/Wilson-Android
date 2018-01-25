@@ -1,4 +1,4 @@
-package nl.uscki.appcki.android.fragments.home;
+package nl.uscki.appcki.android.fragments.dialogs;
 
 
 import android.app.Dialog;
@@ -41,6 +41,7 @@ public class RoephoekDialogFragment extends DialogFragment {
         final EditText content = (EditText) view.findViewById(R.id.roephoek_dialog_content);
 
         name.setText(UserHelper.getInstance().getPerson().getNickname());
+        content.requestFocus();
 
         builder.setTitle("Nieuwe roep plaatsen").setView(view).setPositiveButton(R.string.roephoek_dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
