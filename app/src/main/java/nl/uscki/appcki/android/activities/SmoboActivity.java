@@ -34,8 +34,8 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
-import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
-import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
+/*import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
+import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;*/
 import nl.uscki.appcki.android.fragments.adapters.SmoboViewPagerAdapter;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.organisation.Committee;

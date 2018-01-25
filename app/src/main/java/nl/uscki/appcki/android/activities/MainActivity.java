@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -23,7 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.firebase.crash.FirebaseCrash;
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -50,7 +51,7 @@ import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BasicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
 
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FirebaseCrash.log("Creating MainActivity");
+        Crashlytics.log("Creating MainActivity");
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
@@ -215,7 +216,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void openTab(int index) {
-        FirebaseCrash.log("openTab(" + index + ")");
+        Crashlytics.log("openTab(" + index + ")");
         if (currentScreen == Screen.ROEPHOEK || currentScreen == Screen.NEWS || currentScreen == Screen.AGENDA) {
             // HomeFragment luistert naar dit event om daarin de tab te switchen
             EventBus.getDefault().post(new SwitchTabEvent(index));
@@ -228,7 +229,7 @@ public class MainActivity extends AppCompatActivity
 
     private void openFragment(Fragment fragment, Bundle arguments) {
         if (fragment instanceof LoginFragment) {
-            FirebaseCrash.log("openFragment: setting soft input mode");
+            Crashlytics.log("openFragment: setting soft input mode");
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         } else {
             // TODO: 5/28/16 currently keyboard overlaps in agenda detail, but this needs a new
@@ -237,11 +238,11 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (arguments != null) {
-            FirebaseCrash.log("openFragment: adding a bundle to this fragment");
+            Crashlytics.log("openFragment: adding a bundle to this fragment");
             fragment.setArguments(arguments);
         }
 
-        FirebaseCrash.log("openFragment: beginTransition.replace");
+        Crashlytics.log("openFragment: beginTransition.replace");
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();

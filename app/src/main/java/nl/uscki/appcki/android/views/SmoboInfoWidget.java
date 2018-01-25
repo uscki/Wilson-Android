@@ -28,7 +28,6 @@ public class SmoboInfoWidget extends Fragment {
     TextView subText;
     @BindView(R.id.smobo_info_context_button)
     ImageButton contextButton;
-
     OnContextButtonClickListener onContextButtonClickListener;
     InfoType type;
 
