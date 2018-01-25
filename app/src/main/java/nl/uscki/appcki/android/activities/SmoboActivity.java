@@ -3,45 +3,21 @@ package nl.uscki.appcki.android.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.FloatRange;
-import android.support.annotation.IntRange;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
-import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
-/*import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
-import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;*/
 import nl.uscki.appcki.android.fragments.adapters.SmoboViewPagerAdapter;
-import nl.uscki.appcki.android.generated.common.Pageable;
-import nl.uscki.appcki.android.generated.organisation.Committee;
-import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
-import retrofit2.Response;
 
 public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffsetChangedListener, SmoboInfoWidget.OnContextButtonClickListener {
 

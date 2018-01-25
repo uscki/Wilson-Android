@@ -22,8 +22,8 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
-/*import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
-import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;*/
+import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
+import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
@@ -177,13 +177,13 @@ public class SmoboPersonFragment extends Fragment {
         if (getArguments() != null) {
             this.id = getArguments().getInt("id");
 
-            //setupMediaGrid();
+            setupMediaGrid();
             setupSwipeContainer();
-            //smoboGroups.setAdapter(new SmoboCommissieAdapter(new ArrayList<Committee>()));
+            smoboGroups.setAdapter(new SmoboCommissieAdapter(new ArrayList<Committee>()));
 
             swipeContainer.setRefreshing(true);
             Services.getInstance().smoboService.get(id).enqueue(smoboCallback);
-            //Services.getInstance().smoboService.photos(id, page, pageSize).enqueue(photosCallback);
+            Services.getInstance().smoboService.photos(id, page, pageSize).enqueue(photosCallback);
         }
 
         return view;
@@ -209,7 +209,7 @@ public class SmoboPersonFragment extends Fragment {
         HorizontalGridView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         mediaGrid.setLayoutManager(layoutManager);
 
-       // mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<Integer>()));
+        mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<Integer>()));
         mediaGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
