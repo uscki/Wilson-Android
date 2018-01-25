@@ -16,9 +16,9 @@ public class SmoboItem {
     @Expose
     @SerializedName("groups")
     List<Committee> groups;
-    /*@Expose
+    @Expose
     @SerializedName("mentorNode")
-    SmoboMentorNode mentorNode;*/
+    SmoboMentorNode mentorNode;
     @Expose
     @SerializedName("person")
     Person person;
@@ -34,13 +34,13 @@ public class SmoboItem {
         this.groups = groups;
     }
 
-    /*public SmoboMentorNode getMentorNode() {
+    public SmoboMentorNode getMentorNode() {
         return mentorNode;
     }
 
     public void setMentorNode(SmoboMentorNode mentorNode) {
         this.mentorNode = mentorNode;
-    }*/
+    }
 
     public Person getPerson() {
         return person;
