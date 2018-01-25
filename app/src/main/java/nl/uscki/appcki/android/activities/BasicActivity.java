@@ -9,7 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.firebase.crash.FirebaseCrash;
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 
 import butterknife.BindView;
@@ -38,10 +38,10 @@ public abstract class BasicActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if(savedInstanceState != null) {
-            FirebaseCrash.log("savedInstanceState != null");
+            Crashlytics.log("savedInstanceState != null");
             UserHelper.getInstance().load(savedInstanceState.getString("token"));
         } else {
-            FirebaseCrash.log("savedInstanceState == null");
+            Crashlytics.log("savedInstanceState == null");
             UserHelper.getInstance().load();
         }
 
@@ -85,7 +85,7 @@ public abstract class BasicActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        FirebaseCrash.log("onSaveInstanceState");
+        Crashlytics.log("onSaveInstanceState");
         if(MainActivity.currentScreen != null)
             outState.putInt("screen", MainActivity.currentScreen.ordinal());
         outState.putString("token", UserHelper.getInstance().TOKEN);
@@ -137,7 +137,7 @@ public abstract class BasicActivity extends AppCompatActivity {
                 toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
                 toast.show();
                 Gson gson = new Gson();
-                FirebaseCrash.report(new Exception(gson.toJson(event.error))); // just log this server error to firebase
+                Crashlytics.logException(new Exception(gson.toJson(event.error))); // just log this server error to firebase
         }
     }
 

@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -53,7 +53,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
-        NotificationCompat.Builder n  = new NotificationCompat.Builder(getApplicationContext());
+        NotificationCompat.Builder n  = new NotificationCompat.Builder(getApplicationContext(), "main");
                 n.setContentTitle(title)
                 .setContentText(content)
                 .setAutoCancel(true);
