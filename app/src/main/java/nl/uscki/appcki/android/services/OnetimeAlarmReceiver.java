@@ -1,15 +1,18 @@
-package nl.uscki.appcki.android;
+package nl.uscki.appcki.android.services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.google.gson.Gson;
 
+import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 
@@ -27,6 +30,8 @@ public class OnetimeAlarmReceiver extends BroadcastReceiver {
         intent2.setAction(Intent.ACTION_VIEW);
         PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent2, 0);
 
+        Bitmap bm = Utils.getBitmapFromVectorDrawable(context, R.drawable.ic_wilson);
+
         Gson gson = new Gson();
         AgendaItem item = gson.fromJson(originalIntent.getStringExtra("item"), AgendaItem.class);
 
@@ -36,6 +41,7 @@ public class OnetimeAlarmReceiver extends BroadcastReceiver {
                 .setContentTitle(item.getTitle())
                 .setContentText(item.getWhat())
                 .setSmallIcon(R.drawable.ckilogo)
+                .setLargeIcon(bm)
                 .setContentIntent(pIntent)
                 .setAutoCancel(true).build();
 

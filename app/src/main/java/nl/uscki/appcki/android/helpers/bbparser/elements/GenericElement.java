@@ -163,6 +163,14 @@ public class GenericElement {
                 return new Img(c, p);
             case "Media":
                 return new Media(c, p);
+            case "Table":
+                return new Table(c, p);
+            case "H1":
+                return new H1(c, p);
+            case "H2":
+                return new H2(c, p);
+            case "H3":
+                return new H3(c, p);
             default:
                 return new GenericElement(c, p);
         }

@@ -5,4 +5,9 @@ package nl.uscki.appcki.android.events;
  */
 public class UserLoggedInEvent {
 
+    public boolean loggedIn;
+
+    public UserLoggedInEvent(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
 }

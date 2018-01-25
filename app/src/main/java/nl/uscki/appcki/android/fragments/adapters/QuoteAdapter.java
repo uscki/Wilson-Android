@@ -57,11 +57,11 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
             holder.votes_positive.requestLayout();
 
             if(holder.mItem.isHasVoted()) {
-                holder.plus.setAlpha(0.5f);
-                holder.minus.setAlpha(0.5f);
+                holder.plus.setVisibility(View.INVISIBLE);
+                holder.minus.setVisibility(View.INVISIBLE);
             } else {
-                holder.plus.setAlpha(1.0f);
-                holder.minus.setAlpha(1.0f);
+                holder.plus.setVisibility(View.VISIBLE);
+                holder.minus.setVisibility(View.VISIBLE);
             }
         } else {
             super.onBindViewHolder(holder, position, payloads);
@@ -89,12 +89,12 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
         holder.votes_negative.requestLayout();
         holder.votes_positive.requestLayout();
 
-        if(holder.mItem.isHasVoted()) { // don't allow to vote again
-            holder.plus.setAlpha(0.3f);
-            holder.minus.setAlpha(0.3f);
+        if(holder.mItem.isHasVoted()) {
+            holder.plus.setVisibility(View.INVISIBLE);
+            holder.minus.setVisibility(View.INVISIBLE);
         } else {
-            holder.plus.setAlpha(1.0f);
-            holder.minus.setAlpha(1.0f);
+            holder.plus.setVisibility(View.VISIBLE);
+            holder.minus.setVisibility(View.VISIBLE);
 
             holder.plus.setOnClickListener(new View.OnClickListener() {
                 @Override

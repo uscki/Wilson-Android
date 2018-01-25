@@ -19,7 +19,7 @@ public class PersonSimpleName {
     String postalname;
     @Expose
     @SerializedName("photomediaid")
-    Integer photomediaid;
+    int photomediaid;
     @Expose
     @SerializedName("displayonline")
     Boolean displayonline;
@@ -48,7 +48,7 @@ public class PersonSimpleName {
         this.postalname = postalname;
     }
 
-    public Integer getPhotomediaid() {
+    public int getPhotomediaid() {
         return photomediaid;
     }
 
@@ -69,7 +69,8 @@ public class PersonSimpleName {
         simple.setDisplayonline(p.getDisplayonline());
         simple.setId(p.getId());
         simple.setNickname(p.getNickname());
-        simple.setPhotomediaid(p.getPhotomediaid());
+        if (null != p.getPhotomediaid())
+            simple.setPhotomediaid(p.getPhotomediaid());
         simple.setPostalname(p.getPostalname());
         return simple;
     }

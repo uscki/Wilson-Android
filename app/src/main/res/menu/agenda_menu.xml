@@ -14,6 +14,11 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/action_agenda_archive"
+        android:title="@string/agenda_archive_menu_string"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
         app:showAsAction="never" />

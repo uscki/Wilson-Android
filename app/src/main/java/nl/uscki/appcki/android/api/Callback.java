@@ -44,6 +44,8 @@ public abstract class Callback<T> implements retrofit2.Callback<T> {
         } catch (JsonSyntaxException e) {
             // NOT A CORRECTLY FORMATTED SERVER ERROR
             // gebeurt bijvoorbeeld bij het ophalen van de news icons
+            // ook als de api down is, maar tomcat nog niet
+            new ConnectionError(null);
         }
     }
 
