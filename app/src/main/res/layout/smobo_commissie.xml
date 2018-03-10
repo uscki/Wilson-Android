@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/smobo_commissie_name"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:textAppearance="@style/AppTheme.Text"
+        android:text="test12344"
+        android:textStyle="normal" />
+    <TextView
+        android:id="@+id/smobo_commissie_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:layout_toRightOf="@id/smobo_commissie_name"
+        android:layout_toEndOf="@id/smobo_commissie_name"
+        android:textAppearance="@style/AppTheme.Text"/>
+</RelativeLayout>
