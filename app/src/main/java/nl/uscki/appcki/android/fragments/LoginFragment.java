@@ -164,7 +164,7 @@ public class LoginFragment extends Fragment {
                             showError("Username or password is incorrect!");
                         }
                         else {
-                            showError("Unknown error encountered from server");
+                            showError("Unknown error encountered on the server");
                         }
                     }
                 }
