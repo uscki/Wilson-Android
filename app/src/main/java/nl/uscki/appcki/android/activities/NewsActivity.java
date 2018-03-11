@@ -58,7 +58,7 @@ public class NewsActivity extends BasicActivity {
         }
 
         title.setText(item.getTitle());
-        metadata.setText("(" + item.getPerson().getPostalname() + " / " + Utils.timestampConversion(item.getTimestamp()));
+        metadata.setText("(" + item.getPerson().getPostalname() + " / " + Utils.timestampConversion(item.getTimestamp(), false) + ")");
     }
 
 }

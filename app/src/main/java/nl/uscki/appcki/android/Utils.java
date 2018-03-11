@@ -16,55 +16,92 @@ import org.joda.time.Months;
 import org.joda.time.Weeks;
 import org.joda.time.Years;
 
+import java.util.Locale;
+
 /**
  * Created by peter on 11/23/16.
  */
 
 public class Utils {
     public static String timestampConversion(Long time) {
+        return timestampConversion(time, true);
+    }
+
+    public static String timestampConversion(Long time, Boolean useBrackets) {
         DateTime now = DateTime.now();
         DateTime other = new DateTime(time);
         int minutes = Minutes.minutesBetween(other, now).getMinutes();
+        String timeIndication;
         if (minutes == 1) {
-            return "(± 1 minuut geleden)";
+            timeIndication = "1 minuut geleden";
         } else if (minutes > 60) {
             int hours = Hours.hoursBetween(other, now).getHours();
             if (hours == 1) {
-                return "(± 1 uur geleden)";
+                timeIndication = "1 uur geleden";
             } else if(hours > 24) {
                 int days = Days.daysBetween(other, now).getDays();
                 if (days == 1) {
-                    return "(± 1 dag geleden)";
+                    timeIndication = "1 dag geleden";
                 } else if(days > 7) {
                     int weeks = Weeks.weeksBetween(other, now).getWeeks();
                     if (weeks == 1) {
-                        return "(± 1 week geleden)";
+                        timeIndication = "± 1 week geleden";
                     } else if(weeks > 4) {
                         int months = Months.monthsBetween(other, now).getMonths();
                         if (months == 1) {
-                            return "(± 1 maand geleden)";
+                            timeIndication = "± 1 maand geleden";
                         } else if(months > 12) {
                             int years = Years.yearsBetween(other, now).getYears();
                             if (years == 1) {
-                                return "(± 1 jaar geleden)";
+                                timeIndication = "± 1 jaar geleden";
                             } else {
-                                return "(± " + years + " jaren geleden)";
+                                timeIndication = String.format(
+                                        Locale.getDefault(),
+                                        "± %d jaar geleden",
+                                        years
+                                );
                             }
                         } else {
-                            return "(± " + months + " maanden geleden)";
+                            timeIndication = String.format(
+                                    Locale.getDefault(),
+                                    "± %d maanden geleden",
+                                    months
+                            );
                         }
                     } else {
-                        return "(± " + weeks + " weken geleden)";
+                        timeIndication = String.format(
+                                Locale.getDefault(),
+                                "± %d weken geleden",
+                                weeks
+                        );
                     }
                 } else {
-                    return "(± " + days + " dagen geleden)";
+                    timeIndication = String.format(
+                            Locale.getDefault(),
+                            "± %d dagen geleden",
+                            days
+                    );
                 }
             } else {
-                return "(± " + hours + " uur geleden)";
+                timeIndication = String.format(
+                        Locale.getDefault(),
+                        "± %d uur geleden",
+                        hours
+                );
             }
         } else {
-            return "(± " + minutes + " minuten geleden)";
+            timeIndication = String.format(
+                    Locale.getDefault(),
+                    "± %d minuten geleden",
+                    minutes
+            );
         }
+
+        return String.format(
+                Locale.getDefault(),
+                useBrackets ? "(%s)" : "%s",
+                timeIndication
+        );
     }
 
     public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
