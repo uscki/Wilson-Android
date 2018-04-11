@@ -172,7 +172,9 @@ public class GenericElement {
             case "H3":
                 return new H3(c, p);
             case "Youtube":
-                return new Youtube(c, p);
+                return new EmbeddedVideo(c, p, true);
+            case "Vimeo":
+                return new EmbeddedVideo(c, p, false);
             default:
                 return new GenericElement(c, p);
         }
