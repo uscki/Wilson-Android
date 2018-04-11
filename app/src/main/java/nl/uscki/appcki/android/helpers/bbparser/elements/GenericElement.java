@@ -171,6 +171,8 @@ public class GenericElement {
                 return new H2(c, p);
             case "H3":
                 return new H3(c, p);
+            case "Youtube":
+                return new Youtube(c, p);
             default:
                 return new GenericElement(c, p);
         }
