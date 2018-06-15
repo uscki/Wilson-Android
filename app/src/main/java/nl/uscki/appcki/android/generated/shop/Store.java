@@ -6,14 +6,14 @@ import com.google.gson.annotations.SerializedName;
 public class Store {
     @Expose
     @SerializedName("id")
-    Integer id;
+    public Integer id;
     @Expose
     @SerializedName("image")
-    Integer image;
+    public Integer image;
     @Expose
     @SerializedName("description")
-    String description;
+    public String description;
     @Expose
     @SerializedName("title")
-    String title;
+    public String title;
 }
