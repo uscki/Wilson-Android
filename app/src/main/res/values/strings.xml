@@ -343,4 +343,5 @@
     <string name="privacy_policy_notifications_disabled">Notificaties uitgeschakeld</string>
     <string name="privacy_policy_notifications_disabled_summary">Om notificaties te kunnen ontvangen moet je het privacybeleid accepteren</string>
     <string name="privacy_policy_updated_notice">We hebben ons privacybeleid bijgewerkt. Om gebruik te blijven maken van deze applicatie dient u (opnieuw) akkoord te gaan met deze nieuwe voorwaarden.</string>
+
 </resources>

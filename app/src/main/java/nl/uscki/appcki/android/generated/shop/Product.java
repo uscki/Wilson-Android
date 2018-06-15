@@ -6,18 +6,18 @@ import com.google.gson.annotations.SerializedName;
 public class Product {
     @Expose
     @SerializedName("id")
-    Integer id;
+    public Integer id;
     @Expose
     @SerializedName("image")
-    Integer image;
+    public Integer image;
     @Expose
     @SerializedName("price")
-    Double price;
+    public Double price;
     @Expose
     @SerializedName("stock")
-    Integer stock;
+    public Integer stock;
     @Expose
     @SerializedName("title")
-    String title;
+    public String title;
 
 }
