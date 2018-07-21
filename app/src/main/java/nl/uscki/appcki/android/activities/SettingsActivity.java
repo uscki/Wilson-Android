@@ -354,14 +354,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // updated to reflect the new value, per the Android Design
             // guidelines.
 
-            ListPreference calendarToUsePreference =
-                    (ListPreference) findPreference("calendar_selected_id");
-            bindPreferenceSummaryToValue(calendarToUsePreference);
+            bindPreferenceSummaryToValue(findPreference("calendar_selected_id"));
             updateCalendarItemOptions();
-            sBindPreferenceSummaryToValueListener.onPreferenceChange(
-                    calendarToUsePreference,
-                    calendarToUsePreference.getValue()
-            );
         }
 
         @Override
@@ -379,6 +373,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onResume();
             getPreferenceScreen().getSharedPreferences()
                     .registerOnSharedPreferenceChangeListener(this);
+
+            if(PermissionChecker.checkSelfPermission(
+                    App.getContext(),
+                    Manifest.permission.WRITE_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+                ((SwitchPreference)findPreference("people_use_export")).setChecked(false);
+            }
         }
 
         @Override
@@ -417,6 +418,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             ArrayList<Pair<String,String>> calendarList =
                     CalendarHelper.getInstance().getCalendarList();
 
+            if(calendarList.isEmpty()) {
+                SwitchPreference use_cal_export = (SwitchPreference) findPreference("calendar_use_export");
+                use_cal_export.setChecked(false);
+                return;
+            }
+
             CharSequence[] calendarIds = new CharSequence[calendarList.size()];
             CharSequence[] calendarNames = new CharSequence[calendarList.size()];
 
@@ -428,6 +435,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             calendarValues.setEntries(calendarNames);
             calendarValues.setEntryValues(calendarIds);
+
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(
+                    calendarValues,
+                    calendarValues.getValue()
+            );
         }
     }
 }
