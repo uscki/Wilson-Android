@@ -44,9 +44,13 @@
     <string name="agenda_dialog_ok">Inschrijven</string>
     <string name="agenda_dialog_cancel">Annuleren</string>
     <string name="agenda_no_new_agendas">Er zijn geen evenementen meer.</string>
+    <string name="agenda_toast_added_to_calendar">Evenement is toegevoegd aan agenda</string>
+    <string name="agenda_toast_removed_from_calendar">Evenement is verwijderd uit agenda</string>
 
     <string name="agenda_inschrijven_verplicht">Inschrijven verplicht</string>
     <string name="agenda_archive_menu_string">Archief</string>
+    <string name="action_agenda_export">Opslaan</string>
+    <string name="action_agenda_remove_from_calendar">Verwijderen uit agenda</string>
 
     <string name="example_text">Example text</string>
 

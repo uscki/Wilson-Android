@@ -1,12 +1,15 @@
 package nl.uscki.appcki.android.activities;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.PermissionChecker;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +23,7 @@ import com.google.gson.Gson;
 import org.joda.time.DateTime;
 
 import de.greenrobot.event.EventBus;
+import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.error.Error;
@@ -32,7 +36,9 @@ import nl.uscki.appcki.android.fragments.agenda.SubscribeDialogFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
+import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 import nl.uscki.appcki.android.services.OnetimeAlarmReceiver;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -142,6 +148,36 @@ public class AgendaActivity extends AppCompatActivity {
         menu.clear();
 
         getMenuInflater().inflate(R.menu.agenda_menu, menu);
+        this.menu = menu;
+
+        this.menu.findItem(R.id.action_agenda_unsubscribe).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                subscribeToAgenda(false);
+                return true;
+            }
+        });
+        this.menu.findItem(R.id.action_agenda_subscribe).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                subscribeToAgenda(true);
+                return true;
+            }
+        });
+        this.menu.findItem(R.id.action_agenda_export).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                exportToCalendar();
+                return true;
+            }
+        });
+        this.menu.findItem(R.id.action_remove_from_calendar).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                removeFromCalendar();
+                return true;
+            }
+        });
 
         // verander visibility pas als we in een detail view zitten
         if(foundUser) {
@@ -151,25 +187,39 @@ public class AgendaActivity extends AppCompatActivity {
             menu.findItem(R.id.action_agenda_subscribe).setVisible(true);
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
         }
-
-        menu.findItem(R.id.action_agenda_unsubscribe).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                subscribeToAgenda(false);
-                return true;
-            }
-        });
-        menu.findItem(R.id.action_agenda_subscribe).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                subscribeToAgenda(true);
-                return true;
-            }
-        });
-
-        this.menu = menu;
+        setExportButtons();
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setExportButtons();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
+
+    private void setExportButtons() {
+        if(menu == null)
+            return;
+
+        if(CalendarHelper.getInstance().AgendaItemExistsInCalendar(this.item) > 0) {
+            menu.findItem(R.id.action_agenda_export).setVisible(false);
+            if(PermissionHelper.canDeleteCalendar()) {
+                menu.findItem(R.id.action_remove_from_calendar).setVisible(true);
+
+            }
+        } else {
+            menu.findItem(R.id.action_remove_from_calendar).setVisible(false);
+            menu.findItem(R.id.action_agenda_export).setVisible(true);
+
+        }
     }
 
     /**
@@ -209,6 +259,7 @@ public class AgendaActivity extends AppCompatActivity {
             args.putInt("id", item.getId());
             newFragment.setArguments(args);
             newFragment.show(getSupportFragmentManager(), "agenda_subscribe");
+
         } else {
             AgendaItem item = AgendaDetailFragment.item;
             if(item.getHasUnregisterDeadline()) {
@@ -230,9 +281,26 @@ public class AgendaActivity extends AppCompatActivity {
                 @Override
                 public void onSucces(Response<AgendaParticipantLists> response) {
                     EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body(), true));
+                    setExportButtons();
                 }
             });
         }
+    }
+
+    private void exportToCalendar() {
+        CalendarHelper.getInstance().addItemToCalendar(item);
+        setExportButtons();
+        Toast.makeText(this, R.string.agenda_toast_added_to_calendar ,Toast.LENGTH_SHORT).show();
+    }
+
+    private void removeFromCalendar() {
+        if(CalendarHelper.getInstance().removeItemFromCalendar(item))
+            Toast.makeText(
+                    this,
+                    R.string.agenda_toast_removed_from_calendar,
+                    Toast.LENGTH_SHORT
+            ).show();
+        setExportButtons();
     }
 
     // EVENT HANDLING
@@ -246,14 +314,20 @@ public class AgendaActivity extends AppCompatActivity {
     }
 
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
+        Log.e("AgendaSubscribedEvent", event.toString());
         if(!event.showSubscribe) {
             setAlarmForEvent(item);
             menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
+            if(PermissionHelper.canExportCalendarAuto() &&
+                    CalendarHelper.getInstance().AgendaItemExistsInCalendar(item) <= 0) {
+                exportToCalendar();
+            }
         } else {
             unsetAlarmForEvent(item);
             menu.findItem(R.id.action_agenda_subscribe).setVisible(true);
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
         }
+        setExportButtons();
     }
 }
