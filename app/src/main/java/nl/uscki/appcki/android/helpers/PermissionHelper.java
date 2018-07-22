@@ -40,7 +40,12 @@ public class PermissionHelper {
     public static boolean canExportCalendarAuto() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext());
         boolean hasRequestedAutoExport = prefs.getBoolean("event_export_auto", false);
+        return canExportCalendar() && hasRequestedAutoExport;
+    }
 
+    public static boolean canExportMeetingAuto() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        boolean hasRequestedAutoExport = prefs.getBoolean("meeting_export_auto", false);
         return canExportCalendar() && hasRequestedAutoExport;
     }
 }
