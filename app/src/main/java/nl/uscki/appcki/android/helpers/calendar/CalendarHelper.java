@@ -14,21 +14,21 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityManagerCompat;
-import android.support.v4.content.PermissionChecker;
 import android.util.Log;
 import android.util.Pair;
 
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
+import nl.uscki.appcki.android.generated.meeting.Participation;
+import nl.uscki.appcki.android.generated.meeting.Preference;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
+import nl.uscki.appcki.android.helpers.bbparser.Parser;
 
 import static android.provider.CalendarContract.Events;
 
@@ -100,22 +100,16 @@ public class CalendarHelper {
      * @param item  Agenda item
      * @return False if not sufficient permissions are granted, true otherwise
      */
+    @SuppressLint("MissingPermission") // Performed using PermissionHelper
     private boolean addEventViaProvider(AgendaItem item) {
-        if (ActivityCompat.checkSelfPermission(
-                App.getContext(),
-                Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-        if(!preferences.getBoolean("calendar_use_export", false)) {
+        if(!PermissionHelper.canExportCalendar()) {
             return false;
         }
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
         String calendarId = preferences.getString("calendar_selected_id", "false");
 
-        Log.e("UseCalendarID", calendarId);
-
-        if(calendarId == "false") {
+        if(calendarId.equals("false")) {
             return false;
         }
 
@@ -123,7 +117,7 @@ public class CalendarHelper {
         values.put(Events.DTSTART, item.getStart().getMillis());
         values.put(Events.DTEND, item.getEnd().getMillis());
         values.put(Events.TITLE, item.getTitle());
-        values.put(Events.DESCRIPTION, item.getDescription());
+        values.put(Events.DESCRIPTION, getAgendaItemDescription(item));
         values.put(Events.CALENDAR_ID, calendarId);
         values.put(Events.EVENT_TIMEZONE, "Europe/Amsterdam");
         values.put(Events.EVENT_LOCATION, item.getLocation());
@@ -142,15 +136,26 @@ public class CalendarHelper {
         return true;
     }
 
-    /**
-     * Check if a given event already exists
-     * @param item    Agenda Item to check
-     * @return        True iff event exists in system calendar
-     */
     public int AgendaItemExistsInCalendar(AgendaItem item) {
-        long begin = item.getStart().getMillis();
-        long end = item.getEnd().getMillis();
+        return AgendaItemExistsInCalendar(item.getTitle(), item.getStart().getMillis(), item.getEnd().getMillis());
+    }
 
+    public int AgendaItemExistsInCalendar(MeetingItem item) {
+        if(item.getMeeting().getActual_slot() == null) return -1;
+        return AgendaItemExistsInCalendar(
+                item.getMeeting().getTitle(),
+                item.getMeeting().getStartdate().getMillis(),
+                item.getMeeting().getEnddate().getMillis());
+    }
+
+    /**
+     * Check if a given event already exists in the system calendar
+     * @param title        Title of the event
+     * @param begin         Start time of the event
+     * @param end          End time of the event
+     * @return             ID of the event if found, -1 otherwise
+     */
+    private int AgendaItemExistsInCalendar(String title, long begin, long end) {
         if(!PermissionHelper.hasPermission(Manifest.permission.READ_CALENDAR))
             return -2;
 
@@ -169,12 +174,14 @@ public class CalendarHelper {
                 Events.DTEND
         );
         String[] arguments = new String[] {
-                item.getTitle(),
-                Long.toString(item.getStart().getMillis()),
-                Long.toString(item.getEnd().getMillis())
+                title,
+                Long.toString(begin),
+                Long.toString(end)
         };
 
         ContentResolver contentResolver = App.getContext().getContentResolver();
+
+        Log.e("FindingEventExists", "Looking for '" + title + "'\tbegin: " + begin + "\tend:" + end);
 
         @SuppressLint("MissingPermission")
         Cursor cursor = contentResolver.query(
@@ -185,26 +192,21 @@ public class CalendarHelper {
                 null);
 
         if(cursor == null) {
-            Log.e("CheckEventExists", "Cursor is null");
             return -1;
         }
 
-        Log.e("CheckEventExists", "Cursor is " + cursor.toString() + " (" + cursor.getCount() + " items)");
 
         while(cursor.moveToNext()) {
             long beginTime = cursor.getLong(cursor.getColumnIndex(projection[0]));
             long endTime = cursor.getLong(cursor.getColumnIndex(projection[1]));
             String eventTitle = cursor.getString(cursor.getColumnIndex(projection[2]));
             int eventId = cursor.getInt(cursor.getColumnIndex(projection[3]));
-            Log.e("CheckEventExists", "Title: " + eventTitle + "\tBegin: " + beginTime + "\tEnd: " + endTime + "\tID: " + eventId);
-
-            if(beginTime == begin && endTime == end && eventTitle.equals(item.getTitle())) {
-                Log.e("CheckEventExists", "This event matches what we're looking for!");
+            Log.e("FindingEventExists", "Found '" + eventTitle + "'\tbegin: " + beginTime + "\tend:" + endTime + "\tid: " + eventId);
+            if(beginTime == begin && endTime == end && eventTitle.equals(title)) {
                 return eventId;
             }
 
         }
-        Log.e("CheckEventExists", "No existing events found");
         return -1;
     }
 
@@ -220,7 +222,7 @@ public class CalendarHelper {
         intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, item.getStart().getMillis());
         intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, item.getEnd().getMillis());
         intent.putExtra(Events.TITLE, item.getTitle());
-        intent.putExtra(Events.DESCRIPTION, item.getDescription() + "Just testing");
+        intent.putExtra(Events.DESCRIPTION, getAgendaItemDescription(item));
         intent.putExtra(Events.EVENT_TIMEZONE, "Europe/Amsterdam");
         intent.putExtra(Events.EVENT_LOCATION, item.getLocation());
         intent.putExtra(Events.ACCESS_LEVEL, Events.ACCESS_PUBLIC);
@@ -233,34 +235,113 @@ public class CalendarHelper {
     }
 
     public boolean removeItemFromCalendar(AgendaItem item) {
-        int eventId = AgendaItemExistsInCalendar(item);
+        return removeItemFromCalendar(item.getTitle(), item.getStart().getMillis(), item.getEnd().getMillis());
+    }
+
+    public boolean removeItemFromCalendar(MeetingItem item) {
+        return removeItemFromCalendar(item.getMeeting().getTitle(), item.getMeeting().getStartdate().getMillis(), item.getMeeting().getEnddate().getMillis());
+    }
+
+    private boolean removeItemFromCalendar(String title, long begin, long end) {
+        int eventId = AgendaItemExistsInCalendar(title, begin, end);
+        if(eventId < 0)
+            return false;
         if(!PermissionHelper.hasPermission(Manifest.permission.WRITE_CALENDAR))
             return false;
 
         Uri uri = ContentUris.withAppendedId(Events.CONTENT_URI, eventId);
 
-        Log.e("Removing item", uri.toString());
-
         @SuppressLint("MissingPermission") // Checked through PermissionHelper
         int deleteCount = App.getContext().getContentResolver().delete(uri, null, null);
-
-        Log.e("Removing item", "Removed " + deleteCount + " events with title '" + item.getTitle() + "' and id " + eventId);
 
         return deleteCount > 0;
     }
 
-    public long addMeeting(MeetingItem item) {
-//        FullCalendarEvent appointment = new FullCalendarEvent();
-//        appointment.setTitle(item.getMeeting().getTitle());
-//        appointment.setLocation(item.getMeeting().getLocation());
-//        appointment.setNotes(item.getMeeting().getAgenda());
-//        appointment.setStartDate(item.getMeeting().getStartdate());
-//        appointment.setEndDate(item.getMeeting().getEnddate());
-//        return appointment.getId();
-        return -1L;
+    @SuppressLint("MissingPermission") // Performed using permission helper
+    private boolean exportMeetingViaProvider(MeetingItem item) {
+        if(!PermissionHelper.canExportCalendar()) {
+            return false;
+        }
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        String calendarId = preferences.getString("calendar_selected_id", "false");
+
+        if(calendarId.equals("false")) {
+            return false;
+        }
+
+        ContentValues values = new ContentValues();
+        values.put(Events.DTSTART, item.getMeeting().getStartdate().getMillis());
+        values.put(Events.DTEND, item.getMeeting().getEnddate().getMillis());
+        values.put(Events.TITLE, item.getMeeting().getTitle());
+        values.put(Events.DESCRIPTION, getMeetingDescription(item));
+        values.put(Events.CALENDAR_ID, calendarId);
+        values.put(Events.EVENT_TIMEZONE, "Europe/Amsterdam");
+        values.put(Events.EVENT_LOCATION, item.getMeeting().getLocation());
+        values.put(Events.GUESTS_CAN_INVITE_OTHERS, "0");
+        values.put(Events.GUESTS_CAN_SEE_GUESTS, "0");
+        values.put(Events.ACCESS_LEVEL, Events.ACCESS_PRIVATE);
+        values.put(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
+        values.put(Events.CUSTOM_APP_PACKAGE, "nl.uscki.appcki.android");
+        values.put(Events.CUSTOM_APP_URI,
+                String.format(Locale.ENGLISH,
+                        "https://www.uscki.nl/?pagina=MeetingPlanner/ShowMeeting&meeting_id=%d", item.getMeeting().getId()
+                )
+        );
+
+        cr.insert(Events.CONTENT_URI, values);
+
+        return true;
+    }
+
+    private void exportMeetingViaIntention(MeetingItem item) {
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setType("vnd.android.cursor.item/event");
+        intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, item.getMeeting().getStartdate().getMillis());
+        intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, item.getMeeting().getEnddate().getMillis());
+        intent.putExtra(Events.TITLE, item.getMeeting().getTitle());
+        intent.putExtra(Events.DESCRIPTION, getMeetingDescription(item));
+        intent.putExtra(Events.EVENT_TIMEZONE, "Europe/Amsterdam");
+        intent.putExtra(Events.EVENT_LOCATION, item.getMeeting().getLocation());
+        intent.putExtra(Events.ACCESS_LEVEL, Events.ACCESS_PRIVATE);
+        intent.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
+        App.getContext().startActivity(intent);
+    }
+
+    public void addMeeting(MeetingItem item) {
+        if(!exportMeetingViaProvider(item)) exportMeetingViaIntention(item);
     }
 
     public List<CalendarReminder> getReminders() {
         return new ArrayList<>();
+    }
+
+    private String getAgendaItemDescription(AgendaItem item) {
+        StringBuilder description = new StringBuilder();
+        description.append(Parser.parseToHTML(item.getDescriptionJSON(), true));
+        description.append("<br/>");
+        description.append("<br/><b>Wie</b>: " + item.getWho());
+        description.append("<br/><b>Wat</b>: " + item.getWhat());
+        description.append("<br/><b>Waar</b>: " + item.getLocation());
+        description.append("<br/><b>Wanneer</b>: " + item.getWhen());
+        description.append("<br/><b>Kosten</b>: " + item.getCosts());
+
+        return description.toString();
+    }
+
+    private String getMeetingDescription(MeetingItem item) {
+        StringBuilder descriptionBuilder = new StringBuilder();
+        if(!item.getMeeting().getAgenda().isEmpty()) {
+            descriptionBuilder.append("<h3>Agenda</h3>");
+            descriptionBuilder.append("<p><pre>" + item.getMeeting().getAgenda() + "</pre></p>");
+        }
+        if(!item.getMeeting().getNotes().isEmpty() || !item.getMeeting().getPlannotes().isEmpty()) {
+            descriptionBuilder.append("<h3>Opmerkingen</h3>");
+            if(!item.getMeeting().getNotes().isEmpty())
+                descriptionBuilder.append("<p>" + item.getMeeting().getNotes() + "</p>");
+            if(!item.getMeeting().getPlannotes().isEmpty())
+                descriptionBuilder.append("<p>" + item.getMeeting().getPlannotes() + "</p>");
+        }
+        return descriptionBuilder.toString();
     }
 }

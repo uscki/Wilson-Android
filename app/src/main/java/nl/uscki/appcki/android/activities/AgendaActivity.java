@@ -209,7 +209,9 @@ public class AgendaActivity extends AppCompatActivity {
         if(menu == null)
             return;
 
-        if(CalendarHelper.getInstance().AgendaItemExistsInCalendar(this.item) > 0) {
+        if(CalendarHelper.getInstance()
+                .AgendaItemExistsInCalendar(item) > 0)
+        {
             menu.findItem(R.id.action_agenda_export).setVisible(false);
             if(PermissionHelper.canDeleteCalendar()) {
                 menu.findItem(R.id.action_remove_from_calendar).setVisible(true);
@@ -320,7 +322,9 @@ public class AgendaActivity extends AppCompatActivity {
             menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
             if(PermissionHelper.canExportCalendarAuto() &&
-                    CalendarHelper.getInstance().AgendaItemExistsInCalendar(item) <= 0) {
+                    CalendarHelper.getInstance()
+                            .AgendaItemExistsInCalendar(item) <= 0
+                    ) {
                 exportToCalendar();
             }
         } else {

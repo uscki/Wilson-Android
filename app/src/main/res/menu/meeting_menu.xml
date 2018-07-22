@@ -6,4 +6,18 @@
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+
+    <item android:id="@+id/action_meeting_export"
+        android:title="@string/action_agenda_export"
+        android:icon="@android:drawable/stat_sys_download"
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        />
+
+    <item android:id="@+id/action_remove_meeting_from_calendar"
+        android:title="@string/action_agenda_remove_from_calendar"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        />
 </menu>

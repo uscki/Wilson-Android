@@ -393,7 +393,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
             Preference preference = findPreference(s);
-            SwitchPreference pref = (SwitchPreference) findPreference(s);
+            Preference pref = findPreference(s);
             if(preference instanceof SwitchPreference) {
                 SwitchPreference switchPreference = (SwitchPreference) preference;
                 if(pref != null && switchPreference.isChecked()) {
