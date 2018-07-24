@@ -155,4 +155,11 @@
     <string name="title_activity_smobo">SmoboActivity</string>
     <string name="title_activity_news">NewsActivity</string>
     <string name="news_read_more">Read more</string>
+
+    <string name="notification_channel_activities_name">Interactieve notificaties</string>
+    <string name="notification_channel_activities_description">Notificaties waarvoor vaak actie ondernomen kan worden, zoals nieuw geplande vergaderingen of nieuwe agenda items</string>
+    <string name="notification_channel_general_name">Algemene USCKI updates</string>
+    <string name="notification_channel_general_description">Notificaties die doorgaans alleen ter informatie dienen, zoals updates over nieuws of de roephoek</string>
+    <string name="notification_channel_personal_name">Persoonlijke updates</string>
+    <string name="notification_channel_personal_description">Minder belangrijke notificaties die ter informatie dienen, maar alleen worden gestuurd omdat je eerder te maken hebt gehad met het onderwerp van die notificatie</string>
 </resources>

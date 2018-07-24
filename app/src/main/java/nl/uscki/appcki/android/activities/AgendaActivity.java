@@ -47,6 +47,38 @@ public class AgendaActivity extends AppCompatActivity {
     boolean foundUser = false;
     Menu menu;
 
+    private Callback<AgendaItem> agendaCallback = new Callback<AgendaItem>() {
+        @Override
+        public void onResponse(Call<AgendaItem> call, Response<AgendaItem> response) {
+            if(response == null) {
+                Log.e(this.getClass().toString(), "No response");
+                return;
+            }
+            Log.e(this.getClass().toString(), response.toString());
+            if(response.body() == null) {
+                Log.e(this.getClass().toString(), "No response or response body");
+                return;
+            }
+            Log.e(this.getClass().toString(), response.body().toString());
+            item = response.body();
+            viewPager.setAdapter(new AgendaDetailAdapter(getSupportFragmentManager(), item));
+            for (AgendaParticipant part : item.getParticipants()) {
+                if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
+                    if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
+                        foundUser = true;
+                    }
+                } else {
+                    finish();
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<AgendaItem> call, Throwable t) {
+            // TODO: Toast with failure? Or is that handled
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,39 +107,22 @@ public class AgendaActivity extends AppCompatActivity {
         if (getIntent().getBundleExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), AgendaItem.class);
-            if (item == null || UserHelper.getInstance().getPerson() == null) {
-                finish();
-            }
-
-            viewPager.setAdapter(new AgendaDetailAdapter(getSupportFragmentManager(), item));
-
-            for (AgendaParticipant part : item.getParticipants()) {
-                if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
-                    if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
-                        foundUser = true;
-                    }
-                } else {
-                    finish();
-                }
-            }
+//            if (item == null || UserHelper.getInstance().getPerson() == null) {
+//                finish();
+//            }
+            Log.e(this.getClass().toString(), "Generating AgendaItem through bundle extra item");
+            Services.getInstance().agendaService.get(item.getId()).enqueue(agendaCallback);
         } else if (getIntent().getStringExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getStringExtra("item"), AgendaItem.class);
-            if (item == null || UserHelper.getInstance().getPerson() == null) {
-                finish();
-            }
-
-            viewPager.setAdapter(new AgendaDetailAdapter(getSupportFragmentManager(), item));
-
-            for (AgendaParticipant part : item.getParticipants()) {
-                if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
-                    if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
-                        foundUser = true;
-                    }
-                } else {
-                    finish();
-                }
-            }
+//            if (item == null || UserHelper.getInstance().getPerson() == null) {
+//                finish();
+//            }
+            Log.e(this.getClass().toString(), "Generating AgendaItem through String extra item");
+            Services.getInstance().agendaService.get(item.getId()).enqueue(agendaCallback);
+        } else if (getIntent().getIntExtra("id", -1) >= 0) {
+            Log.e(this.getClass().toString(), "Generating AgendaItem through id");
+            Services.getInstance().agendaService.get(getIntent().getIntExtra("id", -1)).enqueue(agendaCallback);
         } else {
             // the item is no longer loaded so we can't open this activity, thus we'll close it
             finish();
