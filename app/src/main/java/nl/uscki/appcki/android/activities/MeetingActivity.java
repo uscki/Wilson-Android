@@ -95,4 +95,5 @@ public class MeetingActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.meeting_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
 }

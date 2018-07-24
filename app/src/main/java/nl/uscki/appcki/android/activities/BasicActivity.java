@@ -88,7 +88,7 @@ public abstract class BasicActivity extends AppCompatActivity {
         Crashlytics.log("onSaveInstanceState");
         if(MainActivity.currentScreen != null)
             outState.putInt("screen", MainActivity.currentScreen.ordinal());
-        outState.putString("token", UserHelper.getInstance().TOKEN);
+        outState.putString("token", UserHelper.getInstance().getToken());
         super.onSaveInstanceState(outState);
     }
 
