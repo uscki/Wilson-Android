@@ -117,6 +117,11 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         return view;
     }
 
+    public void scrollToItem(int id) {
+//        recyclerView.getAdapter()
+//        recyclerView.getChildAdapterPosition();
+    }
+
     protected void setupRecyclerView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
 
@@ -161,6 +166,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                 android.R.color.holo_red_light);
 
         swipeContainer.setRefreshing(true);
+
     }
 
     public BaseItemAdapter getAdapter() {

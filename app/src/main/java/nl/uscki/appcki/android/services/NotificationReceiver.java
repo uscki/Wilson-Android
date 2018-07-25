@@ -26,6 +26,7 @@ import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.activities.AgendaActivity;
+import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.activities.MeetingActivity;
 import nl.uscki.appcki.android.activities.NewsActivity;
 
@@ -133,7 +134,11 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 intent = new Intent(App.getContext(), AgendaActivity.class);
                 break;
             case news:
-                intent = new Intent(App.getContext(), NewsActivity.class);
+                intent = new Intent(App.getContext(), MainActivity.class);
+                intent.setAction(Intent.ACTION_VIEW);
+//                intent.putExtra("target", "news_item");
+//                intent.setFlags()
+                intent.putExtra("screen", MainActivity.Screen.NEWS.toString());
                 break;
             case achievement: // what do?
                 n.setChannelId(notificationUtil.getChannel(NotificationUtil.NOTIFICATION_CHANNEL_PERSONAL_ID));
