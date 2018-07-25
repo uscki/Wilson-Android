@@ -38,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AgendaActivity extends AppCompatActivity {
+public class AgendaActivity extends BasicActivity {
     AgendaItem item;
     TabLayout tabLayout;
     ViewPager viewPager;
@@ -92,17 +92,18 @@ public class AgendaActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_agenda);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         MainActivity.currentScreen = MainActivity.Screen.AGENDA_DETAIL;
 
-        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        tabLayout = findViewById(R.id.tabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("Agenda"));
         tabLayout.addTab(tabLayout.newTab().setText("Deelnemers"));
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = findViewById(R.id.viewpager);
 
         if (getIntent().getBundleExtra("item") != null) {
             Gson gson = new Gson();

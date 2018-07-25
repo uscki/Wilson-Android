@@ -106,6 +106,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
             case meeting_filledin:
             case meeting_planned:
                 n.setChannelId(notificationUtil.getChannel(NotificationUtil.NOTIFICATION_CHANNEL_ACTIVITIES_ID));
+                intent = new Intent(App.getContext(), MeetingActivity.class);
                 break;
             case meeting_new:
                 n.setChannelId(notificationUtil.getChannel(NotificationUtil.NOTIFICATION_CHANNEL_ACTIVITIES_ID));
