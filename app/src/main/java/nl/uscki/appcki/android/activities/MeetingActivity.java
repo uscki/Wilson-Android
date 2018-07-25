@@ -16,7 +16,7 @@ import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingDetailAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import retrofit2.Response;
 
-public class MeetingActivity extends AppCompatActivity {
+public class MeetingActivity extends BasicActivity {
     MeetingItem item;
     TabLayout tabLayout;
     ViewPager viewPager;

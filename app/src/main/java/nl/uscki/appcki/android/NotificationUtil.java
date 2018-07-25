@@ -14,7 +14,6 @@ public class NotificationUtil extends ContextWrapper {
     public NotificationUtil(Context base) {
         super(base);
         createNotificationChannels();
-        Log.e(this.getClass().toString(), "Called ContextWrapper. All I needed to know");
     }
 
     private NotificationManager notificationManager;
