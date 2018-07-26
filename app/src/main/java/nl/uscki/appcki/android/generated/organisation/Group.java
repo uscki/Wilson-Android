@@ -5,9 +5,10 @@ import com.google.gson.annotations.Expose;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.media.MediaFile;
 
-public class Group {
+public class Group  implements IWilsonBaseItem {
 
     @Expose
     private Integer id;

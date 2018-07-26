@@ -7,9 +7,10 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.List;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 
-public class NewsItem {
+public class NewsItem implements IWilsonBaseItem {
 
     @Expose
     private Integer id;

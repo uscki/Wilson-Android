@@ -2,10 +2,12 @@ package nl.uscki.appcki.android.generated.agenda;
 
 import com.google.gson.annotations.Expose;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+
 /**
  * Created by peter on 11/16/16.
  */
-public class AgendaCategory {
+public class AgendaCategory implements IWilsonBaseItem{
     @Expose
     private Integer id;
     @Expose

@@ -40,6 +40,7 @@ import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.dialogs.RoephoekDialogFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
+import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
@@ -115,11 +116,13 @@ public class MainActivity extends BasicActivity
                 args.putString("item", getIntent().getStringExtra("item"));
                 openFragment(new AgendaDetailTabsFragment(), args);
             } else if(intent.getStringExtra("screen") != null && intent.getStringExtra("screen").equals(Screen.NEWS.toString())) {
-                Log.e("Main Activity", "Assume we want to view a news item");
-                // No need to load tab, alread loaded
-                // TODO: Focus element in list
-
-
+                openTab(HomeFragment.NEWS);
+                int newNewsId = intent.getIntExtra("id", -1);
+                if(newNewsId > 0) {
+                    // TODO: Somehow get the homeNewsTab fragment
+                    // TODO: Wait until API is done? Otherwise there is probably nothing to scroll to
+                    //homeNewsTab.scrollToItem(newNewsId);
+                }
             } else {
                 Log.e("Main Activity", "Nothing interesting seems to happen");
             }

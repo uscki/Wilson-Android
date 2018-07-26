@@ -3,11 +3,13 @@ package nl.uscki.appcki.android.generated.poll;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+
 /**
  * Created by peter on 3/7/17.
  */
 
-public class PollOption {
+public class PollOption implements IWilsonBaseItem {
     /*
     * "color": "#ff000",
 "id": 0,

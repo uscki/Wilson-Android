@@ -14,6 +14,7 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.RemoteInput;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -108,6 +109,14 @@ public class NotificationReceiver extends FirebaseMessagingService {
             case meeting_planned:
                 n.setChannelId(notificationUtil.getChannel(NotificationUtil.NOTIFICATION_CHANNEL_ACTIVITIES_ID));
                 intent = new Intent(App.getContext(), MeetingActivity.class);
+
+                Intent exportMeetingIntent = new Intent(this, EventExportService.class);
+                exportMeetingIntent.setAction(EventExportService.ACTION_MEETING_EXPORT);
+                exportMeetingIntent.putExtra("id", EventExportService.PARAM_MEETING_ID);
+                PendingIntent exportMeetingpIntent =
+                        PendingIntent.getBroadcast(this, 0, exportMeetingIntent, 0);
+
+//                n.addAction(R.drawable.stat_sys_download, getString(R.string);
                 break;
             case meeting_new:
                 n.setChannelId(notificationUtil.getChannel(NotificationUtil.NOTIFICATION_CHANNEL_ACTIVITIES_ID));
@@ -127,6 +136,33 @@ public class NotificationReceiver extends FirebaseMessagingService {
             case agenda_announcement:
                 break;
             case agenda_new:
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT_WATCH) {
+
+                    // Building remote input object
+                    String subscribeLabel = getResources().getString(R.string.action_agenda_subscribe);
+                    RemoteInput remoteInput = new RemoteInput.Builder(AgendaSubscriberService.PARAM_SUBSCRIBE_COMMENT)
+                            .setLabel(subscribeLabel)
+                            .build();
+
+                    // Creating a pending intent for this action
+                    Intent subscribeIntent = new Intent(getApplicationContext(), AgendaSubscriberService.class);
+                    subscribeIntent.setAction(AgendaSubscriberService.ACTION_SUBSCRIBE_AGENDA);
+                    PendingIntent agendaSubscribepIntent = PendingIntent.getBroadcast(
+                            getApplicationContext(),
+                            Integer.parseInt(remoteMessage.getData().get("id")),
+                            subscribeIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    NotificationCompat.Action subscribeAction =
+                            new NotificationCompat.Action.Builder(R.drawable.plus,
+                                    subscribeLabel,
+                                    agendaSubscribepIntent)
+                            .addRemoteInput(remoteInput)
+                            .build();
+
+                    n.addAction(subscribeAction);
+                }
+
                 intent = new Intent(App.getContext(), AgendaActivity.class);
                 break;
             case agenda_reply:

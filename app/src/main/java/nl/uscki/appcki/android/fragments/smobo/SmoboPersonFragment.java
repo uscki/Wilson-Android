@@ -25,6 +25,7 @@ import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
 import nl.uscki.appcki.android.generated.common.Pageable;
+import nl.uscki.appcki.android.generated.media.SmoboMediaFile;
 import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
@@ -209,7 +210,7 @@ public class SmoboPersonFragment extends Fragment {
         HorizontalGridView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         mediaGrid.setLayoutManager(layoutManager);
 
-        mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<Integer>()));
+        mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<SmoboMediaFile>()));
         mediaGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
