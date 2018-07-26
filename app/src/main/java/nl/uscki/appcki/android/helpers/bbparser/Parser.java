@@ -64,4 +64,28 @@ public class Parser {
         // Return the builded string
         return output;
     }
+
+    public static String parseToHTML(List<Object> toParse, boolean parseNewLines) {
+        StringBuilder builder = new StringBuilder();
+
+        // For every element in the suppplied content
+        for (Object object: toParse) {
+            // Check if the element is a String object
+            if (object.getClass().getSimpleName().equals("String")) {
+                // We've established that this is a String object, so we can safely make it a string
+                String string = (String) object;
+                if (parseNewLines) {
+                    //string = escapeHtml4(string);
+                    string = string.replaceAll("<br />", "\n");
+                }
+                builder.append(string);
+            } else {
+                GenericElement element = GenericElement.fromLinkedTreeUnit((LinkedTreeMap) object);
+                if (element != null) {
+                    builder.append(element.getHtmlText());
+                }
+            }
+        }
+        return builder.toString();
+    }
 }

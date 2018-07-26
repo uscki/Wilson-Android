@@ -184,6 +184,8 @@ public class MainActivity extends BasicActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         } else if(id == R.id.action_roephoek_roep) {
             buildRoephoekAddDialog();

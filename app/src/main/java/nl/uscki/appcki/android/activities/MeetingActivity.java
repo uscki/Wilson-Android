@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.gson.Gson;
 
@@ -14,6 +15,7 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingDetailAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
+import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 import retrofit2.Response;
 
 public class MeetingActivity extends BasicActivity {
@@ -21,6 +23,7 @@ public class MeetingActivity extends BasicActivity {
     TabLayout tabLayout;
     ViewPager viewPager;
     Toolbar toolbar;
+    private Menu menu;
 
     private Callback<MeetingItem> meetingCallback = new Callback<MeetingItem>() {
         @Override
@@ -93,7 +96,55 @@ public class MeetingActivity extends BasicActivity {
         menu.clear();
 
         getMenuInflater().inflate(R.menu.meeting_menu, menu);
+
+        menu.findItem(R.id.action_meeting_export).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                exportMeeting();
+                return true;
+            }
+        });
+
+        menu.findItem(R.id.action_remove_meeting_from_calendar).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                removeMeetingFromSystemCalendar();
+                return true;
+            }
+        });
+
+        this.menu = menu;
+        setExportButtons();
         return super.onCreateOptionsMenu(menu);
     }
 
+
+    private void exportMeeting() {
+        if(item.getMeeting().getActual_slot() == null) return;
+        CalendarHelper.getInstance().addMeeting(item);
+        setExportButtons();
+    }
+
+    private void removeMeetingFromSystemCalendar() {
+        if(item.getMeeting().getActual_slot() == null) return;
+        CalendarHelper.getInstance().removeItemFromCalendar(item);
+        setExportButtons();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        setExportButtons();
+    }
+
+    private void setExportButtons() {
+        if(item.getMeeting().getActual_slot() == null || this.menu == null) return;
+        if(CalendarHelper.getInstance().AgendaItemExistsInCalendar(item) > 0) {
+            menu.findItem(R.id.action_meeting_export).setVisible(false);
+            menu.findItem(R.id.action_remove_meeting_from_calendar).setVisible(true);
+        } else {
+            menu.findItem(R.id.action_meeting_export).setVisible(true);
+            menu.findItem(R.id.action_remove_meeting_from_calendar).setVisible(false);
+        }
+    }
 }

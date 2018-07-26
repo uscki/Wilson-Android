@@ -45,6 +45,7 @@ public class HomeAgendaTab extends PageableFragment<Agenda> {
         // verander visibility pas als we in een detail view zitten
         menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
         menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
+        menu.findItem(R.id.action_agenda_export).setVisible(false);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
