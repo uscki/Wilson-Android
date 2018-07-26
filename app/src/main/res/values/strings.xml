@@ -4,7 +4,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Instellingen</string>
     <string name="action_roephoek_roep">Roep</string>
     <string name="action_agenda_subscribe">Deelnemen</string>
     <string name="action_agenda_unsubscribe">Uitschrijven</string>
@@ -44,9 +44,13 @@
     <string name="agenda_dialog_ok">Inschrijven</string>
     <string name="agenda_dialog_cancel">Annuleren</string>
     <string name="agenda_no_new_agendas">Er zijn geen evenementen meer.</string>
+    <string name="agenda_toast_added_to_calendar">Evenement is toegevoegd aan agenda</string>
+    <string name="agenda_toast_removed_from_calendar">Evenement is verwijderd uit agenda</string>
 
     <string name="agenda_inschrijven_verplicht">Inschrijven verplicht</string>
     <string name="agenda_archive_menu_string">Archief</string>
+    <string name="action_agenda_export">Opslaan</string>
+    <string name="action_agenda_remove_from_calendar">Verwijderen uit agenda</string>
 
     <string name="example_text">Example text</string>
 
@@ -155,4 +159,40 @@
     <string name="title_activity_smobo">SmoboActivity</string>
     <string name="title_activity_news">NewsActivity</string>
     <string name="news_read_more">Read more</string>
+
+    <string name="title_activity_settings">Instellingen</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">Algemeen</string>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_export_options">Exporteren</string>
+    <string name="pref_header_export_options_summary">Integratie met systeemapplicaties instellen</string>
+    <string name="pref_cat_events">Agenda</string>
+    <string name="pref_save_in_calendar">Integreer met agenda</string>
+    <string name="pref_save_in_calendar_summary">Door deze optie te selecteren kun je evenementen opslaan in je agenda zonder de Wilson app te verlaten</string>
+    <string name="pref_calendar_to_use">Te gebruiken kalender</string>
+    <string name="pref_calendar_export_auto">Automatiseer evenementen</string>
+    <string name="pref_calendar_export_auto_summary">Voeg evenementen waarvoor je je inschrijft automatisch toe aan je agenda</string>
+    <string name="pref_meetingplanner_export_auto">Automatiseer vergaderplanners</string>
+    <string name="pref_meetingplanner_export_auto_summary">Voeg geplande vergaderingen automatisch toe aan je agenda</string>
+
+    <string name="pref_save_in_contacts">Integreer met contacten</string>
+    <string name="pref_save_in_contacts_summary">Door deze optie te selecteren kun je contacten opslaan in je agenda zonder de Wilson app te verlaten</string>
+
+
+    <string name="pref_cat_people">Contacten</string>
+
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notificaties</string>
+
+    <string name="pref_title_new_message_notifications">Notificaties voor nieuwe berichten</string>
+
+    <string name="pref_title_ringtone">Ringtoon</string>
+    <string name="pref_ringtone_silent">Stil</string>
+
+    <string name="pref_title_vibrate">Vibreer</string>
 </resources>

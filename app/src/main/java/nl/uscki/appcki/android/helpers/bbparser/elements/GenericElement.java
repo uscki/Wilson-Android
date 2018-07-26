@@ -130,6 +130,15 @@ public class GenericElement {
         return Parser.parse(getContent(), true, view);
     }
 
+    public String getHtmlText() {
+        //TODO hier is echt een robuuste oplossing voor nodig, maar voor exporteren
+        // naar agenda is HTML ipv een spannable nodig. Perhaps toch maar weer mee sturen met API?
+        // Of kan dit makkelijker?
+
+        String tag = type == null ? "" : type.toLowerCase();
+        return String.format("<%1$s>%2$s</%1$s>", tag, Parser.parseToHTML(getContent(), true));
+    }
+
     public static GenericElement fromLinkedTreeUnit(LinkedTreeMap<String, Object> input) {
         String type = (String) input.get("type");
         ArrayList<Object> c = (ArrayList<Object>) input.get("content");
