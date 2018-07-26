@@ -118,8 +118,11 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     }
 
     public void scrollToItem(int id) {
-//        recyclerView.getAdapter()
-//        recyclerView.getChildAdapterPosition();
+        int itemPosition = adapter.getItemPosition(id);
+        if(itemPosition < 1)
+            return;
+
+        recyclerView.scrollToPosition(itemPosition);
     }
 
     protected void setupRecyclerView(View view) {

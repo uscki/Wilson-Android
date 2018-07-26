@@ -8,9 +8,10 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.organisation.Person;
 
-public class MediaCollection {
+public class MediaCollection implements IWilsonBaseItem{
 
     @Expose
     private Integer id;

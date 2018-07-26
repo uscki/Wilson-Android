@@ -6,10 +6,12 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+
 /**
  * Created by peter on 7/17/16.
  */
-public class AgendaItem {
+public class AgendaItem implements IWilsonBaseItem{
     @Expose
     private Integer id;
     @Expose
