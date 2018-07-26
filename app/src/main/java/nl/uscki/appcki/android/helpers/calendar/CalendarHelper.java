@@ -1,137 +1,51 @@
 package nl.uscki.appcki.android.helpers.calendar;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.util.Pair;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
+import java.util.Locale;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
+import nl.uscki.appcki.android.generated.meeting.Participation;
+import nl.uscki.appcki.android.generated.meeting.Preference;
+import nl.uscki.appcki.android.helpers.PermissionHelper;
+import nl.uscki.appcki.android.helpers.bbparser.Parser;
 
 import static android.provider.CalendarContract.Events;
-import static android.provider.CalendarContract.Instances;
 
-/**
- * Created by michielvanliempt on 08/01/15.
- */
 public class CalendarHelper {
 
-    static final String TAG = "CalendarHelper";
-
-    public static final String[] CALENDAR_PROJECTION = new String[]{
-            CalendarContract.Calendars._ID,                           // 0
-            CalendarContract.Calendars.ACCOUNT_TYPE,                  // 1
-            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
-            CalendarContract.Calendars.NAME,                  // 3
-            CalendarContract.Calendars.CALENDAR_COLOR
-    };
-
-    // The indices for the projection array above.
-    static final int CALENDAR_PROJECTION_ID_INDEX = 0;
-    static final int CALENDAR_PROJECTION_ACCOUNT_TYPE_INDEX = 1;
-    static final int CALENDAR_PROJECTION_DISPLAY_NAME_INDEX = 2;
-    static final int CALENDAR_PROJECTION_NAME_INDEX = 3;
-    static final int CALENDAR_PROJECTION_COLOR_INDEX = 4;
-
-    public static final String[] INSTANCE_PROJECTION = new String[]{
-            Instances.BEGIN,         // 1
-            Instances.END            // 2
-    };
-
-    public static final String[] EVENT_PROJECTION_SIMPLE = new String[]{
-            Events._ID,      // 0
-            Events.DTSTART,         // 1
-            Events.TITLE,          // 2
-            Events.DTEND,
-            Events.ALL_DAY,   // 4
-    };
-
-    public static final String[] EVENT_PROJECTION_FULL = new String[]{
-            Events._ID,       // 0
-            Events.DTSTART,   // 1
-            Events.TITLE,     // 2
-            Events.DTEND,     // 3
-            Events.ALL_DAY,   // 4
-            Events.RRULE,     // 5
-            Events.HAS_ALARM, // 6
-            Events.DESCRIPTION,// 7
-            Events.EVENT_LOCATION, // 8
-            Events.DURATION,
-    };
-
-    // The indices for the projection array above.
-    static final int PROJECTION_ID_INDEX = 0;
-    static final int PROJECTION_BEGIN_INDEX = 1;
-    static final int PROJECTION_TITLE_INDEX = 2;
-    static final int PROJECTION_END_INDEX = 3;
-    static final int PROJECTION_ALLDAY_INDEX = 4;
-    static final int PROJECTION_RRULE_INDEX = 5;
-    static final int PROJECTION_HASALARM_INDEX = 6;
-    static final int PROJECTION_DESCRIPTION_INDEX = 7;
-    static final int PROJECTION_LOCATION_INDEX = 8;
-    static final int PROJECTION_DURATION_INDEX = 9;
-    private static final String[] REMINDER_PROJECTION = {CalendarContract.Reminders.MINUTES};
-
-    private final long calendarId;
     private static CalendarHelper instance;
     private ContentResolver cr;
 
-    public long getPrimaryCalendarId() {
-        checkPermissions();
-
-        Cursor cur = null;
-        Cursor calendarCursor = null;
-        Long id = -1L;
-
-        try {
-            String selection = CalendarContract.Calendars.ACCOUNT_TYPE + " = 'com.google' AND " + CalendarContract.Calendars.VISIBLE + " = 1";
-            calendarCursor = cr.query(CalendarContract.Calendars.CONTENT_URI, CALENDAR_PROJECTION, selection, null, null);
-
-            if (calendarCursor.getCount() > 0) {
-                if (calendarCursor.moveToFirst()) {
-                    id = calendarCursor.getLong(CALENDAR_PROJECTION_ID_INDEX);
-                    String accountType = calendarCursor.getString(CALENDAR_PROJECTION_ACCOUNT_TYPE_INDEX);
-                    String displayName = calendarCursor.getString(CALENDAR_PROJECTION_DISPLAY_NAME_INDEX);
-                    String userName = calendarCursor.getString(CALENDAR_PROJECTION_NAME_INDEX);
-                    int color = calendarCursor.getInt(CALENDAR_PROJECTION_COLOR_INDEX);
-                    Log.i("appointment", String.format("%d %s %s %s", id, userName, displayName, accountType));
-                    return id;
-                }
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } finally {
-            calendarCursor.close();
-        }
-        return id;
+    private CalendarHelper() {
+        Context context = App.getContext();
+        cr = context.getContentResolver();
     }
 
-    private void checkPermissions() {
-
-        /*int permissionCheckWrite = ContextCompat.checkSelfPermission(App.getContext(),
-                Manifest.permission.WRITE_CALENDAR);
-        int permissionCheckRead = ContextCompat.checkSelfPermission(App.getContext(),
-                Manifest.permission.READ_CALENDAR);
-        if (permissionCheckRead != PackageManager.PERMISSION_GRANTED) {
-
-        }
-        if (permissionCheckWrite != PackageManager.PERMISSION_GRANTED) {
-
-        }*/
-    }
-
+    /**
+     * Get the CalendarHelper instance
+     * @return CalendarHelper instance
+     */
     public static CalendarHelper getInstance() {
         if (instance == null) {
             instance = new CalendarHelper();
@@ -139,200 +53,295 @@ public class CalendarHelper {
         return instance;
     }
 
-    public SimpleCalendarEvent getEventSimple(long id) {
 
-        Uri uri = Events.CONTENT_URI.buildUpon().appendPath(Long.toString(id)).build();
-        Cursor cur = cr.query(uri, EVENT_PROJECTION_SIMPLE, null, null, Events.DTSTART);
-        try {
-            if (cur.moveToNext()) {
-                return new SimpleCalendarEvent(cur);
-            }
-        } finally {
-            cur.close();
-        }
-        return null;
-    }
-
-    public FullCalendarEvent getEventFull(long id) {
-
-        Uri uri = Events.CONTENT_URI.buildUpon().appendPath(Long.toString(id)).build();
-        Cursor cur = cr.query(uri, EVENT_PROJECTION_FULL, null, null, null);
-        FullCalendarEvent calendarEvent = null;
-        try {
-            if (cur.moveToNext()) {
-                calendarEvent = new FullCalendarEvent(cur);
-            }
-        } finally {
-            cur.close();
+    /**
+     * Get a list of all available calendars on the device
+     * @return  List of available calendar's (id / name pairs)
+     */
+    public ArrayList<Pair<String,String>> getCalendarList() {
+        ArrayList<Pair<String,String>> calendars = new ArrayList<>();
+        if (ActivityCompat.checkSelfPermission(
+                App.getContext(), Manifest.permission.READ_CALENDAR
+        ) != PackageManager.PERMISSION_GRANTED)  {
+            return calendars;
         }
 
-        if (calendarEvent != null) {
-            // get end date from instances table, beacuse the calendarprovider is weird with dtend and duration
-            long endMillis = getEventInstanceEndTime(calendarEvent.getId(), calendarEvent.startDate);
-            if (endMillis > 0) {
-                calendarEvent.endDate = new DateTime(endMillis);
-            }
+        String projection[] = {CalendarContract.Calendars._ID, CalendarContract.Calendars.CALENDAR_DISPLAY_NAME};
 
-            // retrieve the list of reminders
-            List<CalendarReminder> reminderList = new ArrayList<>();
+        Uri calendarQuery;
+        calendarQuery = CalendarContract.Calendars.CONTENT_URI;
 
-            try {
-                cur = cr.query(CalendarContract.Reminders.CONTENT_URI, REMINDER_PROJECTION, makeReminderSelect(id), null, null);
-                while (cur.moveToNext()) {
-                    reminderList.add(new CalendarReminder(cur.getInt(0)));
-                }
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } finally {
-                cur.close();
-            }
+        ContentResolver contentResolver = App.getContext().getContentResolver();
+
+        Cursor cursor = contentResolver.query(calendarQuery, projection, null, null, null);
+        if(cursor == null) return calendars;
+        if(cursor.moveToFirst()) {
+            int calendarIdIndex = cursor.getColumnIndex(projection[0]);
+            int calendarNameIndex = cursor.getColumnIndex(projection[1]);
+
+            do {
+                calendars.add(
+                        new Pair<>(
+                                cursor.getString(calendarIdIndex),
+                                cursor.getString(calendarNameIndex)
+                        )
+                );
+            } while(cursor.moveToNext());
         }
-
-        return calendarEvent;
-    }
-
-    private long getEventInstanceEndTime(long id, DateTime startDate) {
-        Uri.Builder builder = Instances.CONTENT_URI.buildUpon();
-        ContentUris.appendId(builder, startDate.withTimeAtStartOfDay().getMillis());
-        ContentUris.appendId(builder, startDate.withTimeAtStartOfDay().plusDays(1).getMillis());
-        String selection = Instances.EVENT_ID + " = ?";
-        Cursor cur = cr.query(builder.build(), INSTANCE_PROJECTION, selection, new String[]{Long.toString(id)}, null);
-        try {
-            if (cur.moveToNext()) {
-                return cur.getLong(1);
-            }
-        } finally {
-            cur.close();
-        }
-        return 0;
+        cursor.close();
+        return calendars;
     }
 
     /**
-     * voorbeeld usage
-     *if (appointment == null) {
-     *appointment = new FullCalendarEvent();
-     *}
-     *appointment.setTitle(titleView.getText().toString());
-     *appointment.setLocation(locationView.getText().toString());
-     *appointment.setNotes(notesView.getText().toString());
-     *appointment.setStartDate(startDate);
-     *appointment.setEndDate(endDate);
-     *List<CalendarReminder> reminders = new ArrayList<>();
-     *for (int i = 0; i < reminderListView.getChildCount(); i++) {
-     *View reminder = reminderListView.getChildAt(i);
-     *reminders.add((CalendarReminder) reminder.getTag(R.id.reminders));
-     *}
-     *appointment.setReminders(reminders);
-     *boolean newAppointment = appointment.getId() < 0;
-     *helper.insertOrUpdate(appointment);
-     *if (newAppointment) {
-     *EventHelper.getInstance().addAppointmentEvent(appointment.getId());
-     *}
+     * Export agenda item to system calendar in background.
+     * Original ID on the application server is stored in sync_data1, for
+     * later comparison.
      *
-     * @param appointment
+     * @param item  Agenda item
+     * @return False if not sufficient permissions are granted, true otherwise
      */
-    public void insertOrUpdate(FullCalendarEvent appointment) {
+    @SuppressLint("MissingPermission") // Performed using PermissionHelper
+    private boolean addEventViaProvider(AgendaItem item) {
+        if(!PermissionHelper.canExportCalendar()) {
+            return false;
+        }
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        String calendarId = preferences.getString("calendar_selected_id", "false");
+
+        if(calendarId.equals("false")) {
+            return false;
+        }
+
         ContentValues values = new ContentValues();
-        long startMillis = appointment.getStartDate().getMillis();
-        long endMillis = appointment.getEndDate().getMillis();
-        values.put(Events.DTSTART, startMillis);
-        values.put(Events.TITLE, appointment.getTitle());
+        values.put(Events.DTSTART, item.getStart().getMillis());
+        values.put(Events.DTEND, item.getEnd().getMillis());
+        values.put(Events.TITLE, item.getTitle());
+        values.put(Events.DESCRIPTION, getAgendaItemDescription(item));
         values.put(Events.CALENDAR_ID, calendarId);
-        values.put(Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
-        values.put(Events.ALL_DAY, appointment.isAllDay);
-        values.put(Events.EVENT_LOCATION, appointment.location);
-        values.put(Events.DESCRIPTION, appointment.notes);
+        values.put(Events.EVENT_TIMEZONE, "Europe/Amsterdam");
+        values.put(Events.EVENT_LOCATION, item.getLocation());
+        values.put(Events.GUESTS_CAN_INVITE_OTHERS, "0");
+        values.put(Events.GUESTS_CAN_SEE_GUESTS, "0");
+        values.put(Events.ACCESS_LEVEL, Events.ACCESS_PUBLIC);
+        values.put(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
+        values.put(Events.CUSTOM_APP_PACKAGE, "nl.uscki.appcki.android");
+        values.put(Events.CUSTOM_APP_URI,
+                String.format(Locale.ENGLISH,
+                        "https://www.uscki.nl/?pagina=Agenda/Item&id=%d", item.getId()
+                )
+        );
+        cr.insert(Events.CONTENT_URI, values);
 
-        String dateString = appointment.startDate.toString(DateTimeFormat.forPattern("YYYYMMdd-HHmmss"));
-        dateString = dateString.replace("-", "T"); // can't put T in the pattern
-        int seconds = (int) ((endMillis - startMillis) / 1000);
-        if (appointment.isAllDay()) {
-            // todo really use days in stead of seconds here
-            values.put(Events.DURATION, String.format("P%dD", seconds / 86400)); // Server wants this instead of P86400S
-        } else {
-            values.put(Events.DURATION, String.format("P%dS", seconds));
+        return true;
+    }
+
+    public int AgendaItemExistsInCalendar(AgendaItem item) {
+        return AgendaItemExistsInCalendar(item.getTitle(), item.getStart().getMillis(), item.getEnd().getMillis());
+    }
+
+    public int AgendaItemExistsInCalendar(MeetingItem item) {
+        if(item.getMeeting().getActual_slot() == null) return -1;
+        return AgendaItemExistsInCalendar(
+                item.getMeeting().getTitle(),
+                item.getMeeting().getStartdate().getMillis(),
+                item.getMeeting().getEnddate().getMillis());
+    }
+
+    /**
+     * Check if a given event already exists in the system calendar
+     * @param title        Title of the event
+     * @param begin         Start time of the event
+     * @param end          End time of the event
+     * @return             ID of the event if found, -1 otherwise
+     */
+    private int AgendaItemExistsInCalendar(String title, long begin, long end) {
+        if(!PermissionHelper.hasPermission(Manifest.permission.READ_CALENDAR))
+            return -2;
+
+        String[] projection =
+                new String[] {
+                        Events.DTSTART,
+                        Events.DTEND,
+                        Events.TITLE,
+                        Events._ID
+                };
+
+        String where = String.format(
+                "%s = ? AND %s = ? AND  %s = ?",
+                Events.TITLE,
+                Events.DTSTART,
+                Events.DTEND
+        );
+        String[] arguments = new String[] {
+                title,
+                Long.toString(begin),
+                Long.toString(end)
+        };
+
+        ContentResolver contentResolver = App.getContext().getContentResolver();
+
+        Log.e("FindingEventExists", "Looking for '" + title + "'\tbegin: " + begin + "\tend:" + end);
+
+        @SuppressLint("MissingPermission")
+        Cursor cursor = contentResolver.query(
+                Events.CONTENT_URI,
+                projection,
+                where,
+                arguments,
+                null);
+
+        if(cursor == null) {
+            return -1;
         }
-        values.put(Events.DTEND, (Long) null);
 
-        long id = appointment.getId();
-        if (id == -1) {
-            try {
-                Uri uri = cr.insert(Events.CONTENT_URI, values);
-                appointment.id = Long.parseLong(uri.getLastPathSegment());
-            } catch (SecurityException e) {
-                e.printStackTrace();
+
+        while(cursor.moveToNext()) {
+            long beginTime = cursor.getLong(cursor.getColumnIndex(projection[0]));
+            long endTime = cursor.getLong(cursor.getColumnIndex(projection[1]));
+            String eventTitle = cursor.getString(cursor.getColumnIndex(projection[2]));
+            int eventId = cursor.getInt(cursor.getColumnIndex(projection[3]));
+            Log.e("FindingEventExists", "Found '" + eventTitle + "'\tbegin: " + beginTime + "\tend:" + endTime + "\tid: " + eventId);
+            if(beginTime == begin && endTime == end && eventTitle.equals(title)) {
+                return eventId;
             }
-        } else {
-            Uri uri = Uri.withAppendedPath(Events.CONTENT_URI, Long.toString(id));
-            cr.update(uri, values, null, null);
-            deleteReminders(id);
+
         }
+        return -1;
     }
 
-    public void delete(SimpleCalendarEvent appointment) {
-        long id = appointment.getId();
-        delete(id);
-    }
-
-    public void delete(Long appointmentId) {
-        Uri uri = Uri.withAppendedPath(Events.CONTENT_URI, Long.toString(appointmentId));
-        cr.delete(uri, null, null);
-        deleteReminders(appointmentId);
-    }
-
-
-    private void deleteReminders(long id) {
-        try {
-            cr.delete(CalendarContract.Reminders.CONTENT_URI, makeReminderSelect(id), null);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String makeReminderSelect(long id) {
-        return CalendarContract.Reminders.EVENT_ID + " = " + Long.toString(id);
-    }
-
-    private void addReminders(long id, List<CalendarReminder> reminders) {
-        try {
-            ContentValues values = new ContentValues();
-            for (CalendarReminder reminder : reminders) {
-                values.put(CalendarContract.Reminders.EVENT_ID, id);
-                values.put(CalendarContract.Reminders.MINUTES, reminder.getMinutes());
-                values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_DEFAULT);
-                cr.insert(CalendarContract.Reminders.CONTENT_URI, values);
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
+    /**
+     * Add an event to the system calendar when no write permissions
+     * to calendar are given.
+     * This opens the calendar app with all information filled out
+     * @param item  Agenda item
+     */
+    private void addEventViaIntention(AgendaItem item) {
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setType("vnd.android.cursor.item/event");
+        intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, item.getStart().getMillis());
+        intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, item.getEnd().getMillis());
+        intent.putExtra(Events.TITLE, item.getTitle());
+        intent.putExtra(Events.DESCRIPTION, getAgendaItemDescription(item));
+        intent.putExtra(Events.EVENT_TIMEZONE, "Europe/Amsterdam");
+        intent.putExtra(Events.EVENT_LOCATION, item.getLocation());
+        intent.putExtra(Events.ACCESS_LEVEL, Events.ACCESS_PUBLIC);
+        intent.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
+        App.getContext().startActivity(intent);
     }
 
     public void addItemToCalendar(AgendaItem item) {
-//// TODO: 5/15/16 IMPLEMENT
+        if(!addEventViaProvider(item)) addEventViaIntention(item);
     }
 
-    public void removeItemFromCalendar(AgendaItem item) {
-        //TODO
+    public boolean removeItemFromCalendar(AgendaItem item) {
+        return removeItemFromCalendar(item.getTitle(), item.getStart().getMillis(), item.getEnd().getMillis());
     }
 
-    public long addMeeting(MeetingItem item) {
-        FullCalendarEvent appointment = new FullCalendarEvent();
-        appointment.setTitle(item.getMeeting().getTitle());
-        appointment.setLocation(item.getMeeting().getLocation());
-        appointment.setNotes(item.getMeeting().getAgenda());
-        appointment.setStartDate(item.getMeeting().getStartdate());
-        appointment.setEndDate(item.getMeeting().getEnddate());
-        return appointment.getId();
+    public boolean removeItemFromCalendar(MeetingItem item) {
+        return removeItemFromCalendar(item.getMeeting().getTitle(), item.getMeeting().getStartdate().getMillis(), item.getMeeting().getEnddate().getMillis());
+    }
+
+    private boolean removeItemFromCalendar(String title, long begin, long end) {
+        int eventId = AgendaItemExistsInCalendar(title, begin, end);
+        if(eventId < 0)
+            return false;
+        if(!PermissionHelper.hasPermission(Manifest.permission.WRITE_CALENDAR))
+            return false;
+
+        Uri uri = ContentUris.withAppendedId(Events.CONTENT_URI, eventId);
+
+        @SuppressLint("MissingPermission") // Checked through PermissionHelper
+        int deleteCount = App.getContext().getContentResolver().delete(uri, null, null);
+
+        return deleteCount > 0;
+    }
+
+    @SuppressLint("MissingPermission") // Performed using permission helper
+    private boolean exportMeetingViaProvider(MeetingItem item) {
+        if(!PermissionHelper.canExportCalendar()) {
+            return false;
+        }
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        String calendarId = preferences.getString("calendar_selected_id", "false");
+
+        if(calendarId.equals("false")) {
+            return false;
+        }
+
+        ContentValues values = new ContentValues();
+        values.put(Events.DTSTART, item.getMeeting().getStartdate().getMillis());
+        values.put(Events.DTEND, item.getMeeting().getEnddate().getMillis());
+        values.put(Events.TITLE, item.getMeeting().getTitle());
+        values.put(Events.DESCRIPTION, getMeetingDescription(item));
+        values.put(Events.CALENDAR_ID, calendarId);
+        values.put(Events.EVENT_TIMEZONE, "Europe/Amsterdam");
+        values.put(Events.EVENT_LOCATION, item.getMeeting().getLocation());
+        values.put(Events.GUESTS_CAN_INVITE_OTHERS, "0");
+        values.put(Events.GUESTS_CAN_SEE_GUESTS, "0");
+        values.put(Events.ACCESS_LEVEL, Events.ACCESS_PRIVATE);
+        values.put(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
+        values.put(Events.CUSTOM_APP_PACKAGE, "nl.uscki.appcki.android");
+        values.put(Events.CUSTOM_APP_URI,
+                String.format(Locale.ENGLISH,
+                        "https://www.uscki.nl/?pagina=MeetingPlanner/ShowMeeting&meeting_id=%d", item.getMeeting().getId()
+                )
+        );
+
+        cr.insert(Events.CONTENT_URI, values);
+
+        return true;
+    }
+
+    private void exportMeetingViaIntention(MeetingItem item) {
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setType("vnd.android.cursor.item/event");
+        intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, item.getMeeting().getStartdate().getMillis());
+        intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, item.getMeeting().getEnddate().getMillis());
+        intent.putExtra(Events.TITLE, item.getMeeting().getTitle());
+        intent.putExtra(Events.DESCRIPTION, getMeetingDescription(item));
+        intent.putExtra(Events.EVENT_TIMEZONE, "Europe/Amsterdam");
+        intent.putExtra(Events.EVENT_LOCATION, item.getMeeting().getLocation());
+        intent.putExtra(Events.ACCESS_LEVEL, Events.ACCESS_PRIVATE);
+        intent.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
+        App.getContext().startActivity(intent);
+    }
+
+    public void addMeeting(MeetingItem item) {
+        if(!exportMeetingViaProvider(item)) exportMeetingViaIntention(item);
     }
 
     public List<CalendarReminder> getReminders() {
         return new ArrayList<>();
     }
 
-    private CalendarHelper() {
-        Context context = App.getContext();
-        cr = context.getContentResolver();
-        calendarId = getPrimaryCalendarId();
+    private String getAgendaItemDescription(AgendaItem item) {
+        StringBuilder description = new StringBuilder();
+        description.append(Parser.parseToHTML(item.getDescriptionJSON(), true));
+        description.append("<br/>");
+        description.append("<br/><b>Wie</b>: " + item.getWho());
+        description.append("<br/><b>Wat</b>: " + item.getWhat());
+        description.append("<br/><b>Waar</b>: " + item.getLocation());
+        description.append("<br/><b>Wanneer</b>: " + item.getWhen());
+        description.append("<br/><b>Kosten</b>: " + item.getCosts());
+
+        return description.toString();
     }
 
+    private String getMeetingDescription(MeetingItem item) {
+        StringBuilder descriptionBuilder = new StringBuilder();
+        if(!item.getMeeting().getAgenda().isEmpty()) {
+            descriptionBuilder.append("<h3>Agenda</h3>");
+            descriptionBuilder.append("<p><pre>" + item.getMeeting().getAgenda() + "</pre></p>");
+        }
+        if(!item.getMeeting().getNotes().isEmpty() || !item.getMeeting().getPlannotes().isEmpty()) {
+            descriptionBuilder.append("<h3>Opmerkingen</h3>");
+            if(!item.getMeeting().getNotes().isEmpty())
+                descriptionBuilder.append("<p>" + item.getMeeting().getNotes() + "</p>");
+            if(!item.getMeeting().getPlannotes().isEmpty())
+                descriptionBuilder.append("<p>" + item.getMeeting().getPlannotes() + "</p>");
+        }
+        return descriptionBuilder.toString();
+    }
 }
