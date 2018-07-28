@@ -24,6 +24,7 @@ import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.activities.MeetingActivity;
+import nl.uscki.appcki.android.helpers.PermissionHelper;
 
 /**
  * Created by peter on 3/21/17.
@@ -89,19 +90,25 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 n.setChannelId(notificationUtil.getChannel(NotificationUtil.NOTIFICATION_CHANNEL_ACTIVITIES_ID));
                 intent = new Intent(App.getContext(), MeetingActivity.class);
 
-                Intent exportMeetingIntent = new Intent(App.getContext(), EventExportService.class);
+                if(PermissionHelper.canExportMeetingAuto()) {
+                    // Start a service to export this meeting to calendar
+                    EventExportService.startExportMeetingToCalendarAction(App.getContext(), id);
+                } else {
+                    // Add a button to export meeting
+                    Intent exportMeetingIntent = new Intent(App.getContext(), EventExportService.class);
 
-                exportMeetingIntent.setAction(EventExportService.ACTION_MEETING_EXPORT);
-                exportMeetingIntent.putExtra(EventExportService.PARAM_MEETING_ID, id);
+                    exportMeetingIntent.setAction(EventExportService.ACTION_MEETING_EXPORT);
+                    exportMeetingIntent.putExtra(EventExportService.PARAM_MEETING_ID, id);
 
-                PendingIntent exportMeetingpIntent =
-                        PendingIntent.getService(App.getContext(), 0, exportMeetingIntent, 0);
+                    PendingIntent exportMeetingpIntent =
+                            PendingIntent.getService(App.getContext(), 0, exportMeetingIntent, 0);
 
-                n.addAction(
-                        R.drawable.calendar,
-                        App.getContext().getResources().getString(R.string.action_meeting_save),
-                        exportMeetingpIntent
-                );
+                    n.addAction(
+                            R.drawable.calendar,
+                            App.getContext().getResources().getString(R.string.action_meeting_save),
+                            exportMeetingpIntent
+                    );
+                }
                 break;
             case meeting_new:
                 n.setChannelId(notificationUtil.getChannel(NotificationUtil.NOTIFICATION_CHANNEL_ACTIVITIES_ID));

@@ -53,6 +53,13 @@ public class EventExportService extends IntentService {
         context.startService(intent);
     }
 
+    public static void startExportMeetingToCalendarAction(Context context, int meetingId) {
+        Intent intent = new Intent(context, EventExportService.class);
+        intent.setAction(ACTION_MEETING_EXPORT);
+        intent.putExtra(PARAM_MEETING_ID, meetingId);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.e(this.toString(), "Received intent");
