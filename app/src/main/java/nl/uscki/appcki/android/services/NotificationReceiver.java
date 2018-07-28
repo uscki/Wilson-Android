@@ -158,6 +158,13 @@ public class NotificationReceiver extends FirebaseMessagingService {
         notificationManager.notify(id, n.build());
     }
 
+    /**
+     * Build a default notification without an intent.
+     * This function handles markup
+     * @param title         Notification title
+     * @param content       Notification body
+     * @return              NotificatioNCompat.Builder
+     */
     public NotificationCompat.Builder getIntentlessBaseNotification(String title, String content) {
         // Because androids default BitmapFactory doesn't work with vector drawables
         Bitmap bm = Utils.getBitmapFromVectorDrawable(App.getContext(), R.drawable.ic_wilson);
@@ -174,8 +181,6 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
         n.setStyle(new NotificationCompat.BigTextStyle().bigText(content));
 
-        Log.e(TAG, "Logging to " + NotificationCompat.getChannelId(n.build()).toString());
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             n.setSmallIcon(R.drawable.cki_logo_white)
                     .setLargeIcon(bm);
@@ -186,6 +191,14 @@ public class NotificationReceiver extends FirebaseMessagingService {
         return n;
     }
 
+    /**
+     * Put extra's to a notification intent that help reproduce or overwrite a notification
+     * @param intent        The intent to put the extras to
+     * @param title         The notification title
+     * @param content       The notification body
+     * @param id            The ID of the notification (for overwriting purposes)
+     * @param itemId        The ID of the item the action view should open (-1 for empty)
+     */
     public void addReproducabilityExtras(Intent intent, String title, String content, int id, int itemId) {
         intent.putExtra(PARAM_NOTIFICATION_ID, id);
         intent.putExtra(PARAM_NOTIFICATION_TITLE, title);
@@ -194,6 +207,12 @@ public class NotificationReceiver extends FirebaseMessagingService {
         // TODO extend with notification group and tag
     }
 
+    /**
+     * Add properties to an intention to open a detail view
+     * @param notification      The notification this intent is intended for
+     * @param intent            The base intention of the notification
+     * @param id                The ID of the item to open
+     */
     public void addIntentionsToNotification(NotificationCompat.Builder notification, Intent intent, int id) {
         intent.putExtra("id", id);
         intent.setAction(Intent.ACTION_VIEW);
@@ -205,6 +224,16 @@ public class NotificationReceiver extends FirebaseMessagingService {
         Log.d(TAG, "Notification intent updated, should now go to item id " + id);
     }
 
+    /**
+     * Add export and subscribe action buttons to a new agenda event notification
+     * @param notification          New Agenda Event base notification
+     * @param agendaId              ID of the new agenda event
+     * @param allowExport           True if export button should be added
+     * @param allowSubscribe        True if subscribe button should be added
+     * @param title                 Title of the event
+     * @param content               Notification body, i.e. event extra information
+     * @param notificationid        The notification object to add these buttons to
+     */
     public void addAgendaActions(
             NotificationCompat.Builder notification,
             int agendaId,
@@ -259,6 +288,13 @@ public class NotificationReceiver extends FirebaseMessagingService {
         }
     }
 
+    /**
+     * Reproduce a notification for a new agenda event based on parameters in the intention, and
+     * overwrite the previous notification
+     * @param intent            The intent of an action of the existing notification
+     * @param allowExport       True iff export buttons should be added
+     * @param allowSubscribe    True iff subscribe buttons should be added
+     */
     public void buildNewAgendaItemNotificationFromIntent(Intent intent, boolean allowExport, boolean allowSubscribe) {
         Log.e("BuildAgendaNotification", "Building new agenda notification from existing intent");
         String title = intent.getStringExtra(PARAM_NOTIFICATION_TITLE);
@@ -266,16 +302,15 @@ public class NotificationReceiver extends FirebaseMessagingService {
         int notification_id = intent.getIntExtra(PARAM_NOTIFICATION_ID, -1);
         int agenda_id = intent.getIntExtra(PARAM_VIEW_ITEM_ID, -1);
 
-        Log.e("BuildAgendaNotification", "Found values: Title: " + title + "\tagenda_id: " + agenda_id + "\t notification_id: " + notification_id + "\t content: " +content);
-
         NotificationCompat.Builder notification = getIntentlessBaseNotification(title, content);
         addAgendaActions(notification, agenda_id, allowExport, allowSubscribe, title, content, notification_id);
 
-        // Create a new intention, because the last was alreadd final
+        // Create a new intention, because the last was already final
         Intent newIntention = new Intent(App.getContext(), AgendaActivity.class);
         addIntentionsToNotification(notification, newIntention, agenda_id);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(App.getContext());
-        // Disable making a sound or vibrating
+
+        // TODO: Disable making a sound or vibrating, below does not work
         notification.setDefaults(Notification.DEFAULT_ALL);
         notificationManager.notify(notification_id, notification.build());
     }
