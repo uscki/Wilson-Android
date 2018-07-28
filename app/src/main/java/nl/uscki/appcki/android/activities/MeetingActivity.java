@@ -138,7 +138,7 @@ public class MeetingActivity extends BasicActivity {
     }
 
     private void setExportButtons() {
-        if(item.getMeeting().getActual_slot() == null || this.menu == null) return;
+        if(item == null || item.getMeeting().getActual_slot() == null || this.menu == null) return;
         if(CalendarHelper.getInstance().AgendaItemExistsInCalendar(item) > 0) {
             menu.findItem(R.id.action_meeting_export).setVisible(false);
             menu.findItem(R.id.action_remove_meeting_from_calendar).setVisible(true);
