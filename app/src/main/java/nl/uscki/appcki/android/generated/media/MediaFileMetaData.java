@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
-public class SmoboMediaFile implements IWilsonBaseItem {
+public class MediaFileMetaData implements IWilsonBaseItem {
 
     @Expose
     private Integer id;

@@ -13,14 +13,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
-import nl.uscki.appcki.android.generated.media.SmoboMediaFile;
+import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
 
 /**
  * Created by peter on 3/8/17.
  */
 
-public class SmoboMediaAdapter extends BaseItemAdapter<SmoboMediaAdapter.ViewHolder, SmoboMediaFile> {
-    public SmoboMediaAdapter(List<SmoboMediaFile> items) {
+public class SmoboMediaAdapter extends BaseItemAdapter<SmoboMediaAdapter.ViewHolder, MediaFileMetaData> {
+    public SmoboMediaAdapter(List<MediaFileMetaData> items) {
         super(items);
     }
 
