@@ -20,18 +20,14 @@ import retrofit2.Response;
 
 
 /**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p>
- * TODO: Customize class - update intent actions and extra parameters.
+ * An {@link IntentService} subclass for handling asynchronous task requests for downloading
+ * items from the server and storing them in device applications, such as calendar or people
  */
 public class EventExportService extends IntentService {
-    // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_AGENDA_EXPORT = "nl.uscki.appcki.android.services.action.AGENDA_EXPORT";
     public static final String ACTION_MEETING_EXPORT = "nl.uscki.appcki.android.services.action.MEETING_EXPORT";
 
-    // TODO: Rename parameters
     public static final String PARAM_AGENDA_ID = "nl.uscki.appcki.android.services.param.AGENDA_ID";
     public static final String PARAM_MEETING_ID = "nl.uscki.appcki.android.services.param.MEETING_ID";
 
@@ -53,6 +49,12 @@ public class EventExportService extends IntentService {
         context.startService(intent);
     }
 
+    /**
+     * Starts this service to perform export agenda event action.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
     public static void startExportMeetingToCalendarAction(Context context, int meetingId) {
         Intent intent = new Intent(context, EventExportService.class);
         intent.setAction(ACTION_MEETING_EXPORT);
@@ -64,16 +66,7 @@ public class EventExportService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.e(this.toString(), "Received intent");
         if (intent != null) {
-            Log.e(this.toString(), "Keyset:");
-            Bundle extras = intent.getExtras();
-            for(String key : extras.keySet()) {
-                Log.e(this.toString() + " keysetItem:", key);
-                Log.e("Value: ", extras.get(key).toString());
-            }
-
-
             final String action = intent.getAction();
-            Log.e(this.toString(), "Intent is not null, action is " + action);
             if (ACTION_AGENDA_EXPORT.equals(action)) {
                 final int id = intent.getIntExtra(PARAM_AGENDA_ID, -1);
                 handleAgendaExportIntent(id);
@@ -81,17 +74,22 @@ public class EventExportService extends IntentService {
                 int id = intent.getIntExtra(PARAM_MEETING_ID, -3);
                 if(id < 0) id = intent.getIntExtra("id", -2);
                 handleMeetingExportIntent(id);
-            } else {
-                Log.e(this.toString(), "Action didn't equal anything. Weird");
             }
         }
     }
 
+    /**
+     * Perform initialization of API, including adding a token to headers
+     */
     private void init() {
         ServiceGenerator.init();
         UserHelper.getInstance().load();
     }
 
+    /**
+     * Download the agenda event and store it in the device calendar
+     * @param id    Agenda event ID
+     */
     private void handleAgendaExportIntent(int id) {
         if(id < 0) return;
         init();
@@ -100,10 +98,8 @@ public class EventExportService extends IntentService {
             public void onSucces(Response<AgendaItem> response) {
                 AgendaItem item = response.body();
                 if(item != null) {
-                    Log.e(this.toString(), "Agenda item received from server. Initiating export");
                     if(CalendarHelper.getInstance().AgendaItemExistsInCalendar(item) < 0) {
                         // If it already exists, pretend we just added it anyway
-                        Log.e(this.toString(), "Agenda item " + item.getId() + " already exists in calendar");
                         CalendarHelper.getInstance().addItemToCalendar(item);
                     }
                     Toast.makeText(
@@ -116,20 +112,20 @@ public class EventExportService extends IntentService {
         });
     }
 
+    /**
+     * Download a meeting item and store it in the device calendar
+     * @param id    Meeting id
+     */
     private void handleMeetingExportIntent(int id) {
-        Log.e(this.toString(), "Starting export for item " + id);
         if(id < 0) return;
         init();
         Services.getInstance().meetingService.get(id).enqueue(new Callback<MeetingItem>() {
             @Override
             public void onSucces(Response<MeetingItem> response) {
-                Log.e(this.toString(), "Got response!");
                 MeetingItem item = response.body();
                 if(item != null) {
-                    Log.e(this.toString(), "Meeting item received from server. Initiating export");
                     if(CalendarHelper.getInstance().AgendaItemExistsInCalendar(item) < 0) {
                         // If it already exists, pretend we just added it anyway
-                        Log.e(this.toString(), "Meeting item " + item.getId() + " already exists in calendar");
                         CalendarHelper.getInstance().addMeeting(item);
                     }
                     Toast.makeText(
@@ -137,12 +133,8 @@ public class EventExportService extends IntentService {
                             getResources().getString(R.string.agenda_toast_added_to_calendar),
                             Toast.LENGTH_SHORT)
                             .show();
-                } else {
-                    Log.e(this.toString(), "Item is null, nothing happened");
                 }
             }
         });
     }
-
-
 }

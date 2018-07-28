@@ -136,10 +136,20 @@ public class CalendarHelper {
         return true;
     }
 
+    /**
+     * Verify if a certain calendar event already exists in the system calendar
+     * @param item  Agenda item to look for
+     * @return      True iff the agenda item already exists in the device calendar
+     */
     public int AgendaItemExistsInCalendar(AgendaItem item) {
         return AgendaItemExistsInCalendar(item.getTitle(), item.getStart().getMillis(), item.getEnd().getMillis());
     }
 
+    /**
+     * Verify if a certain calendar event already exists in the system calendar
+     * @param item  Meeting item to look for
+     * @return      True iff the meeting item alreadyd exists in the device calendar
+     */
     public int AgendaItemExistsInCalendar(MeetingItem item) {
         if(item.getMeeting().getActual_slot() == null) return -1;
         return AgendaItemExistsInCalendar(
@@ -230,18 +240,42 @@ public class CalendarHelper {
         App.getContext().startActivity(intent);
     }
 
+    /**
+     * Add an agenda item to the system calendar. Method is automatically chosen based on
+     * permissions granted to this application by the user
+     * @param item  Agenda item to export
+     */
     public void addItemToCalendar(AgendaItem item) {
         if(!addEventViaProvider(item)) addEventViaIntention(item);
     }
 
+    /**
+     * Remove an agenda item from the system calendar. This method does not perform any action
+     * if insufficient permissions are granted
+     * @param item      Agenda item to remove from system calendar
+     * @return          Boolean indicating success status, true iff success
+     */
     public boolean removeItemFromCalendar(AgendaItem item) {
         return removeItemFromCalendar(item.getTitle(), item.getStart().getMillis(), item.getEnd().getMillis());
     }
 
+    /**
+     * Remove a meeting item from the system calendar. This method does not perform any action
+     * if insufficient permissions are granted
+     * @param item      Meeting item to remove from system calendar
+     * @return          Boolean indicating success status, true iff success
+     */
     public boolean removeItemFromCalendar(MeetingItem item) {
         return removeItemFromCalendar(item.getMeeting().getTitle(), item.getMeeting().getStartdate().getMillis(), item.getMeeting().getEnddate().getMillis());
     }
 
+    /**
+     * Search for a calendar event by title and start and end times. Remove this item if it can be found
+     * @param title        Title of the event to remove
+     * @param begin        Start time of the event to remove in milliseconds
+     * @param end          End time of the event to remove in milliseconds
+     * @return             Boolean indicating success status
+     */
     private boolean removeItemFromCalendar(String title, long begin, long end) {
         int eventId = AgendaItemExistsInCalendar(title, begin, end);
         if(eventId < 0)
@@ -257,6 +291,12 @@ public class CalendarHelper {
         return deleteCount > 0;
     }
 
+    /**
+     * Export a meeting event through the provider. This function only works if both readning and
+     * writing permissions on the system calendar are granted by the user
+     * @param item      Meeting item to export
+     * @return          Boolean indicating success status
+     */
     @SuppressLint("MissingPermission") // Performed using permission helper
     private boolean exportMeetingViaProvider(MeetingItem item) {
         if(!PermissionHelper.canExportCalendar()) {
@@ -294,6 +334,12 @@ public class CalendarHelper {
         return true;
     }
 
+    /**
+     * Export a meeting item through an intention. This opens a calendar application with event
+     * information filled out automatically, but saving the event is left to the user.
+     * Useful if no reading and writing permissions for the system calendar are granted.
+     * @param item  The meeting item to export
+     */
     private void exportMeetingViaIntention(MeetingItem item) {
         Intent intent = new Intent(Intent.ACTION_INSERT);
         intent.setType("vnd.android.cursor.item/event");
@@ -308,14 +354,20 @@ public class CalendarHelper {
         App.getContext().startActivity(intent);
     }
 
+    /**
+     * Add a meeting item to the system calendar. Method is automatically chosen based on
+     * permissions granted to this application by the user
+     * @param item  Meeting item to export
+     */
     public void addMeeting(MeetingItem item) {
         if(!exportMeetingViaProvider(item)) exportMeetingViaIntention(item);
     }
 
-    public List<CalendarReminder> getReminders() {
-        return new ArrayList<>();
-    }
-
+    /**
+     * Construct an HTML markup string with the description of an agenda event
+     * @param item      Agenda event
+     * @return          String containing a bit of HTML and a bit of event description
+     */
     private String getAgendaItemDescription(AgendaItem item) {
         StringBuilder description = new StringBuilder();
         description.append(Parser.parseToHTML(item.getDescriptionJSON(), true));
@@ -329,6 +381,11 @@ public class CalendarHelper {
         return description.toString();
     }
 
+    /**
+     * Construct an HTML markup string with the description of a meeting event
+     * @param item      Meeting event
+     * @return          String containing a bit of HTML and a bit of event description
+     */
     private String getMeetingDescription(MeetingItem item) {
         StringBuilder descriptionBuilder = new StringBuilder();
         if(!item.getMeeting().getAgenda().isEmpty()) {
