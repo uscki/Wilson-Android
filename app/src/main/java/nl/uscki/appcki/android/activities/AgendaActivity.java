@@ -77,6 +77,7 @@ public class AgendaActivity extends BasicActivity {
                     finish();
                 }
             }
+            setSubscribeButtons();
             setExportButtons();
         }
 
@@ -192,13 +193,7 @@ public class AgendaActivity extends BasicActivity {
         });
 
         // verander visibility pas als we in een detail view zitten
-        if(foundUser) {
-            menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
-            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
-        } else {
-            menu.findItem(R.id.action_agenda_subscribe).setVisible(true);
-            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
-        }
+        setSubscribeButtons();
         setExportButtons();
 
         return super.onCreateOptionsMenu(menu);
@@ -234,6 +229,18 @@ public class AgendaActivity extends BasicActivity {
             menu.findItem(R.id.action_remove_from_calendar).setVisible(false);
             menu.findItem(R.id.action_agenda_export).setVisible(true);
 
+        }
+    }
+
+    private void setSubscribeButtons() {
+        if(menu == null) return;
+
+        if(foundUser) {
+            menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
+            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
+        } else {
+            menu.findItem(R.id.action_agenda_subscribe).setVisible(true);
+            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
         }
     }
 
@@ -274,7 +281,6 @@ public class AgendaActivity extends BasicActivity {
             args.putInt("id", item.getId());
             newFragment.setArguments(args);
             newFragment.show(getSupportFragmentManager(), "agenda_subscribe");
-
         } else {
             AgendaItem item = AgendaDetailFragment.item;
             if(item.getHasUnregisterDeadline()) {
@@ -329,7 +335,6 @@ public class AgendaActivity extends BasicActivity {
     }
 
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
-        Log.e("AgendaSubscribedEvent", event.toString());
         if(!event.showSubscribe) {
             setAlarmForEvent(item);
             menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
