@@ -77,6 +77,7 @@ public class AgendaActivity extends BasicActivity {
                     finish();
                 }
             }
+            setExportButtons();
         }
 
         @Override
@@ -152,11 +153,6 @@ public class AgendaActivity extends BasicActivity {
 
             }
         });
-        /*for (AgendaParticipant part : item.getParticipants()) {
-            if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId()) && part.getAttends()) {
-                foundUser = true;
-            }
-        }*/
     }
 
     @Override
@@ -211,8 +207,9 @@ public class AgendaActivity extends BasicActivity {
     @Override
     public void onResume() {
         super.onResume();
+        if(!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
         setExportButtons();
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -222,7 +219,7 @@ public class AgendaActivity extends BasicActivity {
     }
 
     private void setExportButtons() {
-        if(menu == null)
+        if(menu == null || item == null)
             return;
 
         if(CalendarHelper.getInstance()

@@ -34,7 +34,7 @@ public abstract class Callback<T> implements retrofit2.Callback<T> {
         t.printStackTrace();
     }
 
-    private void handleError(Response<T> response) {
+    public void handleError(Response<T> response) {
         try {
             Gson gson = new Gson();
             ServerError error = gson.fromJson(response.errorBody().string(), ServerError.class);
