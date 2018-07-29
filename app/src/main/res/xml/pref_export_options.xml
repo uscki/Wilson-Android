@@ -7,45 +7,92 @@
     <PreferenceCategory
         android:title="@string/pref_cat_events"
         >
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="calendar_use_export"
-        android:title="@string/pref_save_in_calendar"
-        android:summary="@string/pref_save_in_calendar_summary"
-        />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="calendar_use_export"
+            android:title="@string/pref_save_in_calendar"
+            android:summary="@string/pref_save_in_calendar_summary"
+            />
 
-    <ListPreference
-        android:dependency="calendar_use_export"
-        android:key="calendar_selected_id"
-        android:title="@string/pref_calendar_to_use"
-        />
+        <ListPreference
+            android:dependency="calendar_use_export"
+            android:key="calendar_selected_id"
+            android:title="@string/pref_calendar_to_use"
+            />
 
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="event_export_auto"
-        android:title="@string/pref_calendar_export_auto"
-        android:summary="@string/pref_calendar_export_auto_summary"
-        android:dependency="calendar_use_export"
-        />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="event_export_auto"
+            android:title="@string/pref_calendar_export_auto"
+            android:summary="@string/pref_calendar_export_auto_summary"
+            android:dependency="calendar_use_export"
+            />
 
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="meeting_export_auto"
-        android:title="@string/pref_meetingplanner_export_auto"
-        android:summary="@string/pref_meetingplanner_export_auto_summary"
-        android:dependency="calendar_use_export"
-        />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="meeting_export_auto"
+            android:title="@string/pref_meetingplanner_export_auto"
+            android:summary="@string/pref_meetingplanner_export_auto_summary"
+            android:dependency="calendar_use_export"
+            />
     </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/pref_cat_people"
         >
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="people_use_export"
-        android:title="@string/pref_save_in_contacts"
-        android:summary="@string/pref_save_in_contacts_summary"
-        />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="people_use_export"
+            android:title="@string/pref_save_in_contacts"
+            android:summary="@string/pref_save_in_contacts_summary"
+            />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/pref_cat_people_fields"
+        android:summary="@string/pref_cat_people_fields_summary"
+        android:dependency="people_use_export"
+        >
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="people_export_field_fullname"
+            android:title="@string/pref_contacts_store_fullname"
+            android:summary="@string/pref_contacts_store_fullname_summary"
+            />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="people_export_field_mobile"
+            android:title="@string/pref_contacts_store_mobile"
+            />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="people_export_field_phone"
+            android:title="@string/pref_contacts_store_phone"
+            />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="people_export_field_email"
+            android:title="@string/pref_contacts_store_email"
+            />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="people_export_field_address"
+            android:title="@string/pref_contacts_store_address"
+            />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="people_export_field_website"
+            android:title="@string/pref_contacts_store_website"
+            />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="people_export_field_organisation"
+            android:title="@string/pref_contacts_store_organisation"
+            android:summary="@string/pref_contacts_store_organisation_summary"
+            />
+
+    </PreferenceCategory>
 </PreferenceScreen>
