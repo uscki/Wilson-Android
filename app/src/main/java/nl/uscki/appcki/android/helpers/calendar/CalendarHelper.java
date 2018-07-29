@@ -244,9 +244,10 @@ public class CalendarHelper {
                         "https://www.uscki.nl/?pagina=Agenda/Item&id=%d", item.getId()
                 )
         );
-        cr.insert(Events.CONTENT_URI, values);
 
-        return true;
+        Uri result = cr.insert(Events.CONTENT_URI, values);
+
+        return result != null;
     }
 
     /**
@@ -312,9 +313,9 @@ public class CalendarHelper {
                 )
         );
 
-        cr.insert(Events.CONTENT_URI, values);
+        Uri result = cr.insert(Events.CONTENT_URI, values);
 
-        return true;
+        return result != null;
     }
 
     /**
