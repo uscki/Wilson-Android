@@ -1,17 +1,13 @@
 package nl.uscki.appcki.android.activities;
 
-import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.PermissionChecker;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -23,8 +19,8 @@ import com.google.gson.Gson;
 import org.joda.time.DateTime;
 
 import de.greenrobot.event.EventBus;
-import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.error.Error;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
@@ -40,8 +36,6 @@ import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 import nl.uscki.appcki.android.services.OnetimeAlarmReceiver;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AgendaActivity extends BasicActivity {
@@ -55,7 +49,7 @@ public class AgendaActivity extends BasicActivity {
 
     private Callback<AgendaItem> agendaCallback = new Callback<AgendaItem>() {
         @Override
-        public void onResponse(Call<AgendaItem> call, Response<AgendaItem> response) {
+        public void onSucces(Response<AgendaItem> response) {
             if(response == null) {
                 Log.e(this.getClass().toString(), "No response");
                 return;
@@ -79,11 +73,6 @@ public class AgendaActivity extends BasicActivity {
             }
             setSubscribeButtons();
             setExportButtons();
-        }
-
-        @Override
-        public void onFailure(Call<AgendaItem> call, Throwable t) {
-            // TODO: Toast with failure? Or is that handled
         }
     };
 
