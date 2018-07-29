@@ -3,7 +3,6 @@ package nl.uscki.appcki.android.activities;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -121,7 +120,7 @@ public class MeetingActivity extends BasicActivity {
 
     private void exportMeeting() {
         if(item.getMeeting().getActual_slot() == null) return;
-        CalendarHelper.getInstance().addMeeting(item);
+        CalendarHelper.getInstance().addItemToCalendar(item);
         setExportButtons();
     }
 
@@ -139,7 +138,16 @@ public class MeetingActivity extends BasicActivity {
 
     private void setExportButtons() {
         if(item == null || item.getMeeting().getActual_slot() == null || this.menu == null) return;
-        if(CalendarHelper.getInstance().AgendaItemExistsInCalendar(item) > 0) {
+
+        int calendarEventItemId;
+
+        try {
+            calendarEventItemId = CalendarHelper.getInstance().getEventIdForItemIfExists(item);
+        } catch(SecurityException e) {
+            return;
+        }
+
+        if(calendarEventItemId > 0) {
             menu.findItem(R.id.action_meeting_export).setVisible(false);
             menu.findItem(R.id.action_remove_meeting_from_calendar).setVisible(true);
         } else {

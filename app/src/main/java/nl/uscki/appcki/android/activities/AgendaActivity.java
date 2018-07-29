@@ -206,8 +206,15 @@ public class AgendaActivity extends BasicActivity {
         if(menu == null || item == null)
             return;
 
-        if(CalendarHelper.getInstance()
-                .AgendaItemExistsInCalendar(item) > 0)
+        int calendarEventItemId;
+
+        try {
+            calendarEventItemId = CalendarHelper.getInstance().getEventIdForItemIfExists(item);
+        } catch(SecurityException e) {
+            return;
+        }
+
+        if(calendarEventItemId > 0)
         {
             menu.findItem(R.id.action_agenda_export).setVisible(false);
             if(PermissionHelper.canDeleteCalendar()) {
@@ -328,10 +335,16 @@ public class AgendaActivity extends BasicActivity {
             setAlarmForEvent(item);
             menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
-            if(PermissionHelper.canExportCalendarAuto() &&
-                    CalendarHelper.getInstance()
-                            .AgendaItemExistsInCalendar(item) <= 0
-                    ) {
+
+            int calendarEventItemId;
+
+            try {
+                calendarEventItemId = CalendarHelper.getInstance().getEventIdForItemIfExists(item);
+            } catch(Exception e) {
+                calendarEventItemId = -1;
+            }
+
+            if(PermissionHelper.canExportCalendarAuto() && calendarEventItemId <= 0) {
                 exportToCalendar();
             }
         } else {
