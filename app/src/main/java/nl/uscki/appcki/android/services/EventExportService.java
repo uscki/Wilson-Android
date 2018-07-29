@@ -1,10 +1,8 @@
 package nl.uscki.appcki.android.services;
 
 import android.app.IntentService;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -98,7 +96,17 @@ public class EventExportService extends IntentService {
             public void onSucces(Response<AgendaItem> response) {
                 AgendaItem item = response.body();
                 if(item != null) {
-                    if(CalendarHelper.getInstance().AgendaItemExistsInCalendar(item) < 0) {
+
+                    int calendarEventItemId;
+
+                    try {
+                        calendarEventItemId = CalendarHelper.getInstance()
+                                .getEventIdForItemIfExists(item);
+                    } catch(SecurityException e) {
+                        calendarEventItemId = -1;
+                    }
+
+                    if(calendarEventItemId < 0) {
                         // If it already exists, pretend we just added it anyway
                         CalendarHelper.getInstance().addItemToCalendar(item);
                     }
@@ -124,9 +132,19 @@ public class EventExportService extends IntentService {
             public void onSucces(Response<MeetingItem> response) {
                 MeetingItem item = response.body();
                 if(item != null) {
-                    if(CalendarHelper.getInstance().AgendaItemExistsInCalendar(item) < 0) {
+
+                    int calendarEventItemId;
+
+                    try {
+                        calendarEventItemId = CalendarHelper.getInstance()
+                                .getEventIdForItemIfExists(item);
+                    } catch(SecurityException e) {
+                        calendarEventItemId = -1;
+                    }
+
+                    if(calendarEventItemId < 0) {
                         // If it already exists, pretend we just added it anyway
-                        CalendarHelper.getInstance().addMeeting(item);
+                        CalendarHelper.getInstance().addItemToCalendar(item);
                     }
                     Toast.makeText(
                             getApplicationContext(),
