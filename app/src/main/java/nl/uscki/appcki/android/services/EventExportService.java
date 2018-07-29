@@ -64,7 +64,9 @@ public class EventExportService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.e(this.toString(), "Received intent");
         if (intent != null) {
+
             final String action = intent.getAction();
+
             if (ACTION_AGENDA_EXPORT.equals(action)) {
                 final int id = intent.getIntExtra(PARAM_AGENDA_ID, -1);
                 handleAgendaExportIntent(id);
@@ -110,6 +112,7 @@ public class EventExportService extends IntentService {
                         // If it already exists, pretend we just added it anyway
                         CalendarHelper.getInstance().addItemToCalendar(item);
                     }
+
                     Toast.makeText(
                             getApplicationContext(),
                             getResources().getString(R.string.agenda_toast_added_to_calendar),
@@ -146,6 +149,7 @@ public class EventExportService extends IntentService {
                         // If it already exists, pretend we just added it anyway
                         CalendarHelper.getInstance().addItemToCalendar(item);
                     }
+
                     Toast.makeText(
                             getApplicationContext(),
                             getResources().getString(R.string.agenda_toast_added_to_calendar),

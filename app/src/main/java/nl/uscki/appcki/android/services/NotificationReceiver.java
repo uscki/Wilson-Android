@@ -70,6 +70,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
         Log.e(TAG, title + "\tContent: " + content);
 
         NotificationType type;
+
         try {
             String sentType = remoteMessage.getData().get("type");
             Log.e(TAG, "Getting type of " + sentType);
@@ -87,7 +88,8 @@ public class NotificationReceiver extends FirebaseMessagingService {
         switch (type) {
             case meeting_filledin:
             case meeting_planned:
-                n.setChannelId(notificationUtil.getChannel(NotificationUtil.NOTIFICATION_CHANNEL_ACTIVITIES_ID));
+                n.setChannelId(notificationUtil.
+                        getChannel(NotificationUtil.NOTIFICATION_CHANNEL_ACTIVITIES_ID));
                 intent = new Intent(App.getContext(), MeetingActivity.class);
 
                 if(PermissionHelper.canExportMeetingAuto()) {
@@ -95,13 +97,18 @@ public class NotificationReceiver extends FirebaseMessagingService {
                     EventExportService.startExportMeetingToCalendarAction(App.getContext(), id);
                 } else {
                     // Add a button to export meeting
-                    Intent exportMeetingIntent = new Intent(App.getContext(), EventExportService.class);
+                    Intent exportMeetingIntent =
+                            new Intent(App.getContext(), EventExportService.class);
 
                     exportMeetingIntent.setAction(EventExportService.ACTION_MEETING_EXPORT);
                     exportMeetingIntent.putExtra(EventExportService.PARAM_MEETING_ID, id);
 
                     PendingIntent exportMeetingpIntent =
-                            PendingIntent.getService(App.getContext(), 0, exportMeetingIntent, 0);
+                            PendingIntent.getService(
+                                    App.getContext(),
+                                    0,
+                                    exportMeetingIntent,
+                                    0);
 
                     n.addAction(
                             R.drawable.calendar,
@@ -111,17 +118,25 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 }
                 break;
             case meeting_new:
-                n.setChannelId(notificationUtil.getChannel(NotificationUtil.NOTIFICATION_CHANNEL_ACTIVITIES_ID));
+                n.setChannelId(notificationUtil.getChannel(
+                        NotificationUtil.NOTIFICATION_CHANNEL_ACTIVITIES_ID));
                 intent = new Intent(App.getContext(), MeetingActivity.class);
                 break;
             case forum_reply:
-                n.setChannelId(notificationUtil.getChannel(NotificationUtil.NOTIFICATION_CHANNEL_PERSONAL_ID));
+                n.setChannelId(notificationUtil.getChannel(
+                        NotificationUtil.NOTIFICATION_CHANNEL_PERSONAL_ID));
                 break;
             case forum_new_topic:
-                n.setChannelId(notificationUtil.getChannel(NotificationUtil.NOTIFICATION_CHANNEL_PERSONAL_ID));
+                n.setChannelId(notificationUtil.getChannel(
+                        NotificationUtil.NOTIFICATION_CHANNEL_PERSONAL_ID));
                 Intent forumIntent = new Intent(Intent.ACTION_VIEW);
-                forumIntent.setData(Uri.parse(String.format(Locale.ENGLISH, "https://www.uscki.nl/?pagina=Forum/ViewTopic&topicId=%d&newest=true#newest",
-                        id).trim()));
+
+                forumIntent.setData(Uri.parse(String.format(
+                        Locale.ENGLISH,
+                        "https://www.uscki.nl/?pagina=Forum/ViewTopic&topicId=%d&newest=true#newest",
+                        id)
+                        .trim()));
+
                 PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, forumIntent, 0);
                 n.setContentIntent(pIntent);
                 break;
@@ -133,7 +148,8 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 addReproducabilityExtras(intent, title, content, id, id);
                 break;
             case agenda_reply:
-                n.setChannelId(notificationUtil.getChannel(NotificationUtil.NOTIFICATION_CHANNEL_PERSONAL_ID));
+                n.setChannelId(notificationUtil
+                        .getChannel(NotificationUtil.NOTIFICATION_CHANNEL_PERSONAL_ID));
                 intent = new Intent(App.getContext(), AgendaActivity.class);
                 break;
             case news:
@@ -142,7 +158,8 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 intent.putExtra("screen", MainActivity.Screen.NEWS.toString());
                 break;
             case achievement: // what do?
-                n.setChannelId(notificationUtil.getChannel(NotificationUtil.NOTIFICATION_CHANNEL_PERSONAL_ID));
+                n.setChannelId(notificationUtil
+                        .getChannel(NotificationUtil.NOTIFICATION_CHANNEL_PERSONAL_ID));
                 break;
             case other: // what we do?
                 break;
@@ -152,7 +169,8 @@ public class NotificationReceiver extends FirebaseMessagingService {
             addIntentionsToNotification(n, intent, id);
         }
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(App.getContext());
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(App.getContext());
         notificationManager.notify(id, n.build());
     }
 
@@ -173,6 +191,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
         NotificationCompat.Builder n  = new NotificationCompat.Builder(App.getContext(),
                 notificationUtil.getChannel(NotificationUtil.NOTIFICATION_CHANNEL_GENERAL_ID));
+
         n.setContentTitle(title)
                 .setContentText(content)
                 .setAutoCancel(true);

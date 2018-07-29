@@ -67,9 +67,11 @@ public class AgendaSubscriberService extends IntentService {
      */
     private CharSequence getSubscribeText(Intent intent) {
         Bundle remoteInput = android.support.v4.app.RemoteInput.getResultsFromIntent(intent);
+
         if(remoteInput != null) {
             return remoteInput.getCharSequence(PARAM_SUBSCRIBE_COMMENT);
         }
+
         return "";
     }
 
@@ -80,7 +82,9 @@ public class AgendaSubscriberService extends IntentService {
             if (ACTION_SUBSCRIBE_AGENDA.equals(action)) {
                 final int agendaId = intent.getIntExtra(PARAM_AGENDA_ID, -1);
                 final String subscribeComment = getSubscribeText(intent).toString();
+
                 Log.e(this.toString(), "Found agenda id " + agendaId + " and comment '" + subscribeComment + "'");
+
                 handleAgendaSubscribeAction(agendaId, subscribeComment, intent);
             }
         }
@@ -108,17 +112,22 @@ public class AgendaSubscriberService extends IntentService {
         Services.getInstance()
                 .agendaService.subscribe(agendaId, subscribeComment)
                 .enqueue(new Callback<AgendaParticipantLists>() {
+
             @Override
             public void onSucces(Response<AgendaParticipantLists> response) {
+
                 EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body(), false));
                 NotificationReceiver notificationReceiver = new NotificationReceiver();
+
                 boolean allowExport = true;
+
                 if(PermissionHelper.canExportCalendarAuto()) {
-                    Log.e(this.toString(), "Can export to calendar, starting intent");
                     allowExport = false;
                     EventExportService.startExportAgendaToCalendarAction(getApplicationContext(), agendaId);
                 }
+
                 notificationReceiver.buildNewAgendaItemNotificationFromIntent(intent, allowExport, false);
+
                 Toast.makeText(
                         App.getContext(),
                         getResources().getString(R.string.agenda_subscribe_success),
@@ -131,6 +140,7 @@ public class AgendaSubscriberService extends IntentService {
                 super.handleError(response);
                 error(intent);
             }
+
         });
     }
 
