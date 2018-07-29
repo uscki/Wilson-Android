@@ -45,6 +45,7 @@ public class NotificationUtil extends ContextWrapper {
                     getString(R.string.notification_channel_activities_name),
                     NotificationManager.IMPORTANCE_HIGH
             );
+
             activitiesChannel.enableLights(true);
             activitiesChannel.enableVibration(true);
             activitiesChannel.setLightColor(Color.RED);
@@ -56,6 +57,7 @@ public class NotificationUtil extends ContextWrapper {
                     getString(R.string.notification_channel_general_name),
                     NotificationManager.IMPORTANCE_DEFAULT
             );
+
             generalChannel.enableLights(true);
             generalChannel.enableVibration(true);
             generalChannel.setLightColor(Color.RED);
@@ -67,6 +69,7 @@ public class NotificationUtil extends ContextWrapper {
                     getString(R.string.notification_channel_personal_name),
                     NotificationManager.IMPORTANCE_LOW
             );
+
             personalChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             personalChannel.setDescription(getString(R.string.notification_channel_personal_description));
             personalChannel.enableLights(false);
@@ -90,8 +93,10 @@ public class NotificationUtil extends ContextWrapper {
 
     private NotificationManager getManager() {
         if(notificationManager == null) {
-            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         }
+
         return notificationManager;
     }
 

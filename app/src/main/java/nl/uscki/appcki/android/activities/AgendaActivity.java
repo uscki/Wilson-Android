@@ -50,18 +50,24 @@ public class AgendaActivity extends BasicActivity {
     private Callback<AgendaItem> agendaCallback = new Callback<AgendaItem>() {
         @Override
         public void onSucces(Response<AgendaItem> response) {
+
             if(response == null) {
                 Log.e(this.getClass().toString(), "No response");
                 return;
             }
+
             Log.e(this.getClass().toString(), response.toString());
+
             if(response.body() == null) {
                 Log.e(this.getClass().toString(), "No response or response body");
                 return;
             }
+
             Log.e(this.getClass().toString(), response.body().toString());
+
             item = response.body();
             viewPager.setAdapter(new AgendaDetailAdapter(getSupportFragmentManager(), item));
+
             for (AgendaParticipant part : item.getParticipants()) {
                 if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
                     if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
@@ -71,6 +77,7 @@ public class AgendaActivity extends BasicActivity {
                     finish();
                 }
             }
+            
             setSubscribeButtons();
             setExportButtons();
         }
@@ -190,9 +197,12 @@ public class AgendaActivity extends BasicActivity {
 
     @Override
     public void onResume() {
+
         super.onResume();
+
         if(!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
+
         setExportButtons();
     }
 
@@ -279,27 +289,37 @@ public class AgendaActivity extends BasicActivity {
             newFragment.show(getSupportFragmentManager(), "agenda_subscribe");
         } else {
             AgendaItem item = AgendaDetailFragment.item;
+
             if(item.getHasUnregisterDeadline()) {
                 DateTime deadline = new DateTime(item.getUnregisterDeadline());
+
                 if(!deadline.isAfterNow()) {
                     EventBus.getDefault().post(new ErrorEvent(new Error() {
+
                         @Override
                         public String getMessage() {
                             return "Kan niet unsubscriben door een unsubscribe deadline!";
                         }
+
                     }));
+
                     return; // don't still try to unsubscribe
                 }
             }
 
             // no deadline for unsubscribing
             Log.d("MainActivity", "unsubscribing for:" + AgendaDetailFragment.item.getId());
-            Services.getInstance().agendaService.unsubscribe(AgendaDetailFragment.item.getId()).enqueue(new nl.uscki.appcki.android.api.Callback<AgendaParticipantLists>() {
+
+            Services.getInstance().agendaService.unsubscribe(AgendaDetailFragment.item.getId())
+                    .enqueue(new nl.uscki.appcki.android.api.Callback<AgendaParticipantLists>() {
+
                 @Override
                 public void onSucces(Response<AgendaParticipantLists> response) {
-                    EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body(), true));
+                    EventBus.getDefault()
+                            .post(new AgendaItemSubscribedEvent(response.body(), true));
                     setExportButtons();
                 }
+
             });
         }
     }
@@ -307,7 +327,8 @@ public class AgendaActivity extends BasicActivity {
     private void exportToCalendar() {
         CalendarHelper.getInstance().addItemToCalendar(item);
         setExportButtons();
-        Toast.makeText(this, R.string.agenda_toast_added_to_calendar ,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.agenda_toast_added_to_calendar ,Toast.LENGTH_SHORT)
+                .show();
     }
 
     private void removeFromCalendar() {
@@ -317,6 +338,7 @@ public class AgendaActivity extends BasicActivity {
                     R.string.agenda_toast_removed_from_calendar,
                     Toast.LENGTH_SHORT
             ).show();
+
         setExportButtons();
     }
 
