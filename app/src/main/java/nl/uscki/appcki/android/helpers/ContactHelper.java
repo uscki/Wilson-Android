@@ -191,7 +191,7 @@ public class ContactHelper {
                         ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
     }
 
-    private String getContactDisplayName(Person person) {
+    public String getContactDisplayName(Person person) {
         StringBuilder displayName = new StringBuilder();
         displayName.append(person.getFirstname());
         if(preferences.getBoolean("people_export_field_fullname", false)) {
@@ -206,7 +206,7 @@ public class ContactHelper {
         return displayName.toString();
     }
 
-    private String getContactAddress(Person person) {
+    public String getContactAddress(Person person) {
         StringBuilder address = new StringBuilder();
         boolean addNewline = false;
         boolean addSpace = false;
