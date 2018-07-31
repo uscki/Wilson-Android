@@ -67,7 +67,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
         String content = remoteMessage.getData().get("content");
         int id = Integer.parseInt(remoteMessage.getData().get("id"));
 
-        Log.e(TAG, title + "\tContent: " + content);
+        Log.e(TAG, title + "\tContent: " + content + "\tid: " + id);
 
         NotificationType type;
 
@@ -137,6 +137,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
                         id)
                         .trim()));
 
+                // TODO: Isn't this handled at the end of this function? And overwritten by that stuff?
                 PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, forumIntent, 0);
                 n.setContentIntent(pIntent);
                 break;
@@ -154,8 +155,8 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 break;
             case news:
                 intent = new Intent(App.getContext(), MainActivity.class);
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.putExtra("screen", MainActivity.Screen.NEWS.toString());
+                intent.setAction(MainActivity.ACTION_VIEW_NEWSITEM);
+                intent.putExtra(MainActivity.PARAM_NEWS_ID, id);
                 break;
             case achievement: // what do?
                 n.setChannelId(notificationUtil
@@ -231,11 +232,9 @@ public class NotificationReceiver extends FirebaseMessagingService {
      * @param id                The ID of the item to open
      */
     public void addIntentionsToNotification(NotificationCompat.Builder notification, Intent intent, int id) {
-        intent.putExtra("id", id);
-        intent.setAction(Intent.ACTION_VIEW);
-        // TODO: Figure out which flags to use to create a proper back stack:
-        // https://developer.android.com/training/notify-user/build-notification#click
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        intent.putExtra("id", id);
+        if(intent.getAction() == null)
+            intent.setAction(Intent.ACTION_VIEW);
         PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, intent, 0);
         notification.setContentIntent(pIntent);
         Log.d(TAG, "Notification intent updated, should now go to item id " + id);

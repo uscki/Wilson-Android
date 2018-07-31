@@ -14,6 +14,7 @@ import android.widget.TextView;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.events.ContentLoadedEvent;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.common.Pageable;
@@ -90,6 +91,9 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                     getAdapter().addItems(response.body().getContent());
                 }
             }
+
+            // Notify who-ever might be interested that new items have been loaded
+            EventBus.getDefault().post(new ContentLoadedEvent(PageableFragment.this));
         }
     };
 
@@ -117,12 +121,21 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         return view;
     }
 
-    public void scrollToItem(int id) {
-        int itemPosition = adapter.getItemPosition(id);
-        if(itemPosition < 1)
-            return;
+    public boolean scrollToItem(int id) {
+        if(id < 0)
+            return true;
 
-        recyclerView.scrollToPosition(itemPosition);
+        int itemPosition = adapter.getItemPosition(id);
+
+        if(itemPosition < 0)
+            return false;
+
+        LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
+        if(llm == null) return false;
+
+        llm.scrollToPositionWithOffset(itemPosition, 0);
+
+        return true;
     }
 
     protected void setupRecyclerView(View view) {
