@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
-
     <item android:id="@+id/action_meeting_export"
         android:title="@string/action_agenda_export"
         android:icon="@android:drawable/stat_sys_download"
