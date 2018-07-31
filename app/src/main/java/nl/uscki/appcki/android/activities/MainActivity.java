@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.crashlytics.android.Crashlytics;
@@ -29,10 +30,12 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import de.greenrobot.event.EventBus;
+import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.events.ContentLoadedEvent;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
@@ -55,6 +58,15 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class MainActivity extends BasicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
+
+    public static final String ACTION_VIEW_NEWSITEM
+            = "nl.uscki.appcki.android.activities.action.ACTION_VIEW_NEWSITEM";
+
+    public static final String PARAM_NEWS_ID
+            = "nl.uscki.appcki.android.activities.param.PARAM_NEWS_ID";
+
+    private int focusNewsId = -1;
+    private int focusTriesSoFar = 0;
 
     Toolbar toolbar;
     NavigationView navigationView;
@@ -108,30 +120,35 @@ public class MainActivity extends BasicActivity
 
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
-        if(intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
-            if(intent.getStringExtra("item") != null) {
+        if(intent != null) {
+            if(Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getStringExtra("item") != null) {
                 // Assume we want to view de agenda detail view
-                Log.e("Main Activity", "ACTION VIEW intent matches the given intent");
                 Bundle args = new Bundle();
                 args.putString("item", getIntent().getStringExtra("item"));
                 openFragment(new AgendaDetailTabsFragment(), args);
-            } else if(intent.getStringExtra("screen") != null && intent.getStringExtra("screen").equals(Screen.NEWS.toString())) {
-                openTab(HomeFragment.NEWS);
-                int newNewsId = intent.getIntExtra("id", -1);
-                if(newNewsId > 0) {
-                    // TODO: Somehow get the homeNewsTab fragment
-                    // TODO: Wait until API is done? Otherwise there is probably nothing to scroll to
-                    //homeNewsTab.scrollToItem(newNewsId);
-                }
             } else {
-                Log.e("Main Activity", "Nothing interesting seems to happen");
+                handleNewsItemIntent(intent);
             }
-        } else {
-            Log.e("Main Activity", "ACTION VIEW intent DID NOT match the given intent");
         }
-
         // TODO configure shit for this server side
         FirebaseMessaging.getInstance().subscribeToTopic("meetings");
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleNewsItemIntent(intent);
+    }
+
+    private void handleNewsItemIntent(Intent intent) {
+        if(intent != null &&
+                intent.getAction() != null &&
+                ACTION_VIEW_NEWSITEM.equals(intent.getAction())) {
+
+            focusNewsId = intent.getIntExtra(PARAM_NEWS_ID, -1);
+            focusTriesSoFar = 0;
+            openTab(HomeFragment.NEWS, focusNewsId);
+        }
     }
 
     @Override
@@ -235,10 +252,14 @@ public class MainActivity extends BasicActivity
     }
 
     private void openTab(int index) {
+        openTab(index, -1);
+    }
+
+    private void openTab(int index, int scrollToId) {
         Crashlytics.log("openTab(" + index + ")");
         if (currentScreen == Screen.ROEPHOEK || currentScreen == Screen.NEWS || currentScreen == Screen.AGENDA) {
             // HomeFragment luistert naar dit event om daarin de tab te switchen
-            EventBus.getDefault().post(new SwitchTabEvent(index));
+            EventBus.getDefault().post(new SwitchTabEvent(index, scrollToId));
         } else {
             Bundle bundle = new Bundle();
             bundle.putInt("index", index);
@@ -361,6 +382,20 @@ public class MainActivity extends BasicActivity
             return;
         }
         openFragment(event.screen, event.arguments);
+    }
+
+    public void onEventMainThread(ContentLoadedEvent event) {
+        if(focusNewsId > 0 && event.updatedPageableFragment instanceof HomeNewsTab) {
+            if(((HomeNewsTab) event.updatedPageableFragment)
+                    .scrollToItemWithId(focusNewsId, focusTriesSoFar >= 3) ||
+                    focusTriesSoFar >= 3) {
+
+                focusNewsId = -1;
+
+            }
+
+            focusTriesSoFar++;
+        }
     }
 
     @Override

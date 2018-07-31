@@ -67,6 +67,8 @@
 
     <string name="agenda_subscribe_success">Je bent ingeschreven voor dit evenement!</string>
 
+    <string name="main_failure_to_show_newsitem">Dit nieuwsitem kon niet worden getoond, probeer het later opnieuw, of kijk op de website</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_agenda">AgendaActivity</string>
     <string name="large_text">
