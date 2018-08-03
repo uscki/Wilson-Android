@@ -3,6 +3,7 @@ package nl.uscki.appcki.android.services;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -233,10 +234,11 @@ public class NotificationReceiver extends FirebaseMessagingService {
     public void addIntentionsToNotification(NotificationCompat.Builder notification, Intent intent, int id) {
         intent.putExtra("id", id);
         intent.setAction(Intent.ACTION_VIEW);
-        // TODO: Figure out which flags to use to create a proper back stack:
-        // https://developer.android.com/training/notify-user/build-notification#click
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, intent, 0);
+
+        PendingIntent pIntent =
+                TaskStackBuilder.create(App.getContext())
+                .addNextIntentWithParentStack(intent)
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         notification.setContentIntent(pIntent);
         Log.d(TAG, "Notification intent updated, should now go to item id " + id);
     }
