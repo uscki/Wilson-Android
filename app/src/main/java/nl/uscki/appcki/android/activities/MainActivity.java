@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
@@ -219,6 +220,7 @@ public class MainActivity extends BasicActivity
 
     private void openTab(int index) {
         Crashlytics.log("openTab(" + index + ")");
+
         if (currentScreen == Screen.ROEPHOEK || currentScreen == Screen.NEWS || currentScreen == Screen.AGENDA) {
             // HomeFragment luistert naar dit event om daarin de tab te switchen
             EventBus.getDefault().post(new SwitchTabEvent(index));
@@ -226,6 +228,39 @@ public class MainActivity extends BasicActivity
             Bundle bundle = new Bundle();
             bundle.putInt("index", index);
             openFragment(new HomeFragment(), bundle);
+        }
+
+        setMenuToTab(index);
+    }
+
+    private void setMenuToTab(int homeFragmentTabIndex) {
+        int selectedItemId = -1;
+        switch(homeFragmentTabIndex){
+            case HomeFragment.NEWS:
+                selectedItemId = R.id.nav_news;
+                break;
+            case HomeFragment.AGENDA:
+                selectedItemId = R.id.nav_agenda;
+                break;
+            case HomeFragment.ROEPHOEK:
+                selectedItemId = R.id.nav_roephoek;
+                break;
+        }
+        if(selectedItemId >= 0){
+            changeDrawerMenuSelection(selectedItemId);
+        }
+    }
+
+    public void changeDrawerMenuSelection(int menuItemId) {
+        Menu navMenu = navigationView.getMenu();
+        MenuItem activeItem = navMenu.findItem(menuItemId);
+        Log.e("changeMenuSelection", "Looking for item with id " + menuItemId);
+        for(int i = 0; i < navMenu.size(); i++) {
+            Log.e("changeMenuSelection", "Found " + navMenu.getItem(i).getItemId() + " for " + i + "th item");
+            if(navMenu.getItem(i).getItemId() == menuItemId) {
+                navMenu.getItem(i).setChecked(true);
+                return;
+            }
         }
     }
 
@@ -343,6 +378,10 @@ public class MainActivity extends BasicActivity
             return;
         }
         openFragment(event.screen, event.arguments);
+    }
+
+    public void onEventMainThread(SwitchTabEvent event) {
+        setMenuToTab(event.index);
     }
 
     @Override

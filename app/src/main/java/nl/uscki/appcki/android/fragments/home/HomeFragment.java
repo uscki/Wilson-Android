@@ -48,6 +48,7 @@ public class HomeFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 setCurrentScreen(tab.getPosition());
                 viewPager.setCurrentItem(tab.getPosition());
+                EventBus.getDefault().post(new SwitchTabEvent(tab.getPosition()));
             }
 
             @Override
