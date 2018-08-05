@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.RemoteInput;
@@ -86,8 +87,11 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
         Intent intent = null;
 
+        String mainBackstackAction = null;
+
         switch (type) {
             case meeting_filledin:
+                mainBackstackAction = MainActivity.ACTION_MEETING_OVERVIEW;
             case meeting_planned:
                 n.setChannelId(notificationUtil.
                         getChannel(NotificationUtil.NOTIFICATION_CHANNEL_ACTIVITIES_ID));
@@ -117,11 +121,13 @@ public class NotificationReceiver extends FirebaseMessagingService {
                             exportMeetingpIntent
                     );
                 }
+                mainBackstackAction = MainActivity.ACTION_MEETING_OVERVIEW;
                 break;
             case meeting_new:
                 n.setChannelId(notificationUtil.getChannel(
                         NotificationUtil.NOTIFICATION_CHANNEL_ACTIVITIES_ID));
                 intent = new Intent(App.getContext(), MeetingActivity.class);
+                mainBackstackAction = MainActivity.ACTION_MEETING_OVERVIEW;
                 break;
             case forum_reply:
                 n.setChannelId(notificationUtil.getChannel(
@@ -142,13 +148,16 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 n.setContentIntent(pIntent);
                 break;
             case agenda_announcement:
+                mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
             case agenda_new:
+                mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 addAgendaActions(n, id,true, true, title, content, id);
                 intent = new Intent(App.getContext(), AgendaActivity.class);
                 addReproducabilityExtras(intent, title, content, id, id);
                 break;
             case agenda_reply:
+                mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 n.setChannelId(notificationUtil
                         .getChannel(NotificationUtil.NOTIFICATION_CHANNEL_PERSONAL_ID));
                 intent = new Intent(App.getContext(), AgendaActivity.class);
@@ -167,7 +176,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
         }
 
         if(intent != null) {
-            addIntentionsToNotification(n, intent, id);
+            addIntentionsToNotification(n, intent, id, mainBackstackAction);
         }
 
         NotificationManagerCompat notificationManager =
@@ -232,13 +241,42 @@ public class NotificationReceiver extends FirebaseMessagingService {
      * @param id                The ID of the item to open
      */
     public void addIntentionsToNotification(NotificationCompat.Builder notification, Intent intent, int id) {
+        addIntentionsToNotification(notification, intent, id, null);
+    }
+
+    /**
+     * Add properties to an intention to open a detail view
+     * @param notification      The notification this intent is intended for
+     * @param intent            The base intention of the notification
+     * @param id                The ID of the item to open
+     * @param mainBackstackAction (Optional) The action name of the MAIN ACTIVITY to call when
+     *                            pressing back from the activity this notification opens
+     */
+    public void addIntentionsToNotification(
+            NotificationCompat.Builder notification,
+            Intent intent,
+            int id,
+            String mainBackstackAction
+    ) {
         intent.putExtra("id", id);
         intent.setAction(Intent.ACTION_VIEW);
 
-        PendingIntent pIntent =
-                TaskStackBuilder.create(App.getContext())
-                .addNextIntentWithParentStack(intent)
-                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pIntent;
+
+        if(mainBackstackAction == null) {
+            pIntent = PendingIntent.getActivity(App.getContext(), 0, intent, 0);
+        } else {
+            // NOTE: This solution is going to fail horribly if a backpress no longer always
+            // should go to the MainActivity
+            Intent backPressedIntent = new Intent(App.getContext(), MainActivity.class);
+            backPressedIntent.setAction(mainBackstackAction);
+
+            pIntent =
+                    TaskStackBuilder.create(App.getContext())
+                            .addNextIntent(backPressedIntent)
+                            .addNextIntent(intent)
+                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
         notification.setContentIntent(pIntent);
         Log.d(TAG, "Notification intent updated, should now go to item id " + id);
     }
