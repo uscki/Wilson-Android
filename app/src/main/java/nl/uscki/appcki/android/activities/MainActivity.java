@@ -130,21 +130,16 @@ public class MainActivity extends BasicActivity
                 }
             } else if (ACTION_NEWS_OVERVIEW.equals(intent.getAction())) {
                 openTab(HomeFragment.NEWS);
-                currentScreen = Screen.NEWS;
             } else if (ACTION_AGENDA_OVERVIEW.equals(intent.getAction())) {
                 openTab(HomeFragment.AGENDA);
-                currentScreen = Screen.AGENDA;
             } else if (ACTION_SHOUTBOX_OVERVIEW.equals(intent.getAction())) {
                 openTab(HomeFragment.ROEPHOEK);
-                currentScreen = Screen.ROEPHOEK;
             } else if (ACTION_MEETING_OVERVIEW.equals(intent.getAction())) {
                 openFragment(new MeetingOverviewFragment(), null);
-                currentScreen = Screen.MEETING_OVERVIEW;
             } else if (ACTION_POLL_OVERVIEW.equals(intent.getAction())) {
                 openFragment(new PollOverviewFragment(), null);
-                currentScreen = Screen.POLL_OVERVIEW;
             }
-            }
+        }
 
         // TODO configure shit for this server side
         FirebaseMessaging.getInstance().subscribeToTopic("meetings");
@@ -221,33 +216,32 @@ public class MainActivity extends BasicActivity
         if (UserHelper.getInstance().isLoggedIn()) {
             if (id == R.id.nav_news) {
                 openTab(HomeFragment.NEWS);
-                currentScreen = Screen.NEWS;
             } else if (id == R.id.nav_agenda) {
                 openTab(HomeFragment.AGENDA);
-                currentScreen = Screen.AGENDA;
             } else if (id == R.id.nav_quotes) {
                 openFragment(new QuoteFragment(), null);
-                currentScreen = Screen.QUOTE_OVERVIEW;
             } else if (id == R.id.nav_poll) {
                 openFragment(new PollOverviewFragment(), null);
-                currentScreen = Screen.POLL_OVERVIEW;
             } else if (id == R.id.nav_roephoek) {
                 openTab(HomeFragment.ROEPHOEK);
-                currentScreen = Screen.ROEPHOEK;
             } else if (id == R.id.nav_meeting) {
                 openFragment(new MeetingOverviewFragment(), null);
+                // TODO dit gebeurt toch ook al in het fragment?
                 currentScreen = Screen.MEETING_OVERVIEW;
             } else if (id == R.id.nav_search) {
                 openFragment(new SmoboSearch(), null);
+                // TODO dit gebeurt toch ook al in het fragment?
                 currentScreen = Screen.SMOBO_SEARCH;
             } else if (id == R.id.nav_logout) {
                 UserHelper.getInstance().logout();
                 initLoggedOutUI();
+                // TODO dit gebeurt toch ook al in het fragment?
                 currentScreen = Screen.LOGIN;
             }
         } else {
             if (id == R.id.nav_login) {
                 openFragment(loginFragment, null);
+                // TODO dit gebeurt toch ook al in het fragment?
                 currentScreen = Screen.LOGIN;
             }
         }
