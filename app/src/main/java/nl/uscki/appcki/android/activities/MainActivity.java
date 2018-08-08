@@ -230,20 +230,12 @@ public class MainActivity extends BasicActivity
     }
 
     private void setMenuToTab(int homeFragmentTabIndex) {
-        int selectedItemId = -1;
-        switch(homeFragmentTabIndex){
-            case HomeFragment.NEWS:
-                selectedItemId = R.id.nav_news;
-                break;
-            case HomeFragment.AGENDA:
-                selectedItemId = R.id.nav_agenda;
-                break;
-            case HomeFragment.ROEPHOEK:
-                selectedItemId = R.id.nav_roephoek;
-                break;
-        }
-        if(selectedItemId >= 0){
-            changeDrawerMenuSelection(selectedItemId);
+        if(homeFragmentTabIndex == HomeFragment.NEWS) {
+            changeDrawerMenuSelection(R.id.nav_news);
+        } else if(homeFragmentTabIndex == HomeFragment.AGENDA) {
+            changeDrawerMenuSelection(R.id.nav_agenda);
+        } else if(homeFragmentTabIndex == HomeFragment.ROEPHOEK) {
+            changeDrawerMenuSelection(R.id.nav_roephoek);
         }
     }
 
