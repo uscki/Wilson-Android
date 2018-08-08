@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,9 +89,16 @@ public class HomeFragment extends Fragment {
     // EVENT HANDLING
 
     public void onEventMainThread(SwitchTabEvent event) {
-        setCurrentScreen(event.index);
-        viewPager.setCurrentItem(event.index);
-        tabLayout.setScrollPosition(event.index, 0f, false);
+        if(
+                MainActivity.currentScreen == MainActivity.Screen.NEWS ||
+                MainActivity.currentScreen == MainActivity.Screen.AGENDA ||
+                MainActivity.currentScreen == MainActivity.Screen.ROEPHOEK
+
+        ) {
+            setCurrentScreen(event.index);
+            viewPager.setCurrentItem(event.index);
+            tabLayout.setScrollPosition(event.index, 0f, false);
+        }
     }
 
     @Override

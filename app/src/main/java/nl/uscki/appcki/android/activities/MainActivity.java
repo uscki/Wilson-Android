@@ -106,7 +106,6 @@ public class MainActivity extends BasicActivity
             initLoggedOutUI();
         } else {
             initLoggedInUI();
-            openTab(HomeFragment.NEWS);
         }
 
         // Get the intent, verify the action and get the query
@@ -127,6 +126,8 @@ public class MainActivity extends BasicActivity
                         // TODO: Wait until API is done? Otherwise there is probably nothing to scroll to
                         //homeNewsTab.scrollToItem(newNewsId);
                     }
+                } else {
+                    openTab(HomeFragment.NEWS);
                 }
             } else if (ACTION_NEWS_OVERVIEW.equals(intent.getAction())) {
                 openTab(HomeFragment.NEWS);
@@ -136,8 +137,11 @@ public class MainActivity extends BasicActivity
                 openTab(HomeFragment.ROEPHOEK);
             } else if (ACTION_MEETING_OVERVIEW.equals(intent.getAction())) {
                 openFragment(new MeetingOverviewFragment(), null);
+                currentScreen = Screen.MEETING_OVERVIEW;
             } else if (ACTION_POLL_OVERVIEW.equals(intent.getAction())) {
                 openFragment(new PollOverviewFragment(), null);
+            } else {
+                openTab(HomeFragment.NEWS);
             }
         }
 
@@ -170,6 +174,7 @@ public class MainActivity extends BasicActivity
                 openTab(HomeFragment.AGENDA);
             } else if (currentScreen == Screen.MEETING_PLANNER || currentScreen == Screen.MEETING_DETAIL) {
                 openFragment(new MeetingOverviewFragment(), null);
+                currentScreen = Screen.MEETING_OVERVIEW;
             } else if (currentScreen == Screen.POLL_VOTE || currentScreen == Screen.POLL_RESULT) {
                 openFragment(new PollOverviewFragment(), null);
             } else if (currentScreen != Screen.NEWS) {
@@ -226,22 +231,18 @@ public class MainActivity extends BasicActivity
                 openTab(HomeFragment.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
                 openFragment(new MeetingOverviewFragment(), null);
-                // TODO dit gebeurt toch ook al in het fragment?
                 currentScreen = Screen.MEETING_OVERVIEW;
             } else if (id == R.id.nav_search) {
                 openFragment(new SmoboSearch(), null);
-                // TODO dit gebeurt toch ook al in het fragment?
                 currentScreen = Screen.SMOBO_SEARCH;
             } else if (id == R.id.nav_logout) {
                 UserHelper.getInstance().logout();
                 initLoggedOutUI();
-                // TODO dit gebeurt toch ook al in het fragment?
                 currentScreen = Screen.LOGIN;
             }
         } else {
             if (id == R.id.nav_login) {
                 openFragment(loginFragment, null);
-                // TODO dit gebeurt toch ook al in het fragment?
                 currentScreen = Screen.LOGIN;
             }
         }
