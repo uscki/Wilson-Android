@@ -1,26 +1,26 @@
 package nl.uscki.appcki.android.services;
 
 import android.app.IntentService;
-import android.app.NotificationManager;
-import android.app.RemoteInput;
 import android.content.Intent;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
+import java.io.IOException;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
-import nl.uscki.appcki.android.fragments.agenda.SubscribeDialogFragment;
+import nl.uscki.appcki.android.events.ServerErrorEvent;
+import nl.uscki.appcki.android.generated.ServerError;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -99,7 +99,7 @@ public class AgendaSubscriberService extends IntentService {
      */
     private void handleAgendaSubscribeAction(final int agendaId, final String subscribeComment, final Intent intent) {
         if(agendaId < 0) {
-            error(intent);
+            handleError(intent);
             return;
         }
 
@@ -109,46 +109,85 @@ public class AgendaSubscriberService extends IntentService {
         // Get token active
         UserHelper.getInstance().load();
 
-        Services.getInstance()
-                .agendaService.subscribe(agendaId, subscribeComment)
-                .enqueue(new Callback<AgendaParticipantLists>() {
+        Services.getInstance().agendaService.subscribe(agendaId, subscribeComment)
+                .enqueue(new retrofit2.Callback<AgendaParticipantLists>() {
 
-            @Override
-            public void onSucces(Response<AgendaParticipantLists> response) {
+                    @Override
+                    public void onResponse(
+                            Call<AgendaParticipantLists> call,
+                            Response<AgendaParticipantLists> response)
+                    {
+                        if(response.isSuccessful()) {
+                            handleSuccess(response, agendaId, intent);
+                        } else {
+                            // TODO: Following copied directly from Callback.handleError
+                            // TODO: Maybe create one method that can be called from both places?
+                            try {
+                                Gson gson = new Gson();
+                                ServerError error = gson.fromJson(
+                                        response.errorBody().string(), ServerError.class);
+                                EventBus.getDefault().post(new ServerErrorEvent(error));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (JsonSyntaxException e) {
+                                // NOT A CORRECTLY FORMATTED SERVER ERROR
+                                // gebeurt bijvoorbeeld bij het ophalen van de news icons
+                                // ook als de api down is, maar tomcat nog niet
+                                new ConnectionError(null);
+                            }
+                            handleError(intent);
+                        }
+                    }
 
-                EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body(), false));
-                NotificationReceiver notificationReceiver = new NotificationReceiver();
-
-                boolean allowExport = true;
-
-                if(PermissionHelper.canExportCalendarAuto()) {
-                    allowExport = false;
-                    EventExportService.startExportAgendaToCalendarAction(getApplicationContext(), agendaId);
-                }
-
-                notificationReceiver.buildNewAgendaItemNotificationFromIntent(intent, allowExport, false);
-
-                Toast.makeText(
-                        App.getContext(),
-                        getResources().getString(R.string.agenda_subscribe_success),
-                        Toast.LENGTH_SHORT)
-                        .show();
-            }
-
-            @Override
-            public void handleError(Response<AgendaParticipantLists> response) {
-                super.handleError(response);
-                error(intent);
-            }
-
-        });
+                    @Override
+                    public void onFailure(Call<AgendaParticipantLists> call, Throwable t) {
+                        new ConnectionError(t);
+                        t.printStackTrace();
+                        handleError(intent);
+                    }
+                });
     }
 
     /**
-     * Show a toast notification with an error and reset the original notification
+     * On successful subscribe attempt, update the notification and show a toast notification
+     * indicating success
+     *
+     * @param response      Server response for subscribe action
+     * @param agendaId      ID of agenda item subscribed to
+     * @param intent        Intent with which this service was started
+     */
+    private void handleSuccess(
+            Response<AgendaParticipantLists> response,
+            int agendaId,
+            Intent intent
+    ) {
+        EventBus.getDefault()
+                .post(new AgendaItemSubscribedEvent(response.body(), false));
+        NotificationReceiver notificationReceiver = new NotificationReceiver();
+
+        boolean allowExport = true;
+
+        if(PermissionHelper.canExportCalendarAuto()) {
+            allowExport = false;
+            EventExportService
+                    .startExportAgendaToCalendarAction(getApplicationContext(), agendaId);
+        }
+
+        notificationReceiver
+                .buildNewAgendaItemNotificationFromIntent(intent, allowExport, false);
+
+        Toast.makeText(
+                App.getContext(),
+                getResources().getString(R.string.agenda_subscribe_success),
+                Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    /**
+     * Show a toast notification with an handleError and reset the original notification
      * @param intent    Intent with which this service was started
      */
-    private void error(Intent intent) {
+    private void handleError(Intent intent) {
         NotificationReceiver notificationReceiver = new NotificationReceiver();
         notificationReceiver.buildNewAgendaItemNotificationFromIntent(intent, true, true);
         Toast.makeText(
