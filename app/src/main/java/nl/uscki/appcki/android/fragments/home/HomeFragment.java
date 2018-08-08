@@ -89,16 +89,9 @@ public class HomeFragment extends Fragment {
     // EVENT HANDLING
 
     public void onEventMainThread(SwitchTabEvent event) {
-        if(
-                MainActivity.currentScreen == MainActivity.Screen.NEWS ||
-                MainActivity.currentScreen == MainActivity.Screen.AGENDA ||
-                MainActivity.currentScreen == MainActivity.Screen.ROEPHOEK
-
-        ) {
-            setCurrentScreen(event.index);
-            viewPager.setCurrentItem(event.index);
-            tabLayout.setScrollPosition(event.index, 0f, false);
-        }
+        setCurrentScreen(event.index);
+        viewPager.setCurrentItem(event.index);
+        tabLayout.setScrollPosition(event.index, 0f, false);
     }
 
     @Override
