@@ -4,22 +4,29 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.PermissionChecker;
@@ -107,6 +114,57 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 // simple string representation.
                 preference.setSummary(stringValue);
             }
+            return true;
+        }
+    };
+
+    /**
+     * When a vibrate pattern is selected, vibrate that pattern as feedback on
+     * the chosen selection
+     */
+    private static Preference.OnPreferenceChangeListener sVibratePreferenceValueChangedListener =
+            new Preference.OnPreferenceChangeListener() {
+
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object value) {
+            ListPreference listPreference = (ListPreference) preference;
+
+            // Get the index of the value
+            String stringValue = value.toString();
+            int index = listPreference.findIndexOfValue(stringValue);
+
+            // Acquire the array of available vibration patterns
+            Resources res = App.getContext().getResources();
+            TypedArray ta = res.obtainTypedArray(R.array.vibration_pattern_values);
+
+            // Acquire the array containing the selected vibration pattern
+            int patternArrayId = ta.getResourceId(index, -1);
+            if(patternArrayId < 0) return false;
+            ta.recycle();
+
+            // Convert the integer list to a list of longs
+            int[] patternArray = res.getIntArray(patternArrayId);
+            int l = patternArray.length;
+            long[] pattern = new long[l];
+
+            for(int i = 0; i < l; i++) {
+                pattern[i] = patternArray[i];
+            }
+
+            // Get the vibrator system service
+            Context context = App.getContext();
+            Vibrator v = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+            if(v == null) return false;
+
+            // Vibrate using the selected pattern (method depends on API version)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                VibrationEffect vbe = VibrationEffect.createWaveform(pattern, -1);
+                v.vibrate(vbe);
+            } else {
+                v.vibrate(pattern, -1);
+            }
+
+            // We made it!
             return true;
         }
     };
@@ -289,6 +347,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("example_text"));
             bindPreferenceSummaryToValue(findPreference("example_list"));
+
+
         }
 
         @Override
@@ -318,7 +378,24 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+            bindPreferenceSummaryToValue(findPreference("notifications_interactive_new_message_ringtone"));
+            bindPreferenceSummaryToValue(findPreference("notifications_general_new_message_ringtone"));
+            bindPreferenceSummaryToValue(findPreference("notifications_personal_new_message_ringtone"));
+
+            bindPreferenceSummaryToValue(findPreference("notifications_interactive_vibration_pattern"));
+            bindPreferenceSummaryToValue(findPreference("notifications_general_vibration_pattern"));
+            bindPreferenceSummaryToValue(findPreference("notifications_personal_vibration_pattern"));
+
+            bindPreferenceSummaryToValue(findPreference("notifications_interactive_light_color"));
+            bindPreferenceSummaryToValue(findPreference("notifications_general_light_color"));
+            bindPreferenceSummaryToValue(findPreference("notifications_personal_light_color"));
+
+            findPreference("notifications_interactive_vibration_pattern")
+                    .setOnPreferenceChangeListener(sVibratePreferenceValueChangedListener);
+            findPreference("notifications_general_vibration_pattern")
+                    .setOnPreferenceChangeListener(sVibratePreferenceValueChangedListener);
+            findPreference("notifications_personal_vibration_pattern")
+                    .setOnPreferenceChangeListener(sVibratePreferenceValueChangedListener);
         }
 
         @Override
