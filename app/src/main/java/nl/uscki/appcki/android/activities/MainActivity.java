@@ -1,9 +1,7 @@
 package nl.uscki.appcki.android.activities;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -12,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -219,6 +216,7 @@ public class MainActivity extends BasicActivity
 
     private void openTab(int index) {
         Crashlytics.log("openTab(" + index + ")");
+
         if (currentScreen == Screen.ROEPHOEK || currentScreen == Screen.NEWS || currentScreen == Screen.AGENDA) {
             // HomeFragment luistert naar dit event om daarin de tab te switchen
             EventBus.getDefault().post(new SwitchTabEvent(index));
@@ -226,6 +224,31 @@ public class MainActivity extends BasicActivity
             Bundle bundle = new Bundle();
             bundle.putInt("index", index);
             openFragment(new HomeFragment(), bundle);
+        }
+
+        setMenuToTab(index);
+    }
+
+    private void setMenuToTab(int homeFragmentTabIndex) {
+        if(homeFragmentTabIndex == HomeFragment.NEWS) {
+            changeDrawerMenuSelection(R.id.nav_news);
+        } else if(homeFragmentTabIndex == HomeFragment.AGENDA) {
+            changeDrawerMenuSelection(R.id.nav_agenda);
+        } else if(homeFragmentTabIndex == HomeFragment.ROEPHOEK) {
+            changeDrawerMenuSelection(R.id.nav_roephoek);
+        }
+    }
+
+    public void changeDrawerMenuSelection(int menuItemId) {
+        Menu navMenu = navigationView.getMenu();
+        MenuItem activeItem = navMenu.findItem(menuItemId);
+        Log.e("changeMenuSelection", "Looking for item with id " + menuItemId);
+        for(int i = 0; i < navMenu.size(); i++) {
+            Log.e("changeMenuSelection", "Found " + navMenu.getItem(i).getItemId() + " for " + i + "th item");
+            if(navMenu.getItem(i).getItemId() == menuItemId) {
+                navMenu.getItem(i).setChecked(true);
+                return;
+            }
         }
     }
 
@@ -343,6 +366,10 @@ public class MainActivity extends BasicActivity
             return;
         }
         openFragment(event.screen, event.arguments);
+    }
+
+    public void onEventMainThread(SwitchTabEvent event) {
+        setMenuToTab(event.index);
     }
 
     @Override
