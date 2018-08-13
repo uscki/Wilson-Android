@@ -23,6 +23,7 @@ import android.os.Vibrator;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -38,10 +39,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Switch;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.helpers.VibrationPatternPreferenceHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 
 import java.util.ArrayList;
@@ -127,34 +130,30 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
+            // Can't have two onPreferenceChange listeners, so execute the other one as well
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, value);
+
             ListPreference listPreference = (ListPreference) preference;
+
+            // Get the vibrator system service
+            Context context = App.getContext();
+            Vibrator v = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+            if(v == null || !v.hasVibrator()) {
+                return false;
+            }
 
             // Get the index of the value
             String stringValue = value.toString();
             int index = listPreference.findIndexOfValue(stringValue);
 
-            // Acquire the array of available vibration patterns
-            Resources res = App.getContext().getResources();
-            TypedArray ta = res.obtainTypedArray(R.array.vibration_pattern_values);
+            // Create a vibration preference helper
+            VibrationPatternPreferenceHelper vibrationPreferenceHelper =
+                    new VibrationPatternPreferenceHelper();
 
-            // Acquire the array containing the selected vibration pattern
-            int patternArrayId = ta.getResourceId(index, -1);
-            if(patternArrayId < 0) return false;
-            ta.recycle();
-
-            // Convert the integer list to a list of longs
-            int[] patternArray = res.getIntArray(patternArrayId);
-            int l = patternArray.length;
-            long[] pattern = new long[l];
-
-            for(int i = 0; i < l; i++) {
-                pattern[i] = patternArray[i];
-            }
-
-            // Get the vibrator system service
-            Context context = App.getContext();
-            Vibrator v = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
-            if(v == null) return false;
+            // Acquire the pattern corresponding to the found index
+            int patternArrayId =
+                    vibrationPreferenceHelper.getVibrationPatternResourceIdAtIndex(index);
+            long[] pattern = vibrationPreferenceHelper.getVibrationPattern(patternArrayId);
 
             // Vibrate using the selected pattern (method depends on API version)
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -209,7 +208,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onResume() {
         super.onResume();
     }
-
 
     /**
      * Set up the {@link android.app.ActionBar}, if the API is available.
@@ -291,7 +289,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.e("PermissionResultCheck", grantResults.toString());
 
         exportOptionsPreferenceFragment sourceFragment =
                 (exportOptionsPreferenceFragment) getFragmentManager().findFragmentById(exportOptionsPreferenceFragment.id);
@@ -345,8 +342,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+//            bindPreferenceSummaryToValue(findPreference("example_text"));
+//            bindPreferenceSummaryToValue(findPreference("example_list"));
 
 
         }
@@ -382,20 +379,38 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("notifications_general_new_message_ringtone"));
             bindPreferenceSummaryToValue(findPreference("notifications_personal_new_message_ringtone"));
 
-            bindPreferenceSummaryToValue(findPreference("notifications_interactive_vibration_pattern"));
-            bindPreferenceSummaryToValue(findPreference("notifications_general_vibration_pattern"));
-            bindPreferenceSummaryToValue(findPreference("notifications_personal_vibration_pattern"));
+            String[] vibrationPatternPreferences = new String[] {
+                    "notifications_interactive_vibration_pattern",
+                    "notifications_general_vibration_pattern",
+                    "notifications_personal_vibration_pattern"
+            };
 
-            bindPreferenceSummaryToValue(findPreference("notifications_interactive_light_color"));
-            bindPreferenceSummaryToValue(findPreference("notifications_general_light_color"));
-            bindPreferenceSummaryToValue(findPreference("notifications_personal_light_color"));
+            PreferenceScreen screen = getPreferenceScreen();
 
-            findPreference("notifications_interactive_vibration_pattern")
-                    .setOnPreferenceChangeListener(sVibratePreferenceValueChangedListener);
-            findPreference("notifications_general_vibration_pattern")
-                    .setOnPreferenceChangeListener(sVibratePreferenceValueChangedListener);
-            findPreference("notifications_personal_vibration_pattern")
-                    .setOnPreferenceChangeListener(sVibratePreferenceValueChangedListener);
+            Vibrator v = (Vibrator) App.getContext().getSystemService(VIBRATOR_SERVICE);
+            if(v != null && v.hasVibrator()) {
+                for(String prefKey : vibrationPatternPreferences) {
+                    // Bind and trigger summary changed
+                    bindPreferenceSummaryToValue(findPreference(prefKey));
+
+                    // Replace the listener with one that also vibrates on change
+                    findPreference(prefKey)
+                            .setOnPreferenceChangeListener(sVibratePreferenceValueChangedListener);
+                }
+            } else {
+                String[] vibrationEnabledPreferences = new String[] {
+                        "notifications_interactive_new_message_vibrate",
+                        "notifications_general_new_message_vibrate",
+                        "notifications_personal_new_message_vibrate"
+                };
+
+                for(String prefKey : vibrationEnabledPreferences) {
+                    screen.removePreference(findPreference(prefKey));
+                }
+                for(String prefKey : vibrationPatternPreferences) {
+                    screen.removePreference(findPreference(prefKey));
+                }
+            }
         }
 
         @Override
