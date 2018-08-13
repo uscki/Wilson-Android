@@ -1,12 +1,15 @@
 package nl.uscki.appcki.android.services;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.RemoteInput;
@@ -25,6 +28,7 @@ import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.activities.MeetingActivity;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
+import nl.uscki.appcki.android.helpers.VibrationPatternPreferenceHelper;
 
 /**
  * Created by peter on 3/21/17.
@@ -192,6 +196,9 @@ public class NotificationReceiver extends FirebaseMessagingService {
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(App.getContext());
         notificationManager.notify(id, n.build());
+
+        NotificationUtil nUtil = new NotificationUtil(App.getContext());
+        nUtil.vibrateIfEnabled(type);
     }
 
     /**
@@ -357,6 +364,9 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
         // TODO: Check if the follow *does* work
         notification.setGroupAlertBehavior(Notification.GROUP_ALERT_SUMMARY);
+
+        // TODO: This might work as well:
+        notification.setOnlyAlertOnce(true);
     }
 
     @Override

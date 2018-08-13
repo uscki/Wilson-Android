@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
@@ -56,15 +57,13 @@ public class VibrationPatternPreferenceHelper {
      * @return Index of the selected preference in the given preference list
      */
     public int getIndexOfVibrationPatternPreference(String preferenceIdentifier) {
-        String vibrationPatternName = preferenceManager.getString(preferenceIdentifier, "");
-        if(vibrationPatternName.equals(""))
-            return -1;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        String vibrationPatternName = prefs.getString(preferenceIdentifier, App.getContext().getResources().getString(R.string.vibration_pattern_default));
 
         String[] vibrationPatternNames = res.getStringArray(R.array.vibration_pattern_names);
 
-        int index = 0;
-
         // O(n), but converting to Array does more harm
+        int index = 0;
         for(String name : vibrationPatternNames) {
             if(name.equals(vibrationPatternName))
                 return index;
@@ -85,6 +84,10 @@ public class VibrationPatternPreferenceHelper {
         // The vibration pattern values array corresponds to the vibration pattern names array
         TypedArray vibrationPatternResourceArrays =
                 res.obtainTypedArray(R.array.vibration_pattern_values);
+
+        // Don't crash please
+        if(index < 0 || index >= vibrationPatternResourceArrays.length())
+            return -1;
 
         // The resource identifier is at the found index
         int resourceIdentifier = vibrationPatternResourceArrays.getResourceId(index, -1);

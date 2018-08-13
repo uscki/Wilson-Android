@@ -226,8 +226,15 @@
     <string name="pref_title_ringtone">Ringtoon</string>
     <string name="pref_ringtone_silent">Stil</string>
 
-    <string name="pref_title_vibrate">Vibreren</string>
-    <string name="pref_title_vibration_pattern">Vibratiepatroon</string>
+    <string name="pref_title_vibrate">Trillen</string>
+
+    <string name="pref_custom_vibrate">Laat Wilson trillen</string>
+    <string name="pref_custom_vibrate_summary">Kies je eigen trilpatroon. Deze instelling wordt genegeerd als in de Android instellingen trillen voor Wilson notificaties wordt ingeschakeld</string>
+    <string name="pref_title_vibration_pattern">Trilpatroon</string>
+
+    <string name="pref_system_notification_settings">Systeeminstellingen</string>
+    <string name="pref_system_notification_settings_summary">Beheer notificatieinstellingen voor de applicatie in de opties van Android</string>
+
 
     <string name="pref_title_notification_light">Notificatie LED</string>
     <string name="pref_title_notification_light_summary">Indien aanwezig op apparaat</string>
@@ -236,4 +243,14 @@
     <string name="notification_light_blink">Knipperen</string>
 
 
+    <!-- Vibration pattern names -->
+    <string name="vibration_pattern_short_once">Eén keer kort</string>
+    <string name="vibration_pattern_short_twice">Twee keer kort</string>
+    <string name="vibration_pattern_short_thrice">Drie keer kort</string>
+    <string name="vibration_pattern_long_once">Eén keer lang</string>
+    <string name="vibration_pattern_long_twice">Twee keer lang</string>
+    <string name="vibration_pattern_long_thrice">Drie keer lang</string>
+    <string name="vibration_pattern_imperial_march">Imperial March</string>
+    <string name="vibration_pattern_CKI_morse">CKI (morse)</string>
+    <string name="vibration_pattern_default">@string/vibration_pattern_long_twice</string>
 </resources>
