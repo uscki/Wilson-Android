@@ -9,37 +9,6 @@
         <item>Vergaderplanner</item>
     </string-array>
 
-    <!-- TODO: Kleuren de namen geven die ze hebben ipv deze bullshit =) -->
-    <string-array name="default_color_choice_names">
-        <item>Babyblauw</item>
-        <item>Licht paars</item>
-        <item>Gifgroen</item>
-        <item>Woestijngeel</item>
-        <item>Roze</item>
-        <item>Zeeblauw</item>
-        <item>Donker paars</item>
-        <item>Grasgroen</item>
-        <item>Zonsondergang</item>
-        <item>CKI Main</item>
-        <item>Wit</item>
-        <item>Grijs</item>
-    </string-array>
-
-    <string-array name="default_color_choice_values" translatable="false">
-        <item>#33b5e5</item>
-        <item>#aa66cc</item>
-        <item>#99cc00</item>
-        <item>#ffbb33</item>
-        <item>#ff4444</item>
-        <item>#0099cc</item>
-        <item>#9933cc</item>
-        <item>#669900</item>
-        <item>#ff8800</item>
-        <item>#cc0000</item>
-        <item>#ffffff</item>
-        <item>#888888</item>
-    </string-array>
-
     <string-array name="vibration_pattern_names">
         <item>Short once</item>
         <item>Short twice</item>

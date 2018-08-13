@@ -5,13 +5,19 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.util.HashMap;
 
+import nl.uscki.appcki.android.helpers.VibrationPatternPreferenceHelper;
 import nl.uscki.appcki.android.services.NotificationType;
 
 public class NotificationUtil extends ContextWrapper {
@@ -213,9 +219,82 @@ public class NotificationUtil extends ContextWrapper {
         return "" + notificationType.toString().toUpperCase();
     }
 
-    // TODO: Write function for adding ringtone, vibrate, etc on a notification of a type, based on settings
-    // and based on the channel (for versions less than oreo) based on the array above
+    /**
+     * Add sound, vibration and notification LED effects based on the users preference for this type
+     * of notification
+     * @param notification      Base notification to which effects should be added
+     * @param notificationType  Type of the notification as received
+     */
+    public void addNotificationPropertiesBySettings(NotificationCompat.Builder notification, NotificationType notificationType) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Since Oreo, these things are handled by notification channels.
+            // Continuing will crash the application
+            return;
+        }
 
+        // Build a base string for the preferences we want to find
+        String basePreferenceKey = "notifications_";
+        int priority = channelPriorities.get(notificationType);
+        if(priority == 0) {
+            basePreferenceKey += "interactive_";
+        } else if(priority == 1){
+            basePreferenceKey += "general_";
+        } else if (priority == 2) {
+            basePreferenceKey += "personal_";
+        } else {
+            // We don't have settings for this
+            Log.e(getClass().toString(),
+                    "Notification priority " + priority +
+                            " does not exists on the pre-oreo channels!");
+            return;
+        }
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+
+        // Add notification sound effects
+        if(prefs.getBoolean(basePreferenceKey + "new_message", true)) {
+            String ringtoneUri = prefs.getString(basePreferenceKey + "new_message_ringtone",
+                    RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI);
+            notification.setSound(Uri.parse(ringtoneUri));
+        } else {
+            notification.setSound(null);
+        }
+
+        // Add vibration effects
+        if(prefs.getBoolean(basePreferenceKey + "new_message_vibrate", true)) {
+            VibrationPatternPreferenceHelper vibrationHelper =
+                    new VibrationPatternPreferenceHelper();
+
+            int vibrationPatternIndex = vibrationHelper.getIndexOfVibrationPatternPreference(
+                    basePreferenceKey + "vibration_pattern");
+
+            int vibrationPatternResourceId = vibrationHelper
+                    .getVibrationPatternResourceIdAtIndex(vibrationPatternIndex);
+
+            long[] vibrationPattern = vibrationHelper
+                    .getVibrationPattern(vibrationPatternResourceId);
+
+            if(vibrationPattern != null) {
+                notification.setVibrate(vibrationPattern);
+            }
+        }
+
+        // Add notification LED effects
+        if(prefs.getBoolean(basePreferenceKey + "show_light", true)) {
+            if(prefs.getBoolean(basePreferenceKey + "led_mode", true)) {
+                // Show light as just on
+                notification.setLights(Color.RED, 1000, 0);
+            } else {
+                // Blink once per second
+                notification.setLights(Color.RED, 150, 1000);
+            }
+        }
+    }
+
+    /**
+     * Get an instance of the notification manager
+     * @return NotificationManager
+     */
     private NotificationManager getManager() {
         if(notificationManager == null) {
             notificationManager =

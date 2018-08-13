@@ -42,15 +42,17 @@
             android:key="notifications_interactive_show_light"
             android:dependency="notifications_interactive_new_message"
             android:title="@string/pref_title_notification_light"
+            android:summary="@string/pref_title_notification_light_summary"
             android:defaultValue="true"
             />
 
-        <ListPreference
-            android:key="notifications_interactive_light_color"
+        <SwitchPreference
+            android:key="notifications_interactive_led_mode"
             android:dependency="notifications_interactive_show_light"
-            android:title="@string/pref_title_notification_light_color"
-            android:entries="@array/default_color_choice_names"
-            android:entryValues="@array/default_color_choice_values"
+            android:title="@string/pref_title_notification_light_mode"
+            android:defaultValue="true"
+            android:summaryOn="@string/notification_light_constant"
+            android:summaryOff="@string/notification_light_blink"
             />
     </PreferenceCategory>
 
@@ -96,16 +98,17 @@
             android:key="notifications_general_show_light"
             android:dependency="notifications_general_new_message"
             android:title="@string/pref_title_notification_light"
+            android:summary="@string/pref_title_notification_light_summary"
             android:defaultValue="true"
-            />
+        />
 
-        <!-- TODO: Some sort of color selector preference would be fancy here -->
-        <ListPreference
-            android:key="notifications_general_light_color"
+        <SwitchPreference
+            android:key="notifications_general_led_mode"
             android:dependency="notifications_general_show_light"
-            android:title="@string/pref_title_notification_light_color"
-            android:entries="@array/default_color_choice_names"
-            android:entryValues="@array/default_color_choice_values"
+            android:title="@string/pref_title_notification_light_mode"
+            android:defaultValue="true"
+            android:summaryOn="@string/notification_light_constant"
+            android:summaryOff="@string/notification_light_blink"
             />
     </PreferenceCategory>
 
@@ -151,15 +154,17 @@
             android:key="notifications_personal_show_light"
             android:dependency="notifications_personal_new_message"
             android:title="@string/pref_title_notification_light"
+            android:summary="@string/pref_title_notification_light_summary"
             android:defaultValue="true"
             />
 
-        <ListPreference
-            android:key="notifications_personal_light_color"
+        <SwitchPreference
+            android:key="notifications_personal_led_mode"
             android:dependency="notifications_personal_show_light"
-            android:title="@string/pref_title_notification_light_color"
-            android:entries="@array/default_color_choice_names"
-            android:entryValues="@array/default_color_choice_values"
+            android:title="@string/pref_title_notification_light_mode"
+            android:defaultValue="true"
+            android:summaryOn="@string/notification_light_constant"
+            android:summaryOff="@string/notification_light_blink"
             />
     </PreferenceCategory>
 
