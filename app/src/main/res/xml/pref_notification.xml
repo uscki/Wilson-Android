@@ -36,6 +36,7 @@
             android:title="@string/pref_title_vibration_pattern"
             android:entries="@array/vibration_pattern_names"
             android:entryValues="@array/vibration_pattern_names"
+            android:defaultValue="@string/vibration_pattern_default"
             />
 
         <SwitchPreference
@@ -92,6 +93,7 @@
             android:title="@string/pref_title_vibration_pattern"
             android:entries="@array/vibration_pattern_names"
             android:entryValues="@array/vibration_pattern_names"
+            android:defaultValue="@string/vibration_pattern_default"
             />
 
         <SwitchPreference
@@ -148,6 +150,7 @@
             android:title="@string/pref_title_vibration_pattern"
             android:entries="@array/vibration_pattern_names"
             android:entryValues="@array/vibration_pattern_names"
+            android:defaultValue="@string/vibration_pattern_default"
             />
 
         <SwitchPreference

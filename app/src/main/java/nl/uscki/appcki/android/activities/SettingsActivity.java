@@ -365,50 +365,82 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class NotificationPreferenceFragment extends PreferenceFragment {
+        String[] catPrefix = new String[] {
+                "notifications_interactive_",
+                "notifications_general_",
+                "notifications_personal_",
+        };
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
 
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+               prepareForAndroidOreo();
+            } else {
+                prepareForOlderThanOreo();
+            }
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        private void prepareForAndroidOreo() {
+            addPreferencesFromResource(R.xml.pref_notifications_min_oreo);
+
+            Preference systemSettings = findPreference("notifications_system_preferences");
+            systemSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, App.getContext().getPackageName());
+                    startActivity(intent);
+                    return true;
+                }
+            });
+
+            Vibrator v = (Vibrator) App.getContext().getSystemService(VIBRATOR_SERVICE);
+            if(v == null || !v.hasVibrator()) {
+                // Remove vibration options from menu
+                PreferenceScreen screen = getPreferenceScreen();
+                screen.removePreference(findPreference("notifications_oreo_vibration_pattern"));
+            } else {
+                // Bind and trigger summary changed
+                bindPreferenceSummaryToValue(
+                        findPreference("notifications_oreo_vibration_pattern"));
+
+                // Replace the listener with one that also vibrates on change
+                findPreference("notifications_oreo_vibration_pattern")
+                        .setOnPreferenceChangeListener(sVibratePreferenceValueChangedListener);
+            }
+        }
+
+        private void prepareForOlderThanOreo() {
+            addPreferencesFromResource(R.xml.pref_notification);
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_interactive_new_message_ringtone"));
-            bindPreferenceSummaryToValue(findPreference("notifications_general_new_message_ringtone"));
-            bindPreferenceSummaryToValue(findPreference("notifications_personal_new_message_ringtone"));
-
-            String[] vibrationPatternPreferences = new String[] {
-                    "notifications_interactive_vibration_pattern",
-                    "notifications_general_vibration_pattern",
-                    "notifications_personal_vibration_pattern"
-            };
+            for(String prefKey : catPrefix) {
+                bindPreferenceSummaryToValue(findPreference(prefKey + "new_message_ringtone"));
+            }
 
             PreferenceScreen screen = getPreferenceScreen();
 
             Vibrator v = (Vibrator) App.getContext().getSystemService(VIBRATOR_SERVICE);
             if(v != null && v.hasVibrator()) {
-                for(String prefKey : vibrationPatternPreferences) {
+                for(String prefKey : catPrefix) {
                     // Bind and trigger summary changed
-                    bindPreferenceSummaryToValue(findPreference(prefKey));
+                    bindPreferenceSummaryToValue(findPreference(prefKey + "vibration_pattern"));
 
                     // Replace the listener with one that also vibrates on change
-                    findPreference(prefKey)
+                    findPreference(prefKey + "vibration_pattern")
                             .setOnPreferenceChangeListener(sVibratePreferenceValueChangedListener);
                 }
             } else {
-                String[] vibrationEnabledPreferences = new String[] {
-                        "notifications_interactive_new_message_vibrate",
-                        "notifications_general_new_message_vibrate",
-                        "notifications_personal_new_message_vibrate"
-                };
-
-                for(String prefKey : vibrationEnabledPreferences) {
-                    screen.removePreference(findPreference(prefKey));
-                }
-                for(String prefKey : vibrationPatternPreferences) {
-                    screen.removePreference(findPreference(prefKey));
+                for(String prefKey : catPrefix) {
+                    screen.removePreference(findPreference(prefKey + "new_message_vibrate"));
+                    screen.removePreference(findPreference(prefKey + "vibration_pattern"));
                 }
             }
         }

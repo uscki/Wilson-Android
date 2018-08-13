@@ -10,14 +10,14 @@
     </string-array>
 
     <string-array name="vibration_pattern_names">
-        <item>Short once</item>
-        <item>Short twice</item>
-        <item>Short thrice</item>
-        <item>Long once</item>
-        <item>Long twice</item>
-        <item>Long thrice</item>
-        <item>Imperial March</item>
-        <item>CKI (morse)</item>
+        <item>@string/vibration_pattern_short_once</item>
+        <item>@string/vibration_pattern_short_twice</item>
+        <item>@string/vibration_pattern_short_thrice</item>
+        <item>@string/vibration_pattern_long_once</item>
+        <item>@string/vibration_pattern_long_twice</item>
+        <item>@string/vibration_pattern_long_thrice</item>
+        <item>@string/vibration_pattern_imperial_march</item>
+        <item>@string/vibration_pattern_CKI_morse</item>
     </string-array>
 
     <array name="vibration_pattern_values">

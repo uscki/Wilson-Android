@@ -10,6 +10,8 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
@@ -184,7 +186,7 @@ public class NotificationUtil extends ContextWrapper {
 
         // Notification channel properties
         channel.setLightColor(Color.RED);
-        channel.enableVibration(true);
+        channel.enableVibration(false);
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
         if(importance >= NotificationManager.IMPORTANCE_DEFAULT)
             channel.enableLights(true);
@@ -287,6 +289,66 @@ public class NotificationUtil extends ContextWrapper {
             } else {
                 // Blink once per second
                 notification.setLights(Color.RED, 150, 1000);
+            }
+        }
+    }
+
+    /**
+     * Since android oreo uses notification channels, from which no vibration pattern can be selected
+     * we have to get create
+     *
+     * Using this function, vibration can be triggered from this application when a notification
+     * is received, but this should only be done if the system won't also vibrate and the user
+     * has indicated they want this to happen
+     *
+     * @param notificationType  Type of received notification
+     */
+    public void vibrateIfEnabled(NotificationType notificationType) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // See if custom vibration patterns is enabled
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+            boolean vibrateFromApp = prefs.getBoolean("notifications_oreo_vibrate", true);
+
+            if(!vibrateFromApp)
+                // User doesn't want us to do this
+                return;
+
+            // Check if vibration is already handled by the notification channel
+            NotificationManager manager = getManager();
+            NotificationChannel channel = manager.getNotificationChannel(channelId(notificationType));
+            if(channel.shouldVibrate())
+                // Vibration is already handled by the channel. Vibrating here would just
+                // be conflicting
+                return;
+
+            Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+            if(v != null) {
+                VibrationPatternPreferenceHelper vibrationHelper =
+                        new VibrationPatternPreferenceHelper();
+
+                int selectedVibrationPatternIndex =
+                        vibrationHelper.getIndexOfVibrationPatternPreference(
+                                "notifications_oreo_vibration_pattern");
+
+                if(selectedVibrationPatternIndex < 0) {
+                    Log.e(getClass().toString(), "Index of selected pattern in notifications_oreo_vibration_pattern not found");
+                    return;
+                }
+
+                int vibrationPatternResourceId =
+                        vibrationHelper.getVibrationPatternResourceIdAtIndex(
+                                selectedVibrationPatternIndex);
+
+                if(vibrationPatternResourceId <= 0)
+                    // Not found
+                    return;
+
+                // Load the preferred vibration pattern
+                long[] pattern = vibrationHelper.getVibrationPattern(vibrationPatternResourceId);
+                VibrationEffect vEffect = VibrationEffect.createWaveform(pattern, -1);
+
+                // Vibrate the loaded vibration effect
+                v.vibrate(vEffect);
             }
         }
     }
