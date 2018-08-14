@@ -192,6 +192,8 @@ public class AgendaActivity extends BasicActivity {
         setSubscribeButtons();
         setExportButtons();
 
+        this.menu.findItem(R.id.action_agenda_archive).setVisible(false);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -210,6 +212,8 @@ public class AgendaActivity extends BasicActivity {
     public void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
+        if(menu != null)
+            menu.clear();
     }
 
     private void setExportButtons() {
