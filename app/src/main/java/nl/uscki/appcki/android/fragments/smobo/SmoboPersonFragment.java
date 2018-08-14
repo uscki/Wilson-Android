@@ -27,6 +27,7 @@ import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
+import nl.uscki.appcki.android.generated.smobo.SmoboPhotoMetadata;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
 import retrofit2.Response;
 
@@ -48,9 +49,9 @@ public class SmoboPersonFragment extends Fragment {
     private boolean scrollLoad;
     private boolean noMoreContent;
 
-    private Callback<Pageable<Integer>> photosCallback = new Callback<Pageable<Integer>>() {
+    private Callback<Pageable<SmoboPhotoMetadata>> photosCallback = new Callback<Pageable<SmoboPhotoMetadata>>() {
         @Override
-        public void onSucces(Response<Pageable<Integer>> response) {
+        public void onSucces(Response<Pageable<SmoboPhotoMetadata>> response) {
             noMoreContent = response.body().getLast();
             scrollLoad = false;
             ((BaseItemAdapter) mediaGrid.getAdapter()).addItems(response.body().getContent());
@@ -69,7 +70,7 @@ public class SmoboPersonFragment extends Fragment {
     FrameLayout birthdayInfo;
     @BindView(R.id.smobo_groups)
     RecyclerView smoboGroups;
-    //@BindView(R.id.smobo_media_gridview)
+    @BindView(R.id.smobo_media_gridview)
     HorizontalGridView mediaGrid;
     @BindView(R.id.smobo_swiperefresh)
     SwipeRefreshLayout swipeContainer;
@@ -209,7 +210,7 @@ public class SmoboPersonFragment extends Fragment {
         HorizontalGridView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         mediaGrid.setLayoutManager(layoutManager);
 
-        mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<Integer>()));
+        mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<SmoboPhotoMetadata>()));
         mediaGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
