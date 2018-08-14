@@ -6,14 +6,22 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
+import java.io.IOException;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.generated.ServerError;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
 import retrofit2.Response;
 
 
@@ -93,32 +101,38 @@ public class EventExportService extends IntentService {
     private void handleAgendaExportIntent(int id) {
         if(id < 0) return;
         init();
-        Services.getInstance().agendaService.get(id).enqueue(new Callback<AgendaItem>() {
+        Services.getInstance().agendaService.get(id).enqueue(new retrofit2.Callback<AgendaItem>() {
             @Override
-            public void onSucces(Response<AgendaItem> response) {
-                AgendaItem item = response.body();
-                if(item != null) {
+            public void onResponse(Call<AgendaItem> call, Response<AgendaItem> response) {
+                if(response.isSuccessful()) {
+                    AgendaItem item = response.body();
+                    if(item != null) {
 
-                    int calendarEventItemId;
+                        int calendarEventItemId;
 
-                    try {
-                        calendarEventItemId = CalendarHelper.getInstance()
-                                .getEventIdForItemIfExists(item);
-                    } catch(SecurityException e) {
-                        calendarEventItemId = -1;
+                        try {
+                            calendarEventItemId = CalendarHelper.getInstance()
+                                    .getEventIdForItemIfExists(item);
+                        } catch(SecurityException e) {
+                            calendarEventItemId = -1;
+                        }
+
+                        if(calendarEventItemId < 0) {
+                            // If it already exists, pretend we just added it anyway
+                            CalendarHelper.getInstance().addItemToCalendar(item);
+                        }
+
+                        showToastForResource(R.string.agenda_toast_added_to_calendar);
                     }
-
-                    if(calendarEventItemId < 0) {
-                        // If it already exists, pretend we just added it anyway
-                        CalendarHelper.getInstance().addItemToCalendar(item);
-                    }
-
-                    Toast.makeText(
-                            getApplicationContext(),
-                            getResources().getString(R.string.agenda_toast_added_to_calendar),
-                            Toast.LENGTH_SHORT)
-                            .show();
+                } else {
+                    handleError(response.errorBody());
                 }
+            }
+
+            @Override
+            public void onFailure(Call<AgendaItem> call, Throwable t) {
+                Log.e(getClass().toString(), t.getMessage());
+                showToastForResource(R.string.unknown_server_error);
             }
         });
     }
@@ -130,33 +144,74 @@ public class EventExportService extends IntentService {
     private void handleMeetingExportIntent(int id) {
         if(id < 0) return;
         init();
-        Services.getInstance().meetingService.get(id).enqueue(new Callback<MeetingItem>() {
+        Services.getInstance().meetingService.get(id).enqueue(new retrofit2.Callback<MeetingItem>() {
             @Override
-            public void onSucces(Response<MeetingItem> response) {
-                MeetingItem item = response.body();
-                if(item != null) {
+            public void onResponse(Call<MeetingItem> call, Response<MeetingItem> response) {
+                if(response.isSuccessful()) {
+                    MeetingItem item = response.body();
+                    if(item != null) {
 
-                    int calendarEventItemId;
+                        int calendarEventItemId;
 
-                    try {
-                        calendarEventItemId = CalendarHelper.getInstance()
-                                .getEventIdForItemIfExists(item);
-                    } catch(SecurityException e) {
-                        calendarEventItemId = -1;
+                        try {
+                            calendarEventItemId = CalendarHelper.getInstance()
+                                    .getEventIdForItemIfExists(item);
+                        } catch(SecurityException e) {
+                            calendarEventItemId = -1;
+                        }
+
+                        if(calendarEventItemId < 0) {
+                            // If it already exists, pretend we just added it anyway
+                            CalendarHelper.getInstance().addItemToCalendar(item);
+                        }
+
+                        showToastForResource(R.string.agenda_toast_added_to_calendar);
                     }
-
-                    if(calendarEventItemId < 0) {
-                        // If it already exists, pretend we just added it anyway
-                        CalendarHelper.getInstance().addItemToCalendar(item);
-                    }
-
-                    Toast.makeText(
-                            getApplicationContext(),
-                            getResources().getString(R.string.agenda_toast_added_to_calendar),
-                            Toast.LENGTH_SHORT)
-                            .show();
+                } else {
+                    handleError(response.errorBody());
                 }
             }
+
+            @Override
+            public void onFailure(Call<MeetingItem> call, Throwable t) {
+                Log.e(getClass().toString(), t.getMessage());
+                showToastForResource(R.string.unknown_server_error);
+            }
         });
+    }
+
+    private void handleError(ResponseBody body) {
+        try {
+            Gson gson = new Gson();
+            ServerError error = gson.fromJson(body.string(), ServerError.class);
+            handleStatusCode(error.getStatus());
+        } catch(Exception e) {
+            Log.e(getClass().toString(), e.toString());
+            showToastForResource(R.string.unknown_server_error);
+        }
+    }
+
+    private void handleStatusCode(int statusCode) {
+        int resourceId = R.string.connection_error;
+        if(statusCode == 401) {
+            resourceId = R.string.notauthorized;
+        } else if(statusCode == 403) {
+            resourceId = R.string.notloggedin;
+        } else if(statusCode == 404) {
+            resourceId = R.string.content_loading_error;
+        } else if (statusCode == 500) {
+            resourceId = R.string.unknown_server_error;
+        }
+
+        showToastForResource(resourceId);
+    }
+
+    private void showToastForResource(int resourceId) {
+        Toast toast = Toast.makeText(
+                this,
+                getString(resourceId),
+                Toast.LENGTH_SHORT
+        );
+        toast.show();
     }
 }

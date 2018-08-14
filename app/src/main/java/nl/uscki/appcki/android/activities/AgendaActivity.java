@@ -94,6 +94,11 @@ public class AgendaActivity extends BasicActivity {
             // Implement this feature without material design
         }*/
 
+        if(!UserHelper.getInstance().isLoggedIn()) {
+            Log.e("AgendaActivity", "Starting MainActivity");
+            startActivity(new Intent(this, MainActivity.class));
+        }
+
         setContentView(R.layout.activity_agenda);
 
         toolbar = findViewById(R.id.toolbar);
