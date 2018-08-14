@@ -13,13 +13,11 @@ import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 
 import de.greenrobot.event.EventBus;
-import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
-import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.generated.ServerError;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
@@ -99,7 +97,7 @@ public class AgendaSubscriberService extends IntentService {
      */
     private void handleAgendaSubscribeAction(final int agendaId, final String subscribeComment, final Intent intent) {
         if(agendaId < 0) {
-            handleError(intent);
+            handleError(intent, getString(R.string.content_loading_error));
             return;
         }
 
@@ -120,30 +118,38 @@ public class AgendaSubscriberService extends IntentService {
                         if(response.isSuccessful()) {
                             handleSuccess(response, agendaId, intent);
                         } else {
-                            // TODO: Following copied directly from Callback.handleError
-                            // TODO: Maybe create one method that can be called from both places?
+                            String errorMsg = getString(R.string.connection_error);
                             try {
                                 Gson gson = new Gson();
                                 ServerError error = gson.fromJson(
                                         response.errorBody().string(), ServerError.class);
-                                EventBus.getDefault().post(new ServerErrorEvent(error));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (JsonSyntaxException e) {
-                                // NOT A CORRECTLY FORMATTED SERVER ERROR
-                                // gebeurt bijvoorbeeld bij het ophalen van de news icons
-                                // ook als de api down is, maar tomcat nog niet
-                                new ConnectionError(null);
+
+                                if(error.getStatus() == 401) {
+                                    errorMsg = getString(R.string.notauthorized);
+                                } else if(error.getStatus() == 403) {
+                                    errorMsg = getString(R.string.notloggedin);
+                                } else if(error.getStatus() == 404) {
+                                    errorMsg = getString(R.string.content_loading_error);
+                                } else if (error.getStatus() == 500) {
+                                    errorMsg = getString(R.string.unknown_server_error);
+                                }
+
+                            } catch (Exception e) {
+                                Log.e(getClass().toString(), e.toString());
+                                Toast.makeText(
+                                        AgendaSubscriberService.this,
+                                        getString(R.string.unknown_server_error),
+                                        Toast.LENGTH_SHORT)
+                                        .show();
                             }
-                            handleError(intent);
+                            handleError(intent, errorMsg);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<AgendaParticipantLists> call, Throwable t) {
-                        new ConnectionError(t);
-                        t.printStackTrace();
-                        handleError(intent);
+                        Log.e(getClass().toString(), t.getMessage());
+                        handleError(intent, getString(R.string.unknown_server_error));
                     }
                 });
     }
@@ -170,15 +176,15 @@ public class AgendaSubscriberService extends IntentService {
         if(PermissionHelper.canExportCalendarAuto()) {
             allowExport = false;
             EventExportService
-                    .startExportAgendaToCalendarAction(getApplicationContext(), agendaId);
+                    .startExportAgendaToCalendarAction(this, agendaId);
         }
 
         notificationReceiver
                 .buildNewAgendaItemNotificationFromIntent(intent, allowExport, false);
 
         Toast.makeText(
-                App.getContext(),
-                getResources().getString(R.string.agenda_subscribe_success),
+                this,
+                getString(R.string.agenda_subscribe_success),
                 Toast.LENGTH_SHORT)
                 .show();
     }
@@ -186,13 +192,14 @@ public class AgendaSubscriberService extends IntentService {
     /**
      * Show a toast notification with an handleError and reset the original notification
      * @param intent    Intent with which this service was started
+     * @param error     Error message to show
      */
-    private void handleError(Intent intent) {
+    private void handleError(Intent intent, String error) {
         NotificationReceiver notificationReceiver = new NotificationReceiver();
         notificationReceiver.buildNewAgendaItemNotificationFromIntent(intent, true, true);
         Toast.makeText(
-                App.getContext(),
-                getResources().getString(R.string.connection_error),
+                this,
+                error,
                 Toast.LENGTH_SHORT)
                 .show();
     }
