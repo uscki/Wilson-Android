@@ -40,12 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/agenda_detail_when"
-            android:layout_marginLeft="@dimen/cards_margin_sides"
-            android:layout_marginStart="@dimen/cards_margin_sides"
-            android:layout_marginRight="@dimen/cards_margin_sides"
-            android:layout_marginEnd="@dimen/cards_margin_sides"
-            android:layout_marginTop="@dimen/cards_margin_top"
-            card_view:cardCornerRadius="4dp">
+            android:layout_marginTop="1dp"
+            card_view:cardCornerRadius="0dp">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -74,13 +70,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/agenda_detail_longtext_card"
-            android:layout_marginLeft="@dimen/cards_margin_sides"
-            android:layout_marginStart="@dimen/cards_margin_sides"
-            android:layout_marginRight="@dimen/cards_margin_sides"
-            android:layout_marginEnd="@dimen/cards_margin_sides"
-            android:layout_marginTop="@dimen/cards_margin_top"
-            android:layout_marginBottom="@dimen/cards_margin_top"
-            card_view:cardCornerRadius="4dp">
+            android:layout_marginTop="1dp"
+            card_view:cardCornerRadius="0dp">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
