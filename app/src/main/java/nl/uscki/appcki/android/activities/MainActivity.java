@@ -54,9 +54,15 @@ public class MainActivity extends BasicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
 
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.nav_view)
     NavigationView navigationView;
+    @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
+
+    @BindView(R.id.menu_logout)
+    TextView logout;
 
     LoginFragment loginFragment = new LoginFragment();
 
@@ -84,17 +90,16 @@ public class MainActivity extends BasicActivity
 
         Crashlytics.log("Creating MainActivity");
         setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         if (!UserHelper.getInstance().isLoggedIn()) {
@@ -103,6 +108,16 @@ public class MainActivity extends BasicActivity
             initLoggedInUI();
             openTab(HomeFragment.NEWS);
         }
+
+        logout.setClickable(true);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserHelper.getInstance().logout();
+                initLoggedOutUI();
+                currentScreen = Screen.LOGIN;
+            }
+        });
 
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
@@ -200,19 +215,10 @@ public class MainActivity extends BasicActivity
             } else if (id == R.id.nav_search) {
                 openFragment(new SmoboSearch(), null);
                 currentScreen = Screen.SMOBO_SEARCH;
-            } else if (id == R.id.nav_logout) {
-                UserHelper.getInstance().logout();
-                initLoggedOutUI();
-                currentScreen = Screen.LOGIN;
-            }
-        } else {
-            if (id == R.id.nav_login) {
-                openFragment(loginFragment, null);
-                currentScreen = Screen.LOGIN;
             }
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -281,8 +287,7 @@ public class MainActivity extends BasicActivity
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         hideKeyboard(findViewById(R.id.drawer_layout));
 
-        navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
-        navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
+        logout.setVisibility(View.VISIBLE);
 
         TextView name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText(UserHelper.getInstance().getPerson().getPostalname());
@@ -313,13 +318,12 @@ public class MainActivity extends BasicActivity
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         openFragment(new LoginFragment(), null);
         currentScreen = Screen.LOGIN;
-        navigationView.getMenu().findItem(R.id.nav_login).setVisible(true);
-        navigationView.getMenu().findItem(R.id.nav_logout).setVisible(false);
+        logout.setVisibility(View.GONE);
 
-        TextView name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
+        TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText("");
 
-        ImageView profile = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
+        ImageView profile = navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
         profile.setImageResource(R.drawable.account);
     }
 
