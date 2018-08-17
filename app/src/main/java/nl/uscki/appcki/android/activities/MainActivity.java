@@ -25,6 +25,8 @@ import com.crashlytics.android.Crashlytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;

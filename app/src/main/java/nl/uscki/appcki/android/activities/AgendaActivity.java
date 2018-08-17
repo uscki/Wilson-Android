@@ -171,7 +171,7 @@ public class AgendaActivity extends AppCompatActivity {
         });
 
         // verander visibility pas als we in een detail view zitten
-        if(foundUser) {
+        if (foundUser) {
             menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
         } else {
@@ -196,19 +196,18 @@ public class AgendaActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
-        if(menu != null)
+        if (menu != null)
             menu.clear();
     }
 
     private void setExportButtons() {
-        if(menu == null)
+        if (menu == null)
             return;
 
-        if(CalendarHelper.getInstance()
-                .AgendaItemExistsInCalendar(item) > 0)
-        {
+        if (CalendarHelper.getInstance()
+                .AgendaItemExistsInCalendar(item) > 0) {
             menu.findItem(R.id.action_agenda_export).setVisible(false);
-            if(PermissionHelper.canDeleteCalendar()) {
+            if (PermissionHelper.canDeleteCalendar()) {
                 menu.findItem(R.id.action_remove_from_calendar).setVisible(true);
 
             }
@@ -221,6 +220,7 @@ public class AgendaActivity extends AppCompatActivity {
 
     /**
      * Sets an alarm for 30 minutes before the start time of this event.
+     *
      * @param item
      */
     private void setAlarmForEvent(AgendaItem item) {
@@ -245,12 +245,12 @@ public class AgendaActivity extends AppCompatActivity {
         myIntent.putExtra("item", gson.toJson(item));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, item.getId(), myIntent, PendingIntent.FLAG_ONE_SHOT);
 
-        AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
     }
 
     private void subscribeToAgenda(boolean subscribe) {
-        if(subscribe) {
+        if (subscribe) {
             DialogFragment newFragment = new SubscribeDialogFragment();
             Bundle args = new Bundle();
             args.putInt("id", item.getId());
@@ -259,9 +259,9 @@ public class AgendaActivity extends AppCompatActivity {
 
         } else {
             AgendaItem item = AgendaDetailFragment.item;
-            if(item.getHasUnregisterDeadline()) {
+            if (item.getHasUnregisterDeadline()) {
                 DateTime deadline = new DateTime(item.getUnregisterDeadline());
-                if(!deadline.isAfterNow()) {
+                if (!deadline.isAfterNow()) {
                     EventBus.getDefault().post(new ErrorEvent(new Error() {
                         @Override
                         public String getMessage() {
@@ -287,11 +287,11 @@ public class AgendaActivity extends AppCompatActivity {
     private void exportToCalendar() {
         CalendarHelper.getInstance().addItemToCalendar(item);
         setExportButtons();
-        Toast.makeText(this, R.string.agenda_toast_added_to_calendar ,Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.agenda_toast_added_to_calendar, Toast.LENGTH_SHORT).show();
     }
 
     private void removeFromCalendar() {
-        if(CalendarHelper.getInstance().removeItemFromCalendar(item))
+        if (CalendarHelper.getInstance().removeItemFromCalendar(item))
             Toast.makeText(
                     this,
                     R.string.agenda_toast_removed_from_calendar,
@@ -312,11 +312,11 @@ public class AgendaActivity extends AppCompatActivity {
 
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
         Log.e("AgendaSubscribedEvent", event.toString());
-        if(!event.showSubscribe) {
+        if (!event.showSubscribe) {
             setAlarmForEvent(item);
             menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
-            if(PermissionHelper.canExportCalendarAuto() &&
+            if (PermissionHelper.canExportCalendarAuto() &&
                     CalendarHelper.getInstance()
                             .AgendaItemExistsInCalendar(item) <= 0
                     ) {
