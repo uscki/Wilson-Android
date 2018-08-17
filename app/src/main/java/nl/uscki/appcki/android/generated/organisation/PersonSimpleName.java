@@ -57,7 +57,7 @@ public class PersonSimpleName {
     }
 
     public Boolean getDisplayonline() {
-        return displayonline;
+        return displayonline != null && displayonline;
     }
 
     public void setDisplayonline(Boolean displayonline) {
