@@ -73,6 +73,8 @@ public class SmoboPersonFragment extends Fragment {
     FrameLayout mobileInfo;
     @BindView(R.id.smobo_birthday_info)
     FrameLayout birthdayInfo;
+    @BindView(R.id.smobo_homepage_info)
+    FrameLayout homepageInfo;
     @BindView(R.id.smobo_groups)
     RecyclerView smoboGroups;
     @BindView(R.id.smobo_media_gridview)
@@ -92,6 +94,7 @@ public class SmoboPersonFragment extends Fragment {
             createPhoneInfoWidget(p);
             createMobileInfoWidget(p);
             createBirthdayInfoWidget(p);
+            createWebsiteInfoWidget(p);
 
             ((BaseItemAdapter) smoboGroups.getAdapter()).update(p.getGroups());
         }
@@ -172,6 +175,24 @@ public class SmoboPersonFragment extends Fragment {
                     .commit();
         } else {
             mobileInfo.setPadding(0,0,0,0);
+        }
+    }
+
+    private void createWebsiteInfoWidget(SmoboItem p) {
+        if(p.getPerson().getHomepage() != null) {
+            Bundle bundle = new Bundle();
+            String homepage = p.getPerson().getHomepage();
+            bundle.putString("maintext", homepage);
+            bundle.putString("subtext", "homepage");
+            bundle.putInt("infotype", SmoboInfoWidget.InfoType.HOMEPAGE.ordinal());
+
+            SmoboInfoWidget widget = new SmoboInfoWidget();
+            widget.setArguments(bundle);
+            context.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.smobo_homepage_info, widget)
+                    .commit();
+        } else {
+            homepageInfo.setPadding(0,0,0,0);
         }
     }
 
