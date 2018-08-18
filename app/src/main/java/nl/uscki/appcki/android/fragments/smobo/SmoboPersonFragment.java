@@ -10,6 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -28,6 +31,7 @@ import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.generated.smobo.SmoboPhotoMetadata;
+import nl.uscki.appcki.android.helpers.ContactHelper;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
 import retrofit2.Response;
 
@@ -48,6 +52,7 @@ public class SmoboPersonFragment extends Fragment {
     private int pageSize = 20;
     private boolean scrollLoad;
     private boolean noMoreContent;
+    private SmoboItem p;
 
     private Callback<Pageable<SmoboPhotoMetadata>> photosCallback = new Callback<Pageable<SmoboPhotoMetadata>>() {
         @Override
@@ -75,10 +80,10 @@ public class SmoboPersonFragment extends Fragment {
     @BindView(R.id.smobo_swiperefresh)
     SwipeRefreshLayout swipeContainer;
 
-    private Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
+    private final Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
         @Override
         public void onSucces(Response<SmoboItem> response) {
-            SmoboItem p = response.body();
+            p = response.body();
             swipeContainer.setRefreshing(false);
             //scrollView.setVisibility(View.VISIBLE);
 
@@ -175,6 +180,8 @@ public class SmoboPersonFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_smobo_person, container, false);
         ButterKnife.bind(this, view);
 
+        setHasOptionsMenu(true);
+
         if (getArguments() != null) {
             this.id = getArguments().getInt("id");
 
@@ -188,6 +195,34 @@ public class SmoboPersonFragment extends Fragment {
         }
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+
+        inflater.inflate(R.menu.menu_smobo, menu);
+
+        menu.findItem(R.id.action_save_contact)
+                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                exportContact();
+                return true;
+            }
+
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void exportContact() {
+        if(p == null)
+            return;
+
+        // Initiate export via intent using contact helper
+        ContactHelper.getInstance().exportContactViaIntent(p.getPerson());
     }
 
     protected void setupSwipeContainer() {

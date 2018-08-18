@@ -215,21 +215,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
     }
 
-    public void requestContactPermissions() {
-        if(
-                ContextCompat.checkSelfPermission(
-                        App.getContext(),
-                        Manifest.permission.WRITE_CONTACTS
-                ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.WRITE_CONTACTS),
-                    MY_PERMISSION_REQUEST_WRITE_CONTACT
-            );
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -258,12 +243,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     if(useExport != null) {
                         useExport.setChecked(false);
                     }
-                }
-            }
-            case MY_PERMISSION_REQUEST_WRITE_CONTACT: {
-                if(grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    ((SwitchPreference) sourceFragment.findPreference("people_use_export"))
-                            .setChecked(false);
                 }
             }
         }
@@ -373,13 +352,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onResume();
             getPreferenceScreen().getSharedPreferences()
                     .registerOnSharedPreferenceChangeListener(this);
-
-            if(PermissionChecker.checkSelfPermission(
-                    App.getContext(),
-                    Manifest.permission.WRITE_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-                ((SwitchPreference)findPreference("people_use_export")).setChecked(false);
-            }
         }
 
         @Override
@@ -401,9 +373,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     switch(s) {
                         case "calendar_use_export":
                             settingsActivity.requestCalendarPermissions();
-                            break;
-                        case "people_use_export":
-                            settingsActivity.requestContactPermissions();
                             break;
                     }
                 }
