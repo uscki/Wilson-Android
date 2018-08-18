@@ -20,6 +20,8 @@ public class AgendaDetailAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        if(item == null) return null;
+
         Bundle bundle = new Bundle();
         bundle.putInt("id", item.getId());
         switch (position) {

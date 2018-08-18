@@ -6,9 +6,10 @@ import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 
-public class AgendaParticipant {
+public class AgendaParticipant implements IWilsonBaseItem {
 
     @Expose
     private Integer id;

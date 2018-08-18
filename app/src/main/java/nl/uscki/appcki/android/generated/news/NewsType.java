@@ -5,7 +5,9 @@ import com.google.gson.annotations.Expose;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-public class NewsType {
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+
+public class NewsType implements IWilsonBaseItem {
 
     @Expose
     private Integer id;

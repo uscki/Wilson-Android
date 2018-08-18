@@ -5,9 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 
-public class Preference {
+public class Preference  implements IWilsonBaseItem {
 
     @SerializedName("id")
     @Expose

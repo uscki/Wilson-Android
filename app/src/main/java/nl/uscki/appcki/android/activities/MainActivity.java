@@ -37,6 +37,7 @@ import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.dialogs.RoephoekDialogFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
+import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
@@ -82,17 +83,17 @@ public class MainActivity extends BasicActivity
 
         Crashlytics.log("Creating MainActivity");
         setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         if (!UserHelper.getInstance().isLoggedIn()) {
@@ -104,10 +105,26 @@ public class MainActivity extends BasicActivity
 
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
-        if(Intent.ACTION_VIEW.equals(intent.getAction())) {
-            Bundle args = new Bundle();
-            args.putString("item", getIntent().getStringExtra("item"));
-            openFragment(new AgendaDetailTabsFragment(), args);
+        if(intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
+            if(intent.getStringExtra("item") != null) {
+                // Assume we want to view de agenda detail view
+                Log.e("Main Activity", "ACTION VIEW intent matches the given intent");
+                Bundle args = new Bundle();
+                args.putString("item", getIntent().getStringExtra("item"));
+                openFragment(new AgendaDetailTabsFragment(), args);
+            } else if(intent.getStringExtra("screen") != null && intent.getStringExtra("screen").equals(Screen.NEWS.toString())) {
+                openTab(HomeFragment.NEWS);
+                int newNewsId = intent.getIntExtra("id", -1);
+                if(newNewsId > 0) {
+                    // TODO: Somehow get the homeNewsTab fragment
+                    // TODO: Wait until API is done? Otherwise there is probably nothing to scroll to
+                    //homeNewsTab.scrollToItem(newNewsId);
+                }
+            } else {
+                Log.e("Main Activity", "Nothing interesting seems to happen");
+            }
+        } else {
+            Log.e("Main Activity", "ACTION VIEW intent DID NOT match the given intent");
         }
 
         // TODO configure shit for this server side
@@ -130,7 +147,7 @@ public class MainActivity extends BasicActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         Log.d(TAG, "back: " + currentScreen.name());
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -210,7 +227,7 @@ public class MainActivity extends BasicActivity
             }
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -282,10 +299,10 @@ public class MainActivity extends BasicActivity
         navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
         navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
 
-        TextView name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
+        TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText(UserHelper.getInstance().getPerson().getPostalname());
 
-        final SimpleDraweeView profile = (SimpleDraweeView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
+        final SimpleDraweeView profile = navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
 
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -314,10 +331,10 @@ public class MainActivity extends BasicActivity
         navigationView.getMenu().findItem(R.id.nav_login).setVisible(true);
         navigationView.getMenu().findItem(R.id.nav_logout).setVisible(false);
 
-        TextView name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
+        TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText("");
 
-        ImageView profile = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
+        ImageView profile = navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
         profile.setImageResource(R.drawable.account);
     }
 
@@ -332,7 +349,8 @@ public class MainActivity extends BasicActivity
 
     public static void hideKeyboard(View someView) {
         InputMethodManager imm = (InputMethodManager) someView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(someView.getWindowToken(), 0);
+        if(imm != null)
+            imm.hideSoftInputFromWindow(someView.getWindowToken(), 0);
     }
 
     // EVENT HANDLING

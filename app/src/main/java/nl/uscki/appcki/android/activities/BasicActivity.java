@@ -88,7 +88,7 @@ public abstract class BasicActivity extends AppCompatActivity {
         Crashlytics.log("onSaveInstanceState");
         if(MainActivity.currentScreen != null)
             outState.putInt("screen", MainActivity.currentScreen.ordinal());
-        outState.putString("token", UserHelper.getInstance().TOKEN);
+        outState.putString("token", UserHelper.getInstance().getToken());
         super.onSaveInstanceState(outState);
     }
 
@@ -120,7 +120,8 @@ public abstract class BasicActivity extends AppCompatActivity {
         Toast toast;
         switch (event.error.getStatus()) {
             case 401: // Unauthorized
-                // TODO what zijn permissions even?
+                toast = Toast.makeText(getApplicationContext(), getString(R.string.notauthorized), Toast.LENGTH_SHORT);
+                toast.show();
                 break;
             case 403: // Forbidden
                 toast = Toast.makeText(getApplicationContext(), getString(R.string.notloggedin), Toast.LENGTH_SHORT);

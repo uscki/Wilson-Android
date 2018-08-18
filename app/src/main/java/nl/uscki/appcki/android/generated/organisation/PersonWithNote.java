@@ -3,19 +3,26 @@ package nl.uscki.appcki.android.generated.organisation;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.meeting.Preference;
 import nl.uscki.appcki.android.generated.meeting.Slot;
 
 /**
  * Created by peter on 7/30/16.
  */
-public class PersonWithNote {
+public class PersonWithNote implements IWilsonBaseItem {
+    Integer id;
     PersonSimpleName person;
     String note;
 
     public PersonWithNote(PersonSimpleName person, String note) {
         this.person = person;
         this.note = note;
+    }
+
+    @Override
+    public Integer getId() {
+        return id;
     }
 
     public PersonSimpleName getPerson() {

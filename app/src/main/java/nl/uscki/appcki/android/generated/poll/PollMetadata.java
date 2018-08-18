@@ -5,13 +5,14 @@ import com.google.gson.annotations.SerializedName;
 
 import org.joda.time.DateTime;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 
 /**
  * Created by peter on 3/7/17.
  */
 
-public class PollMetadata {
+public class PollMetadata implements IWilsonBaseItem{
     /*{
 "active": true,
 "creation": "2017-03-07T13:31:42Z",
