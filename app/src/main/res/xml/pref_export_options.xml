@@ -41,20 +41,6 @@
         android:title="@string/pref_cat_people"
         >
         <SwitchPreference
-            android:defaultValue="false"
-            android:key="people_use_export"
-            android:title="@string/pref_save_in_contacts"
-            android:summary="@string/pref_save_in_contacts_summary"
-            />
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:title="@string/pref_cat_people_fields"
-        android:summary="@string/pref_cat_people_fields_summary"
-        android:dependency="people_use_export"
-        >
-
-        <SwitchPreference
             android:defaultValue="true"
             android:key="people_export_field_fullname"
             android:title="@string/pref_contacts_store_fullname"
@@ -63,28 +49,8 @@
 
         <SwitchPreference
             android:defaultValue="true"
-            android:key="people_export_field_mobile"
-            android:title="@string/pref_contacts_store_mobile"
-            />
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="people_export_field_phone"
-            android:title="@string/pref_contacts_store_phone"
-            />
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="people_export_field_email"
-            android:title="@string/pref_contacts_store_email"
-            />
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="people_export_field_address"
-            android:title="@string/pref_contacts_store_address"
-            />
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="people_export_field_website"
-            android:title="@string/pref_contacts_store_website"
+            android:key="people_export_nickname"
+            android:title="@string/pref_contacts_store_nickname"
             />
 
         <SwitchPreference
