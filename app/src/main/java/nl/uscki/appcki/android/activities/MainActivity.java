@@ -53,6 +53,8 @@ public class MainActivity extends BasicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
 
+    private static boolean homeScreenExists = false;
+
     Toolbar toolbar;
     NavigationView navigationView;
     DrawerLayout drawer;
@@ -165,6 +167,10 @@ public class MainActivity extends BasicActivity
         }
     }
 
+    public static void setHomescreenDestroyed() {
+        homeScreenExists = false;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -235,13 +241,20 @@ public class MainActivity extends BasicActivity
     private void openTab(int index) {
         Crashlytics.log("openTab(" + index + ")");
 
-        if (currentScreen == Screen.ROEPHOEK || currentScreen == Screen.NEWS || currentScreen == Screen.AGENDA) {
+        if (
+                homeScreenExists &&
+                        (currentScreen == Screen.ROEPHOEK ||
+                                currentScreen == Screen.NEWS ||
+                                currentScreen == Screen.AGENDA
+                        )
+        ) {
             // HomeFragment luistert naar dit event om daarin de tab te switchen
             EventBus.getDefault().post(new SwitchTabEvent(index));
         } else {
             Bundle bundle = new Bundle();
             bundle.putInt("index", index);
             openFragment(new HomeFragment(), bundle);
+            homeScreenExists = true;
         }
 
         setMenuToTab(index);
