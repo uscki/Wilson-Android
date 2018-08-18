@@ -2,6 +2,7 @@ package nl.uscki.appcki.android.views;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.util.Linkify;
@@ -36,7 +37,8 @@ public class SmoboInfoWidget extends Fragment {
         PHONE,
         EMAIL,
         ADRESS,
-        BIRTHDAY
+        BIRTHDAY,
+        HOMEPAGE
     }
 
     public SmoboInfoWidget() {
@@ -85,6 +87,10 @@ public class SmoboInfoWidget extends Fragment {
             case BIRTHDAY:
                 this.infoIcon.setImageResource(R.drawable.cake);
                 break;
+            case HOMEPAGE:
+                this.infoIcon.setImageResource(R.drawable.rc_earth);
+                Linkify.addLinks(this.mainText, Linkify.WEB_URLS);
+                this.mainText.setLinksClickable(true);
         }
     }
 
