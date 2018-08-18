@@ -6,9 +6,10 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 
-public class Meeting {
+public class Meeting implements IWilsonBaseItem{
 
     @SerializedName("id")
     @Expose

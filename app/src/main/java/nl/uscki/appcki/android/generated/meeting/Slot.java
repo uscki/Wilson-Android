@@ -8,7 +8,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Slot {
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+
+public class Slot  implements IWilsonBaseItem {
 
     @SerializedName("id")
     @Expose

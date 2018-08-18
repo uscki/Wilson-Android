@@ -5,11 +5,13 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+
 /**
  * Created by peter on 3/7/17.
  */
 
-public class PollItem {
+public class PollItem implements IWilsonBaseItem {
     @Expose
     @SerializedName("myVote")
     Integer myVote;
@@ -19,6 +21,11 @@ public class PollItem {
     @Expose
     @SerializedName("poll")
     PollMetadata poll;
+
+    public Integer getId() {
+        if(poll == null) return -1;
+        return poll.getId();
+    }
 
     public Integer getMyVote() {
         return myVote;

@@ -4,9 +4,10 @@ package nl.uscki.appcki.android.generated.media;
 import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.organisation.Person;
 
-public class MediaFile {
+public class MediaFile implements IWilsonBaseItem {
 
     @Expose
     private Integer id;

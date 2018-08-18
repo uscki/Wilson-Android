@@ -5,11 +5,13 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+
 /**
  * Created by peter on 3/1/17.
  */
 
-public class Quote {
+public class Quote implements IWilsonBaseItem {
     @Expose
     @SerializedName("hasVoted")
     boolean hasVoted;

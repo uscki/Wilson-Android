@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 
-class Category {
+class Category implements IWilsonBaseItem {
 
     @Expose
     private Integer id;
