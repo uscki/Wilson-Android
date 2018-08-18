@@ -1,9 +1,7 @@
 package nl.uscki.appcki.android.generated.media;
 
 import com.google.gson.annotations.Expose;
-
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
-import okhttp3.Interceptor;
 
 public class MediaTag implements IWilsonBaseItem {
     @Expose

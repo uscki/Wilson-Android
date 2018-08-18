@@ -436,6 +436,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             calendarValues.setEntries(calendarNames);
             calendarValues.setEntryValues(calendarIds);
 
+            // No value selected yet. Don't do anything
+            if(calendarValues.getValue() == null) return;
+
             sBindPreferenceSummaryToValueListener.onPreferenceChange(
                     calendarValues,
                     calendarValues.getValue()
