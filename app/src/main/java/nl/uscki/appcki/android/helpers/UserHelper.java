@@ -21,10 +21,14 @@ import nl.uscki.appcki.android.generated.organisation.PersonSimple;
  */
 public class UserHelper {
     private static UserHelper singleton;
-    public String TOKEN;
+    private String TOKEN;
     private PersonSimple person;
     private boolean loggedIn;
     private SharedPreferences preferences;
+
+    public String getToken() {
+        return this.TOKEN;
+    }
 
     private UserHelper() {
         this.TOKEN = null;
@@ -35,7 +39,7 @@ public class UserHelper {
 
     public static synchronized UserHelper getInstance( ) {
         if (singleton == null)
-            singleton=new UserHelper();
+            singleton = new UserHelper();
         return singleton;
     }
 

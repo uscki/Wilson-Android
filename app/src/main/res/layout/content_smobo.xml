@@ -32,7 +32,7 @@
                     android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginStart="@dimen/text_margin"
                     android:layout_marginTop="@dimen/cards_margin_top"
-                    android:text="Laatste x foto's"
+                    android:text="Laatste foto's"
                     android:textAppearance="@style/AppTheme.Text"
                     android:textColor="@color/colorAccent"
                     android:textSize="16sp" />

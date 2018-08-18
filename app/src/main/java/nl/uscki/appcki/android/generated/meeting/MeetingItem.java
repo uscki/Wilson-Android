@@ -6,11 +6,16 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 
-public class MeetingItem {
+public class MeetingItem implements IWilsonBaseItem {
 
+
+    @SerializedName("id")
+    @Expose
+    private Integer id;
     @SerializedName("meeting")
     @Expose
     private Meeting meeting;
@@ -26,6 +31,10 @@ public class MeetingItem {
     @SerializedName("myPreferences")
     @Expose
     private List<MyPreference> myPreferences = new ArrayList<>();
+
+    public Integer getId() {
+        return id;
+    }
 
     /**
      *

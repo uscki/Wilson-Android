@@ -5,11 +5,12 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.organisation.Person;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 
-public class Participation {
+public class Participation  implements IWilsonBaseItem {
 
     @SerializedName("id")
     @Expose

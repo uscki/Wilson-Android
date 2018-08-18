@@ -24,7 +24,9 @@
     <string name="login">Login</string>
 
     <string name="notloggedin">Je bent niet ingelogd.</string>
+    <string name="notauthorized">Je hebt geen toegang tot deze content.</string>
     <string name="content_loading_error">Er ging iets fout bij het laden van de content.</string>
+    <string name="unknown_server_error">Er is een onbekende fout opgetreden op de server. Probeer het later nog eens.</string>
 
     <string name="agenda_inschrijven">Inschrijven</string>
     <string name="agenda_uitschrijven">Uitschrijven</string>
@@ -66,6 +68,7 @@
     <string name="agenda_confirm_unsubscribe_positive">Unsubscribe!</string>
 
     <string name="person_not_display_online_msg">Deze persoon kan niet worden opgeslagen vanwege zijn of haar privacy instellingen</string>
+    <string name="agenda_subscribe_success">Je bent ingeschreven voor dit evenement!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_agenda">AgendaActivity</string>
@@ -162,6 +165,13 @@
     <string name="title_activity_news">NewsActivity</string>
     <string name="news_read_more">Read more</string>
 
+
+    <string name="notification_channel_activities_name">Interactieve notificaties</string>
+    <string name="notification_channel_activities_description">Notificaties waarvoor vaak actie ondernomen kan worden, zoals nieuw geplande vergaderingen of nieuwe agenda items</string>
+    <string name="notification_channel_general_name">Algemene USCKI updates</string>
+    <string name="notification_channel_general_description">Notificaties die doorgaans alleen ter informatie dienen, zoals updates over nieuws of de roephoek</string>
+    <string name="notification_channel_personal_name">Persoonlijke updates</string>
+    <string name="notification_channel_personal_description">Minder belangrijke notificaties die ter informatie dienen, maar alleen worden gestuurd omdat je eerder te maken hebt gehad met het onderwerp van die notificatie</string>
     <string name="title_activity_settings">Instellingen</string>
 
     <!-- Strings related to Settings -->
