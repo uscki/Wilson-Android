@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             card_view:cardCornerRadius="0dp">
 
-            <!--<RelativeLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
@@ -32,12 +32,12 @@
                     android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginStart="@dimen/text_margin"
                     android:layout_marginTop="@dimen/cards_margin_top"
-                    android:text="Laatste vijf foto's"
+                    android:text="Laatste foto's"
                     android:textAppearance="@style/AppTheme.Text"
                     android:textColor="@color/colorAccent"
                     android:textSize="16sp" />
 
-                &lt;!&ndash; focusable might break clicking? &ndash;&gt;
+                <!-- focusable might break clicking? -->
                 <android.support.v17.leanback.widget.HorizontalGridView
                     android:id="@+id/smobo_media_gridview"
                     android:layout_below="@id/smobo_media_text"
@@ -47,7 +47,7 @@
                     android:layout_height="80dp"
                     android:focusable="false"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-            </RelativeLayout>-->
+            </RelativeLayout>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView

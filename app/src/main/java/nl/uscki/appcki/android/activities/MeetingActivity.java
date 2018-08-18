@@ -1,9 +1,11 @@
 package nl.uscki.appcki.android.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -14,6 +16,7 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingDetailAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
+import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 import retrofit2.Response;
 
@@ -50,6 +53,12 @@ public class MeetingActivity extends BasicActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(!UserHelper.getInstance().isLoggedIn()) {
+            Log.e("AgendaActivity", "Starting MainActivity");
+            startActivity(new Intent(this, MainActivity.class));
+        }
+
         setContentView(R.layout.activity_agenda); // this is actually correct cause it uses the same layout
         MainActivity.currentScreen = MainActivity.Screen.MEETING_DETAIL;
 

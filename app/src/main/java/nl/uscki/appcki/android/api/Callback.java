@@ -34,7 +34,9 @@ public abstract class Callback<T> implements retrofit2.Callback<T> {
         t.printStackTrace();
     }
 
-    public void handleError(Response<T> response) {
+    private void handleError(Response<T> response) {
+        // TODO maybe move this code to a static helper, so the same error handling can be used
+        // at other places? This is a pretty generic way we want to handle these errors, I presume?
         try {
             Gson gson = new Gson();
             ServerError error = gson.fromJson(response.errorBody().string(), ServerError.class);
