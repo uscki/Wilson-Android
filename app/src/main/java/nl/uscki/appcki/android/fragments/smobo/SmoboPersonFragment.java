@@ -28,9 +28,9 @@ import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
 import nl.uscki.appcki.android.generated.common.Pageable;
+import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
 import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
-import nl.uscki.appcki.android.generated.smobo.SmoboPhotoMetadata;
 import nl.uscki.appcki.android.helpers.ContactHelper;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
 import retrofit2.Response;
@@ -54,9 +54,9 @@ public class SmoboPersonFragment extends Fragment {
     private boolean noMoreContent;
     private SmoboItem p;
 
-    private Callback<Pageable<SmoboPhotoMetadata>> photosCallback = new Callback<Pageable<SmoboPhotoMetadata>>() {
+    private Callback<Pageable<MediaFileMetaData>> photosCallback = new Callback<Pageable<MediaFileMetaData>>() {
         @Override
-        public void onSucces(Response<Pageable<SmoboPhotoMetadata>> response) {
+        public void onSucces(Response<Pageable<MediaFileMetaData>> response) {
             noMoreContent = response.body().getLast();
             scrollLoad = false;
             ((BaseItemAdapter) mediaGrid.getAdapter()).addItems(response.body().getContent());
@@ -266,7 +266,7 @@ public class SmoboPersonFragment extends Fragment {
         HorizontalGridView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         mediaGrid.setLayoutManager(layoutManager);
 
-        mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<SmoboPhotoMetadata>()));
+        mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<MediaFileMetaData>()));
         mediaGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

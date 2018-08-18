@@ -3,11 +3,13 @@ package nl.uscki.appcki.android.generated.organisation;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+
 /**
  * Created by peter on 5-12-16.
  */
 
-public class PersonSimpleName {
+public class PersonSimpleName implements IWilsonBaseItem {
     @Expose
     @SerializedName("id")
     Integer id;

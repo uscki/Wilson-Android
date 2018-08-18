@@ -7,7 +7,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.List;
 
-public class RoephoekItem {
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+
+public class RoephoekItem implements IWilsonBaseItem {
 
     @SerializedName("id")
     @Expose

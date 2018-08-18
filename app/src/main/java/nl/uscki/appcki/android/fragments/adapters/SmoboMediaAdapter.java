@@ -13,14 +13,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
-import nl.uscki.appcki.android.generated.smobo.SmoboPhotoMetadata;
+import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
 
 /**
  * Created by peter on 3/8/17.
  */
 
-public class SmoboMediaAdapter extends BaseItemAdapter<SmoboMediaAdapter.ViewHolder, SmoboPhotoMetadata> {
-    public SmoboMediaAdapter(List<SmoboPhotoMetadata> items) {
+public class SmoboMediaAdapter extends BaseItemAdapter<SmoboMediaAdapter.ViewHolder, MediaFileMetaData> {
+    public SmoboMediaAdapter(List<MediaFileMetaData> items) {
         super(items);
     }
 
@@ -34,7 +34,7 @@ public class SmoboMediaAdapter extends BaseItemAdapter<SmoboMediaAdapter.ViewHol
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // we can assume that these integers will always be valid media id's
-        holder.photo.setImageURI(MediaAPI.getMediaUri(items.get(position).id, MediaAPI.MediaSize.SMALL));
+        holder.photo.setImageURI(MediaAPI.getMediaUri(items.get(position).getId(), MediaAPI.MediaSize.SMALL));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -5,14 +5,16 @@ import com.google.gson.annotations.SerializedName;
 
 import org.joda.time.DateTime;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+
 /**
  * Created by peter on 3/4/17.
  */
 
-public class Committee {
+public class Committee  implements IWilsonBaseItem {
     @Expose
     @SerializedName("committeeId")
-    private int id;
+    private Integer id;
     @Expose
     @SerializedName("start")
     Long start;
@@ -23,7 +25,7 @@ public class Committee {
     @SerializedName("end")
     Long end;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

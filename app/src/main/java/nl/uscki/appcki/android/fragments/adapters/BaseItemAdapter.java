@@ -8,7 +8,9 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.List;
 
-public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K> extends RecyclerView.Adapter<T> {
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+
+public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K extends IWilsonBaseItem> extends RecyclerView.Adapter<T> {
     protected List<K> items;
 
     protected BaseItemAdapter(List<K> items) {
@@ -34,6 +36,19 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K> exte
     public void clear() {
         this.items.clear();
         this.notifyDataSetChanged();
+    }
+
+    public List<K> getItems() {
+        return items;
+    }
+
+    public int getItemPosition(int id) {
+        for(int i = 0; i < items.size(); i++) {
+            if(items.get(i).getId() == id) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override

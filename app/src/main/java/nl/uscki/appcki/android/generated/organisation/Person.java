@@ -8,7 +8,9 @@ import com.google.gson.internal.bind.DateTypeAdapter;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 
-public class Person {
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+
+public class Person implements IWilsonBaseItem {
     @Expose
     String address1;
     @Expose
