@@ -259,7 +259,7 @@ public class CalendarHelper {
      */
     private void addAgendaEventViaIntention(AgendaItem item) {
         Intent intent = new Intent(Intent.ACTION_INSERT);
-
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setType("vnd.android.cursor.item/event");
         intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, item.getStart().getMillis());
         intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, item.getEnd().getMillis());
@@ -327,6 +327,7 @@ public class CalendarHelper {
      */
     private void exportMeetingViaIntention(MeetingItem item) {
         Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setType("vnd.android.cursor.item/event");
         intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, item.getMeeting().getStartdate().getMillis());
         intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, item.getMeeting().getEnddate().getMillis());

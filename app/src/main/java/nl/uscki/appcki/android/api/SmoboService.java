@@ -1,6 +1,7 @@
 package nl.uscki.appcki.android.api;
 
 import nl.uscki.appcki.android.generated.common.Pageable;
+import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.generated.smobo.SmoboSearchPage;
 import retrofit2.Call;
@@ -17,7 +18,7 @@ public interface SmoboService {
     Call<SmoboItem> get(@Path("id") Integer id);
 
     @GET("smobo/get/{id}/photos")
-    Call<Pageable<Integer>> photos(@Path("id") Integer id, @Query("page") Integer page, @Query("size") Integer size);
+    Call<Pageable<MediaFileMetaData>> photos(@Path("id") Integer id, @Query("page") Integer page, @Query("size") Integer size);
 
     @GET("smobo/search")
     Call<SmoboSearchPage> search (@Query("query") String query, @Query("page") Integer page, @Query("size") Integer size);
