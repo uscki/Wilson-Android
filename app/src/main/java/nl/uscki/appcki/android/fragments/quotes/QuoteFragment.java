@@ -1,6 +1,9 @@
 package nl.uscki.appcki.android.fragments.quotes;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +42,21 @@ public class QuoteFragment extends PageableFragment<QuotesPage> {
         setAdapter(new QuoteAdapter(new ArrayList<Quote>()));
         Services.getInstance().quoteService.older(page, getPageSize()).enqueue(callback);
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        FloatingActionButton fab = setFabEnabled(view, true);
+        if (fab != null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addNewPageableItemWidget(new NewQuoteWidget());
+                }
+            });
+        }
     }
 
     @Override

@@ -1,7 +1,12 @@
 package nl.uscki.appcki.android.fragments;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +22,7 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.common.Pageable;
+import nl.uscki.appcki.android.views.ANewPageableItem;
 import retrofit2.Response;
 
 /**
@@ -169,7 +175,23 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                 android.R.color.holo_red_light);
 
         swipeContainer.setRefreshing(true);
+    }
 
+    public void refresh() {
+        if(swipeContainer != null) {
+            page = 0;
+            refresh = true;
+            swipeContainer.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeContainer.setRefreshing(true);
+                }
+            });
+
+            if(recyclerView != null) {
+                recyclerView.scrollToPosition(0);
+            }
+        }
     }
 
     public BaseItemAdapter getAdapter() {
@@ -178,6 +200,59 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
     public void setAdapter(BaseItemAdapter adapter) {
         this.adapter = adapter;
+    }
+
+    protected FloatingActionButton setFabEnabled(@NonNull View view, boolean enabled) {
+        FloatingActionButton fab = view.findViewById(R.id.pageableFloatingActionButton);
+        if(fab == null) {
+            Log.e(
+                    getClass().getSimpleName(),
+                    "Trying to enable Fabulous action button, but not found");
+            return null;
+        }
+
+        fab.setVisibility(enabled ? View.VISIBLE : View.GONE);
+        fab.setClickable(enabled);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            fab.setFocusable(enabled);
+        }
+
+        // Use the return value to set the onClick action
+        return fab;
+    }
+
+    public void addNewPageableItemWidget(ANewPageableItem widget) {
+        widget.setParent(this);
+        FragmentManager fm = getSupportFragmentManager();
+        if(fm == null) return;
+
+        fm.beginTransaction()
+                .replace(R.id.new_item_placeholder, widget)
+                .commit();
+
+        View view = getView();
+        if(view != null)
+            setFabEnabled(getView(), false);
+    }
+
+    public void removeNewPageableItemWidget() {
+        FragmentManager fm = getSupportFragmentManager();
+        if(fm == null) return;
+
+        fm.beginTransaction()
+                .replace(R.id.new_item_placeholder, new Fragment())
+                .commit();
+
+        View view = getView();
+        if(view != null)
+            setFabEnabled(view, true);
+    }
+
+    private FragmentManager getSupportFragmentManager() {
+        FragmentActivity activity = getActivity();
+        if(activity == null) return null;
+
+        return activity.getSupportFragmentManager();
     }
 
     public abstract void onSwipeRefresh();

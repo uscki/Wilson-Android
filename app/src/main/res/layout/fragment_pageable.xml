@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/new_item_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
     <android.support.v4.widget.SwipeRefreshLayout
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/refreshContainer"
+        android:layout_below="@id/new_item_placeholder"
         tools:context="nl.uscki.appcki.android.fragments.PageableFragment">
 
         <android.support.v7.widget.RecyclerView
@@ -25,4 +35,18 @@
         android:gravity="center"
         android:textSize="@dimen/text_subheader_size"
         android:textColor="@color/colorCodeBackground" />
-</FrameLayout>
+
+    <!-- To enable, set visibility, clickable and focusable -->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/pageableFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        app:srcCompat="@drawable/plus"
+        android:visibility="gone"
+        />
+</RelativeLayout>
