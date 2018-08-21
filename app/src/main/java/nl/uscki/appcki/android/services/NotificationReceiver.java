@@ -263,7 +263,6 @@ public class NotificationReceiver extends FirebaseMessagingService {
      * @param id                The ID of the item to open
      */
     public void addIntentionsToNotification(NotificationCompat.Builder notification, Intent intent, int id) {
-//        intent.putExtra("id", id);
         if(intent.getAction() == null)
             intent.setAction(Intent.ACTION_VIEW);
         PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, intent, 0);
