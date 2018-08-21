@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -36,11 +37,15 @@ import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.dialogs.RoephoekDialogFragment;
+import nl.uscki.appcki.android.fragments.home.HomeAgendaTab;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
+import nl.uscki.appcki.android.fragments.home.HomeRoephoekTab;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
+import nl.uscki.appcki.android.fragments.meeting.MeetingPlannerFragment;
 import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
+import nl.uscki.appcki.android.fragments.poll.PollResultFragment;
 import nl.uscki.appcki.android.fragments.quotes.QuoteFragment;
 import nl.uscki.appcki.android.fragments.search.SmoboSearch;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
@@ -152,6 +157,11 @@ public class MainActivity extends BasicActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            if(handleChildFragmentStack()) {
+                // Stop here, as a back action has been performed
+                return;
+            }
+
             if (currentScreen == Screen.AGENDA_DETAIL) {
                 openTab(HomeFragment.AGENDA);
             } else if (currentScreen == Screen.MEETING_PLANNER || currentScreen == Screen.MEETING_DETAIL) {
@@ -163,6 +173,78 @@ public class MainActivity extends BasicActivity
                 super.onBackPressed();
             }
         }
+    }
+
+    private boolean handleChildFragmentStack() {
+        FragmentManager fm = getSupportFragmentManager();
+        Class currentFragmentClass = getClassForScreen(currentScreen);
+        if(currentFragmentClass == null) return false;
+
+        for(Fragment f : fm.getFragments()) {
+            if(f.getClass() == currentFragmentClass) {
+                FragmentManager cfm = f.getChildFragmentManager();
+                if(cfm.getBackStackEntryCount() > 0) {
+                    cfm.popBackStack();
+                    return true;
+                }
+
+                // Nothing to do here
+                return false;
+            }
+        }
+
+        // No fragment found
+        return false;
+    }
+
+    private Class<? extends Fragment> getClassForScreen(Screen screen) {
+        Class<? extends Fragment> clazz;
+        switch(screen) {
+            case LOGIN:
+                clazz = LoginFragment.class;
+                break;
+            case NEWS:
+                clazz = HomeNewsTab.class;
+                break;
+            case AGENDA:
+                clazz = HomeAgendaTab.class;
+                break;
+            case POLL_OVERVIEW:
+                clazz = PollOverviewFragment.class;
+                break;
+            case ROEPHOEK:
+                clazz = HomeRoephoekTab.class;
+                break;
+            case AGENDA_DETAIL:
+                clazz = AgendaDetailTabsFragment.class;
+                break;
+            case MEETING_OVERVIEW:
+                clazz = MeetingOverviewFragment.class;
+                break;
+            case MEETING_PLANNER:
+                clazz = MeetingPlannerFragment.class;
+                break;
+            case MEETING_DETAIL:
+                clazz = MeetingDetailTabsFragment.class;
+                break;
+            case QUOTE_OVERVIEW:
+                clazz = QuoteFragment.class;
+                break;
+            case POLL_VOTE:
+                clazz = PollOverviewFragment.class;
+                break;
+            case POLL_RESULT:
+                // Or poll vote fragment. Tricky business
+                clazz = PollResultFragment.class;
+                break;
+            case SMOBO_SEARCH:
+                clazz = SmoboSearch.class;
+                break;
+            default:
+                clazz = null;
+                break;
+        }
+        return clazz;
     }
 
     @Override
@@ -184,9 +266,6 @@ public class MainActivity extends BasicActivity
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
-            return true;
-        } else if(id == R.id.action_roephoek_roep) {
-            buildRoephoekAddDialog();
             return true;
         }
 
