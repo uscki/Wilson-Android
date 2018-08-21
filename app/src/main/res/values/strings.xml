@@ -164,7 +164,7 @@
     <string name="title_activity_news">NewsActivity</string>
     <string name="news_read_more">Read more</string>
 
-
+    <!-- Old type of notification channels -->
     <string name="notification_channel_activities_name">Interactieve notificaties</string>
     <string name="notification_channel_activities_description">Notificaties waarvoor vaak actie ondernomen kan worden, zoals nieuw geplande vergaderingen of nieuwe agenda items</string>
     <string name="notification_channel_general_name">Algemene USCKI updates</string>
@@ -172,6 +172,30 @@
     <string name="notification_channel_personal_name">Persoonlijke updates</string>
     <string name="notification_channel_personal_description">Minder belangrijke notificaties die ter informatie dienen, maar alleen worden gestuurd omdat je eerder te maken hebt gehad met het onderwerp van die notificatie</string>
     <string name="title_activity_settings">Instellingen</string>
+
+    <!-- Android Oreo+ notification channel names and descriptions -->
+    <string name="nl.uscki.appcki.android.notifications.name.ACHIEVEMENT">Achievements</string>
+    <string name="nl.uscki.appcki.android.notifications.description.ACHIEVEMENT">Notificaties voor behaalde achievements op de USCKI website of in de app</string>
+    <string name="nl.uscki.appcki.android.notifications.name.AGENDA_ANNOUNCEMENT">Agenda-aankondigingen</string>
+    <string name="nl.uscki.appcki.android.notifications.description.AGENDA_ANNOUNCEMENT">Aankondigingen betreffende bestaande agenda-evenementen</string>
+    <string name="nl.uscki.appcki.android.notifications.name.AGENDA_NEW">Nieuwe activitieten</string>
+    <string name="nl.uscki.appcki.android.notifications.description.AGENDA_NEW">Aankondigingen van nieuwe activiteiten</string>
+    <string name="nl.uscki.appcki.android.notifications.name.AGENDA_REPLY">Agenda comment reacties</string>
+    <string name="nl.uscki.appcki.android.notifications.description.AGENDA_REPLY">Notificaties over reacties op agenda comments</string>
+    <string name="nl.uscki.appcki.android.notifications.name.FORUM_NEW_TOPIC">Nieuw forum topic</string>
+    <string name="nl.uscki.appcki.android.notifications.description.FORUM_NEW_TOPIC">Notificaties over nieuw aangemaakte topics op het forum</string>
+    <string name="nl.uscki.appcki.android.notifications.name.FORUM_REPLY">Forumreactie</string>
+    <string name="nl.uscki.appcki.android.notifications.description.FORUM_REPLY">Notificaties over nieuwe posts op het USCKI forum</string>
+    <string name="nl.uscki.appcki.android.notifications.name.OTHER">Overig</string>
+    <string name="nl.uscki.appcki.android.notifications.description.OTHER">Overige notificaties</string>
+    <string name="nl.uscki.appcki.android.notifications.name.MEETING_FILLEDIN">Vergaderplanner ingevuld</string>
+    <string name="nl.uscki.appcki.android.notifications.description.MEETING_FILLEDIN">Notificaties over nieuwe reacties op een vergaderplanner</string>
+    <string name="nl.uscki.appcki.android.notifications.name.MEETING_NEW">Nieuwe vergaderplanner</string>
+    <string name="nl.uscki.appcki.android.notifications.description.MEETING_NEW">Notificaties wanneer een nieuwe vergaderplanner wordt uitgestuurd</string>
+    <string name="nl.uscki.appcki.android.notifications.name.MEETING_PLANNED">Vergadering gepland</string>
+    <string name="nl.uscki.appcki.android.notifications.description.MEETING_PLANNED">Notificaties voor wanneer een vergadering is gepland en de tijd en locatie bekend zijn</string>
+    <string name="nl.uscki.appcki.android.notifications.name.NEWS">Nieuws</string>
+    <string name="nl.uscki.appcki.android.notifications.description.NEWS">Notificaties bij nieuwe nieuwsberichten</string>
 
     <!-- Strings related to Settings -->
 
@@ -199,11 +223,36 @@
 
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notificaties</string>
-
     <string name="pref_title_new_message_notifications">Notificaties voor nieuwe berichten</string>
 
     <string name="pref_title_ringtone">Ringtoon</string>
     <string name="pref_ringtone_silent">Stil</string>
 
-    <string name="pref_title_vibrate">Vibreer</string>
+    <string name="pref_title_vibrate">Trillen</string>
+
+    <string name="pref_custom_vibrate">Laat Wilson trillen</string>
+    <string name="pref_custom_vibrate_summary">Kies je eigen trilpatroon. Deze instelling wordt genegeerd als in de Android instellingen trillen voor Wilson notificaties wordt ingeschakeld</string>
+    <string name="pref_title_vibration_pattern">Trilpatroon</string>
+
+    <string name="pref_system_notification_settings">Systeeminstellingen</string>
+    <string name="pref_system_notification_settings_summary">Beheer notificatieinstellingen voor de applicatie in de opties van Android</string>
+
+
+    <string name="pref_title_notification_light">Notificatie LED</string>
+    <string name="pref_title_notification_light_summary">Indien aanwezig op apparaat</string>
+    <string name="pref_title_notification_light_mode">LED constant aan</string>
+    <string name="notification_light_constant">Constant</string>
+    <string name="notification_light_blink">Knipperen</string>
+
+
+    <!-- Vibration pattern names -->
+    <string name="vibration_pattern_short_once">Eén keer kort</string>
+    <string name="vibration_pattern_short_twice">Twee keer kort</string>
+    <string name="vibration_pattern_short_thrice">Drie keer kort</string>
+    <string name="vibration_pattern_long_once">Eén keer lang</string>
+    <string name="vibration_pattern_long_twice">Twee keer lang</string>
+    <string name="vibration_pattern_long_thrice">Drie keer lang</string>
+    <string name="vibration_pattern_imperial_march">Imperial March</string>
+    <string name="vibration_pattern_CKI_morse">CKI (morse)</string>
+    <string name="vibration_pattern_default">@string/vibration_pattern_long_twice</string>
 </resources>

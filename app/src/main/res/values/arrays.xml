@@ -9,4 +9,115 @@
         <item>Vergaderplanner</item>
     </string-array>
 
+    <string-array name="vibration_pattern_names">
+        <item>@string/vibration_pattern_short_once</item>
+        <item>@string/vibration_pattern_short_twice</item>
+        <item>@string/vibration_pattern_short_thrice</item>
+        <item>@string/vibration_pattern_long_once</item>
+        <item>@string/vibration_pattern_long_twice</item>
+        <item>@string/vibration_pattern_long_thrice</item>
+        <item>@string/vibration_pattern_imperial_march</item>
+        <item>@string/vibration_pattern_CKI_morse</item>
+    </string-array>
+
+    <array name="vibration_pattern_values">
+        <item>@array/vibration_pattern_short_once</item>
+        <item>@array/vibration_pattern_short_twice</item>
+        <item>@array/vibration_pattern_short_thrice</item>
+        <item>@array/vibration_pattern_long_once</item>
+        <item>@array/vibration_pattern_long_twice</item>
+        <item>@array/vibration_pattern_long_thrice</item>
+        <item>@array/vibration_pattern_imperial_march</item>
+        <item>@array/vibration_pattern_cki_morse</item>
+    </array>
+
+    <integer-array name="vibration_pattern_short_once">
+        <item>0</item>
+        <item>150</item>
+    </integer-array>
+
+    <integer-array name="vibration_pattern_short_twice">
+        <item>0</item>
+        <item>150</item>
+        <item>100</item>
+        <item>150</item>
+    </integer-array>
+
+    <integer-array name="vibration_pattern_short_thrice">
+        <item>0</item>
+        <item>150</item>
+        <item>100</item>
+        <item>150</item>
+        <item>100</item>
+        <item>150</item>
+    </integer-array>
+
+    <integer-array name="vibration_pattern_long_once">
+        <item>0</item>
+        <item>300</item>
+    </integer-array>
+
+    <integer-array name="vibration_pattern_long_twice">
+        <item>0</item>
+        <item>300</item>
+        <item>200</item>
+        <item>300</item>
+    </integer-array>
+
+    <integer-array name="vibration_pattern_long_thrice">
+        <item>0</item>
+        <item>300</item>
+        <item>200</item>
+        <item>300</item>
+        <item>200</item>
+        <item>300</item>
+    </integer-array>
+
+    <integer-array name="vibration_pattern_imperial_march">
+        <item>0</item>
+        <item>500</item>
+        <item>110</item>
+        <item>500</item>
+        <item>110</item>
+        <item>450</item>
+        <item>110</item>
+        <item>200</item>
+        <item>110</item>
+        <item>170</item>
+        <item>40</item>
+        <item>450</item>
+        <item>110</item>
+        <item>200</item>
+        <item>110</item>
+        <item>170</item>
+        <item>40</item>
+        <item>500</item>
+    </integer-array>
+
+    <integer-array name="vibration_pattern_cki_morse">
+        <item>0</item>
+        <item>225</item>
+        <item>120</item>
+        <item>70</item>
+        <item>120</item>
+        <item>225</item>
+        <item>120</item>
+        <item>70</item>
+        <item>120</item>
+        <item>300</item>
+        <item>120</item>
+        <item>225</item>
+        <item>120</item>
+        <item>70</item>
+        <item>120</item>
+        <item>225</item>
+        <item>120</item>
+        <item>300</item>
+        <item>120</item>
+        <item>70</item>
+        <item>120</item>
+        <item>70</item>
+        <item>120</item>
+    </integer-array>
+
 </resources>
