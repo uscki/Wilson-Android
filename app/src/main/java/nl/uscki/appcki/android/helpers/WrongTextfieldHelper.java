@@ -3,8 +3,11 @@ package nl.uscki.appcki.android.helpers;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.List;
 
 import nl.uscki.appcki.android.R;
 
@@ -16,16 +19,19 @@ public class WrongTextfieldHelper {
      * @param context       Context reference
      * @param wrongField    EditText field that should not be empty
      */
-    public static void alertEmptyTextfield(Context context, final EditText wrongField) {
+    public static void alertEmptyTextfield(Context context, EditText wrongField) {
         Toast.makeText(context, "Veld mag niet leeg zijn", Toast.LENGTH_SHORT).show();
+        animateIncorrectView(context, wrongField);
+    }
 
+    private static void animateIncorrectView(Context context, final View view) {
         Drawable backgroundFrom = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             backgroundFrom = context.getDrawable(R.drawable.red_border);
         } else {
             context.getResources().getDrawable(R.drawable.red_border);
         }
-        Drawable backgroundTo = wrongField.getBackground();
+        Drawable backgroundTo = view.getBackground();
 
         ValueAnimator colorAnimator = ValueAnimator.ofObject(new DrawableTypeEvaluator(), backgroundFrom, backgroundTo);
         colorAnimator.setDuration(120);
@@ -33,9 +39,16 @@ public class WrongTextfieldHelper {
         colorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                wrongField.setBackground((Drawable) valueAnimator.getAnimatedValue());
+                view.setBackground((Drawable) valueAnimator.getAnimatedValue());
             }
         });
         colorAnimator.start();
+    }
+
+    public static void alertIncorrectViews(Context context, final List<View> wrongViews) {
+        Toast.makeText(context, "Incorrecte waardes", Toast.LENGTH_SHORT).show();
+        for(View view : wrongViews) {
+            animateIncorrectView(context, view);
+        }
     }
 }
