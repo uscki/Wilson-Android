@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import java.util.List;
+import java.util.ListIterator;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
@@ -44,12 +45,16 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
     }
 
     public int getItemPosition(int id) {
-        int i = 0;
-        for(IWilsonBaseItem item : getItems()) {
-            if(item.getId() == id) {
-                return i;
+        ListIterator<K> iterator = getItems().listIterator();
+
+        while(iterator.hasNext())
+        {
+            if(iterator.next().getId().equals(id))
+            {
+                // The previous index is actually the one we compared, as .next() returns the object
+                // and then advances the cursor.
+                return iterator.previousIndex();
             }
-            i++;
         }
         return -1;
     }
