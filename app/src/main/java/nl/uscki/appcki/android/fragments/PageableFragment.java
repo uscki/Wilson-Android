@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -202,7 +201,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         this.adapter = adapter;
     }
 
-    protected FloatingActionButton setFabEnabled(@NonNull View view, boolean enabled) {
+    public FloatingActionButton setFabEnabled(@NonNull View view, boolean enabled) {
         FloatingActionButton fab = view.findViewById(R.id.pageableFloatingActionButton);
         if(fab == null) {
             Log.e(
@@ -223,11 +222,11 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
     public void addNewPageableItemWidget(ANewPageableItem widget) {
         widget.setParent(this);
-        FragmentManager fm = getSupportFragmentManager();
-        if(fm == null) return;
+        FragmentManager fm = getChildFragmentManager();
 
         fm.beginTransaction()
                 .replace(R.id.new_item_placeholder, widget)
+                .addToBackStack("new_item")
                 .commit();
 
         View view = getView();
@@ -236,8 +235,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     }
 
     public void removeNewPageableItemWidget() {
-        FragmentManager fm = getSupportFragmentManager();
-        if(fm == null) return;
+        FragmentManager fm = getChildFragmentManager();
 
         fm.beginTransaction()
                 .replace(R.id.new_item_placeholder, new Fragment())
@@ -246,13 +244,6 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         View view = getView();
         if(view != null)
             setFabEnabled(view, true);
-    }
-
-    private FragmentManager getSupportFragmentManager() {
-        FragmentActivity activity = getActivity();
-        if(activity == null) return null;
-
-        return activity.getSupportFragmentManager();
     }
 
     public abstract void onSwipeRefresh();

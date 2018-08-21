@@ -22,7 +22,10 @@ import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
+ *
+ * @Depricated in favor of fragments.shoutbox.NewShoutWidget
  */
+@Deprecated
 public class RoephoekDialogFragment extends DialogFragment {
 
 
