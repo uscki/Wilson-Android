@@ -3,11 +3,16 @@ package nl.uscki.appcki.android.fragments.shoutbox;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.solver.widgets.WidgetContainer;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,5 +62,15 @@ public class NewShoutWidget extends ANewPageableItem {
         return Services.getInstance()
                 .shoutboxService
                 .shout(nickname.getText().toString(), content.getText().toString());
+    }
+
+    @Override
+    protected @NonNull List<View> getIncorrectFields() {
+        List<View> incorrect = new ArrayList();
+        if(!isFieldNotEmpty(nickname))
+            incorrect.add(nickname);
+        if(!isFieldNotEmpty(content))
+            incorrect.add(content);
+        return incorrect;
     }
 }

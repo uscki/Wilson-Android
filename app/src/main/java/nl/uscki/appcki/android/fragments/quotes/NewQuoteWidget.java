@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
@@ -48,6 +51,14 @@ public class NewQuoteWidget extends ANewPageableItem {
         return Services.getInstance()
                 .quoteService
                 .newQuote(quoteInput.getText().toString(), false);
+    }
+
+    @Override
+    protected @NonNull List<View> getIncorrectFields() {
+        List<View> incorrect = new ArrayList<>();
+        if(!isFieldNotEmpty(quoteInput))
+            incorrect.add(quoteInput);
+        return incorrect;
     }
 
 }
