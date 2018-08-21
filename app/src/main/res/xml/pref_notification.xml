@@ -1,27 +1,174 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- A 'parent' preference, which enables/disables child preferences (below)
-         when checked/unchecked. -->
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="notifications_new_message"
-        android:title="@string/pref_title_new_message_notifications" />
+    <PreferenceCategory
+        android:title="@string/notification_channel_activities_name"
+        >
 
-    <!-- Allows the user to choose a ringtone in the 'notification' category. -->
-    <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
-    <!-- NOTE: RingtonePreference's summary should be set to its value by the activity code. -->
-    <RingtonePreference
-        android:defaultValue="content://settings/system/notification_sound"
-        android:dependency="notifications_new_message"
-        android:key="notifications_new_message_ringtone"
-        android:ringtoneType="notification"
-        android:title="@string/pref_title_ringtone" />
+        <!-- A 'parent' preference, which enables/disables child preferences (below)
+             when checked/unchecked. -->
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notifications_interactive_new_message"
+            android:summary="@string/notification_channel_activities_description"
+            android:title="@string/pref_title_new_message_notifications"
+            />
 
-    <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
-    <SwitchPreference
-        android:defaultValue="true"
-        android:dependency="notifications_new_message"
-        android:key="notifications_new_message_vibrate"
-        android:title="@string/pref_title_vibrate" />
+        <!-- Allows the user to choose a ringtone in the 'notification' category. -->
+        <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
+        <!-- NOTE: RingtonePreference's summary should be set to its value by the activity code. -->
+        <RingtonePreference
+            android:defaultValue="content://settings/system/notification_sound"
+            android:dependency="notifications_interactive_new_message"
+            android:key="notifications_interactive_new_message_ringtone"
+            android:ringtoneType="notification"
+            android:title="@string/pref_title_ringtone" />
+
+        <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
+        <SwitchPreference
+            android:defaultValue="true"
+            android:dependency="notifications_interactive_new_message"
+            android:key="notifications_interactive_new_message_vibrate"
+            android:title="@string/pref_title_vibrate" />
+
+        <ListPreference
+            android:key="notifications_interactive_vibration_pattern"
+            android:dependency="notifications_interactive_new_message_vibrate"
+            android:title="@string/pref_title_vibration_pattern"
+            android:entries="@array/vibration_pattern_names"
+            android:entryValues="@array/vibration_pattern_names"
+            android:defaultValue="@string/vibration_pattern_default"
+            />
+
+        <SwitchPreference
+            android:key="notifications_interactive_show_light"
+            android:dependency="notifications_interactive_new_message"
+            android:title="@string/pref_title_notification_light"
+            android:summary="@string/pref_title_notification_light_summary"
+            android:defaultValue="true"
+            />
+
+        <SwitchPreference
+            android:key="notifications_interactive_led_mode"
+            android:dependency="notifications_interactive_show_light"
+            android:title="@string/pref_title_notification_light_mode"
+            android:defaultValue="true"
+            android:summaryOn="@string/notification_light_constant"
+            android:summaryOff="@string/notification_light_blink"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/notification_channel_general_name"
+        >
+
+        <!-- A 'parent' preference, which enables/disables child preferences (below)
+                 when checked/unchecked. -->
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notifications_general_new_message"
+            android:title="@string/pref_title_new_message_notifications"
+            android:summary="@string/notification_channel_general_description"
+            />
+
+        <!-- Allows the user to choose a ringtone in the 'notification' category. -->
+        <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
+        <!-- NOTE: RingtonePreference's summary should be set to its value by the activity code. -->
+        <RingtonePreference
+            android:defaultValue="content://settings/system/notification_sound"
+            android:dependency="notifications_general_new_message"
+            android:key="notifications_general_new_message_ringtone"
+            android:ringtoneType="notification"
+            android:title="@string/pref_title_ringtone" />
+
+        <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
+        <SwitchPreference
+            android:defaultValue="true"
+            android:dependency="notifications_general_new_message"
+            android:key="notifications_general_new_message_vibrate"
+            android:title="@string/pref_title_vibrate" />
+
+        <ListPreference
+            android:key="notifications_general_vibration_pattern"
+            android:dependency="notifications_general_new_message_vibrate"
+            android:title="@string/pref_title_vibration_pattern"
+            android:entries="@array/vibration_pattern_names"
+            android:entryValues="@array/vibration_pattern_names"
+            android:defaultValue="@string/vibration_pattern_default"
+            />
+
+        <SwitchPreference
+            android:key="notifications_general_show_light"
+            android:dependency="notifications_general_new_message"
+            android:title="@string/pref_title_notification_light"
+            android:summary="@string/pref_title_notification_light_summary"
+            android:defaultValue="true"
+        />
+
+        <SwitchPreference
+            android:key="notifications_general_led_mode"
+            android:dependency="notifications_general_show_light"
+            android:title="@string/pref_title_notification_light_mode"
+            android:defaultValue="true"
+            android:summaryOn="@string/notification_light_constant"
+            android:summaryOff="@string/notification_light_blink"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/notification_channel_personal_name"
+        >
+
+        <!-- A 'parent' preference, which enables/disables child preferences (below)
+                     when checked/unchecked. -->
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notifications_personal_new_message"
+            android:title="@string/pref_title_new_message_notifications"
+            android:summary="@string/notification_channel_personal_description"
+            />
+
+        <!-- Allows the user to choose a ringtone in the 'notification' category. -->
+        <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
+        <!-- NOTE: RingtonePreference's summary should be set to its value by the activity code. -->
+        <RingtonePreference
+            android:defaultValue="content://settings/system/notification_sound"
+            android:dependency="notifications_personal_new_message"
+            android:key="notifications_personal_new_message_ringtone"
+            android:ringtoneType="notification"
+            android:title="@string/pref_title_ringtone" />
+
+        <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
+        <SwitchPreference
+            android:defaultValue="true"
+            android:dependency="notifications_personal_new_message"
+            android:key="notifications_personal_new_message_vibrate"
+            android:title="@string/pref_title_vibrate" />
+
+        <ListPreference
+            android:key="notifications_personal_vibration_pattern"
+            android:dependency="notifications_personal_new_message_vibrate"
+            android:title="@string/pref_title_vibration_pattern"
+            android:entries="@array/vibration_pattern_names"
+            android:entryValues="@array/vibration_pattern_names"
+            android:defaultValue="@string/vibration_pattern_default"
+            />
+
+        <SwitchPreference
+            android:key="notifications_personal_show_light"
+            android:dependency="notifications_personal_new_message"
+            android:title="@string/pref_title_notification_light"
+            android:summary="@string/pref_title_notification_light_summary"
+            android:defaultValue="true"
+            />
+
+        <SwitchPreference
+            android:key="notifications_personal_led_mode"
+            android:dependency="notifications_personal_show_light"
+            android:title="@string/pref_title_notification_light_mode"
+            android:defaultValue="true"
+            android:summaryOn="@string/notification_light_constant"
+            android:summaryOff="@string/notification_light_blink"
+            />
+    </PreferenceCategory>
 
 </PreferenceScreen>
