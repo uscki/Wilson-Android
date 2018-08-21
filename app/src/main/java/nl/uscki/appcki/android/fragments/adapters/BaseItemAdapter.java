@@ -45,16 +45,9 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
     }
 
     public int getItemPosition(int id) {
-        ListIterator<K> iterator = getItems().listIterator();
-
-        while(iterator.hasNext())
-        {
-            if(iterator.next().getId().equals(id))
-            {
-                // The previous index is actually the one we compared, as .next() returns the object
-                // and then advances the cursor.
-                return iterator.previousIndex();
-            }
+        for(int i = 0; i < items.size(); i++) {
+            if(items.get(i).getId().equals(id))
+                return i;
         }
         return -1;
     }
