@@ -103,6 +103,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStop() {
         EventBus.getDefault().unregister(this);
+        MainActivity.setHomescreenDestroyed();
         super.onStop();
     }
 }
