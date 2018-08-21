@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:key="notifications_system_preferences"
+        android:title="@string/pref_system_notification_settings"
+        android:summary="@string/pref_system_notification_settings_summary"
+        />
+    <SwitchPreference
+        android:key="notifications_oreo_vibrate"
+        android:title="@string/pref_custom_vibrate"
+        android:summary="@string/pref_custom_vibrate_summary"
+        android:defaultValue="true"
+        />
+
+    <ListPreference
+        android:key="notifications_oreo_vibration_pattern"
+        android:title="@string/pref_title_vibration_pattern"
+        android:entries="@array/vibration_pattern_names"
+        android:entryValues="@array/vibration_pattern_names"
+        android:dependency="notifications_oreo_vibrate"
+        android:defaultValue="@string/vibration_pattern_default"
+        />
+</PreferenceScreen>

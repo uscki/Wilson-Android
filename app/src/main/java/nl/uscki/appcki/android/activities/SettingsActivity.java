@@ -4,22 +4,30 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.PermissionChecker;
@@ -31,10 +39,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Switch;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.helpers.VibrationPatternPreferenceHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 
 import java.util.ArrayList;
@@ -112,6 +122,53 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     };
 
     /**
+     * When a vibrate pattern is selected, vibrate that pattern as feedback on
+     * the chosen selection
+     */
+    private static Preference.OnPreferenceChangeListener sVibratePreferenceValueChangedListener =
+            new Preference.OnPreferenceChangeListener() {
+
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object value) {
+            // Can't have two onPreferenceChange listeners, so execute the other one as well
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, value);
+
+            ListPreference listPreference = (ListPreference) preference;
+
+            // Get the vibrator system service
+            Context context = App.getContext();
+            Vibrator v = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+            if(v == null || !v.hasVibrator()) {
+                return false;
+            }
+
+            // Get the index of the value
+            String stringValue = value.toString();
+            int index = listPreference.findIndexOfValue(stringValue);
+
+            // Create a vibration preference helper
+            VibrationPatternPreferenceHelper vibrationPreferenceHelper =
+                    new VibrationPatternPreferenceHelper();
+
+            // Acquire the pattern corresponding to the found index
+            int patternArrayId =
+                    vibrationPreferenceHelper.getVibrationPatternResourceIdAtIndex(index);
+            long[] pattern = vibrationPreferenceHelper.getVibrationPattern(patternArrayId);
+
+            // Vibrate using the selected pattern (method depends on API version)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                VibrationEffect vbe = VibrationEffect.createWaveform(pattern, -1);
+                v.vibrate(vbe);
+            } else {
+                v.vibrate(pattern, -1);
+            }
+
+            // We made it!
+            return true;
+        }
+    };
+
+    /**
      * Helper method to determine if the device has an extra-large screen. For
      * example, 10" tablets are extra-large.
      */
@@ -151,7 +208,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onResume() {
         super.onResume();
     }
-
 
     /**
      * Set up the {@link android.app.ActionBar}, if the API is available.
@@ -233,7 +289,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.e("PermissionResultCheck", grantResults.toString());
 
         exportOptionsPreferenceFragment sourceFragment =
                 (exportOptionsPreferenceFragment) getFragmentManager().findFragmentById(exportOptionsPreferenceFragment.id);
@@ -287,8 +342,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+//            bindPreferenceSummaryToValue(findPreference("example_text"));
+//            bindPreferenceSummaryToValue(findPreference("example_list"));
+
+
         }
 
         @Override
@@ -308,17 +365,84 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class NotificationPreferenceFragment extends PreferenceFragment {
+        String[] catPrefix = new String[] {
+                "notifications_interactive_",
+                "notifications_general_",
+                "notifications_personal_",
+        };
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
 
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+               prepareForAndroidOreo();
+            } else {
+                prepareForOlderThanOreo();
+            }
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        private void prepareForAndroidOreo() {
+            addPreferencesFromResource(R.xml.pref_notifications_min_oreo);
+
+            Preference systemSettings = findPreference("notifications_system_preferences");
+            systemSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, App.getContext().getPackageName());
+                    startActivity(intent);
+                    return true;
+                }
+            });
+
+            Vibrator v = (Vibrator) App.getContext().getSystemService(VIBRATOR_SERVICE);
+            if(v == null || !v.hasVibrator()) {
+                // Remove vibration options from menu
+                PreferenceScreen screen = getPreferenceScreen();
+                screen.removePreference(findPreference("notifications_oreo_vibration_pattern"));
+            } else {
+                // Bind and trigger summary changed
+                bindPreferenceSummaryToValue(
+                        findPreference("notifications_oreo_vibration_pattern"));
+
+                // Replace the listener with one that also vibrates on change
+                findPreference("notifications_oreo_vibration_pattern")
+                        .setOnPreferenceChangeListener(sVibratePreferenceValueChangedListener);
+            }
+        }
+
+        private void prepareForOlderThanOreo() {
+            addPreferencesFromResource(R.xml.pref_notification);
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+            for(String prefKey : catPrefix) {
+                bindPreferenceSummaryToValue(findPreference(prefKey + "new_message_ringtone"));
+            }
+
+            PreferenceScreen screen = getPreferenceScreen();
+
+            Vibrator v = (Vibrator) App.getContext().getSystemService(VIBRATOR_SERVICE);
+            if(v != null && v.hasVibrator()) {
+                for(String prefKey : catPrefix) {
+                    // Bind and trigger summary changed
+                    bindPreferenceSummaryToValue(findPreference(prefKey + "vibration_pattern"));
+
+                    // Replace the listener with one that also vibrates on change
+                    findPreference(prefKey + "vibration_pattern")
+                            .setOnPreferenceChangeListener(sVibratePreferenceValueChangedListener);
+                }
+            } else {
+                for(String prefKey : catPrefix) {
+                    screen.removePreference(findPreference(prefKey + "new_message_vibrate"));
+                    screen.removePreference(findPreference(prefKey + "vibration_pattern"));
+                }
+            }
         }
 
         @Override
