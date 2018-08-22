@@ -10,6 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -28,6 +31,7 @@ import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
 import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
+import nl.uscki.appcki.android.helpers.ContactHelper;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
 import retrofit2.Response;
 
@@ -48,6 +52,7 @@ public class SmoboPersonFragment extends Fragment {
     private int pageSize = 20;
     private boolean scrollLoad;
     private boolean noMoreContent;
+    private SmoboItem p;
 
     private Callback<Pageable<MediaFileMetaData>> photosCallback = new Callback<Pageable<MediaFileMetaData>>() {
         @Override
@@ -68,6 +73,8 @@ public class SmoboPersonFragment extends Fragment {
     FrameLayout mobileInfo;
     @BindView(R.id.smobo_birthday_info)
     FrameLayout birthdayInfo;
+    @BindView(R.id.smobo_homepage_info)
+    FrameLayout homepageInfo;
     @BindView(R.id.smobo_groups)
     RecyclerView smoboGroups;
     @BindView(R.id.smobo_media_gridview)
@@ -75,10 +82,10 @@ public class SmoboPersonFragment extends Fragment {
     @BindView(R.id.smobo_swiperefresh)
     SwipeRefreshLayout swipeContainer;
 
-    private Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
+    private final Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
         @Override
         public void onSucces(Response<SmoboItem> response) {
-            SmoboItem p = response.body();
+            p = response.body();
             swipeContainer.setRefreshing(false);
             //scrollView.setVisibility(View.VISIBLE);
 
@@ -87,6 +94,7 @@ public class SmoboPersonFragment extends Fragment {
             createPhoneInfoWidget(p);
             createMobileInfoWidget(p);
             createBirthdayInfoWidget(p);
+            createWebsiteInfoWidget(p);
 
             ((BaseItemAdapter) smoboGroups.getAdapter()).update(p.getGroups());
         }
@@ -170,10 +178,30 @@ public class SmoboPersonFragment extends Fragment {
         }
     }
 
+    private void createWebsiteInfoWidget(SmoboItem p) {
+        if(p.getPerson().getHomepage() != null) {
+            Bundle bundle = new Bundle();
+            String homepage = p.getPerson().getHomepage();
+            bundle.putString("maintext", homepage);
+            bundle.putString("subtext", "homepage");
+            bundle.putInt("infotype", SmoboInfoWidget.InfoType.HOMEPAGE.ordinal());
+
+            SmoboInfoWidget widget = new SmoboInfoWidget();
+            widget.setArguments(bundle);
+            context.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.smobo_homepage_info, widget)
+                    .commit();
+        } else {
+            homepageInfo.setPadding(0,0,0,0);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_smobo_person, container, false);
         ButterKnife.bind(this, view);
+
+        setHasOptionsMenu(true);
 
         if (getArguments() != null) {
             this.id = getArguments().getInt("id");
@@ -188,6 +216,34 @@ public class SmoboPersonFragment extends Fragment {
         }
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+
+        inflater.inflate(R.menu.menu_smobo, menu);
+
+        menu.findItem(R.id.action_save_contact)
+                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                exportContact();
+                return true;
+            }
+
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void exportContact() {
+        if(p == null)
+            return;
+
+        // Initiate export via intent using contact helper
+        ContactHelper.getInstance().exportContactViaIntent(p.getPerson());
     }
 
     protected void setupSwipeContainer() {

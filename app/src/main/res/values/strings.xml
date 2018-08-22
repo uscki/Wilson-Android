@@ -67,6 +67,7 @@
     <string name="agenda_confirm_unsubscribe_message">Weet je zeker dat je je wil uitschrijven?</string>
     <string name="agenda_confirm_unsubscribe_positive">Unsubscribe!</string>
 
+    <string name="person_not_display_online_msg">Deze persoon kan niet worden opgeslagen vanwege zijn of haar privacy instellingen</string>
     <string name="agenda_subscribe_success">Je bent ingeschreven voor dit evenement!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -214,21 +215,31 @@
     <string name="pref_meetingplanner_export_auto">Automatiseer vergaderplanners</string>
     <string name="pref_meetingplanner_export_auto_summary">Voeg geplande vergaderingen automatisch toe aan je agenda</string>
 
-    <string name="pref_save_in_contacts">Integreer met contacten</string>
-    <string name="pref_save_in_contacts_summary">Door deze optie te selecteren kun je contacten opslaan in je agenda zonder de Wilson app te verlaten</string>
-
-
-    <string name="pref_cat_people">Contacten</string>
-
-
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notificaties</string>
     <string name="pref_title_new_message_notifications">Notificaties voor nieuwe berichten</string>
-
     <string name="pref_title_ringtone">Ringtoon</string>
     <string name="pref_ringtone_silent">Stil</string>
-
     <string name="pref_title_vibrate">Trillen</string>
+
+    <!-- Settings for exporting contacts -->
+    <string name="save_contact">Contact opslaan</string>
+    <string name="pref_cat_people">Contacten</string>
+    <string name="pref_save_in_contacts">Integreer met contacten</string>
+    <string name="pref_save_in_contacts_summary">Door deze optie te selecteren kun je contacten opslaan in je agenda zonder de Wilson app te verlaten</string>
+
+    <string name="pref_cat_people_fields">Contactgegevens om te exporteren</string>
+    <string name="pref_cat_people_fields_summary">Selecteer de velden die automatisch moeten worden toegevoegd aan contacten die je opslaat. De opslaanknop kan langer ingedrukt worden om dit voor individuele contacten te bepalen tijdens het opslaan.</string>
+    <string name="pref_contacts_store_fullname">Volledige naam</string>
+    <string name="pref_contacts_store_fullname_summary">Als deze optie aan staat wordt het contact automatisch opgeslagen onder de volledige naam. Anders wordt alleen de voornaam gebruikt.</string>
+    <string name="pref_contacts_store_nickname">Nickname</string>
+    <string name="pref_contacts_store_mobile">Mobiel nummer</string>
+    <string name="pref_contacts_store_phone">Telefoonnummer</string>
+    <string name="pref_contacts_store_email">E-mailaddres</string>
+    <string name="pref_contacts_store_address">Adres</string>
+    <string name="pref_contacts_store_website">Website</string>
+    <string name="pref_contacts_store_organisation">Organisatie</string>
+    <string name="pref_contacts_store_organisation_summary">Zet U.S.C.K.I Incognito automatisch als organisatie</string>
 
     <string name="pref_custom_vibrate">Laat Wilson trillen</string>
     <string name="pref_custom_vibrate_summary">Kies je eigen trilpatroon. Deze instelling wordt genegeerd als in de Android instellingen trillen voor Wilson notificaties wordt ingeschakeld</string>
@@ -237,13 +248,11 @@
     <string name="pref_system_notification_settings">Systeeminstellingen</string>
     <string name="pref_system_notification_settings_summary">Beheer notificatieinstellingen voor de applicatie in de opties van Android</string>
 
-
     <string name="pref_title_notification_light">Notificatie LED</string>
     <string name="pref_title_notification_light_summary">Indien aanwezig op apparaat</string>
     <string name="pref_title_notification_light_mode">LED constant aan</string>
     <string name="notification_light_constant">Constant</string>
     <string name="notification_light_blink">Knipperen</string>
-
 
     <!-- Vibration pattern names -->
     <string name="vibration_pattern_short_once">Eén keer kort</string>

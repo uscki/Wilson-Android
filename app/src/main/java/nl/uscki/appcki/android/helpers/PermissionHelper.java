@@ -48,4 +48,12 @@ public class PermissionHelper {
         boolean hasRequestedAutoExport = prefs.getBoolean("meeting_export_auto", false);
         return canExportCalendar() && hasRequestedAutoExport;
     }
+
+    public static boolean canExportContact() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        return hasPermission(Manifest.permission.READ_CONTACTS) &&
+                hasPermission(Manifest.permission.WRITE_CONTACTS) &&
+                prefs.getBoolean("people_use_export", false);
+
+    }
 }
