@@ -28,6 +28,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
@@ -36,15 +37,10 @@ import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
-import nl.uscki.appcki.android.fragments.home.HomeAgendaTab;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
-import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
-import nl.uscki.appcki.android.fragments.home.HomeRoephoekTab;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
-import nl.uscki.appcki.android.fragments.meeting.MeetingPlannerFragment;
 import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
-import nl.uscki.appcki.android.fragments.poll.PollResultFragment;
 import nl.uscki.appcki.android.fragments.quotes.QuoteFragment;
 import nl.uscki.appcki.android.fragments.search.SmoboSearch;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
@@ -178,7 +174,7 @@ public class MainActivity extends BasicActivity
 
     private boolean handleChildFragmentStack() {
         FragmentManager fm = getSupportFragmentManager();
-        Class currentFragmentClass = getClassForScreen(currentScreen);
+        Class currentFragmentClass = Utils.getClassForScreen(currentScreen);
         if(currentFragmentClass == null) return false;
 
         for(Fragment f : fm.getFragments()) {
@@ -196,56 +192,6 @@ public class MainActivity extends BasicActivity
 
         // No fragment found
         return false;
-    }
-
-    private Class<? extends Fragment> getClassForScreen(Screen screen) {
-        Class<? extends Fragment> clazz;
-        switch (screen) {
-            case LOGIN:
-                clazz = LoginFragment.class;
-                break;
-            case NEWS:
-                clazz = HomeNewsTab.class;
-                break;
-            case AGENDA:
-                clazz = HomeAgendaTab.class;
-                break;
-            case POLL_OVERVIEW:
-                clazz = PollOverviewFragment.class;
-                break;
-            case ROEPHOEK:
-                clazz = HomeRoephoekTab.class;
-                break;
-            case AGENDA_DETAIL:
-                clazz = AgendaDetailTabsFragment.class;
-                break;
-            case MEETING_OVERVIEW:
-                clazz = MeetingOverviewFragment.class;
-                break;
-            case MEETING_PLANNER:
-                clazz = MeetingPlannerFragment.class;
-                break;
-            case MEETING_DETAIL:
-                clazz = MeetingDetailTabsFragment.class;
-                break;
-            case QUOTE_OVERVIEW:
-                clazz = QuoteFragment.class;
-                break;
-            case POLL_VOTE:
-                clazz = PollOverviewFragment.class;
-                break;
-            case POLL_RESULT:
-                // Or poll vote fragment. Tricky business
-                clazz = PollResultFragment.class;
-                break;
-            case SMOBO_SEARCH:
-                clazz = SmoboSearch.class;
-                break;
-            default:
-                clazz = null;
-                break;
-        }
-        return clazz;
     }
 
     public static void setHomescreenDestroyed() {
@@ -431,11 +377,6 @@ public class MainActivity extends BasicActivity
 
     public void resizeOnKeyboard() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-    }
-
-    private void buildRoephoekAddDialog() {
-        DialogFragment newFragment = new RoephoekDialogFragment();
-        newFragment.show(getSupportFragmentManager(), "roephoek_add");
     }
 
     public static void hideKeyboard(View someView) {
