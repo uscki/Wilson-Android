@@ -26,6 +26,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import de.greenrobot.event.EventBus;
+import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
@@ -37,7 +38,6 @@ import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.dialogs.RoephoekDialogFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
-import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
@@ -53,6 +53,11 @@ public class MainActivity extends BasicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
 
+    public static final String ACTION_NEWS_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_NEWS_OVERVIEW";
+    public static final String ACTION_AGENDA_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_AGENDA_OVERVIEW";
+    public static final String ACTION_SHOUTBOX_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_SHOUTBOX_OVERVIEW";
+    public static final String ACTION_MEETING_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_MEETING_OVERVIEW";
+    public static final String ACTION_POLL_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_POLL_OVERVIEW";
     private static boolean homeScreenExists = false;
 
     Toolbar toolbar;
@@ -102,31 +107,43 @@ public class MainActivity extends BasicActivity
             initLoggedOutUI();
         } else {
             initLoggedInUI();
-            openTab(HomeFragment.NEWS);
         }
 
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
-        if(intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
-            if(intent.getStringExtra("item") != null) {
-                // Assume we want to view de agenda detail view
-                Log.e("Main Activity", "ACTION VIEW intent matches the given intent");
-                Bundle args = new Bundle();
-                args.putString("item", getIntent().getStringExtra("item"));
-                openFragment(new AgendaDetailTabsFragment(), args);
-            } else if(intent.getStringExtra("screen") != null && intent.getStringExtra("screen").equals(Screen.NEWS.toString())) {
-                openTab(HomeFragment.NEWS);
-                int newNewsId = intent.getIntExtra("id", -1);
-                if(newNewsId > 0) {
-                    // TODO: Somehow get the homeNewsTab fragment
-                    // TODO: Wait until API is done? Otherwise there is probably nothing to scroll to
-                    //homeNewsTab.scrollToItem(newNewsId);
+        if(intent != null) {
+            if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+                if (intent.getStringExtra("item") != null) {
+                    // Assume we want to view de agenda detail view
+                    Log.e("Main Activity", "ACTION VIEW intent matches the given intent");
+                    Bundle args = new Bundle();
+                    args.putString("item", getIntent().getStringExtra("item"));
+                    openFragment(new AgendaDetailTabsFragment(), args);
+                } else if (intent.getStringExtra("screen") != null && intent.getStringExtra("screen").equals(Screen.NEWS.toString())) {
+                    openTab(HomeFragment.NEWS);
+                    int newNewsId = intent.getIntExtra("id", -1);
+                    if (newNewsId > 0) {
+                        // TODO: Somehow get the homeNewsTab fragment
+                        // TODO: Wait until API is done? Otherwise there is probably nothing to scroll to
+                        //homeNewsTab.scrollToItem(newNewsId);
+                    }
+                } else {
+                    openTab(HomeFragment.NEWS);
                 }
+            } else if (ACTION_NEWS_OVERVIEW.equals(intent.getAction())) {
+                openTab(HomeFragment.NEWS);
+            } else if (ACTION_AGENDA_OVERVIEW.equals(intent.getAction())) {
+                openTab(HomeFragment.AGENDA);
+            } else if (ACTION_SHOUTBOX_OVERVIEW.equals(intent.getAction())) {
+                openTab(HomeFragment.ROEPHOEK);
+            } else if (ACTION_MEETING_OVERVIEW.equals(intent.getAction())) {
+                openFragment(new MeetingOverviewFragment(), null);
+                currentScreen = Screen.MEETING_OVERVIEW;
+            } else if (ACTION_POLL_OVERVIEW.equals(intent.getAction())) {
+                openFragment(new PollOverviewFragment(), null);
             } else {
-                Log.e("Main Activity", "Nothing interesting seems to happen");
+                openTab(HomeFragment.NEWS);
             }
-        } else {
-            Log.e("Main Activity", "ACTION VIEW intent DID NOT match the given intent");
         }
 
         // TODO configure shit for this server side
@@ -158,8 +175,11 @@ public class MainActivity extends BasicActivity
                 openTab(HomeFragment.AGENDA);
             } else if (currentScreen == Screen.MEETING_PLANNER || currentScreen == Screen.MEETING_DETAIL) {
                 openFragment(new MeetingOverviewFragment(), null);
+                currentScreen = Screen.MEETING_OVERVIEW;
             } else if (currentScreen == Screen.POLL_VOTE || currentScreen == Screen.POLL_RESULT) {
                 openFragment(new PollOverviewFragment(), null);
+            } else if (currentScreen != Screen.NEWS) {
+                openTab(HomeFragment.NEWS);
             }
             else {
                 super.onBackPressed();
