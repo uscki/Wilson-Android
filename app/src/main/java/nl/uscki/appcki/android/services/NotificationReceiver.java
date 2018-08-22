@@ -1,15 +1,12 @@
 package nl.uscki.appcki.android.services;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.RemoteInput;
@@ -28,7 +25,6 @@ import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.activities.MeetingActivity;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
-import nl.uscki.appcki.android.helpers.VibrationPatternPreferenceHelper;
 
 /**
  * Created by peter on 3/21/17.
@@ -88,8 +84,11 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
         Intent intent = null;
 
+        String mainBackstackAction = null;
+
         switch (type) {
             case meeting_filledin:
+                mainBackstackAction = MainActivity.ACTION_MEETING_OVERVIEW;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_STATUS);
                 }
@@ -123,12 +122,14 @@ public class NotificationReceiver extends FirebaseMessagingService {
                             exportMeetingpIntent
                     );
                 }
+                mainBackstackAction = MainActivity.ACTION_MEETING_OVERVIEW;
                 break;
             case meeting_new:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_EVENT);
                 }
                 intent = new Intent(App.getContext(), MeetingActivity.class);
+                mainBackstackAction = MainActivity.ACTION_MEETING_OVERVIEW;
                 break;
             case forum_reply:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -155,6 +156,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_EVENT);
                 }
+                mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
             case agenda_new:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -163,12 +165,14 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 addAgendaActions(n, id,true, true, title, content, id);
                 intent = new Intent(App.getContext(), AgendaActivity.class);
                 addReproducabilityExtras(intent, title, content, id, id);
+                mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
             case agenda_reply:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_SOCIAL);
                 }
                 intent = new Intent(App.getContext(), AgendaActivity.class);
+                mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
             case news:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -191,7 +195,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
         }
 
         if(intent != null) {
-            addIntentionsToNotification(n, intent, id);
+            addIntentionsToNotification(n, intent, id, mainBackstackAction);
         }
 
         NotificationManagerCompat notificationManager =
@@ -263,11 +267,44 @@ public class NotificationReceiver extends FirebaseMessagingService {
      * @param id                The ID of the item to open
      */
     public void addIntentionsToNotification(NotificationCompat.Builder notification, Intent intent, int id) {
+        addIntentionsToNotification(notification, intent, id, null);
+    }
+
+    /**
+     * Add properties to an intention to open a detail view
+     * @param notification      The notification this intent is intended for
+     * @param intent            The base intention of the notification
+     * @param id                The ID of the item to open
+     * @param mainBackstackAction (Optional) The action name of the MAIN ACTIVITY to call when
+     *                            pressing back from the activity this notification opens
+     */
+    public void addIntentionsToNotification(
+            NotificationCompat.Builder notification,
+            Intent intent,
+            int id,
+            String mainBackstackAction
+    ) {
         if(intent.getAction() == null)
             intent.setAction(Intent.ACTION_VIEW);
-        PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, intent, 0);
+
+        PendingIntent pIntent;
+
+        if(mainBackstackAction == null) {
+            pIntent = PendingIntent.getActivity(App.getContext(), 0, intent, 0);
+        } else {
+            // NOTE: This solution is going to fail horribly if a backpress no longer always
+            // should go to the MainActivity
+            Intent backPressedIntent = new Intent(App.getContext(), MainActivity.class);
+            backPressedIntent.setAction(mainBackstackAction);
+
+            pIntent =
+                    TaskStackBuilder.create(App.getContext())
+                            .addNextIntent(backPressedIntent)
+                            .addNextIntent(intent)
+                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
         notification.setContentIntent(pIntent);
-        Log.d(TAG, "Notification intent updated, should now go to item id " + id);
     }
 
     /**

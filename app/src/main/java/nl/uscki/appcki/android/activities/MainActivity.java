@@ -19,15 +19,12 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import de.greenrobot.event.EventBus;
-import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
@@ -55,6 +52,12 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class MainActivity extends BasicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
+
+    public static final String ACTION_NEWS_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_NEWS_OVERVIEW";
+    public static final String ACTION_AGENDA_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_AGENDA_OVERVIEW";
+    public static final String ACTION_SHOUTBOX_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_SHOUTBOX_OVERVIEW";
+    public static final String ACTION_MEETING_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_MEETING_OVERVIEW";
+    public static final String ACTION_POLL_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_POLL_OVERVIEW";
 
     public static final String ACTION_VIEW_NEWSITEM
             = "nl.uscki.appcki.android.activities.action.ACTION_VIEW_NEWSITEM";
@@ -114,40 +117,51 @@ public class MainActivity extends BasicActivity
             initLoggedOutUI();
         } else {
             initLoggedInUI();
-            openTab(HomeFragment.NEWS);
         }
 
         // Get the intent, verify the action and get the query
-        Intent intent = getIntent();
-        if(intent != null) {
-            if(Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getStringExtra("item") != null) {
-                // Assume we want to view de agenda detail view
-                Bundle args = new Bundle();
-                args.putString("item", getIntent().getStringExtra("item"));
-                openFragment(new AgendaDetailTabsFragment(), args);
-            } else {
-                handleNewsItemIntent(intent);
-            }
-        }
-        // TODO configure shit for this server side
-        FirebaseMessaging.getInstance().subscribeToTopic("meetings");
+        handleIntention(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        handleNewsItemIntent(intent);
+        handleIntention(intent);
+    }
+
+    private void handleIntention(Intent intent) {
+        if(intent != null) {
+            if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getStringExtra("item") != null) {
+                handleAgendaItemIntent(intent);
+            } else if(ACTION_VIEW_NEWSITEM.equals(intent.getAction())) {
+                handleNewsItemIntent(intent);
+            } else if (ACTION_NEWS_OVERVIEW.equals(intent.getAction())) {
+                openTab(HomeFragment.NEWS);
+            } else if (ACTION_AGENDA_OVERVIEW.equals(intent.getAction())) {
+                openTab(HomeFragment.AGENDA);
+            } else if (ACTION_SHOUTBOX_OVERVIEW.equals(intent.getAction())) {
+                openTab(HomeFragment.ROEPHOEK);
+            } else if (ACTION_MEETING_OVERVIEW.equals(intent.getAction())) {
+                openFragment(new MeetingOverviewFragment(), null);
+                currentScreen = Screen.MEETING_OVERVIEW;
+            } else if (ACTION_POLL_OVERVIEW.equals(intent.getAction())) {
+                openFragment(new PollOverviewFragment(), null);
+            } else {
+                openTab(HomeFragment.NEWS);
+            }
+        }
+    }
+
+    private void handleAgendaItemIntent(Intent intent) {
+        Bundle args = new Bundle();
+        args.putString("item", getIntent().getStringExtra("item"));
+        openFragment(new AgendaDetailTabsFragment(), args);
     }
 
     private void handleNewsItemIntent(Intent intent) {
-        if(intent != null &&
-                intent.getAction() != null &&
-                ACTION_VIEW_NEWSITEM.equals(intent.getAction())) {
-
-            focusNewsId = intent.getIntExtra(PARAM_NEWS_ID, -1);
-            focusTriesSoFar = 0;
-            openTab(HomeFragment.NEWS, focusNewsId);
-        }
+        focusNewsId = intent.getIntExtra(PARAM_NEWS_ID, -1);
+        focusTriesSoFar = 0;
+        openTab(HomeFragment.NEWS, focusNewsId);
     }
 
     @Override
@@ -175,8 +189,11 @@ public class MainActivity extends BasicActivity
                 openTab(HomeFragment.AGENDA);
             } else if (currentScreen == Screen.MEETING_PLANNER || currentScreen == Screen.MEETING_DETAIL) {
                 openFragment(new MeetingOverviewFragment(), null);
+                currentScreen = Screen.MEETING_OVERVIEW;
             } else if (currentScreen == Screen.POLL_VOTE || currentScreen == Screen.POLL_RESULT) {
                 openFragment(new PollOverviewFragment(), null);
+            } else if (currentScreen != Screen.NEWS) {
+                openTab(HomeFragment.NEWS);
             }
             else {
                 super.onBackPressed();
