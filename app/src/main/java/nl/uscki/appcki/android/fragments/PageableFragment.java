@@ -21,7 +21,7 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.common.Pageable;
-import nl.uscki.appcki.android.views.ANewPageableItem;
+import nl.uscki.appcki.android.views.NewPageableItem;
 import retrofit2.Response;
 
 /**
@@ -220,7 +220,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         return fab;
     }
 
-    public void addNewPageableItemWidget(ANewPageableItem widget) {
+    public void addNewPageableItemWidget(NewPageableItem widget) {
         widget.setParent(this);
         FragmentManager fm = getChildFragmentManager();
 

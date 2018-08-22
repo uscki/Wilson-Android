@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -17,10 +16,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.views.ANewPageableItem;
+import nl.uscki.appcki.android.views.NewPageableItem;
 import retrofit2.Call;
 
-public class NewQuoteWidget extends ANewPageableItem {
+public class NewQuoteWidget extends NewPageableItem {
 
     @BindView(R.id.quoteTextInput)
     EditText quoteInput;

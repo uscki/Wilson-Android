@@ -21,7 +21,7 @@ import nl.uscki.appcki.android.helpers.WrongTextfieldHelper;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public abstract class ANewPageableItem extends Fragment {
+public abstract class NewPageableItem extends Fragment {
     protected PageableFragment parent;
 
     @Override
