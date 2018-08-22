@@ -3,4 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="nl.uscki.appcki.android.activities.SmoboActivity">
 
+    <item android:id="@+id/action_save_contact"
+        android:title="@string/save_contact"
+        app:showAsAction="never"
+        />
 </menu>
