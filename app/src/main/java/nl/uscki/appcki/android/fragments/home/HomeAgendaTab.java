@@ -57,7 +57,8 @@ public class HomeAgendaTab extends PageableFragment<Agenda> {
 
             page = 0; // reset page in case user has scrolled with newer
             getAdapter().clear();
-            Services.getInstance().agendaService.older(page, AGENDA_PAGE_SIZE).enqueue(callback);
+            scrollLoad = true;
+            onScrollRefresh();
             return true;
         }
         return super.onOptionsItemSelected(item);
