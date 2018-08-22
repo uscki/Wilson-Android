@@ -58,6 +58,8 @@ public class MainActivity extends BasicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
 
+    private static boolean homeScreenExists = false;
+
     Toolbar toolbar;
     NavigationView navigationView;
     DrawerLayout drawer;
@@ -199,7 +201,7 @@ public class MainActivity extends BasicActivity
 
     private Class<? extends Fragment> getClassForScreen(Screen screen) {
         Class<? extends Fragment> clazz;
-        switch(screen) {
+        switch (screen) {
             case LOGIN:
                 clazz = LoginFragment.class;
                 break;
@@ -245,6 +247,10 @@ public class MainActivity extends BasicActivity
                 break;
         }
         return clazz;
+    }
+
+    public static void setHomescreenDestroyed() {
+        homeScreenExists = false;
     }
 
     @Override
@@ -314,13 +320,20 @@ public class MainActivity extends BasicActivity
     private void openTab(int index) {
         Crashlytics.log("openTab(" + index + ")");
 
-        if (currentScreen == Screen.ROEPHOEK || currentScreen == Screen.NEWS || currentScreen == Screen.AGENDA) {
+        if (
+                homeScreenExists &&
+                        (currentScreen == Screen.ROEPHOEK ||
+                                currentScreen == Screen.NEWS ||
+                                currentScreen == Screen.AGENDA
+                        )
+        ) {
             // HomeFragment luistert naar dit event om daarin de tab te switchen
             EventBus.getDefault().post(new SwitchTabEvent(index));
         } else {
             Bundle bundle = new Bundle();
             bundle.putInt("index", index);
             openFragment(new HomeFragment(), bundle);
+            homeScreenExists = true;
         }
 
         setMenuToTab(index);
