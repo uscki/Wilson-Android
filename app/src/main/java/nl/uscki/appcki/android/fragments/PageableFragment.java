@@ -45,7 +45,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     protected Integer page;
     private boolean noMoreContent;
     protected boolean refresh;
-    private boolean scrollLoad;
+    protected boolean scrollLoad;
 
     protected Callback<T> callback = new Callback<T>() {
         @Override
