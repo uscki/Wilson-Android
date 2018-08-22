@@ -3,8 +3,6 @@ package nl.uscki.appcki.android.fragments.shoutbox;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.solver.widgets.WidgetContainer;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +17,10 @@ import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.helpers.UserHelper;
-import nl.uscki.appcki.android.views.ANewPageableItem;
+import nl.uscki.appcki.android.views.NewPageableItem;
 import retrofit2.Call;
 
-public class NewShoutWidget extends ANewPageableItem {
+public class NewShoutWidget extends NewPageableItem {
 
     @BindView(R.id.new_shout_nickname)
     EditText nickname;
