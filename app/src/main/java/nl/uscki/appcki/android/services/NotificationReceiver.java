@@ -96,29 +96,29 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_EVENT);
                 }
-                intent = new Intent(App.getContext(), MeetingActivity.class);
+                intent = new Intent(this, MeetingActivity.class);
 
                 if(PermissionHelper.canExportMeetingAuto()) {
                     // Start a service to export this meeting to calendar
-                    EventExportService.startExportMeetingToCalendarAction(App.getContext(), id);
+                    EventExportService.startExportMeetingToCalendarAction(this, id);
                 } else {
                     // Add a button to export meeting
                     Intent exportMeetingIntent =
-                            new Intent(App.getContext(), EventExportService.class);
+                            new Intent(this, EventExportService.class);
 
                     exportMeetingIntent.setAction(EventExportService.ACTION_MEETING_EXPORT);
                     exportMeetingIntent.putExtra(EventExportService.PARAM_MEETING_ID, id);
 
                     PendingIntent exportMeetingpIntent =
                             PendingIntent.getService(
-                                    App.getContext(),
+                                    this,
                                     0,
                                     exportMeetingIntent,
                                     0);
 
                     n.addAction(
                             R.drawable.calendar,
-                            App.getContext().getResources().getString(R.string.action_meeting_save),
+                            getResources().getString(R.string.action_meeting_save),
                             exportMeetingpIntent
                     );
                 }
@@ -128,7 +128,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_EVENT);
                 }
-                intent = new Intent(App.getContext(), MeetingActivity.class);
+                intent = new Intent(this, MeetingActivity.class);
                 mainBackstackAction = MainActivity.ACTION_MEETING_OVERVIEW;
                 break;
             case forum_reply:
@@ -149,7 +149,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
                         .trim()));
 
                 // TODO: Isn't this handled at the end of this function? And overwritten by that stuff?
-                PendingIntent pIntent = PendingIntent.getActivity(App.getContext(), 0, forumIntent, 0);
+                PendingIntent pIntent = PendingIntent.getActivity(this, 0, forumIntent, 0);
                 n.setContentIntent(pIntent);
                 break;
             case agenda_announcement:
@@ -163,7 +163,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
                     n.setCategory(Notification.CATEGORY_EVENT);
                 }
                 addAgendaActions(n, id,true, true, title, content, id);
-                intent = new Intent(App.getContext(), AgendaActivity.class);
+                intent = new Intent(this, AgendaActivity.class);
                 addReproducabilityExtras(intent, title, content, id, id);
                 mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
@@ -171,14 +171,14 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_SOCIAL);
                 }
-                intent = new Intent(App.getContext(), AgendaActivity.class);
+                intent = new Intent(this, AgendaActivity.class);
                 mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
             case news:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_RECOMMENDATION);
                 }
-                intent = new Intent(App.getContext(), MainActivity.class);
+                intent = new Intent(this, MainActivity.class);
                 intent.setAction(MainActivity.ACTION_VIEW_NEWSITEM);
                 intent.putExtra(MainActivity.PARAM_NEWS_ID, id);
                 break;
@@ -199,10 +199,10 @@ public class NotificationReceiver extends FirebaseMessagingService {
         }
 
         NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(App.getContext());
+                NotificationManagerCompat.from(this);
         notificationManager.notify(id, n.build());
 
-        NotificationUtil nUtil = new NotificationUtil(App.getContext());
+        NotificationUtil nUtil = new NotificationUtil(this);
         nUtil.vibrateIfEnabled(type);
     }
 
@@ -215,14 +215,14 @@ public class NotificationReceiver extends FirebaseMessagingService {
      */
     public NotificationCompat.Builder getIntentlessBaseNotification(NotificationType notificationType, String title, String content) {
         // Because androids default BitmapFactory doesn't work with vector drawables
-        Bitmap bm = Utils.getBitmapFromVectorDrawable(App.getContext(), R.drawable.ic_wilson);
+        Bitmap bm = Utils.getBitmapFromVectorDrawable(this, R.drawable.ic_wilson);
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
-        NotificationUtil notificationUtil = new NotificationUtil(App.getContext());
+        NotificationUtil notificationUtil = new NotificationUtil(this);
 
         // Since Android Oreo we use notification channels
-        NotificationCompat.Builder n  = new NotificationCompat.Builder(App.getContext(),
+        NotificationCompat.Builder n  = new NotificationCompat.Builder(this,
                 notificationUtil.getChannel(notificationType));
 
         // On older devices, we mock-up our own channels, based on the preferences
@@ -290,15 +290,15 @@ public class NotificationReceiver extends FirebaseMessagingService {
         PendingIntent pIntent;
 
         if(mainBackstackAction == null) {
-            pIntent = PendingIntent.getActivity(App.getContext(), 0, intent, 0);
+            pIntent = PendingIntent.getActivity(this, 0, intent, 0);
         } else {
             // NOTE: This solution is going to fail horribly if a backpress no longer always
             // should go to the MainActivity
-            Intent backPressedIntent = new Intent(App.getContext(), MainActivity.class);
+            Intent backPressedIntent = new Intent(this, MainActivity.class);
             backPressedIntent.setAction(mainBackstackAction);
 
             pIntent =
-                    TaskStackBuilder.create(App.getContext())
+                    TaskStackBuilder.create(this)
                             .addNextIntent(backPressedIntent)
                             .addNextIntent(intent)
                             .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -329,33 +329,33 @@ public class NotificationReceiver extends FirebaseMessagingService {
     {
         if(allowExport) {
             // Build an export action
-            Intent exportAgendaIntent = new Intent(App.getContext(), EventExportService.class);
+            Intent exportAgendaIntent = new Intent(this, EventExportService.class);
             addReproducabilityExtras(exportAgendaIntent, title, content, notificationid, agendaId);
             exportAgendaIntent.setAction(EventExportService.ACTION_AGENDA_EXPORT);
             exportAgendaIntent.putExtra(EventExportService.PARAM_AGENDA_ID, agendaId);
 
             PendingIntent exportAgendapIntent =
-                    PendingIntent.getService(App.getContext(), 0, exportAgendaIntent, 0);
+                    PendingIntent.getService(this, 0, exportAgendaIntent, 0);
 
-            String agenda_export_label = App.getContext().getResources().getString(R.string.action_agenda_export);
+            String agenda_export_label = getResources().getString(R.string.action_agenda_export);
             notification.addAction(R.drawable.calendar, agenda_export_label, exportAgendapIntent);
         }
 
         if (allowSubscribe && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT_WATCH) {
             // Building remote input object
-            String subscribeLabel = App.getContext().getResources().getString(R.string.action_agenda_subscribe);
+            String subscribeLabel = getResources().getString(R.string.action_agenda_subscribe);
             RemoteInput remoteInput = new RemoteInput.Builder(AgendaSubscriberService.PARAM_SUBSCRIBE_COMMENT)
                     .setLabel(subscribeLabel)
                     .setAllowFreeFormInput(true)
                     .build();
 
             // Creating a pending intent for this action
-            Intent subscribeIntent = new Intent(App.getContext(), AgendaSubscriberService.class);
+            Intent subscribeIntent = new Intent(this, AgendaSubscriberService.class);
             addReproducabilityExtras(subscribeIntent, title, content, notificationid, agendaId);
             subscribeIntent.setAction(AgendaSubscriberService.ACTION_SUBSCRIBE_AGENDA);
             subscribeIntent.putExtra(AgendaSubscriberService.PARAM_AGENDA_ID, agendaId);
             PendingIntent agendaSubscribepIntent = PendingIntent.getService(
-                    App.getContext(),
+                    this,
                     0,
                     subscribeIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
@@ -389,9 +389,9 @@ public class NotificationReceiver extends FirebaseMessagingService {
         addAgendaActions(notification, agenda_id, allowExport, allowSubscribe, title, content, notification_id);
 
         // Create a new intention, because the last was already final
-        Intent newIntention = new Intent(App.getContext(), AgendaActivity.class);
+        Intent newIntention = new Intent(this, AgendaActivity.class);
         addIntentionsToNotification(notification, newIntention, agenda_id);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(App.getContext());
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
         // TODO: Disable making a sound or vibrating, below does not work
         notification.setDefaults(Notification.DEFAULT_ALL);

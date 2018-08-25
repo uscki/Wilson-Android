@@ -5,14 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-
-import java.io.IOException;
-
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.generated.ServerError;
@@ -149,7 +143,7 @@ public class EventExportService extends IntentService {
             public void onResponse(Call<MeetingItem> call, Response<MeetingItem> response) {
                 if(response.isSuccessful()) {
                     MeetingItem item = response.body();
-                    if(item != null) {
+                    if(item != null && item.getMeeting().getActual_slot() != null) {
 
                         int calendarEventItemId;
 
