@@ -24,10 +24,12 @@
             android:value="true" />
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name="nl.uscki.appcki.android.activities.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:allowTaskReparenting="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,14 +44,18 @@
         </activity>
         <activity
             android:name=".activities.AgendaActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName="nl.uscki.appcki.android.activities.MainActivity"
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="nl.uscki.appcki.android.activities.MainActivity" />
         </activity>
         <activity
             android:name=".activities.MeetingActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName="nl.uscki.appcki.android.activities.MainActivity"
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="nl.uscki.appcki.android.activities.MainActivity" />
@@ -86,10 +92,14 @@
         </activity>
         <service
             android:name=".services.AgendaSubscriberService"
-            android:exported="false" />
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            />
         <service
             android:name=".services.EventExportService"
-            android:exported="false"/>
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            />
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"/>

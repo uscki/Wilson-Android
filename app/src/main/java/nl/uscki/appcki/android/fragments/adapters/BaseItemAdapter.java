@@ -5,8 +5,10 @@ package nl.uscki.appcki.android.fragments.adapters;
  */
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import java.util.List;
+import java.util.ListIterator;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
@@ -44,9 +46,8 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
 
     public int getItemPosition(int id) {
         for(int i = 0; i < items.size(); i++) {
-            if(items.get(i).getId() == id) {
+            if(items.get(i).getId().equals(id))
                 return i;
-            }
         }
         return -1;
     }
