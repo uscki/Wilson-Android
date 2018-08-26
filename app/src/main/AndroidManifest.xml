@@ -92,10 +92,14 @@
         </activity>
         <service
             android:name=".services.AgendaSubscriberService"
-            android:exported="false" />
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            />
         <service
             android:name=".services.EventExportService"
-            android:exported="false"/>
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            />
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"/>
