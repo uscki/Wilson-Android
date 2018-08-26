@@ -4,19 +4,15 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.JobIntentService;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-
-import java.io.IOException;
-
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.error.ConnectionError;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.generated.ServerError;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
@@ -28,7 +24,11 @@ import retrofit2.Response;
 /**
  * An {@link IntentService} subclass for subscribing users to an agenda event
  */
-public class AgendaSubscriberService extends IntentService {
+public class AgendaSubscriberService extends JobIntentService {
+
+    // Must be unique for scheduled jobs, but always used for this class
+    public static final int AGENDA_SUBSCRIBE_JOB_ID = 10006;
+
     // Action names accepted by this service
     public static final String ACTION_SUBSCRIBE_AGENDA
             = "nl.uscki.appcki.android.services.action.SUBSCRIBE_AGENDA";
@@ -40,9 +40,6 @@ public class AgendaSubscriberService extends IntentService {
             = "nl.uscki.appcki.android.services.extra.PARAM_AGENDA_SUBSCRIBE_COMMENT";
 
 
-    public AgendaSubscriberService() {
-        super("AgendaSubscriberService");
-    }
 
     /**
      * Starts this service to perform action subscribe to agenda event action.
@@ -50,11 +47,14 @@ public class AgendaSubscriberService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startSubscribeAction(Context context, int agendaId) {
+    public static void enqueueSubscribeAction(Context context, int agendaId) {
         Intent intent = new Intent(context, AgendaSubscriberService.class);
         intent.setAction(ACTION_SUBSCRIBE_AGENDA);
         intent.putExtra(PARAM_AGENDA_ID, agendaId);
-        context.startService(intent);
+
+        // JobIntentService is enqueued in oreo+ devices, but starts using context.startService
+        // on pre-Oreo devices
+        EventExportService.enqueueWork(context, AgendaSubscriberService.class, AGENDA_SUBSCRIBE_JOB_ID, intent);
     }
 
     /**
@@ -74,17 +74,15 @@ public class AgendaSubscriberService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
-        if (intent != null) {
-            final String action = intent.getAction();
-            if (ACTION_SUBSCRIBE_AGENDA.equals(action)) {
-                final int agendaId = intent.getIntExtra(PARAM_AGENDA_ID, -1);
-                final String subscribeComment = getSubscribeText(intent).toString();
+    protected void onHandleWork(@NonNull Intent intent) {
+        final String action = intent.getAction();
+        if (ACTION_SUBSCRIBE_AGENDA.equals(action)) {
+            final int agendaId = intent.getIntExtra(PARAM_AGENDA_ID, -1);
+            final String subscribeComment = getSubscribeText(intent).toString();
 
-                Log.e(this.toString(), "Found agenda id " + agendaId + " and comment '" + subscribeComment + "'");
+            Log.e(this.toString(), "Found agenda id " + agendaId + " and comment '" + subscribeComment + "'");
 
-                handleAgendaSubscribeAction(agendaId, subscribeComment, intent);
-            }
+            handleAgendaSubscribeAction(agendaId, subscribeComment, intent);
         }
     }
 
@@ -176,7 +174,7 @@ public class AgendaSubscriberService extends IntentService {
         if(PermissionHelper.canExportCalendarAuto()) {
             allowExport = false;
             EventExportService
-                    .startExportAgendaToCalendarAction(this, agendaId);
+                    .enqueueExportAgendaToCalendarAction(this, agendaId);
         }
 
         notificationReceiver
