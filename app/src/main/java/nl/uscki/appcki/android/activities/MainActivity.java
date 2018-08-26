@@ -23,14 +23,13 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import de.greenrobot.event.EventBus;
-import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.events.ContentLoadedEvent;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
@@ -38,6 +37,7 @@ import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.dialogs.RoephoekDialogFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
+import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
@@ -58,6 +58,16 @@ public class MainActivity extends BasicActivity
     public static final String ACTION_SHOUTBOX_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_SHOUTBOX_OVERVIEW";
     public static final String ACTION_MEETING_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_MEETING_OVERVIEW";
     public static final String ACTION_POLL_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_POLL_OVERVIEW";
+
+    public static final String ACTION_VIEW_NEWSITEM
+            = "nl.uscki.appcki.android.activities.action.ACTION_VIEW_NEWSITEM";
+
+    public static final String PARAM_NEWS_ID
+            = "nl.uscki.appcki.android.activities.param.PARAM_NEWS_ID";
+
+    private int focusNewsId = -1;
+    private int focusTriesSoFar = 0;
+
     private static boolean homeScreenExists = false;
 
     Toolbar toolbar;
@@ -110,26 +120,21 @@ public class MainActivity extends BasicActivity
         }
 
         // Get the intent, verify the action and get the query
-        Intent intent = getIntent();
+        handleIntention(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntention(intent);
+    }
+
+    private void handleIntention(Intent intent) {
         if(intent != null) {
-            if (Intent.ACTION_VIEW.equals(intent.getAction())) {
-                if (intent.getStringExtra("item") != null) {
-                    // Assume we want to view de agenda detail view
-                    Log.e("Main Activity", "ACTION VIEW intent matches the given intent");
-                    Bundle args = new Bundle();
-                    args.putString("item", getIntent().getStringExtra("item"));
-                    openFragment(new AgendaDetailTabsFragment(), args);
-                } else if (intent.getStringExtra("screen") != null && intent.getStringExtra("screen").equals(Screen.NEWS.toString())) {
-                    openTab(HomeFragment.NEWS);
-                    int newNewsId = intent.getIntExtra("id", -1);
-                    if (newNewsId > 0) {
-                        // TODO: Somehow get the homeNewsTab fragment
-                        // TODO: Wait until API is done? Otherwise there is probably nothing to scroll to
-                        //homeNewsTab.scrollToItem(newNewsId);
-                    }
-                } else {
-                    openTab(HomeFragment.NEWS);
-                }
+            if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getStringExtra("item") != null) {
+                handleAgendaItemIntent(intent);
+            } else if(ACTION_VIEW_NEWSITEM.equals(intent.getAction())) {
+                handleNewsItemIntent(intent);
             } else if (ACTION_NEWS_OVERVIEW.equals(intent.getAction())) {
                 openTab(HomeFragment.NEWS);
             } else if (ACTION_AGENDA_OVERVIEW.equals(intent.getAction())) {
@@ -145,9 +150,18 @@ public class MainActivity extends BasicActivity
                 openTab(HomeFragment.NEWS);
             }
         }
+    }
 
-        // TODO configure shit for this server side
-        FirebaseMessaging.getInstance().subscribeToTopic("meetings");
+    private void handleAgendaItemIntent(Intent intent) {
+        Bundle args = new Bundle();
+        args.putString("item", getIntent().getStringExtra("item"));
+        openFragment(new AgendaDetailTabsFragment(), args);
+    }
+
+    private void handleNewsItemIntent(Intent intent) {
+        focusNewsId = intent.getIntExtra(PARAM_NEWS_ID, -1);
+        focusTriesSoFar = 0;
+        openTab(HomeFragment.NEWS, focusNewsId);
     }
 
     @Override
@@ -259,6 +273,10 @@ public class MainActivity extends BasicActivity
     }
 
     private void openTab(int index) {
+        openTab(index, -1);
+    }
+
+    private void openTab(int index, int scrollToId) {
         Crashlytics.log("openTab(" + index + ")");
 
         if (
@@ -269,7 +287,7 @@ public class MainActivity extends BasicActivity
                         )
         ) {
             // HomeFragment luistert naar dit event om daarin de tab te switchen
-            EventBus.getDefault().post(new SwitchTabEvent(index));
+            EventBus.getDefault().post(new SwitchTabEvent(index, scrollToId));
         } else {
             Bundle bundle = new Bundle();
             bundle.putInt("index", index);
@@ -418,6 +436,20 @@ public class MainActivity extends BasicActivity
             return;
         }
         openFragment(event.screen, event.arguments);
+    }
+
+    public void onEventMainThread(ContentLoadedEvent event) {
+        if (focusNewsId > 0 && event.updatedPageableFragment instanceof HomeNewsTab) {
+            if (((HomeNewsTab) event.updatedPageableFragment)
+                    .scrollToItemWithId(focusNewsId, focusTriesSoFar >= 3) ||
+                    focusTriesSoFar >= 3) {
+
+                focusNewsId = -1;
+
+            }
+
+            focusTriesSoFar++;
+        }
     }
 
     public void onEventMainThread(SwitchTabEvent event) {
