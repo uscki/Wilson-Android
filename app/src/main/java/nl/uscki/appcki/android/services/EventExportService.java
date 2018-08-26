@@ -3,6 +3,8 @@ package nl.uscki.appcki.android.services;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.v4.app.JobIntentService;
 import android.util.Log;
 import android.widget.Toast;
 import com.google.gson.Gson;
@@ -23,7 +25,11 @@ import retrofit2.Response;
  * An {@link IntentService} subclass for handling asynchronous task requests for downloading
  * items from the server and storing them in device applications, such as calendar or people
  */
-public class EventExportService extends IntentService {
+public class EventExportService extends JobIntentService {
+
+    // Must be unique for scheduled jobs, but always used for this class
+    public static final int EVENT_EXPORT_JOB_ID = 10005;
+
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_AGENDA_EXPORT = "nl.uscki.appcki.android.services.action.AGENDA_EXPORT";
     public static final String ACTION_MEETING_EXPORT = "nl.uscki.appcki.android.services.action.MEETING_EXPORT";
@@ -31,8 +37,20 @@ public class EventExportService extends IntentService {
     public static final String PARAM_AGENDA_ID = "nl.uscki.appcki.android.services.param.AGENDA_ID";
     public static final String PARAM_MEETING_ID = "nl.uscki.appcki.android.services.param.MEETING_ID";
 
-    public EventExportService() {
-        super("EventExportService");
+    @Override
+    protected void onHandleWork(@NonNull Intent intent) {
+        Log.e(getClass().getSimpleName(), "Work scheduled!");
+
+        final String action = intent.getAction();
+
+        if (ACTION_AGENDA_EXPORT.equals(action)) {
+            final int id = intent.getIntExtra(PARAM_AGENDA_ID, -1);
+            handleAgendaExportIntent(id);
+        } else if (ACTION_MEETING_EXPORT.equals(action)) {
+            int id = intent.getIntExtra(PARAM_MEETING_ID, -3);
+            if(id < 0) id = intent.getIntExtra("id", -2);
+            handleMeetingExportIntent(id);
+        }
     }
 
     /**
@@ -41,12 +59,14 @@ public class EventExportService extends IntentService {
      *
      * @see IntentService
      */
-    // TODO: Customize helper method
-    public static void startExportAgendaToCalendarAction(Context context, int agendaId) {
+    public static void enqueueExportAgendaToCalendarAction(Context context, int agendaId) {
         Intent intent = new Intent(context, EventExportService.class);
         intent.setAction(ACTION_AGENDA_EXPORT);
         intent.putExtra(PARAM_AGENDA_ID, agendaId);
-        context.startService(intent);
+
+        // JobIntentService is enqueued in oreo+ devices, but starts using context.startService
+        // on pre-Oreo devices
+        EventExportService.enqueueWork(context, EventExportService.class, EVENT_EXPORT_JOB_ID, intent);
     }
 
     /**
@@ -55,29 +75,14 @@ public class EventExportService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startExportMeetingToCalendarAction(Context context, int meetingId) {
+    public static void enqueueExportMeetingToCalendarAction(Context context, int meetingId) {
         Intent intent = new Intent(context, EventExportService.class);
         intent.setAction(ACTION_MEETING_EXPORT);
         intent.putExtra(PARAM_MEETING_ID, meetingId);
-        context.startService(intent);
-    }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        Log.e(this.toString(), "Received intent");
-        if (intent != null) {
-
-            final String action = intent.getAction();
-
-            if (ACTION_AGENDA_EXPORT.equals(action)) {
-                final int id = intent.getIntExtra(PARAM_AGENDA_ID, -1);
-                handleAgendaExportIntent(id);
-            } else if (ACTION_MEETING_EXPORT.equals(action)) {
-                int id = intent.getIntExtra(PARAM_MEETING_ID, -3);
-                if(id < 0) id = intent.getIntExtra("id", -2);
-                handleMeetingExportIntent(id);
-            }
-        }
+        // JobIntentService is enqueued in oreo+ devices, but starts using context.startService
+        // on pre-Oreo devices
+        EventExportService.enqueueWork(context, EventExportService.class, EVENT_EXPORT_JOB_ID, intent);
     }
 
     /**

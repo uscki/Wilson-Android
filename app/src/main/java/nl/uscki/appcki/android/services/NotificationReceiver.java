@@ -17,7 +17,6 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Locale;
 
-import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
@@ -100,7 +99,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
                 if(PermissionHelper.canExportMeetingAuto()) {
                     // Start a service to export this meeting to calendar
-                    EventExportService.startExportMeetingToCalendarAction(this, id);
+                    EventExportService.enqueueExportMeetingToCalendarAction(this, id);
                 } else {
                     // Add a button to export meeting
                     Intent exportMeetingIntent =
