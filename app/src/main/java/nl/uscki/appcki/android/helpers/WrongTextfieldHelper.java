@@ -29,7 +29,7 @@ public class WrongTextfieldHelper {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             backgroundFrom = context.getDrawable(R.drawable.red_border);
         } else {
-            context.getResources().getDrawable(R.drawable.red_border);
+            backgroundFrom = context.getResources().getDrawable(R.drawable.red_border);
         }
         Drawable backgroundTo = view.getBackground();
 
