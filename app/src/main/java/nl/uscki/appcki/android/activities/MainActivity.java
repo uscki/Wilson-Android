@@ -41,6 +41,7 @@ import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
+import nl.uscki.appcki.android.fragments.poll.PollResultFragment;
 import nl.uscki.appcki.android.fragments.quotes.QuoteFragment;
 import nl.uscki.appcki.android.fragments.search.SmoboSearch;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
@@ -246,7 +247,8 @@ public class MainActivity extends BasicActivity
             } else if (id == R.id.nav_quotes) {
                 openFragment(new QuoteFragment(), null);
             } else if (id == R.id.nav_poll) {
-                openFragment(new PollOverviewFragment(), null);
+                openFragment(new PollResultFragment(), null);
+//                openFragment(new PollOverviewFragment(), null);
             } else if (id == R.id.nav_roephoek) {
                 openTab(HomeFragment.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
