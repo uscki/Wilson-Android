@@ -2,7 +2,6 @@ package nl.uscki.appcki.android.fragments.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,16 +37,7 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
     }
 
     @Override
-    public void onBindCustomViewHolder(ViewHolder holder, int position) {
-        // Handled in onBindViewHolder, i guess?
-        Log.e(getClass().getSimpleName(), "onBindCustomViewHolder called in QuoteAdapter." +
-                "This should not happen, as onBindViewHolder in the super class is only called" +
-                "if the Poll item could not be determined, and this class is only called if the item" +
-                "should be of type poll item");
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+    public void onBindCustomViewHolder(ViewHolder holder, int position, List<Object> payloads) {
         if (!payloads.isEmpty()) {
             Quote quote = (Quote) payloads.get(0);
             items.set(position, quote);
@@ -73,13 +63,11 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
                 holder.plus.setVisibility(View.VISIBLE);
                 holder.minus.setVisibility(View.VISIBLE);
             }
-        } else {
-            super.onBindViewHolder(holder, position, payloads);
         }
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindCustomViewHolder(final ViewHolder holder, int position) {
         holder.mItem = this.items.get(position);
 
         SpannableStringBuilder text = Parser.parse(items.get(position).getQuoteJSON(), true, holder.quote);
