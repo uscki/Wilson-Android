@@ -88,8 +88,8 @@ public class MainActivity extends BasicActivity
         MEETING_PLANNER,
         MEETING_DETAIL,
         QUOTE_OVERVIEW,
-        POLL_VOTE,
-        POLL_RESULT,
+        POLL_DETAIL,
+        POLL_ACTIVE,
         SMOBO_SEARCH
     }
 
@@ -191,8 +191,12 @@ public class MainActivity extends BasicActivity
             } else if (currentScreen == Screen.MEETING_PLANNER || currentScreen == Screen.MEETING_DETAIL) {
                 openFragment(new MeetingOverviewFragment(), null);
                 currentScreen = Screen.MEETING_OVERVIEW;
-            } else if (currentScreen == Screen.POLL_VOTE || currentScreen == Screen.POLL_RESULT) {
+            } else if(currentScreen == Screen.POLL_ACTIVE) {
+                openTab(HomeFragment.NEWS);
+            } else if (currentScreen == Screen.POLL_DETAIL) {
                 openFragment(new PollOverviewFragment(), null);
+            } else if (currentScreen == Screen.POLL_OVERVIEW) {
+                openFragment(new PollResultFragment(), null);
             } else if (currentScreen != Screen.NEWS) {
                 openTab(HomeFragment.NEWS);
             }
@@ -229,6 +233,8 @@ public class MainActivity extends BasicActivity
         } else if(id == R.id.action_roephoek_roep) {
             buildRoephoekAddDialog();
             return true;
+        } else if(id == R.id.action_poll_archive) {
+            openFragment(new PollOverviewFragment(), null);
         }
 
         return super.onOptionsItemSelected(item);
@@ -248,7 +254,6 @@ public class MainActivity extends BasicActivity
                 openFragment(new QuoteFragment(), null);
             } else if (id == R.id.nav_poll) {
                 openFragment(new PollResultFragment(), null);
-//                openFragment(new PollOverviewFragment(), null);
             } else if (id == R.id.nav_roephoek) {
                 openTab(HomeFragment.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
