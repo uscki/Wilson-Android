@@ -32,14 +32,14 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.poll_result_option, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindCustomViewHolder(ViewHolder holder, int position) {
         holder.name.setText(items.get(position).getName());
 
         try {

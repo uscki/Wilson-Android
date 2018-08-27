@@ -11,12 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.events.ContentLoadedEvent;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+import nl.uscki.appcki.android.generated.LoadingMoreItem;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import retrofit2.Response;
 
@@ -89,6 +93,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
                     Log.e("pageablefragment", "adding items to the bottom");
                     getAdapter().addItems(response.body().getContent());
+                    getAdapter().showLoadingMoreItems(false);
                 }
             }
 
@@ -155,6 +160,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                         && !noMoreContent) { // there is still content to load
                     // End has been reached
                     scrollLoad = true;
+                    getAdapter().showLoadingMoreItems(true);
                     Log.e("PageableFragment", "Loading page: " + page);
                     page++; // update page
                     onScrollRefresh(); // and call
@@ -182,7 +188,6 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                 android.R.color.holo_red_light);
 
         swipeContainer.setRefreshing(true);
-
     }
 
     public BaseItemAdapter getAdapter() {
