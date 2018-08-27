@@ -13,7 +13,6 @@
     >
 
     <RelativeLayout
-        android:layout_margin="@dimen/text_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <TextView
@@ -21,6 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/text_margin"
             android:textStyle="bold"
             android:textSize="16sp"
             style="@style/AppTheme.Text"/>

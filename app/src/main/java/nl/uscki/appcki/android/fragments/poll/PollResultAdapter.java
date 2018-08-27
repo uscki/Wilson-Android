@@ -48,7 +48,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.name.setText(items.get(position).getName());
+        holder.setOptionName(items.get(position).getName());
 
         try {
             holder.setCanVote(canVote);
@@ -68,16 +68,21 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
+
         private float startingX;
 
         @BindView(R.id.pollOptionBackground)
         RelativeLayout background;
 
         @BindView(R.id.pollOptionForeground)
-        LinearLayout foreground;
+        RelativeLayout foreground;
 
         @BindView(R.id.poll_result_option_name)
         TextView name;
+
+        @BindView(R.id.poll_result_option_name_centered)
+        TextView centeredName;
+
         @BindView(R.id.poll_result_option_bar)
         VotesGraphView bar;
 
@@ -90,9 +95,13 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         public void setCanVote(boolean canVote) {
             if(canVote) {
                 bar.setVisibility(View.INVISIBLE);
+                name.setVisibility(View.INVISIBLE);
+                centeredName.setVisibility(View.VISIBLE);
                 startAnimation();
             } else {
                 bar.setVisibility(View.VISIBLE);
+                name.setVisibility(View.VISIBLE);
+                centeredName.setVisibility(View.GONE);
             }
         }
 
@@ -112,6 +121,11 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
                 }
             });
             positionAnimator.start();
+        }
+
+        void setOptionName(String name) {
+            this.name.setText(name);
+            centeredName.setText(name);
         }
     }
 
