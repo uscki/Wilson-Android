@@ -82,6 +82,11 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
     public abstract T onCreateCustomViewHolder(ViewGroup parent);
     public abstract void onBindCustomViewHolder(T holder, int position);
 
+
+    public void onBindCustomViewHolder(T holder, int position, List<Object> payloads) {
+        // Override this where necessary
+    }
+
     @Override
     public int getItemCount() {
         return items.size();
@@ -106,6 +111,14 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
             Log.e(getClass().getSimpleName(), "OnBindViewHolder!");
         } else {
             onBindCustomViewHolder(holder, position);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull T holder, int position, @NonNull List<Object> payloads) {
+        super.onBindViewHolder(holder, position, payloads);
+        if(!(holder instanceof BaseItemAdapter.LoadingMoreViewHolder)) {
+            onBindCustomViewHolder(holder, position, payloads);
         }
     }
 

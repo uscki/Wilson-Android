@@ -38,29 +38,18 @@ public class PollAdapter extends BaseItemAdapter<PollAdapter.ViewHolder, PollIte
     }
 
     @Override
-    public void onBindCustomViewHolder(ViewHolder holder, int position) {
-        // Handled in onBindViewHolder, i guess?
-        Log.e(getClass().getSimpleName(), "onBindCustomViewHolder called in PollAdapter." +
-                "This should not happen, as onBindViewHolder in the super class is only called" +
-                "if the Poll item could not be determined, and this class is only called if the item" +
-                "should be of type poll item");
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+    public void onBindCustomViewHolder(ViewHolder holder, int position, List<Object> payloads) {
         if (!payloads.isEmpty()) {
             PollItem quote = (PollItem) payloads.get(0);
             items.set(position, quote);
             holder.mItem = quote;
 
             //TODO update item
-        } else {
-            super.onBindViewHolder(holder, position, payloads);
         }
     }
 
     @Override
-    public void onBindViewHolder(final PollAdapter.ViewHolder holder, int position) {
+    public void onBindCustomViewHolder(final PollAdapter.ViewHolder holder, int position) {
         holder.mItem = this.items.get(position);
 
         holder.question.setText(items.get(position).getPoll().getTitle());
