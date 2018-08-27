@@ -2,6 +2,7 @@ package nl.uscki.appcki.android.fragments.adapters;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,10 +31,19 @@ public class PollAdapter extends BaseItemAdapter<PollAdapter.ViewHolder, PollIte
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_poll, parent, false);
         return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindCustomViewHolder(ViewHolder holder, int position) {
+        // Handled in onBindViewHolder, i guess?
+        Log.e(getClass().getSimpleName(), "onBindCustomViewHolder called in PollAdapter." +
+                "This should not happen, as onBindViewHolder in the super class is only called" +
+                "if the Poll item could not be determined, and this class is only called if the item" +
+                "should be of type poll item");
     }
 
     @Override

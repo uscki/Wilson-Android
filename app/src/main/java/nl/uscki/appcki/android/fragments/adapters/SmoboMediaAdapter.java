@@ -25,14 +25,14 @@ public class SmoboMediaAdapter extends BaseItemAdapter<SmoboMediaAdapter.ViewHol
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.smobo_photo_grid_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindCustomViewHolder(ViewHolder holder, int position) {
         // we can assume that these integers will always be valid media id's
         holder.photo.setImageURI(MediaAPI.getMediaUri(items.get(position).getId(), MediaAPI.MediaSize.SMALL));
     }
