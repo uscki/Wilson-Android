@@ -23,13 +23,14 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.poll.PollItem;
 import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PollResultFragment extends Fragment {
+public class PollResultFragment extends RefreshableFragment {
     @BindView(R.id.poll_result_question)
     TextView question;
     @BindView(R.id.poll_result_options)
@@ -118,6 +119,8 @@ public class PollResultFragment extends Fragment {
         ButterKnife.bind(this, view);
         setHasOptionsMenu(true);
 
+        setupSwipeContainer(view);
+
         if (getArguments() != null) {
             MainActivity.currentScreen = MainActivity.Screen.POLL_DETAIL;
             item = new Gson().fromJson(getArguments().getString("item"), PollItem.class);
@@ -151,14 +154,15 @@ public class PollResultFragment extends Fragment {
         return item != null && item.getPoll().getActive() && (item.getMyVote() == null || item.getMyVote() < 0);
     }
 
-    private void refreshPollItem() {
+    @Override
+    public void onSwipeRefresh() {
         Services.getInstance().pollService.get(item.getId()).enqueue(new Callback<PollItem>() {
             @Override
             public void onSucces(Response<PollItem> response) {
                 if(response != null && response.body() != null) {
                     item = response.body();
-                    item.setMyVote(3);
-
+                    getView().invalidate();
+                    swipeContainer.setRefreshing(false);
                     setupViews();
                 }
             }
@@ -179,6 +183,6 @@ public class PollResultFragment extends Fragment {
 
     void vote(PollResultAdapter.ViewHolder viewHolder, int adapterPosition) {
         Log.e(getClass().getSimpleName(), "Voting for " + adapterPosition + "th element!");
-        refreshPollItem();
+        onSwipeRefresh();
     }
 }
