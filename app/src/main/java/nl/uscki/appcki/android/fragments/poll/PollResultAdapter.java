@@ -1,14 +1,13 @@
 package nl.uscki.appcki.android.fragments.poll;
 
-import android.animation.ValueAnimator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,7 +18,6 @@ import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.poll.PollOption;
-import nl.uscki.appcki.android.helpers.GravityFallingValueEvaluator;
 import nl.uscki.appcki.android.views.VotesGraphView;
 
 /**
@@ -66,7 +64,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         return items.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final View mView;
 
         private float startingX;
@@ -90,6 +88,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
             super(view);
             mView = view;
             ButterKnife.bind(this, view);
+            view.setOnClickListener(this);
         }
 
         public void setCanVote(boolean canVote) {
@@ -105,22 +104,39 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
             }
         }
 
+        @Override
+        public void onClick(View view) {
+            Log.e(getClass().getSimpleName(), "Clicked an item");
+            hintSwipeOption();
+        }
+
         private void startAnimation() {
             startingX = 400f + (100 * getAdapterPosition());
-            int startDropDelay = 50 + (25 * getAdapterPosition());
-            foreground.setTranslationX(startingX);
-            GravityFallingValueEvaluator evaluator = new GravityFallingValueEvaluator();
-            evaluator.setBounces(3);
-            final ValueAnimator positionAnimator = ValueAnimator.ofObject(evaluator, startingX, 0f);
-            positionAnimator.setStartDelay(startDropDelay);
-            positionAnimator.setDuration(500);
-            positionAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    foreground.setTranslationX((float) valueAnimator.getAnimatedValue());
-                }
-            });
-            positionAnimator.start();
+            int startDropDelay = (25 * getAdapterPosition());
+
+            // Keep still fifth time around
+            final int nOfBounces = 5;
+            float[] args = new float[(nOfBounces)*2];
+            args[0] = startingX;
+            args[1] = 0;
+            for(int i = 2; i < nOfBounces; i+=2) {
+                args[i] = startingX / i;
+                args[i+1] = 0;
+            }
+            ObjectAnimator anim = ObjectAnimator.ofFloat(foreground, "x", args);
+            anim.setDuration(1300);
+            anim.setStartDelay(startDropDelay);
+            anim.start();
+        }
+
+        private void hintSwipeOption() {
+            AnimatorSet set = new AnimatorSet();
+            set.play(
+                    ObjectAnimator.ofFloat(foreground, "x", 0).setDuration(100)
+            ).after(
+                    ObjectAnimator.ofFloat(foreground, "x", 300).setDuration(100)
+            );
+            set.start();
         }
 
         void setOptionName(String name) {
