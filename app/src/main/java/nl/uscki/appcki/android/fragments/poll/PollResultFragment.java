@@ -161,6 +161,7 @@ public class PollResultFragment extends RefreshableFragment {
             public void onSucces(Response<PollItem> response) {
                 if(response != null && response.body() != null) {
                     item = response.body();
+                    item.setMyVote(3);
                     getView().invalidate();
                     swipeContainer.setRefreshing(false);
                     setupViews();
