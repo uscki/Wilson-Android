@@ -51,6 +51,7 @@
 
     <string name="agenda_inschrijven_verplicht">Inschrijven verplicht</string>
     <string name="agenda_archive_menu_string">Archief</string>
+    <string name="poll_archive_menu_string">Archief</string>
     <string name="action_agenda_export">Opslaan</string>
     <string name="action_agenda_remove_from_calendar">Verwijderen uit agenda</string>
 

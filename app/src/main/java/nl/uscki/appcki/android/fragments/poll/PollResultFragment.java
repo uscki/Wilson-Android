@@ -8,6 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -35,11 +38,6 @@ public class PollResultFragment extends Fragment {
     PollItem item;
 
     private ItemTouchHelper attachedSwipeCallback;
-
-    public PollResultFragment() {
-        // Required empty public constructor
-    }
-
 
     /**
      * Handle swipe action on poll options
@@ -104,17 +102,28 @@ public class PollResultFragment extends Fragment {
         }
     };
 
+    /**
+     * Is this fragment displaying the active poll?
+     * @return  Boolean indicating if the poll currently being displayed is the active poll
+     */
+    public boolean isActive() {
+        return item != null && item.getPoll().getActive();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        MainActivity.currentScreen = MainActivity.Screen.POLL_RESULT;
+
         View view = inflater.inflate(R.layout.fragment_poll_result, container, false);
         ButterKnife.bind(this, view);
+        setHasOptionsMenu(true);
 
         if (getArguments() != null) {
+            MainActivity.currentScreen = MainActivity.Screen.POLL_DETAIL;
             item = new Gson().fromJson(getArguments().getString("item"), PollItem.class);
             setupViews();
         } else {
+            MainActivity.currentScreen = MainActivity.Screen.POLL_ACTIVE;
             Services.getInstance().pollService.active().enqueue(new Callback<PollItem>() {
                 @Override
                 public void onSucces(Response<PollItem> response) {
@@ -130,6 +139,14 @@ public class PollResultFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.poll_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
     private boolean canVote() {
         return item != null && item.getPoll().getActive() && (item.getMyVote() == null || item.getMyVote() < 0);
     }
@@ -142,7 +159,6 @@ public class PollResultFragment extends Fragment {
                     item = response.body();
                     item.setMyVote(3);
 
-                    // TODO: Change to if it has a vote or not
                     setupViews();
                 }
             }
