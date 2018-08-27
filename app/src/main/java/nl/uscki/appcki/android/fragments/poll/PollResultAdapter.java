@@ -1,8 +1,10 @@
 package nl.uscki.appcki.android.fragments.poll;
 
+import android.animation.ValueAnimator;
 import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.poll.PollOption;
+import nl.uscki.appcki.android.helpers.GravityFallingValueEvaluator;
 import nl.uscki.appcki.android.views.VotesGraphView;
 
 /**
@@ -65,6 +68,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
+        private float startingX;
 
         @BindView(R.id.pollOptionBackground)
         RelativeLayout background;
@@ -86,9 +90,28 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         public void setCanVote(boolean canVote) {
             if(canVote) {
                 bar.setVisibility(View.INVISIBLE);
+                startAnimation();
             } else {
                 bar.setVisibility(View.VISIBLE);
             }
+        }
+
+        private void startAnimation() {
+            startingX = 400f + (100 * getAdapterPosition());
+            int startDropDelay = 50 + (25 * getAdapterPosition());
+            foreground.setTranslationX(startingX);
+            GravityFallingValueEvaluator evaluator = new GravityFallingValueEvaluator();
+            evaluator.setBounces(3);
+            final ValueAnimator positionAnimator = ValueAnimator.ofObject(evaluator, startingX, 0f);
+            positionAnimator.setStartDelay(startDropDelay);
+            positionAnimator.setDuration(500);
+            positionAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    foreground.setTranslationX((float) valueAnimator.getAnimatedValue());
+                }
+            });
+            positionAnimator.start();
         }
     }
 
