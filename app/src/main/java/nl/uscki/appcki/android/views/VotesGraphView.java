@@ -185,6 +185,12 @@ public class VotesGraphView extends View {
         invalidateTextPaintAndMeasurements();
     }
 
+    public void setVotesAnimated(int votes) {
+        setVotes(votes);
+        requestLayout();
+        invalidate();
+    }
+
     public int getVotesTotal() {
         return votesTotal;
     }

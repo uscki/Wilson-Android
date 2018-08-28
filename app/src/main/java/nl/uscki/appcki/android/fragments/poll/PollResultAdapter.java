@@ -49,14 +49,12 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         holder.setOptionName(items.get(position).getName());
 
         try {
-            holder.setCanVote(canVote);
             holder.bar.setBarColor(Color.parseColor(items.get(position).getColor().toLowerCase()));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        holder.bar.setVotes(items.get(position).getVoteCount());
-        holder.bar.setVotesTotal(totalvotes);
+        holder.setCanVote(canVote);
     }
 
     @Override
@@ -92,6 +90,8 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         }
 
         public void setCanVote(boolean canVote) {
+            bar.setVotesTotal(totalvotes);
+
             if(canVote) {
                 bar.setVisibility(View.INVISIBLE);
                 name.setVisibility(View.INVISIBLE);
@@ -101,6 +101,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
                 bar.setVisibility(View.VISIBLE);
                 name.setVisibility(View.VISIBLE);
                 centeredName.setVisibility(View.GONE);
+                ObjectAnimator.ofInt(bar, "VotesAnimated", 0, items.get(getAdapterPosition()).getVoteCount()).setDuration(400).start();
             }
         }
 
