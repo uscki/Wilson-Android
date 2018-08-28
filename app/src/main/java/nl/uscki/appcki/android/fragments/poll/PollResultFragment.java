@@ -60,7 +60,6 @@ public class PollResultFragment extends RefreshableFragment {
             if(viewHolder != null) {
                 PollResultAdapter.ViewHolder pollViewHolder = (PollResultAdapter.ViewHolder) viewHolder;
                 int itemPosition = pollViewHolder.getAdapterPosition();
-
                 vote(pollViewHolder, itemPosition);
             }
             Log.e(getClass().getSimpleName(), "Swiped item in viewholder in direction " + direction);
@@ -161,8 +160,6 @@ public class PollResultFragment extends RefreshableFragment {
             public void onSucces(Response<PollItem> response) {
                 if(response != null && response.body() != null) {
                     item = response.body();
-                    item.setMyVote(3);
-                    getView().invalidate();
                     swipeContainer.setRefreshing(false);
                     setupViews();
                 }
@@ -183,7 +180,19 @@ public class PollResultFragment extends RefreshableFragment {
     }
 
     void vote(PollResultAdapter.ViewHolder viewHolder, int adapterPosition) {
-        Log.e(getClass().getSimpleName(), "Voting for " + adapterPosition + "th element!");
-        onSwipeRefresh();
+        swipeContainer.setRefreshing(true);
+        PollResultAdapter adapter = (PollResultAdapter) options.getAdapter();
+        int optionId = adapter.getItems().get(adapterPosition).getId();
+
+        Services.getInstance().pollService.vote(optionId).enqueue(new Callback<PollItem>() {
+            @Override
+            public void onSucces(Response<PollItem> response) {
+                if(response != null && response.body() != null) {
+                    item = response.body();
+                    swipeContainer.setRefreshing(false);
+                    setupViews();
+                }
+            }
+        });
     }
 }
