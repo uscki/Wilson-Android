@@ -86,18 +86,19 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
             super(view);
             mView = view;
             ButterKnife.bind(this, view);
-            view.setOnClickListener(this);
         }
 
         public void setCanVote(boolean canVote) {
             bar.setVotesTotal(totalvotes);
 
             if(canVote) {
+                mView.setOnClickListener(this);
                 bar.setVisibility(View.INVISIBLE);
                 name.setVisibility(View.INVISIBLE);
                 centeredName.setVisibility(View.VISIBLE);
                 startAnimation();
             } else {
+                mView.setOnClickListener(null);
                 bar.setVisibility(View.VISIBLE);
                 name.setVisibility(View.VISIBLE);
                 centeredName.setVisibility(View.GONE);
@@ -107,7 +108,6 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
 
         @Override
         public void onClick(View view) {
-            Log.e(getClass().getSimpleName(), "Clicked an item");
             hintSwipeOption();
         }
 
