@@ -16,7 +16,7 @@ import retrofit2.http.Query;
  * Created by peter on 7/12/16.
  */
 public interface AgendaService {
-    @GET("agenda/:id")
+    @GET("agenda/{id}")
     Call<AgendaItem> get(@Path("id") Integer id);
 
     @GET("agenda/newer")
@@ -36,10 +36,10 @@ public interface AgendaService {
     @POST("agenda/unsubscribe")
     Call<AgendaParticipantLists> unsubscribe(@Field("id") Integer id);
 
-    @GET("agenda/:id/comments")
+    @GET("agenda/{id}/comments")
     Call<CommentPage> getComments(@Path("id") Integer agendaId);
 
-    @POST("agenda/:id/comments")
+    @POST("agenda/{id}/comments")
     Call<CommentPage> replyToComment(@Path("id") Integer agendaId, @Query("parentId") Integer parentId, @Query("comment") String comment);
 
     @GET("agenda/subscribed")
