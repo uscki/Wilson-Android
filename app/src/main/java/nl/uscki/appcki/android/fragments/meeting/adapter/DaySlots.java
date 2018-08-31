@@ -3,8 +3,8 @@ package nl.uscki.appcki.android.fragments.meeting.adapter;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 import nl.uscki.appcki.android.generated.meeting.Slot;
 
@@ -27,22 +27,24 @@ public class DaySlots {
     }
 
     public static List<DaySlots> fromSlots(List<Slot> slots) {
-        HashMap<String, List<Slot>> sorted = new HashMap<>();
+        TreeMap<Long, List<Slot>> sorted = new TreeMap<>();
         for (Slot slot : slots) {
-            DateTime dateTime = new DateTime(slot.getStarttime());
-            String key = dateTime.toString("EEEE dd MMMM YYYY");
-            if (sorted.containsKey(key)) {
-                sorted.get(key).add(slot);
+            DateTime slotDateTime = new DateTime(slot.getStarttime())
+                    .withTime(0,0,0,0);
+
+            if (sorted.containsKey(slotDateTime.getMillis())) {
+                sorted.get(slotDateTime.getMillis()).add(slot);
             } else {
                 List<Slot> dayslots = new ArrayList<>();
                 dayslots.add(slot);
-                sorted.put(key, dayslots);
+                sorted.put(slotDateTime.getMillis(), dayslots);
             }
         }
 
         List<DaySlots> result = new ArrayList<>();
-        for (String key : sorted.keySet()) {
-            result.add(new DaySlots(key, sorted.get(key)));
+        for (Long key : sorted.keySet()) {
+            DateTime keyDateTime = new DateTime(key);
+            result.add(new DaySlots(keyDateTime.toString("EEEE dd MMMM YYYY"), sorted.get(key)));
         }
         return result;
     }
