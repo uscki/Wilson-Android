@@ -37,7 +37,7 @@ public interface AgendaService {
     Call<AgendaParticipantLists> unsubscribe(@Field("id") Integer id);
 
     @GET("agenda/{id}/comments")
-    Call<CommentPage> getComments(@Path("id") Integer agendaId);
+    Call<CommentPage> getComments(@Path("id") Integer agendaId, @Query("page") Integer page, @Query("size") Integer size);
 
     @POST("agenda/{id}/comments")
     Call<CommentPage> replyToComment(@Path("id") Integer agendaId, @Query("parentId") Integer parentId, @Query("comment") String comment);
