@@ -46,6 +46,7 @@
             android:name=".activities.AgendaActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName="nl.uscki.appcki.android.activities.MainActivity"
+            android:windowSoftInputMode="adjustResize"
             >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

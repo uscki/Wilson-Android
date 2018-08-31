@@ -112,6 +112,7 @@ public class AgendaActivity extends BasicActivity {
         tabLayout = findViewById(R.id.tabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("Agenda"));
         tabLayout.addTab(tabLayout.newTab().setText("Deelnemers"));
+        tabLayout.addTab(tabLayout.newTab().setText("Reacties"));
         viewPager = findViewById(R.id.viewpager);
 
         if (getIntent().getBundleExtra("item") != null) {
@@ -217,8 +218,6 @@ public class AgendaActivity extends BasicActivity {
     public void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
-        if(menu != null)
-            menu.clear();
     }
 
     private void setExportButtons() {
@@ -233,6 +232,18 @@ public class AgendaActivity extends BasicActivity {
             return;
         }
 
+        MenuItem exportButton = menu.findItem(R.id.action_agenda_export);
+        MenuItem removeCalendarButton = menu.findItem(R.id.action_remove_from_calendar);
+
+        if(exportButton == null) {
+            Log.e(getClass().getSimpleName(), "Export button is null. Whyyy");
+            return;
+        }
+        if(removeCalendarButton == null) {
+            Log.e(getClass().getSimpleName(), "Remove from calendar button is null. Whyyy");
+            return;
+        }
+
         if(calendarEventItemId > 0)
         {
             menu.findItem(R.id.action_agenda_export).setVisible(false);
@@ -243,7 +254,6 @@ public class AgendaActivity extends BasicActivity {
         } else {
             menu.findItem(R.id.action_remove_from_calendar).setVisible(false);
             menu.findItem(R.id.action_agenda_export).setVisible(true);
-
         }
     }
 
