@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +32,10 @@ import retrofit2.Response;
  */
 public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
+    public static final int NEW_ITEM_EDIT_BOX_POSITION_TOP = R.id.new_item_placeholder_top;
+    public static final int NEW_ITEM_EDIT_BOX_POSITION_BOTTOM = R.id.new_item_placeholder_bottom;
+    public static final int NEW_ITEM_EDIT_BOX_POSITION_DEFAULT = NEW_ITEM_EDIT_BOX_POSITION_TOP;
+
     private BaseItemAdapter adapter;
     protected RecyclerView recyclerView;
     protected SwipeRefreshLayout swipeContainer;
@@ -47,6 +52,9 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     private boolean noMoreContent;
     protected boolean refresh;
     protected boolean scrollLoad;
+
+    // Dealing with the FAB
+    private int editBoxPosition = NEW_ITEM_EDIT_BOX_POSITION_DEFAULT;
 
     protected Callback<T> callback = new Callback<T>() {
         @Override
@@ -214,6 +222,10 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         this.adapter = adapter;
     }
 
+    protected void setEditBoxPosition(int position) {
+        editBoxPosition = position;
+    }
+
     public FloatingActionButton setFabEnabled(@NonNull View view, boolean enabled) {
         FloatingActionButton fab = view.findViewById(R.id.pageableFloatingActionButton);
         if(fab == null) {
@@ -233,17 +245,28 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         return fab;
     }
 
-    public void addNewPageableItemWidget(NewPageableItem widget) {
+    /**
+     * Add a new pageable item widget to the screen (set position with setEditBoxPosition())
+     *
+     * @param widget        The new pageable item widget to add
+     * @param onlyWhenFab   If true, a FAB is shown instead of this fragment. Clicking the FAB
+     *                      will make the fragment visible. Pressing back will make the fragment
+     *                      invisible again and show the fab. If set to false, the fragment is
+     *                      always visible and no fab is shown
+     */
+    public void addNewPageableItemWidget(NewPageableItem widget, boolean onlyWhenFab) {
         widget.setParent(this);
         FragmentManager fm = getChildFragmentManager();
 
-        fm.beginTransaction()
-                .replace(R.id.new_item_placeholder, widget)
-                .addToBackStack("new_item")
-                .commit();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(editBoxPosition, widget);
+        if(onlyWhenFab) {
+            ft.addToBackStack("new_item");
+        }
+        ft.commit();
 
         View view = getView();
-        if(view != null)
+        if(onlyWhenFab && view != null)
             setFabEnabled(getView(), false);
     }
 
@@ -251,7 +274,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         FragmentManager fm = getChildFragmentManager();
 
         fm.beginTransaction()
-                .replace(R.id.new_item_placeholder, new Fragment())
+                .replace(editBoxPosition, new Fragment())
                 .commit();
 
         View view = getView();

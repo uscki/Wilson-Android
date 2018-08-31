@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
 
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/new_item_placeholder"
+        android:id="@+id/new_item_placeholder_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
@@ -15,9 +17,9 @@
     <android.support.v4.widget.SwipeRefreshLayout
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:id="@+id/refreshContainer"
-        android:layout_below="@id/new_item_placeholder"
         tools:context="nl.uscki.appcki.android.fragments.PageableFragment">
 
         <android.support.v7.widget.RecyclerView
@@ -29,13 +31,22 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:id="@+id/empty_text"
         android:visibility="gone"
         android:gravity="center"
         android:textSize="@dimen/text_subheader_size"
         android:textColor="@color/colorCodeBackground" />
+
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/new_item_placeholder_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        />
 
     <!-- To enable, set visibility, clickable and focusable -->
     <android.support.design.widget.FloatingActionButton
@@ -50,4 +61,4 @@
         app:srcCompat="@drawable/plus"
         android:visibility="gone"
         />
-</RelativeLayout>
+</LinearLayout>
