@@ -42,13 +42,12 @@ public class HomeRoephoekTab extends PageableFragment<Roephoek> {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         FloatingActionButton fab = setFabEnabled(view, true);
         if(fab != null) {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addNewPageableItemWidget(new NewShoutWidget());
+                    addNewPageableItemWidget(new NewShoutWidget(), true);
                     Log.e(getClass().getSimpleName(), "Clicked new shout button");
                 }
             });

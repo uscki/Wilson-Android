@@ -261,15 +261,20 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(editBoxPosition, widget);
         if(onlyWhenFab) {
+            widget.setFocusOnCreateView(true);
             ft.addToBackStack("new_item");
         }
         ft.commit();
 
         View view = getView();
-        if(onlyWhenFab && view != null)
+        if(onlyWhenFab && view != null) {
             setFabEnabled(getView(), false);
+        }
     }
 
+    /**
+     * Remove the new item widget, and show the FAB again, so the process can repeat
+     */
     public void removeNewPageableItemWidget() {
         FragmentManager fm = getChildFragmentManager();
 

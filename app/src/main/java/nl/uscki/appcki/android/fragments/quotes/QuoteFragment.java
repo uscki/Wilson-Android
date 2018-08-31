@@ -53,7 +53,7 @@ public class QuoteFragment extends PageableFragment<QuotesPage> {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addNewPageableItemWidget(new NewQuoteWidget());
+                    addNewPageableItemWidget(new NewQuoteWidget(), true);
                 }
             });
         }
