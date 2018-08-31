@@ -24,6 +24,12 @@ import retrofit2.Response;
 public abstract class NewPageableItem extends Fragment {
     protected PageableFragment parent;
 
+    private boolean focusOnCreateView = false;
+
+    public void setFocusOnCreateView(boolean focusOnCreateView) {
+        this.focusOnCreateView = focusOnCreateView;
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -38,7 +44,11 @@ public abstract class NewPageableItem extends Fragment {
                         @Override
                         public void onSucces(Response response) {
                             if (parent != null) parent.refresh();
-                            hide();
+                            if(focusOnCreateView) {
+                                hide();
+                            } else {
+                                getMainTextInput().setText("");
+                            }
                         }
                     });
                 } else {
@@ -47,12 +57,14 @@ public abstract class NewPageableItem extends Fragment {
             }
         });
 
-        focusNewItemInput();
+        if(focusOnCreateView) {
+            focusNewItemInput();
+        }
     }
 
     @Override
     public void onDestroy() {
-        if(parent != null && parent.getView() != null) {
+        if(parent != null && parent.getView() != null && focusOnCreateView) {
             // New Item fragment deleted. Re-enable FAB
             parent.setFabEnabled(parent.getView(), true);
         } else {
@@ -102,7 +114,7 @@ public abstract class NewPageableItem extends Fragment {
         }
     }
 
-    private void focusNewItemInput() {
+    public void focusNewItemInput() {
         getMainTextInput().setFocusableInTouchMode(true);
         if(getResources().getConfiguration().hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
             getMainTextInput().requestFocusFromTouch();
