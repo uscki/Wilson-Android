@@ -266,4 +266,7 @@
     <string name="vibration_pattern_imperial_march">Imperial March</string>
     <string name="vibration_pattern_CKI_morse">CKI (morse)</string>
     <string name="vibration_pattern_default">@string/vibration_pattern_long_twice</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
