@@ -1,12 +1,7 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,25 +11,23 @@ import android.widget.ImageButton;
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.AgendaCommentsAdapter;
 import nl.uscki.appcki.android.generated.comments.Comment;
 import nl.uscki.appcki.android.generated.comments.CommentPage;
 import retrofit2.Response;
 
-public class AgendaCommentsFragment extends Fragment{
+public class AgendaCommentsFragment extends PageableFragment<CommentPage>{
+
+    private final int COMMENTS_PAGE_SIZE = 10;
 
     private int agendaId;
-    private SwipeRefreshLayout refreshContainer;
 
     private boolean scrollToEnd = false;
     private Integer scrollToState;
-
-    @BindView(R.id.comment_recycler_view)
-    RecyclerView commentRecyclerView;
 
     @BindView(R.id.comment_edit_text)
     EditText commentText;
@@ -45,27 +38,6 @@ public class AgendaCommentsFragment extends Fragment{
     public AgendaCommentsFragment() {
         // Required empty public constructor
     }
-
-    private Callback<CommentPage> callback = new Callback<CommentPage>() {
-        @Override
-        public void onSucces(Response<CommentPage> response) {
-            if(response != null && response.body() != null) {
-                AgendaCommentsAdapter adapter = new AgendaCommentsAdapter(response.body().getContent());
-                adapter.setCommentsFragment(AgendaCommentsFragment.this);
-                commentRecyclerView.setAdapter(adapter);
-                refreshContainer.setRefreshing(false);
-                if(scrollToEnd) {
-                    Log.e(AgendaCommentsFragment.this.getClass().getSimpleName(), "Scrolling to end?");
-                    scrollToEnd = false;
-                    commentRecyclerView.scrollToPosition(commentRecyclerView.getAdapter().getItemCount() - 1);
-                } else if(scrollToState != null) {
-                    Log.e(AgendaCommentsFragment.this.getClass().getSimpleName(), "Scrolling to position " + scrollToState);
-                    commentRecyclerView.scrollToPosition(scrollToState);
-                    scrollToState = null;
-                }
-            }
-        }
-    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,25 +50,37 @@ public class AgendaCommentsFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_agenda_comments, container, false);
-        ButterKnife.bind(this, view);
 
-        commentRecyclerView.setAdapter(new AgendaCommentsAdapter(new ArrayList<Comment>()));
-        postCommentButton.setOnClickListener(postCommentListener);
+        AgendaCommentsAdapter adapter = new AgendaCommentsAdapter(new ArrayList<Comment>());
+        adapter.setCommentsFragment(this);
+        setAdapter(adapter);
+        Services.getInstance().agendaService.getComments(agendaId, page, getPageSize()).enqueue(callback);
 
-        refreshContainer = view.findViewById(R.id.commentRefreshContainer);
-        if(refreshContainer != null) {
-            refreshContainer.setOnRefreshListener(onSwipeRefreshListener);
-        }
+        // TODO restore post comment funcionality
+//        postCommentButton.setOnClickListener(postCommentListener);
 
-        Services.getInstance().agendaService.getComments(agendaId).enqueue(callback);
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    @Override
     public void onSwipeRefresh() {
         clearText(commentText);
-        Services.getInstance().agendaService.getComments(agendaId).enqueue(callback);
+        Services.getInstance().agendaService.getComments(agendaId, page, getPageSize()).enqueue(callback);
+    }
+
+    @Override
+    public void onScrollRefresh() {
+        Services.getInstance().agendaService.getComments(agendaId, page, getPageSize()).enqueue(callback);
+    }
+
+    @Override
+    public String getEmptyText() {
+        return "Geen reacties";
+    }
+
+    @Override
+    protected int getPageSize() {
+        return COMMENTS_PAGE_SIZE;
     }
 
     View.OnClickListener postCommentListener = new View.OnClickListener() {
@@ -106,19 +90,25 @@ public class AgendaCommentsFragment extends Fragment{
         }
     };
 
-    public void postComment(EditText commentBox, Integer parentid) {
-        refreshContainer.setRefreshing(true);
+    public void postComment(EditText commentBox, final Integer parentid) {
         String comment = commentBox.getText().toString();
         clearText(commentBox);
-        if(parentid == null) {
-            scrollToEnd = true;
-        } else {
-            scrollToState = commentRecyclerView.getScrollState();
-        }
+        // TODO restore scroll functionality after placing comment
+//        if(parentid == null) {
+//            scrollToEnd = true;
+//        } else {
+//            scrollToState = commentRecyclerView.getScrollState();
+//        }
         Services.getInstance().agendaService.replyToComment(agendaId, parentid, comment).enqueue(new Callback<CommentPage>() {
             @Override
             public void onSucces(Response<CommentPage> response) {
-                onSwipeRefresh();
+                if(parentid == null) {
+                    noMoreContent = false;
+                    onScrollRefresh();
+                } else {
+                    // We don't know what page this will be on
+                    onSwipeRefresh();
+                }
             }
         });
     }
@@ -129,12 +119,4 @@ public class AgendaCommentsFragment extends Fragment{
             textbox.setText("");
         }
     }
-
-    SwipeRefreshLayout.OnRefreshListener onSwipeRefreshListener =
-            new SwipeRefreshLayout.OnRefreshListener() {
-        @Override
-        public void onRefresh() {
-            onSwipeRefresh();
-        }
-    };
 }

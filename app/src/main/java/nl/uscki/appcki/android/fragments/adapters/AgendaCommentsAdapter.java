@@ -44,7 +44,6 @@ public class AgendaCommentsAdapter extends BaseItemAdapter<AgendaCommentsAdapter
     public AgendaCommentsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_comment_item, parent, false);
-
         return new ViewHolder(view);
     }
 
@@ -55,7 +54,6 @@ public class AgendaCommentsAdapter extends BaseItemAdapter<AgendaCommentsAdapter
     @Override
     public void addItems(List<Comment> items) {
         super.addItems(items);
-        Log.e(getClass().getSimpleName(), "Just added items?");
     }
 
     @Override
@@ -84,11 +82,13 @@ public class AgendaCommentsAdapter extends BaseItemAdapter<AgendaCommentsAdapter
         commmenterName.setSpan(new StyleSpan(Typeface.BOLD), 0, commmenterName.length(), 0);
         holder.commenterName.setText(commmenterName);
 
-
         holder.commentContent.setText(Parser.parse(holder.comment.comment, true, holder.commentContent));
 
         // Wheeee, recursion!
+        Log.e(getClass().getSimpleName(), "Adding replies to holder");
         if(holder.comment.reactions != null && !holder.comment.reactions.isEmpty()) {
+            // Adapter can have trace replies from previous load. Clear first
+            holder.adapter.clear();
             holder.adapter.addItems(holder.comment.reactions);
         }
 
@@ -100,7 +100,6 @@ public class AgendaCommentsAdapter extends BaseItemAdapter<AgendaCommentsAdapter
             holder.replyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.e(getClass().getSimpleName(), "Start agenda reply");
                     holder.replyRow.setVisibility(View.VISIBLE);
                 }
             });
