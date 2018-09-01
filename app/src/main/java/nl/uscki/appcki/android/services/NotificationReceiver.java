@@ -349,13 +349,13 @@ public class NotificationReceiver extends FirebaseMessagingService {
             PendingIntent exportAgendapIntent =
                     PendingIntent.getService(context, 0, exportAgendaIntent, 0);
 
-            String agenda_export_label = getResources().getString(R.string.action_agenda_export);
+            String agenda_export_label = context.getResources().getString(R.string.action_agenda_export);
             notification.addAction(R.drawable.calendar, agenda_export_label, exportAgendapIntent);
         }
 
         if (allowSubscribe && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT_WATCH) {
             // Building remote input object
-            String subscribeLabel = getResources().getString(R.string.action_agenda_subscribe);
+            String subscribeLabel = context.getResources().getString(R.string.action_agenda_subscribe);
             RemoteInput remoteInput = new RemoteInput.Builder(AgendaSubscribeServiceHelper.PARAM_SUBSCRIBE_COMMENT)
                     .setLabel(subscribeLabel)
                     .setAllowFreeFormInput(true)
