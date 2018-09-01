@@ -163,6 +163,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 }
                 addAgendaActions(n, id,true, true, title, content, id);
                 intent = new Intent(this, AgendaActivity.class);
+                intent.putExtra(AgendaActivity.PARAM_AGENDA_ID, id);
                 addReproducabilityExtras(intent, title, content, id, id);
                 mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;

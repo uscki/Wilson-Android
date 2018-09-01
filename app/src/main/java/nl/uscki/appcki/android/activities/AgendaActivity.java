@@ -39,6 +39,8 @@ import nl.uscki.appcki.android.services.OnetimeAlarmReceiver;
 import retrofit2.Response;
 
 public class AgendaActivity extends BasicActivity {
+    public static final String PARAM_AGENDA_ID = "nl.uscki.appcki.android.activities.param.AGENDA_ID";
+
     AgendaItem item;
     TabLayout tabLayout;
     ViewPager viewPager;
@@ -118,24 +120,19 @@ public class AgendaActivity extends BasicActivity {
         if (getIntent().getBundleExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), AgendaItem.class);
-//            if (item == null || UserHelper.getInstance().getPerson() == null) {
-//                finish();
-//            }
             Log.e(this.getClass().toString(), "Generating AgendaItem through bundle extra item");
             Services.getInstance().agendaService.get(item.getId()).enqueue(agendaCallback);
         } else if (getIntent().getStringExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getStringExtra("item"), AgendaItem.class);
-//            if (item == null || UserHelper.getInstance().getPerson() == null) {
-//                finish();
-//            }
             Log.e(this.getClass().toString(), "Generating AgendaItem through String extra item");
             Services.getInstance().agendaService.get(item.getId()).enqueue(agendaCallback);
-        } else if (getIntent().getIntExtra("id", -1) >= 0) {
+        } else if (getIntent().getIntExtra(PARAM_AGENDA_ID, -1) >= 0) {
             Log.e(this.getClass().toString(), "Generating AgendaItem through id");
-            Services.getInstance().agendaService.get(getIntent().getIntExtra("id", -1)).enqueue(agendaCallback);
+            Services.getInstance().agendaService.get(getIntent().getIntExtra(PARAM_AGENDA_ID, -1)).enqueue(agendaCallback);
         } else {
             // the item is no longer loaded so we can't open this activity, thus we'll close it
+            Log.e(getClass().getSimpleName(), "Not loaded. Finish");
             finish();
         }
 
