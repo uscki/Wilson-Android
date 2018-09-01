@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,6 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.activities.SmoboActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
@@ -116,6 +118,10 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
                 @Override
                 public void onClick(View view) {
                     holder.replyRow.setVisibility(View.VISIBLE);
+                    Utils.toggleKeyboardForEditBox(
+                            holder.mView.getContext(),
+                            holder.actualCommentText,
+                            true);
                 }
             });
             holder.activateReplyCommentButton();

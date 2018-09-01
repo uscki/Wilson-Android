@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.CommentsAdapter;
@@ -113,7 +114,7 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
      */
     protected void clearText(EditText textbox) {
         if(textbox != null) {
-            textbox.clearFocus();
+            Utils.toggleKeyboardForEditBox(getContext(), textbox, false);
             textbox.setText("");
         }
     }

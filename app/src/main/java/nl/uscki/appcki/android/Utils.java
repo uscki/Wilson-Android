@@ -1,12 +1,17 @@
 package nl.uscki.appcki.android;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.IBinder;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -122,5 +127,39 @@ public class Utils {
     public static String timestampConversion(String timestamp) {
         Long time = Long.valueOf(timestamp);
         return timestampConversion(time);
+    }
+
+    /**
+     * When showing a new edit box, request focus for that box and show the key board
+     * @param context       Context of the view the edit box is in
+     * @param editText      Edit box to focus on
+     * @param show          Boolean indicating whether focus is requested or removed
+     */
+    public static void toggleKeyboardForEditBox(Context context, EditText editText, boolean show) {
+        if(context != null) {
+            InputMethodManager imm =
+                    (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            View view = editText.getRootView();
+
+            if(imm != null && view != null) {
+                IBinder windowToken = view.getWindowToken();
+                if(show) {
+                    imm.toggleSoftInputFromWindow(
+                            windowToken,
+                            InputMethodManager.SHOW_IMPLICIT,
+                            0);
+                    editText.setFocusable(true);
+                    if(context.getResources().getConfiguration().hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
+                        editText.requestFocusFromTouch();
+                    } else {
+                        editText.requestFocus();
+                    }
+                } else {
+                    imm.hideSoftInputFromWindow(windowToken, 0);
+                    editText.clearFocus();
+                }
+            }
+        }
     }
 }
