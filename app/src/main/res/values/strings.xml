@@ -216,6 +216,7 @@
     <string name="pref_calendar_export_auto_summary">Voeg evenementen waarvoor je je inschrijft automatisch toe aan je agenda</string>
     <string name="pref_meetingplanner_export_auto">Automatiseer vergaderplanners</string>
     <string name="pref_meetingplanner_export_auto_summary">Voeg geplande vergaderingen automatisch toe aan je agenda</string>
+    <string name="pref_save_in_calendar_empty_calendar_list_error">Geen agenda\'s gevonden. Log in in tenminste één agenda in je agenda applicatie en probeer opnieuw.</string>
 
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notificaties</string>
