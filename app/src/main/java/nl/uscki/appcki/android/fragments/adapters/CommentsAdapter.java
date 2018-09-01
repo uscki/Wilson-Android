@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -105,6 +106,11 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
             });
             holder.activateReplyCommentButton();
         }
+
+        // Is this comment an announcement?
+        if(holder.comment.announcement) {
+            holder.showIsAnnouncementView.setVisibility(View.VISIBLE);
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -117,6 +123,9 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
 
         @BindView(R.id.comment_placer_name)
         public TextView commenterName;
+
+        @BindView(R.id.verified_announcement_view)
+        ImageView showIsAnnouncementView;
 
         @BindView(R.id.comment_reply_button)
         public ImageButton replyButton;
