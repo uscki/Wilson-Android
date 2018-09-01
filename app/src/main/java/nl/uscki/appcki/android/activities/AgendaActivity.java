@@ -112,7 +112,7 @@ public class AgendaActivity extends BasicActivity {
         tabLayout = findViewById(R.id.tabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("Agenda"));
         tabLayout.addTab(tabLayout.newTab().setText("Deelnemers"));
-        tabLayout.addTab(tabLayout.newTab().setText("Reacties"));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.comments)));
         viewPager = findViewById(R.id.viewpager);
 
         if (getIntent().getBundleExtra("item") != null) {

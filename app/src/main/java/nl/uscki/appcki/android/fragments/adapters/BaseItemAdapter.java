@@ -5,10 +5,7 @@ package nl.uscki.appcki.android.fragments.adapters;
  */
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-
 import java.util.List;
-import java.util.ListIterator;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
@@ -22,6 +19,11 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
     public void update(List<K> items) {
         this.items.clear();
         this.items.addAll(items);
+        this.notifyDataSetChanged();
+    }
+
+    public void add(K item) {
+        this.items.add(item);
         this.notifyDataSetChanged();
     }
 
