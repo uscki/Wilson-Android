@@ -335,10 +335,7 @@ public class MainActivity extends BasicActivity
 
     public void changeDrawerMenuSelection(int menuItemId) {
         Menu navMenu = navigationView.getMenu();
-        MenuItem activeItem = navMenu.findItem(menuItemId);
-        Log.e("changeMenuSelection", "Looking for item with id " + menuItemId);
         for(int i = 0; i < navMenu.size(); i++) {
-            Log.e("changeMenuSelection", "Found " + navMenu.getItem(i).getItemId() + " for " + i + "th item");
             if(navMenu.getItem(i).getItemId() == menuItemId) {
                 navMenu.getItem(i).setChecked(true);
                 return;

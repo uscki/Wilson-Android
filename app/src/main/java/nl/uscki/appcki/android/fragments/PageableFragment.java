@@ -35,6 +35,8 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     public static final int NEW_ITEM_EDIT_BOX_POSITION_TOP = R.id.new_item_placeholder_top;
     public static final int NEW_ITEM_EDIT_BOX_POSITION_BOTTOM = R.id.new_item_placeholder_bottom;
     public static final int NEW_ITEM_EDIT_BOX_POSITION_DEFAULT = NEW_ITEM_EDIT_BOX_POSITION_TOP;
+    public static final int LAST_ON_TOP = 30;
+    public static final int FIRST_ON_TOP = 31;
 
     private BaseItemAdapter adapter;
     protected RecyclerView recyclerView;
@@ -53,8 +55,9 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     protected boolean refresh;
     protected boolean scrollLoad;
 
-    // Dealing with the FAB
+    // Dealing with the FAB en refreshing and stuff
     private int editBoxPosition = NEW_ITEM_EDIT_BOX_POSITION_DEFAULT;
+    private int scrollDirection = LAST_ON_TOP;
 
     protected Callback<T> callback = new Callback<T>() {
         @Override
@@ -198,13 +201,17 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     }
 
     public void refresh() {
-        if(swipeContainer != null) {
+        // Only refresh if more recent items appear on top. Otherwise,
+        // new elements added by user should be handled in the callback
+        if(scrollDirection == LAST_ON_TOP && swipeContainer != null) {
             page = 0;
             refresh = true;
+
             swipeContainer.post(new Runnable() {
                 @Override
                 public void run() {
                     swipeContainer.setRefreshing(true);
+                    onSwipeRefresh();
                 }
             });
 
@@ -224,6 +231,17 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
     protected void setEditBoxPosition(int position) {
         editBoxPosition = position;
+    }
+
+    /**
+     * Set the default scroll direction of this fragment.
+     * Either FIRST_ON_TOP, which indicates that on scrolling, more recent items are loaded, or
+     * LAST_ON_TOP, which indicates that on scrolling, less recent items are loaded
+     *
+     * @param direction FIRST_ON_TOP|LAST_ON_TOP
+     */
+    protected void setScrollDirection(int direction) {
+        scrollDirection = direction;
     }
 
     public FloatingActionButton setFabEnabled(@NonNull View view, boolean enabled) {

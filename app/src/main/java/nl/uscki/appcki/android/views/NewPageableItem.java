@@ -43,6 +43,7 @@ public abstract class NewPageableItem extends Fragment {
                     postNewItem().enqueue(new Callback() {
                         @Override
                         public void onSucces(Response response) {
+                            toggleKeyboard(false);
                             if (parent != null) parent.refresh();
                             if(focusOnCreateView) {
                                 hide();
@@ -105,7 +106,6 @@ public abstract class NewPageableItem extends Fragment {
     }
 
     protected void hide() {
-        toggleKeyboard(false);
         if(parent != null) {
             parent.removeNewPageableItemWidget();
             parent.onSwipeRefresh();
@@ -114,6 +114,7 @@ public abstract class NewPageableItem extends Fragment {
         }
     }
 
+    // TODO replace with method from UTILS
     public void focusNewItemInput() {
         getMainTextInput().setFocusableInTouchMode(true);
         if(getResources().getConfiguration().hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
@@ -124,6 +125,7 @@ public abstract class NewPageableItem extends Fragment {
         }
     }
 
+    // TODO replace with method from UTILS
     private void toggleKeyboard(boolean show) {
         Context context = getContext();
         if(context != null) {
