@@ -3,6 +3,7 @@ package nl.uscki.appcki.android.api;
 import nl.uscki.appcki.android.generated.agenda.Agenda;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
+import nl.uscki.appcki.android.generated.comments.Comment;
 import nl.uscki.appcki.android.generated.comments.CommentPage;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -40,7 +41,7 @@ public interface AgendaService {
     Call<CommentPage> getComments(@Path("id") Integer agendaId, @Query("page") Integer page, @Query("size") Integer size);
 
     @POST("agenda/{id}/comments")
-    Call<CommentPage> replyToComment(@Path("id") Integer agendaId, @Query("parentId") Integer parentId, @Query("comment") String comment);
+    Call<Comment> replyToComment(@Path("id") Integer agendaId, @Query("parentId") Integer parentId, @Query("comment") String comment);
 
     @GET("agenda/subscribed")
     Call<Agenda> subscribed();
