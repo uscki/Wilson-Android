@@ -67,9 +67,6 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
     public void onBindViewHolder(@NonNull final CommentsAdapter.ViewHolder holder, int position) {
         holder.comment = items.get(position);
 
-        Log.e(getClass().getSimpleName(), "Creating holder for item position " + position +
-        "\n\t\tCommenter: " + holder.comment.person.getPostalname() + "\n\t\tcommentStart: " + holder.comment.comment.get(0) + "\n\t\tAnouncement: "+ holder.comment.announcement);
-
         // Set the photo of the commenter
         Integer profilePictureId = holder.comment.person.getPhotomediaid();
         if(profilePictureId != null) {
