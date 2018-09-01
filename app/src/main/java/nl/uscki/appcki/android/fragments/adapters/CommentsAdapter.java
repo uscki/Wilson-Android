@@ -52,9 +52,21 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
         this.commentsFragment = fragment;
     }
 
+    /**
+     * NOTE: Explicitly set all properties. ViewHolder may be overwritten with a different comment.
+     * Not all viewholders are built from scratch!
+     *
+     * If properties are not explicitly set, they can take the value of the wrong comment
+     * 
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull final CommentsAdapter.ViewHolder holder, int position) {
         holder.comment = items.get(position);
+
+        Log.e(getClass().getSimpleName(), "Creating holder for item position " + position +
+        "\n\t\tCommenter: " + holder.comment.person.getPostalname() + "\n\t\tcommentStart: " + holder.comment.comment.get(0) + "\n\t\tAnouncement: "+ holder.comment.announcement);
 
         // Set the photo of the commenter
         Integer profilePictureId = holder.comment.person.getPhotomediaid();
@@ -84,14 +96,16 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
         // Set the content of the comment
         holder.commentContent.setText(Parser.parse(holder.comment.comment, true, holder.commentContent));
 
+        // Clear the view holder every time it is bound. Otherwise, for some reason, replies can
+        // appear on the wrong comments, and are never removed again
+        holder.adapter.clear();
+
         // Replies to comments, if any, are added recursively. As for now, only one level of
         // recursion is allowed
         if(holder.comment.reactions != null && !holder.comment.reactions.isEmpty() && !isNested) {
             // Adapter can have trace replies from previous load. Clear first
-            holder.adapter.clear();
             holder.adapter.addItems(holder.comment.reactions);
         }
-
         // Set visibilities depending on level of recursion
         holder.replyRow.setVisibility(View.GONE);
         if(isNested) {
@@ -110,6 +124,11 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
         // Is this comment an announcement?
         if(holder.comment.announcement) {
             holder.showIsAnnouncementView.setVisibility(View.VISIBLE);
+        } else {
+            // Set view to gone explicitly, because sometimes the view holder is shortly bound
+            // with the wrong comment. In that case, it is set to visible, and never to invisible
+            // again
+            holder.showIsAnnouncementView.setVisibility(View.GONE);
         }
     }
 
