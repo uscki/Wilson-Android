@@ -87,15 +87,18 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
         switch (type) {
             case meeting_filledin:
-                mainBackstackAction = MainActivity.ACTION_MEETING_OVERVIEW;
+                intent = new Intent(this, MeetingActivity.class);
+                intent.putExtra(MeetingActivity.PARAM_MEETING_ID, id);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_STATUS);
                 }
+                mainBackstackAction = MainActivity.ACTION_MEETING_OVERVIEW;
             case meeting_planned:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_EVENT);
                 }
                 intent = new Intent(this, MeetingActivity.class);
+                intent.putExtra(MeetingActivity.PARAM_MEETING_ID, id);
 
                 if(PermissionHelper.canExportMeetingAuto()) {
                     // Start a service to export this meeting to calendar
@@ -128,6 +131,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
                     n.setCategory(Notification.CATEGORY_EVENT);
                 }
                 intent = new Intent(this, MeetingActivity.class);
+                intent.putExtra(MeetingActivity.PARAM_MEETING_ID, id);
                 mainBackstackAction = MainActivity.ACTION_MEETING_OVERVIEW;
                 break;
             case forum_reply:
@@ -152,6 +156,9 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 n.setContentIntent(pIntent);
                 break;
             case agenda_announcement:
+                // TODO: at some point, open the comments tab automatically
+                intent = new Intent(this, AgendaActivity.class);
+                intent.putExtra(AgendaActivity.PARAM_AGENDA_ID, id);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_EVENT);
                 }
@@ -168,10 +175,12 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
             case agenda_reply:
+                // TODO: at some point, open the comments tab automatically
+                intent = new Intent(this, AgendaActivity.class);
+                intent.putExtra(AgendaActivity.PARAM_AGENDA_ID, id);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_SOCIAL);
                 }
-                intent = new Intent(this, AgendaActivity.class);
                 mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
             case news:
