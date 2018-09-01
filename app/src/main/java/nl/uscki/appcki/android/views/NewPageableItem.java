@@ -68,8 +68,6 @@ public abstract class NewPageableItem extends Fragment {
         if(parent != null && parent.getView() != null && focusOnCreateView) {
             // New Item fragment deleted. Re-enable FAB
             parent.setFabEnabled(parent.getView(), true);
-        } else {
-            Log.e(getClass().getSimpleName(), "Can't reenable FAB, since view is already destroyed");
         }
         super.onDestroy();
     }
