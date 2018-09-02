@@ -1,6 +1,7 @@
 package nl.uscki.appcki.android.fragments.comments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.CommentsAdapter;
 import nl.uscki.appcki.android.generated.comments.Comment;
 import nl.uscki.appcki.android.generated.comments.CommentPage;
+import nl.uscki.appcki.android.views.NewSimplePageableItem;
+import retrofit2.Call;
 import retrofit2.Response;
 
 public abstract class CommentsFragment extends PageableFragment<CommentPage> {
@@ -60,6 +63,19 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
 //        postCommentButton.setOnClickListener(postCommentListener);
 
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        setEditBoxPosition(NEW_ITEM_EDIT_BOX_POSITION_BOTTOM);
+        setScrollDirection(FIRST_ON_TOP);
+        NewCommentWidget newCommentWidget = new NewCommentWidget();
+        newCommentWidget.setCommentsFragment(this);
+
+        // TODO add this fragment propertly
+//        this.addNewPageableItemWidget(newCommentWidget);
     }
 
     @Override
@@ -106,7 +122,7 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
      * @param comment               The comment content
      * @return                      Comment object as returned by the server
      */
-    protected abstract void sendCommentToServer(Integer parentId, String comment);
+    protected abstract Call<Comment> sendCommentToServer(Integer parentId, String comment);
 
     /**
      * Clear the text of an edit box and remove focus.
@@ -147,12 +163,4 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
             }
         }
     };
-
-
-
-
-
-
-
-
 }

@@ -1,15 +1,11 @@
 package nl.uscki.appcki.android.views;
 
-import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -18,11 +14,12 @@ import java.util.List;
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.fragments.PageableFragment;
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.helpers.WrongTextfieldHelper;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public abstract class NewPageableItem extends Fragment {
+public abstract class NewPageableItem<T extends IWilsonBaseItem> extends Fragment {
     protected PageableFragment parent;
 
     private boolean focusOnCreateView = false;
@@ -41,18 +38,7 @@ public abstract class NewPageableItem extends Fragment {
             public void onClick(View view) {
                 List<View> incorrectViews = getIncorrectFields();
                 if(incorrectViews.isEmpty()) {
-                    postNewItem().enqueue(new Callback() {
-                        @Override
-                        public void onSucces(Response response) {
-                            Utils.toggleKeyboardForEditBox(getContext(), getMainTextInput(), false);
-                            if (parent != null) parent.refresh();
-                            if(focusOnCreateView) {
-                                hide();
-                            } else {
-                                getMainTextInput().setText("");
-                            }
-                        }
-                    });
+                    postNewItem().enqueue(getPostNewItemCallback());
                 } else {
                     WrongTextfieldHelper.alertIncorrectViews(getContext(), incorrectViews);
                 }
@@ -82,9 +68,19 @@ public abstract class NewPageableItem extends Fragment {
         this.parent = parent;
     }
 
+    protected Callback<T> getPostNewItemCallback() {
+        return new Callback<T>() {
+            @Override
+            public void onSucces(Response response) {
+                if (parent != null) parent.refresh();
+                cleanupAfterPost();
+            }
+        };
+    }
+
     protected abstract EditText getMainTextInput();
     protected abstract ImageButton getConfirmButton();
-    protected abstract Call postNewItem();
+    protected abstract Call<T> postNewItem();
 
     /**
      * Obtain a list of input fragments in this fragment for which
@@ -102,6 +98,15 @@ public abstract class NewPageableItem extends Fragment {
      */
     protected boolean isFieldNotEmpty(EditText textField) {
         return !textField.getText().toString().trim().isEmpty();
+    }
+
+    protected void cleanupAfterPost() {
+        Utils.toggleKeyboardForEditBox(getContext(), getMainTextInput(), false);
+        if(focusOnCreateView) {
+            hide();
+        } else {
+            getMainTextInput().setText("");
+        }
     }
 
     protected void hide() {
