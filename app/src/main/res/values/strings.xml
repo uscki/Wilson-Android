@@ -51,6 +51,7 @@
 
     <string name="agenda_inschrijven_verplicht">Inschrijven verplicht</string>
     <string name="agenda_archive_menu_string">Archief</string>
+    <string name="poll_archive_menu_string">Archief</string>
     <string name="action_agenda_export">Opslaan</string>
     <string name="action_agenda_remove_from_calendar">Verwijderen uit agenda</string>
 
@@ -266,4 +267,5 @@
     <string name="vibration_pattern_imperial_march">Imperial March</string>
     <string name="vibration_pattern_CKI_morse">CKI (morse)</string>
     <string name="vibration_pattern_default">@string/vibration_pattern_long_twice</string>
+    <string name="vote_imperative">Stemmen</string>
 </resources>
