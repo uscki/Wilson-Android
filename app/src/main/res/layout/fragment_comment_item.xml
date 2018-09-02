@@ -96,14 +96,13 @@
                 android:inputType="textCapSentences|textAutoComplete|textAutoCorrect|textMultiLine"
                 />
 
-            <!-- TODO: Change background to @drawable/rounded_resource_colour after merge of PR #81 -->
             <ImageButton
                 android:id="@+id/place_comment_button"
                 android:layout_width="34dp"
                 android:layout_height="34dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
-                android:background="@drawable/agenda_inschrijven_verplicht_background"
+                android:background="@drawable/rounded_resource_colour"
                 android:textColor="@color/colorWhite"
                 app:srcCompat="@drawable/plus" />
 
