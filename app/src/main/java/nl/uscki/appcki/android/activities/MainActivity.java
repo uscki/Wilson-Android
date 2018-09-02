@@ -257,6 +257,8 @@ public class MainActivity extends BasicActivity
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;
+        } else if (id == R.id.action_poll_archive) {
+            openFragment(new PollOverviewFragment(), null);
         }
 
         return super.onOptionsItemSelected(item);
