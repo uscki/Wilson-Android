@@ -18,7 +18,6 @@ import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.poll.PollResultFragment;
-import nl.uscki.appcki.android.fragments.poll.PollVoteFragment;
 import nl.uscki.appcki.android.generated.poll.PollItem;
 
 /**
@@ -64,11 +63,7 @@ public class PollAdapter extends BaseItemAdapter<PollAdapter.ViewHolder, PollIte
                 Bundle bundle = new Bundle();
                 String item = new Gson().toJson(holder.mItem);
                 bundle.putString("item", item);
-                if (holder.mItem.getMyVote() == null && holder.mItem.getPoll().getActive()) {
-                    EventBus.getDefault().post(new OpenFragmentEvent(new PollVoteFragment(), bundle));
-                } else {
-                    EventBus.getDefault().post(new OpenFragmentEvent(new PollResultFragment(), bundle));
-                }
+                EventBus.getDefault().post(new OpenFragmentEvent(new PollResultFragment(), bundle));
             }
         });
     }
