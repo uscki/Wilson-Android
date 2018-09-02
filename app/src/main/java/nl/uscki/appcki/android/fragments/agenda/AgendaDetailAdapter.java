@@ -33,6 +33,10 @@ public class AgendaDetailAdapter extends FragmentStatePagerAdapter {
                 AgendaDeelnemersFragment fragment1 = new AgendaDeelnemersFragment();
                 fragment1.setArguments(bundle);
                 return fragment1;
+            case AgendaDetailTabsFragment.COMMENTS:
+                AgendaCommentsFragment fragment2 = new AgendaCommentsFragment();
+                fragment2.setArguments(bundle);
+                return fragment2;
         }
 
         return null;
@@ -40,6 +44,6 @@ public class AgendaDetailAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 }

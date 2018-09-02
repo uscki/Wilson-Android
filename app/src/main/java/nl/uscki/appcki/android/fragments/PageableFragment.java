@@ -51,7 +51,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
     // The current page
     protected Integer page;
-    private boolean noMoreContent;
+    protected boolean noMoreContent;
     protected boolean refresh;
     protected boolean scrollLoad;
 

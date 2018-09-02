@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import java.util.List;
-import java.util.ListIterator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +32,11 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
     public void update(List<K> items) {
         this.items.clear();
         this.items.addAll(items);
+        this.notifyDataSetChanged();
+    }
+
+    public void add(K item) {
+        this.items.add(item);
         this.notifyDataSetChanged();
     }
 

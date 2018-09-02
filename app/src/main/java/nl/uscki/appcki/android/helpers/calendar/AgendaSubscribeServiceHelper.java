@@ -1,14 +1,13 @@
-package nl.uscki.appcki.android.services;
+package nl.uscki.appcki.android.helpers.calendar;
 
-import android.app.IntentService;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.JobIntentService;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.google.gson.Gson;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.ServiceGenerator;
@@ -18,17 +17,12 @@ import nl.uscki.appcki.android.generated.ServerError;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import nl.uscki.appcki.android.services.EventExportJobService;
+import nl.uscki.appcki.android.services.NotificationReceiver;
 import retrofit2.Call;
 import retrofit2.Response;
 
-/**
- * An {@link IntentService} subclass for subscribing users to an agenda event
- */
-public class AgendaSubscriberService extends JobIntentService {
-
-    // Must be unique for scheduled jobs, but always used for this class
-    public static final int AGENDA_SUBSCRIBE_JOB_ID = 10006;
-
+public class AgendaSubscribeServiceHelper {
     // Action names accepted by this service
     public static final String ACTION_SUBSCRIBE_AGENDA
             = "nl.uscki.appcki.android.services.action.SUBSCRIBE_AGENDA";
@@ -40,21 +34,10 @@ public class AgendaSubscriberService extends JobIntentService {
             = "nl.uscki.appcki.android.services.extra.PARAM_AGENDA_SUBSCRIBE_COMMENT";
 
 
+    private Context context;
 
-    /**
-     * Starts this service to perform action subscribe to agenda event action.
-     * If the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    public static void enqueueSubscribeAction(Context context, int agendaId) {
-        Intent intent = new Intent(context, AgendaSubscriberService.class);
-        intent.setAction(ACTION_SUBSCRIBE_AGENDA);
-        intent.putExtra(PARAM_AGENDA_ID, agendaId);
-
-        // JobIntentService is enqueued in oreo+ devices, but starts using context.startService
-        // on pre-Oreo devices
-        EventExportService.enqueueWork(context, AgendaSubscriberService.class, AGENDA_SUBSCRIBE_JOB_ID, intent);
+    public AgendaSubscribeServiceHelper(Context context) {
+        this.context = context;
     }
 
     /**
@@ -63,7 +46,7 @@ public class AgendaSubscriberService extends JobIntentService {
      * @param intent    Intent with which this service was started, if action is subscribe
      * @return          String containing user entered subscribe text
      */
-    private CharSequence getSubscribeText(Intent intent) {
+    public CharSequence getSubscribeText(Intent intent) {
         Bundle remoteInput = android.support.v4.app.RemoteInput.getResultsFromIntent(intent);
 
         if(remoteInput != null) {
@@ -73,29 +56,15 @@ public class AgendaSubscriberService extends JobIntentService {
         return "";
     }
 
-    @Override
-    protected void onHandleWork(@NonNull Intent intent) {
-        final String action = intent.getAction();
-        if (ACTION_SUBSCRIBE_AGENDA.equals(action)) {
-            final int agendaId = intent.getIntExtra(PARAM_AGENDA_ID, -1);
-            final String subscribeComment = getSubscribeText(intent).toString();
-
-            Log.e(this.toString(), "Found agenda id " + agendaId + " and comment '" + subscribeComment + "'");
-
-            handleAgendaSubscribeAction(agendaId, subscribeComment, intent);
-        }
-    }
-
-
     /**
      * Subscribe the active user to an agenda event
      * @param agendaId              ID of the agenda event
      * @param subscribeComment      User entered subscription comment
      * @param intent                Intent with action subscribe, with which this service was started
      */
-    private void handleAgendaSubscribeAction(final int agendaId, final String subscribeComment, final Intent intent) {
+    public void handleAgendaSubscribeAction(final int agendaId, final String subscribeComment, final Intent intent) {
         if(agendaId < 0) {
-            handleError(intent, getString(R.string.content_loading_error));
+            handleError(intent, context.getString(R.string.content_loading_error));
             return;
         }
 
@@ -116,27 +85,27 @@ public class AgendaSubscriberService extends JobIntentService {
                         if(response.isSuccessful()) {
                             handleSuccess(response, agendaId, intent);
                         } else {
-                            String errorMsg = getString(R.string.connection_error);
+                            String errorMsg = context.getString(R.string.connection_error);
                             try {
                                 Gson gson = new Gson();
                                 ServerError error = gson.fromJson(
                                         response.errorBody().string(), ServerError.class);
 
                                 if(error.getStatus() == 401) {
-                                    errorMsg = getString(R.string.notauthorized);
+                                    errorMsg = context.getString(R.string.notauthorized);
                                 } else if(error.getStatus() == 403) {
-                                    errorMsg = getString(R.string.notloggedin);
+                                    errorMsg = context.getString(R.string.notloggedin);
                                 } else if(error.getStatus() == 404) {
-                                    errorMsg = getString(R.string.content_loading_error);
+                                    errorMsg = context.getString(R.string.content_loading_error);
                                 } else if (error.getStatus() == 500) {
-                                    errorMsg = getString(R.string.unknown_server_error);
+                                    errorMsg = context.getString(R.string.unknown_server_error);
                                 }
 
                             } catch (Exception e) {
                                 Log.e(getClass().toString(), e.toString());
                                 Toast.makeText(
-                                        AgendaSubscriberService.this,
-                                        getString(R.string.unknown_server_error),
+                                        context,
+                                        context.getString(R.string.unknown_server_error),
                                         Toast.LENGTH_SHORT)
                                         .show();
                             }
@@ -147,7 +116,7 @@ public class AgendaSubscriberService extends JobIntentService {
                     @Override
                     public void onFailure(Call<AgendaParticipantLists> call, Throwable t) {
                         Log.e(getClass().toString(), t.getMessage());
-                        handleError(intent, getString(R.string.unknown_server_error));
+                        handleError(intent, context.getString(R.string.unknown_server_error));
                     }
                 });
     }
@@ -167,22 +136,22 @@ public class AgendaSubscriberService extends JobIntentService {
     ) {
         EventBus.getDefault()
                 .post(new AgendaItemSubscribedEvent(response.body(), false));
-        NotificationReceiver notificationReceiver = new NotificationReceiver();
+        NotificationReceiver notificationReceiver = new NotificationReceiver(context);
 
         boolean allowExport = true;
 
         if(PermissionHelper.canExportCalendarAuto()) {
             allowExport = false;
-            EventExportService
-                    .enqueueExportAgendaToCalendarAction(this, agendaId);
+            EventExportJobService
+                    .enqueueExportAgendaToCalendarAction(context, agendaId);
         }
 
         notificationReceiver
                 .buildNewAgendaItemNotificationFromIntent(intent, allowExport, false);
 
         Toast.makeText(
-                this,
-                getString(R.string.agenda_subscribe_success),
+                context,
+                context.getString(R.string.agenda_subscribe_success),
                 Toast.LENGTH_SHORT)
                 .show();
     }
@@ -193,10 +162,10 @@ public class AgendaSubscriberService extends JobIntentService {
      * @param error     Error message to show
      */
     private void handleError(Intent intent, String error) {
-        NotificationReceiver notificationReceiver = new NotificationReceiver();
+        NotificationReceiver notificationReceiver = new NotificationReceiver(context);
         notificationReceiver.buildNewAgendaItemNotificationFromIntent(intent, true, true);
         Toast.makeText(
-                this,
+                context,
                 error,
                 Toast.LENGTH_SHORT)
                 .show();
