@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 
 import java.util.List;
 
+import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.helpers.WrongTextfieldHelper;
@@ -43,7 +44,7 @@ public abstract class NewPageableItem extends Fragment {
                     postNewItem().enqueue(new Callback() {
                         @Override
                         public void onSucces(Response response) {
-                            toggleKeyboard(false);
+                            Utils.toggleKeyboardForEditBox(getContext(), getMainTextInput(), false);
                             if (parent != null) parent.refresh();
                             if(focusOnCreateView) {
                                 hide();
@@ -59,7 +60,7 @@ public abstract class NewPageableItem extends Fragment {
         });
 
         if(focusOnCreateView) {
-            focusNewItemInput();
+            Utils.toggleKeyboardForEditBox(getContext(), getMainTextInput(), true);
         }
     }
 
@@ -109,39 +110,6 @@ public abstract class NewPageableItem extends Fragment {
             parent.onSwipeRefresh();
         } else {
             Log.e(getClass().getSimpleName(), "Trying to call methods on parent class, which is null");
-        }
-    }
-
-    // TODO replace with method from UTILS
-    public void focusNewItemInput() {
-        getMainTextInput().setFocusableInTouchMode(true);
-        if(getResources().getConfiguration().hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
-            getMainTextInput().requestFocusFromTouch();
-        } else {
-            getMainTextInput().requestFocus();
-            toggleKeyboard(true);
-        }
-    }
-
-    // TODO replace with method from UTILS
-    private void toggleKeyboard(boolean show) {
-        Context context = getContext();
-        if(context != null) {
-            View view = getMainTextInput().getRootView();
-
-            InputMethodManager iim =
-                    (InputMethodManager) getContext()
-                            .getSystemService(Context.INPUT_METHOD_SERVICE);
-
-            // Avoiding null pointers is better than showing keyboard, so in case if null: ignore
-            if(iim != null && view != null) {
-                IBinder windowToken = view.getWindowToken();
-                if (show) {
-                    iim.toggleSoftInputFromWindow(windowToken, InputMethodManager.SHOW_IMPLICIT, 0);
-                } else {
-                    iim.hideSoftInputFromWindow(windowToken, 0);
-                }
-            }
         }
     }
 }
