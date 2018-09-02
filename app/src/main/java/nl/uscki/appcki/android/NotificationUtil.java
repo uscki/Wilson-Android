@@ -3,16 +3,21 @@ package nl.uscki.appcki.android;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Parcel;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -348,9 +353,32 @@ public class NotificationUtil extends ContextWrapper {
                 VibrationEffect vEffect = VibrationEffect.createWaveform(pattern, -1);
 
                 // Vibrate the loaded vibration effect
-                v.vibrate(vEffect);
+                if(isVibrationEnabled()) {
+                    v.vibrate(vEffect);
+                }
             }
         }
+    }
+
+    /**
+     * Check if vibration is currently active.
+     * Gotta love stack overflow
+     * https://stackoverflow.com/questions/32709260/android-detect-if-the-vibrate-setting-in-the-device-is-on-or-off-esp-for-the-c
+     * @return  Boolean indicating vibration status
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private boolean isVibrationEnabled() {
+        boolean vibrationStatus = false;
+        AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager != null && audioManager.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
+            //ensuring it is not on silent
+            if (audioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) {
+                vibrationStatus = true;
+            } else if(1 == Settings.System.getInt(getContentResolver(), Settings.System.VIBRATE_WHEN_RINGING, 0)) {
+                vibrationStatus = true;
+            }
+        }
+        return vibrationStatus;
     }
 
     /**
