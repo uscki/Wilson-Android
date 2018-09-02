@@ -155,6 +155,11 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         return true;
     }
 
+    public void scrollToEnd() {
+        if(recyclerView == null) return;
+        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+    }
+
     protected void setupRecyclerView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
 

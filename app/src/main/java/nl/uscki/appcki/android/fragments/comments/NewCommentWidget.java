@@ -25,6 +25,7 @@ public class NewCommentWidget extends NewSimplePageableItem<Comment>{
                 if(response != null && response.body() != null) {
                     cleanupAfterPost();
                     commentsFragment.getAdapter().add(response.body());
+                    commentsFragment.scrollToEnd();
                 }
             }
         };

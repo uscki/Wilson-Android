@@ -59,9 +59,6 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
         // Load initial data
         onSwipeRefresh();
 
-        // TODO restore post comment funcionality
-//        postCommentButton.setOnClickListener(postCommentListener);
-
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -74,8 +71,7 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
         NewCommentWidget newCommentWidget = new NewCommentWidget();
         newCommentWidget.setCommentsFragment(this);
 
-        // TODO add this fragment propertly
-//        this.addNewPageableItemWidget(newCommentWidget);
+        this.addNewPageableItemWidget(newCommentWidget, false);
     }
 
     @Override
@@ -101,7 +97,7 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
     public void postComment(EditText commentBox, final Integer parentId) {
         String comment = commentBox.getText().toString();
         clearText(commentBox);
-        sendCommentToServer(parentId, comment);
+        sendCommentToServer(parentId, comment).enqueue(commentPostedCallback);
     }
 
     /**
@@ -134,16 +130,6 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
             textbox.setText("");
         }
     }
-
-    /**
-     * onClick listener for posting a comment that is not a reply
-     */
-    private View.OnClickListener postCommentListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            postComment(commentText, (Integer) null);
-        }
-    };
 
     /**
      * Callback used for posting a new comment. This callback automatically
