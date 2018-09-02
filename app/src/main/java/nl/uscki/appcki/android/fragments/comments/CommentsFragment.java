@@ -112,7 +112,8 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
     }
 
     /**
-     * This method should post a new comment to the server. Use the field `commentOnTopicId`
+     * This method should return a call that will post a new comment to the server, but not yet
+     * enque it. Use the field `commentOnTopicId` for the first ID required in the call
      *
      * @param parentId              (Optional) the ID of the comment this is a reply to (if any)
      * @param comment               The comment content
