@@ -41,6 +41,7 @@ import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
@@ -316,15 +317,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-//            bindPreferenceSummaryToValue(findPreference("example_text"));
-//            bindPreferenceSummaryToValue(findPreference("example_list"));
-
-
         }
 
         @Override
@@ -514,6 +506,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             if(calendarList.isEmpty()) {
                 SwitchPreference use_cal_export = (SwitchPreference) findPreference("calendar_use_export");
                 use_cal_export.setChecked(false);
+                String errorMessage = getResources().getString(R.string.pref_save_in_calendar_empty_calendar_list_error);
+                Context context = getActivity();
+                if(context != null) {
+                    Toast.makeText(
+                            context,
+                            errorMessage,
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+
                 return;
             }
 

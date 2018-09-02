@@ -52,6 +52,7 @@
     <string name="agenda_inschrijven_verplicht">Inschrijven verplicht</string>
     <string name="agenda_archive_menu_string">Archief</string>
     <string name="poll_archive_menu_string">Archief</string>
+    <string name="vote_imperative">Stemmen</string>
     <string name="action_agenda_export">Opslaan</string>
     <string name="action_agenda_remove_from_calendar">Verwijderen uit agenda</string>
 
@@ -217,6 +218,7 @@
     <string name="pref_calendar_export_auto_summary">Voeg evenementen waarvoor je je inschrijft automatisch toe aan je agenda</string>
     <string name="pref_meetingplanner_export_auto">Automatiseer vergaderplanners</string>
     <string name="pref_meetingplanner_export_auto_summary">Voeg geplande vergaderingen automatisch toe aan je agenda</string>
+    <string name="pref_save_in_calendar_empty_calendar_list_error">Geen agenda\'s gevonden. Log in in tenminste één agenda in je agenda applicatie en probeer opnieuw.</string>
 
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notificaties</string>
@@ -267,5 +269,10 @@
     <string name="vibration_pattern_imperial_march">Imperial March</string>
     <string name="vibration_pattern_CKI_morse">CKI (morse)</string>
     <string name="vibration_pattern_default">@string/vibration_pattern_long_twice</string>
-    <string name="vote_imperative">Stemmen</string>
+
+    <!-- Comments -->
+    <string name="comments_empty_text">Geen reacties</string>
+    <string name="comments">Reacties</string>
+    <string name="action_comment">Reageer</string>
+    <string name="comment_hint">Reactie</string>
 </resources>
