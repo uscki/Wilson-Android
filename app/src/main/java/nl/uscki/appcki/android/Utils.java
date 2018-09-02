@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 
@@ -17,6 +18,21 @@ import org.joda.time.Weeks;
 import org.joda.time.Years;
 
 import java.util.Locale;
+
+import nl.uscki.appcki.android.activities.MainActivity;
+import nl.uscki.appcki.android.fragments.LoginFragment;
+import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
+import nl.uscki.appcki.android.fragments.home.HomeAgendaTab;
+import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
+import nl.uscki.appcki.android.fragments.home.HomeRoephoekTab;
+import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
+import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
+import nl.uscki.appcki.android.fragments.meeting.MeetingPlannerFragment;
+import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
+import nl.uscki.appcki.android.fragments.poll.PollResultAdapter;
+import nl.uscki.appcki.android.fragments.poll.PollResultFragment;
+import nl.uscki.appcki.android.fragments.quotes.QuoteFragment;
+import nl.uscki.appcki.android.fragments.search.SmoboSearch;
 
 /**
  * Created by peter on 11/23/16.
@@ -102,6 +118,44 @@ public class Utils {
                 useBrackets ? "(%s)" : "%s",
                 timeIndication
         );
+    }
+
+    /**
+     * Find the class of the fragment corresponding to a Screen
+     * @param screen    Screen to find fragment class for
+     * @return          Fragment class for screen
+     */
+    public static Class<? extends Fragment> getClassForScreen(MainActivity.Screen screen) {
+        switch (screen) {
+            case LOGIN:
+                return LoginFragment.class;
+            case NEWS:
+                return HomeNewsTab.class;
+            case AGENDA:
+                return HomeAgendaTab.class;
+            case POLL_OVERVIEW:
+                return PollOverviewFragment.class;
+            case ROEPHOEK:
+                return HomeRoephoekTab.class;
+            case AGENDA_DETAIL:
+                return AgendaDetailTabsFragment.class;
+            case MEETING_OVERVIEW:
+                return MeetingOverviewFragment.class;
+            case MEETING_PLANNER:
+                return MeetingPlannerFragment.class;
+            case MEETING_DETAIL:
+                return MeetingDetailTabsFragment.class;
+            case QUOTE_OVERVIEW:
+                return QuoteFragment.class;
+            case POLL_DETAIL:
+                return PollResultFragment.class;
+            case POLL_ACTIVE:
+                return PollResultFragment.class;
+            case SMOBO_SEARCH:
+                return SmoboSearch.class;
+            default:
+                return null;
+        }
     }
 
     public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {

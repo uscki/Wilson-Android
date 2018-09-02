@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -26,6 +26,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
@@ -35,7 +36,6 @@ import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
-import nl.uscki.appcki.android.fragments.dialogs.RoephoekDialogFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
@@ -186,6 +186,11 @@ public class MainActivity extends BasicActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            if(handleChildFragmentStack()) {
+                // Stop here, as a back action has been performed
+                return;
+            }
+
             if (currentScreen == Screen.AGENDA_DETAIL) {
                 openTab(HomeFragment.AGENDA);
             } else if (currentScreen == Screen.MEETING_PLANNER || currentScreen == Screen.MEETING_DETAIL) {
@@ -204,6 +209,28 @@ public class MainActivity extends BasicActivity
                 super.onBackPressed();
             }
         }
+    }
+
+    private boolean handleChildFragmentStack() {
+        FragmentManager fm = getSupportFragmentManager();
+        Class currentFragmentClass = Utils.getClassForScreen(currentScreen);
+        if(currentFragmentClass == null) return false;
+
+        for(Fragment f : fm.getFragments()) {
+            if(f.getClass() == currentFragmentClass) {
+                FragmentManager cfm = f.getChildFragmentManager();
+                if(cfm.getBackStackEntryCount() > 0) {
+                    cfm.popBackStack();
+                    return true;
+                }
+
+                // Nothing to do here
+                return false;
+            }
+        }
+
+        // No fragment found
+        return false;
     }
 
     public static void setHomescreenDestroyed() {
@@ -230,11 +257,6 @@ public class MainActivity extends BasicActivity
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;
-        } else if(id == R.id.action_roephoek_roep) {
-            buildRoephoekAddDialog();
-            return true;
-        } else if(id == R.id.action_poll_archive) {
-            openFragment(new PollOverviewFragment(), null);
         }
 
         return super.onOptionsItemSelected(item);
@@ -317,10 +339,7 @@ public class MainActivity extends BasicActivity
 
     public void changeDrawerMenuSelection(int menuItemId) {
         Menu navMenu = navigationView.getMenu();
-        MenuItem activeItem = navMenu.findItem(menuItemId);
-        Log.e("changeMenuSelection", "Looking for item with id " + menuItemId);
         for(int i = 0; i < navMenu.size(); i++) {
-            Log.e("changeMenuSelection", "Found " + navMenu.getItem(i).getItemId() + " for " + i + "th item");
             if(navMenu.getItem(i).getItemId() == menuItemId) {
                 navMenu.getItem(i).setChecked(true);
                 return;
@@ -400,11 +419,6 @@ public class MainActivity extends BasicActivity
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
-    private void buildRoephoekAddDialog() {
-        DialogFragment newFragment = new RoephoekDialogFragment();
-        newFragment.show(getSupportFragmentManager(), "roephoek_add");
-    }
-
     public static void hideKeyboard(View someView) {
         InputMethodManager imm = (InputMethodManager) someView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if(imm != null)
@@ -452,9 +466,7 @@ public class MainActivity extends BasicActivity
                     focusTriesSoFar >= 3) {
 
                 focusNewsId = -1;
-
             }
-
             focusTriesSoFar++;
         }
     }
