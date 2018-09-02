@@ -275,4 +275,7 @@
     <string name="comments">Reacties</string>
     <string name="action_comment">Reageer</string>
     <string name="comment_hint">Reactie</string>
+
+    <!-- Quote -->
+    <string name="quote">Quote</string>
 </resources>
