@@ -36,4 +36,8 @@ public interface QuoteService {
     @FormUrlEncoded
     @POST("quote/vote")
     Call<Quote> vote(@Field("id") Integer id, @Field("positive") boolean positive, @Field("html") boolean html);
+
+    @FormUrlEncoded
+    @POST("quote/new")
+    Call<Quote> newQuote(@Field("quote") String name, @Field("html") boolean html);
 }

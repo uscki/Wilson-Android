@@ -57,6 +57,7 @@ public class AgendaDetailTabsFragment extends Fragment implements ConfirmationDi
 
     public static final int AGENDA = 0;
     public static final int DEELNEMERS = 1;
+    public static final int COMMENTS = 2;
 
     public AgendaDetailTabsFragment() {
         // Required empty public constructor
@@ -74,6 +75,7 @@ public class AgendaDetailTabsFragment extends Fragment implements ConfirmationDi
         tabLayout = (TabLayout) inflatedView.findViewById(R.id.tabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("Agenda"));
         tabLayout.addTab(tabLayout.newTab().setText("Deelnemers"));
+        tabLayout.addTab(tabLayout.newTab().setText("Reacties"));
         viewPager = (ViewPager) inflatedView.findViewById(R.id.viewpager);
 
         if (getArguments() != null) {

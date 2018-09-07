@@ -1,5 +1,6 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
+import nl.uscki.appcki.android.activities.SmoboActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
@@ -28,19 +30,19 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_person_list_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindCustomViewHolder(final ViewHolder holder, int position) {
         unsetViews(holder);
         resetViews(holder, items.get(position));
     }
 
-    private void resetViews(final ViewHolder holder, AgendaParticipant item) {
+    private void resetViews(final ViewHolder holder, final AgendaParticipant item) {
         holder.mItem = item;
         holder.name.setText(item.getPerson().getPostalname());
         holder.note.setText(item.getNote());
@@ -50,12 +52,18 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
             holder.profile.setImageURI(MediaAPI.getMediaUri(profile, MediaAPI.MediaSize.SMALL));
         }
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO open smobo
-            }
-        });
+        if(item.getPerson().getDisplayonline()) {
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent smoboIntent = new Intent(holder.mView.getContext(), SmoboActivity.class);
+                    smoboIntent.putExtra("id", item.getPerson().getId());
+                    smoboIntent.putExtra("name", item.getPerson().getPostalname());
+                    smoboIntent.putExtra("photo", item.getPerson().getPhotomediaid());
+                    holder.mView.getContext().startActivity(smoboIntent);
+                }
+            });
+        }
     }
 
     private void unsetViews(ViewHolder vh) {

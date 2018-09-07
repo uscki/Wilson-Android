@@ -21,6 +21,8 @@ import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 import retrofit2.Response;
 
 public class MeetingActivity extends BasicActivity {
+    public static final String PARAM_MEETING_ID = "nl.uscki.appcki.android.activities.param.MEETING_ID";
+
     MeetingItem item;
     TabLayout tabLayout;
     ViewPager viewPager;
@@ -75,9 +77,9 @@ public class MeetingActivity extends BasicActivity {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), MeetingItem.class);
             Services.getInstance().meetingService.get(item.getMeeting().getId()).enqueue(meetingCallback);
-        } else if (getIntent().getIntExtra("id", -1) != -1) {
+        } else if (getIntent().getIntExtra(PARAM_MEETING_ID, -1) != -1) {
             // this happens on receiving a notification from the server
-            Services.getInstance().meetingService.get(getIntent().getIntExtra("id", -1)).enqueue(meetingCallback);
+            Services.getInstance().meetingService.get(getIntent().getIntExtra(PARAM_MEETING_ID, -1)).enqueue(meetingCallback);
         }
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

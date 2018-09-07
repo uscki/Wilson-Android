@@ -1,10 +1,14 @@
 package nl.uscki.appcki.android.fragments.poll;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -22,9 +26,11 @@ import nl.uscki.appcki.android.views.VotesGraphView;
 
 public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHolder, PollOption> {
     int totalvotes;
+    private boolean canVote;
 
-    public PollResultAdapter(List<PollOption> items) {
+    public PollResultAdapter(List<PollOption> items, boolean canVote) {
         super(items);
+        this.canVote = canVote;
 
         for (PollOption item : items) {
             totalvotes += item.getVoteCount();
@@ -32,15 +38,16 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.poll_result_option, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.name.setText(items.get(position).getName());
+    public void onBindCustomViewHolder(ViewHolder holder, int position) {
+        holder.setOptionName(items.get(position).getName());
+
 
         try {
             holder.bar.setBarColor(Color.parseColor(items.get(position).getColor().toLowerCase()));
@@ -48,8 +55,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
             e.printStackTrace();
         }
 
-        holder.bar.setVotes(items.get(position).getVoteCount());
-        holder.bar.setVotesTotal(totalvotes);
+        holder.setCanVote(canVote);
     }
 
     @Override
@@ -57,11 +63,23 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         return items.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final View mView;
+
+        private float startingX;
+
+        @BindView(R.id.pollOptionBackground)
+        RelativeLayout background;
+
+        @BindView(R.id.pollOptionForeground)
+        RelativeLayout foreground;
 
         @BindView(R.id.poll_result_option_name)
         TextView name;
+
+        @BindView(R.id.poll_result_option_name_centered)
+        TextView centeredName;
+
         @BindView(R.id.poll_result_option_bar)
         VotesGraphView bar;
 
@@ -69,6 +87,63 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
             super(view);
             mView = view;
             ButterKnife.bind(this, view);
+        }
+
+        public void setCanVote(boolean canVote) {
+            bar.setVotesTotal(totalvotes);
+
+            if(canVote) {
+                mView.setOnClickListener(this);
+                bar.setVisibility(View.INVISIBLE);
+                name.setVisibility(View.INVISIBLE);
+                centeredName.setVisibility(View.VISIBLE);
+                startAnimation();
+            } else {
+                mView.setOnClickListener(null);
+                bar.setVisibility(View.VISIBLE);
+                name.setVisibility(View.VISIBLE);
+                centeredName.setVisibility(View.GONE);
+                ObjectAnimator.ofInt(bar, "VotesAnimated", 0, items.get(getAdapterPosition()).getVoteCount()).setDuration(400).start();
+            }
+        }
+
+        @Override
+        public void onClick(View view) {
+            hintSwipeOption();
+        }
+
+        private void startAnimation() {
+            startingX = 400f + (100 * getAdapterPosition());
+            int startDropDelay = (25 * getAdapterPosition());
+
+            // Keep still fifth time around
+            final int nOfBounces = 5;
+            float[] args = new float[(nOfBounces)*2];
+            args[0] = startingX;
+            args[1] = 0;
+            for(int i = 2; i < nOfBounces; i+=2) {
+                args[i] = startingX / i;
+                args[i+1] = 0;
+            }
+            ObjectAnimator anim = ObjectAnimator.ofFloat(foreground, "x", args);
+            anim.setDuration(1300);
+            anim.setStartDelay(startDropDelay);
+            anim.start();
+        }
+
+        private void hintSwipeOption() {
+            AnimatorSet set = new AnimatorSet();
+            set.play(
+                    ObjectAnimator.ofFloat(foreground, "x", 0).setDuration(100)
+            ).after(
+                    ObjectAnimator.ofFloat(foreground, "x", 300).setDuration(100)
+            );
+            set.start();
+        }
+
+        void setOptionName(String name) {
+            this.name.setText(name);
+            centeredName.setText(name);
         }
     }
 
