@@ -27,14 +27,14 @@ public class SmoboCommissieAdapter extends BaseItemAdapter<SmoboCommissieAdapter
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.smobo_commissie, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindCustomViewHolder(ViewHolder holder, int position) {
         Committee item = items.get(position);
 
         String duration;

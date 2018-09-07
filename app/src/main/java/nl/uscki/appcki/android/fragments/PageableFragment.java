@@ -1,7 +1,12 @@
 package nl.uscki.appcki.android.fragments;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +23,7 @@ import nl.uscki.appcki.android.events.ContentLoadedEvent;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.common.Pageable;
+import nl.uscki.appcki.android.views.NewPageableItem;
 import retrofit2.Response;
 
 /**
@@ -25,6 +31,12 @@ import retrofit2.Response;
  * <p>
  */
 public abstract class PageableFragment<T extends Pageable> extends Fragment {
+
+    public static final int NEW_ITEM_EDIT_BOX_POSITION_TOP = R.id.new_item_placeholder_top;
+    public static final int NEW_ITEM_EDIT_BOX_POSITION_BOTTOM = R.id.new_item_placeholder_bottom;
+    public static final int NEW_ITEM_EDIT_BOX_POSITION_DEFAULT = NEW_ITEM_EDIT_BOX_POSITION_TOP;
+    public static final int LAST_ON_TOP = 30;
+    public static final int FIRST_ON_TOP = 31;
 
     private BaseItemAdapter adapter;
     protected RecyclerView recyclerView;
@@ -39,9 +51,13 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
     // The current page
     protected Integer page;
-    private boolean noMoreContent;
+    protected boolean noMoreContent;
     protected boolean refresh;
     protected boolean scrollLoad;
+
+    // Dealing with the FAB en refreshing and stuff
+    private int editBoxPosition = NEW_ITEM_EDIT_BOX_POSITION_DEFAULT;
+    private int scrollDirection = LAST_ON_TOP;
 
     protected Callback<T> callback = new Callback<T>() {
         @Override
@@ -89,6 +105,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
                     Log.e("pageablefragment", "adding items to the bottom");
                     getAdapter().addItems(response.body().getContent());
+                    getAdapter().showLoadingMoreItems(false);
                 }
             }
 
@@ -138,6 +155,11 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         return true;
     }
 
+    public void scrollToEnd() {
+        if(recyclerView == null) return;
+        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+    }
+
     protected void setupRecyclerView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
 
@@ -155,6 +177,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                         && !noMoreContent) { // there is still content to load
                     // End has been reached
                     scrollLoad = true;
+                    getAdapter().showLoadingMoreItems(true);
                     Log.e("PageableFragment", "Loading page: " + page);
                     page++; // update page
                     onScrollRefresh(); // and call
@@ -182,7 +205,27 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                 android.R.color.holo_red_light);
 
         swipeContainer.setRefreshing(true);
+    }
 
+    public void refresh() {
+        // Only refresh if more recent items appear on top. Otherwise,
+        // new elements added by user should be handled in the callback
+        if(scrollDirection == LAST_ON_TOP && swipeContainer != null) {
+            page = 0;
+            refresh = true;
+
+            swipeContainer.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeContainer.setRefreshing(true);
+                    onSwipeRefresh();
+                }
+            });
+
+            if(recyclerView != null) {
+                recyclerView.scrollToPosition(0);
+            }
+        }
     }
 
     public BaseItemAdapter getAdapter() {
@@ -191,6 +234,82 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
     public void setAdapter(BaseItemAdapter adapter) {
         this.adapter = adapter;
+    }
+
+    protected void setEditBoxPosition(int position) {
+        editBoxPosition = position;
+    }
+
+    /**
+     * Set the default scroll direction of this fragment.
+     * Either FIRST_ON_TOP, which indicates that on scrolling, more recent items are loaded, or
+     * LAST_ON_TOP, which indicates that on scrolling, less recent items are loaded
+     *
+     * @param direction FIRST_ON_TOP|LAST_ON_TOP
+     */
+    protected void setScrollDirection(int direction) {
+        scrollDirection = direction;
+    }
+
+    public FloatingActionButton setFabEnabled(@NonNull View view, boolean enabled) {
+        FloatingActionButton fab = view.findViewById(R.id.pageableFloatingActionButton);
+        if(fab == null) {
+            Log.e(
+                    getClass().getSimpleName(),
+                    "Trying to enable Fabulous action button, but not found");
+            return null;
+        }
+
+        fab.setVisibility(enabled ? View.VISIBLE : View.GONE);
+        fab.setClickable(enabled);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            fab.setFocusable(enabled);
+        }
+
+        // Use the return value to set the onClick action
+        return fab;
+    }
+
+    /**
+     * Add a new pageable item widget to the screen (set position with setEditBoxPosition())
+     *
+     * @param widget        The new pageable item widget to add
+     * @param onlyWhenFab   If true, a FAB is shown instead of this fragment. Clicking the FAB
+     *                      will make the fragment visible. Pressing back will make the fragment
+     *                      invisible again and show the fab. If set to false, the fragment is
+     *                      always visible and no fab is shown
+     */
+    public void addNewPageableItemWidget(NewPageableItem widget, boolean onlyWhenFab) {
+        widget.setParent(this);
+        FragmentManager fm = getChildFragmentManager();
+
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(editBoxPosition, widget);
+        if(onlyWhenFab) {
+            widget.setFocusOnCreateView(true);
+            ft.addToBackStack("new_item");
+        }
+        ft.commit();
+
+        View view = getView();
+        if(onlyWhenFab && view != null) {
+            setFabEnabled(getView(), false);
+        }
+    }
+
+    /**
+     * Remove the new item widget, and show the FAB again, so the process can repeat
+     */
+    public void removeNewPageableItemWidget() {
+        FragmentManager fm = getChildFragmentManager();
+
+        fm.beginTransaction()
+                .replace(editBoxPosition, new Fragment())
+                .commit();
+
+        View view = getView();
+        if(view != null)
+            setFabEnabled(view, true);
     }
 
     public abstract void onSwipeRefresh();

@@ -30,14 +30,14 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_quote, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+    public void onBindCustomViewHolder(ViewHolder holder, int position, List<Object> payloads) {
         if (!payloads.isEmpty()) {
             Quote quote = (Quote) payloads.get(0);
             items.set(position, quote);
@@ -63,13 +63,11 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
                 holder.plus.setVisibility(View.VISIBLE);
                 holder.minus.setVisibility(View.VISIBLE);
             }
-        } else {
-            super.onBindViewHolder(holder, position, payloads);
         }
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindCustomViewHolder(final ViewHolder holder, int position) {
         holder.mItem = this.items.get(position);
 
         SpannableStringBuilder text = Parser.parse(items.get(position).getQuoteJSON(), true, holder.quote);

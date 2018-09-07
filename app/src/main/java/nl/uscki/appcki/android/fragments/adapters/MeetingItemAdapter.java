@@ -30,14 +30,14 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_meeting_list_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindCustomViewHolder(final ViewHolder holder, int position) {
         MeetingItem item = items.get(position);
         holder.mItem = item;
         holder.title.setText(item.getMeeting().getTitle());

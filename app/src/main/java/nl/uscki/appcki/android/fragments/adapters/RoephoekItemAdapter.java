@@ -26,7 +26,7 @@ public class RoephoekItemAdapter extends BaseItemAdapter<RoephoekItemAdapter.Vie
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.roephoek_item, parent, false);
         return new ViewHolder(view);
@@ -38,7 +38,7 @@ public class RoephoekItemAdapter extends BaseItemAdapter<RoephoekItemAdapter.Vie
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindCustomViewHolder(ViewHolder holder, int position) {
         RoephoekItem item = items.get(position);
         //Log.d("RoephoekAdapter", item.getMessageJSON().toString());
         SpannableStringBuilder text = Parser.parse(item.getMessageJSON(), true, holder.message);

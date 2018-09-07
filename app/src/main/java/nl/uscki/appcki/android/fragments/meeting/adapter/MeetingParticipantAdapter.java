@@ -31,14 +31,14 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_person_list_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindCustomViewHolder(final ViewHolder holder, final int position) {
         unsetViews(holder);
         resetViews(holder, items.get(position));
     }

@@ -2,6 +2,7 @@ package nl.uscki.appcki.android.fragments.adapters;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,6 @@ import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.poll.PollResultFragment;
-import nl.uscki.appcki.android.fragments.poll.PollVoteFragment;
 import nl.uscki.appcki.android.generated.poll.PollItem;
 
 /**
@@ -30,27 +30,25 @@ public class PollAdapter extends BaseItemAdapter<PollAdapter.ViewHolder, PollIte
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_poll, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+    public void onBindCustomViewHolder(ViewHolder holder, int position, List<Object> payloads) {
         if (!payloads.isEmpty()) {
             PollItem quote = (PollItem) payloads.get(0);
             items.set(position, quote);
             holder.mItem = quote;
 
             //TODO update item
-        } else {
-            super.onBindViewHolder(holder, position, payloads);
         }
     }
 
     @Override
-    public void onBindViewHolder(final PollAdapter.ViewHolder holder, int position) {
+    public void onBindCustomViewHolder(final PollAdapter.ViewHolder holder, int position) {
         holder.mItem = this.items.get(position);
 
         holder.question.setText(items.get(position).getPoll().getTitle());
@@ -65,11 +63,7 @@ public class PollAdapter extends BaseItemAdapter<PollAdapter.ViewHolder, PollIte
                 Bundle bundle = new Bundle();
                 String item = new Gson().toJson(holder.mItem);
                 bundle.putString("item", item);
-                if (holder.mItem.getMyVote() == null && holder.mItem.getPoll().getActive()) {
-                    EventBus.getDefault().post(new OpenFragmentEvent(new PollVoteFragment(), bundle));
-                } else {
-                    EventBus.getDefault().post(new OpenFragmentEvent(new PollResultFragment(), bundle));
-                }
+                EventBus.getDefault().post(new OpenFragmentEvent(new PollResultFragment(), bundle));
             }
         });
     }
