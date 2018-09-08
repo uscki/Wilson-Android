@@ -115,9 +115,7 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
 
     @Override
     public void onBindViewHolder(@NonNull T holder, int position) {
-        if(holder instanceof BaseItemAdapter.LoadingMoreViewHolder) {
-            Log.e(getClass().getSimpleName(), "OnBindViewHolder!");
-        } else {
+        if(!(holder instanceof BaseItemAdapter.LoadingMoreViewHolder)) {
             onBindCustomViewHolder(holder, position);
         }
     }
