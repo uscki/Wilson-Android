@@ -160,8 +160,6 @@ public class CalendarHelper {
 
         ContentResolver contentResolver = App.getContext().getContentResolver();
 
-        Log.e("FindingEventExists", "Looking for '" + title + "'\tbegin: " + begin + "\tend:" + end);
-
         Cursor cursor = contentResolver.query(
                 Events.CONTENT_URI,
                 projection,

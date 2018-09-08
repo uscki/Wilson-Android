@@ -75,7 +75,7 @@ public class AgendaDetailTabsFragment extends Fragment implements ConfirmationDi
         tabLayout = (TabLayout) inflatedView.findViewById(R.id.tabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("Agenda"));
         tabLayout.addTab(tabLayout.newTab().setText("Deelnemers"));
-        tabLayout.addTab(tabLayout.newTab().setText("Reacties"));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.comments)));
         viewPager = (ViewPager) inflatedView.findViewById(R.id.viewpager);
 
         if (getArguments() != null) {
