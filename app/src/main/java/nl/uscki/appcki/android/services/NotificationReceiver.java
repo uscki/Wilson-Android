@@ -41,6 +41,10 @@ public class NotificationReceiver extends FirebaseMessagingService {
     public static final String PARAM_NOTIFICATION_ID = "nl.uscki.appcki.android.services.extra.PARAM_NOTIFICATION_ID";
     public static final String PARAM_VIEW_ITEM_ID = "nl.uscki.appcki.android.services.extra.PARAM_VIEW_ITEM_ID";
 
+    private static final String GROUP_KEY_AGENDA = "nl.uscki.appcki.android.groupkey.AGENDA";
+    private static final String GROUP_KEY_MEETING = "nl.uscki.appcki.android.groupkey.AGENDA";
+    private static final String GROUP_KEY_FORUM = "nl.uscki.appcki.android.groupkey.AGENDA";
+
     private Context context;
 
     public NotificationReceiver() {
@@ -109,6 +113,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_STATUS);
                 }
+                n.setGroup(GROUP_KEY_MEETING + id);
                 mainBackstackAction = MainActivity.ACTION_MEETING_OVERVIEW;
             case meeting_planned:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -141,6 +146,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
                             exportMeetingpIntent
                     );
                 }
+                n.setGroup(GROUP_KEY_MEETING + id);
                 mainBackstackAction = MainActivity.ACTION_MEETING_OVERVIEW;
                 break;
             case meeting_new:
@@ -149,12 +155,14 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 }
                 intent = new Intent(this, MeetingActivity.class);
                 intent.putExtra(MeetingActivity.PARAM_MEETING_ID, id);
+                n.setGroup(GROUP_KEY_MEETING + id);
                 mainBackstackAction = MainActivity.ACTION_MEETING_OVERVIEW;
                 break;
             case forum_reply:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_SOCIAL);
                 }
+                n.setGroup(GROUP_KEY_FORUM + id);
                 break;
             case forum_new_topic:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -171,6 +179,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 // TODO: Isn't this handled at the end of this function? And overwritten by that stuff?
                 PendingIntent pIntent = PendingIntent.getActivity(this, 0, forumIntent, 0);
                 n.setContentIntent(pIntent);
+                n.setGroup(GROUP_KEY_FORUM + id);
                 break;
             case agenda_announcement:
                 // TODO: at some point, open the comments tab automatically
@@ -179,6 +188,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_EVENT);
                 }
+                n.setGroup(GROUP_KEY_AGENDA + id);
                 mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
             case agenda_new:
@@ -189,6 +199,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 intent = new Intent(this, AgendaActivity.class);
                 intent.putExtra(AgendaActivity.PARAM_AGENDA_ID, id);
                 addReproducabilityExtras(intent, title, content, notificationTag, id, id);
+                n.setGroup(GROUP_KEY_AGENDA + id);
                 mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
             case agenda_reply:
@@ -198,6 +209,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_SOCIAL);
                 }
+                n.setGroup(GROUP_KEY_AGENDA + id);
                 mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
             case news:
