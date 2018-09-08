@@ -29,6 +29,7 @@ import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailAdapter;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailFragment;
 import nl.uscki.appcki.android.fragments.agenda.SubscribeDialogFragment;
+import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
@@ -58,17 +59,21 @@ public class AgendaActivity extends BasicActivity {
                 return;
             }
 
-            Log.e(this.getClass().toString(), response.toString());
-
             if(response.body() == null) {
                 Log.e(this.getClass().toString(), "No response or response body");
                 return;
             }
 
-            Log.e(this.getClass().toString(), response.body().toString());
-
             item = response.body();
             viewPager.setAdapter(new AgendaDetailAdapter(getSupportFragmentManager(), item));
+
+            // This isn't nice, but the callback overrides tab selection, and its only called once
+            // so with the current implementation, this is best
+            if(getIntent() != null && getIntent().getAction() != null &&
+                    getIntent().getAction().equals(CommentsFragment.ACTION_VIEW_COMMENTS)) {
+                viewPager.setCurrentItem(2);
+                tabLayout.setScrollPosition(2, 0f, false);
+            }
 
             for (AgendaParticipant part : item.getParticipants()) {
                 if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
@@ -97,7 +102,6 @@ public class AgendaActivity extends BasicActivity {
         }*/
 
         if(!UserHelper.getInstance().isLoggedIn()) {
-            Log.e("AgendaActivity", "Starting MainActivity");
             startActivity(new Intent(this, MainActivity.class));
         }
 
@@ -111,24 +115,21 @@ public class AgendaActivity extends BasicActivity {
 
         MainActivity.currentScreen = MainActivity.Screen.AGENDA_DETAIL;
 
+        viewPager = findViewById(R.id.viewpager);
         tabLayout = findViewById(R.id.tabLayout);
         tabLayout.addTab(tabLayout.newTab().setText("Agenda"));
         tabLayout.addTab(tabLayout.newTab().setText("Deelnemers"));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.comments)));
-        viewPager = findViewById(R.id.viewpager);
 
         if (getIntent().getBundleExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), AgendaItem.class);
-            Log.e(this.getClass().toString(), "Generating AgendaItem through bundle extra item");
             Services.getInstance().agendaService.get(item.getId()).enqueue(agendaCallback);
         } else if (getIntent().getStringExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getStringExtra("item"), AgendaItem.class);
-            Log.e(this.getClass().toString(), "Generating AgendaItem through String extra item");
             Services.getInstance().agendaService.get(item.getId()).enqueue(agendaCallback);
         } else if (getIntent().getIntExtra(PARAM_AGENDA_ID, -1) >= 0) {
-            Log.e(this.getClass().toString(), "Generating AgendaItem through id");
             Services.getInstance().agendaService.get(getIntent().getIntExtra(PARAM_AGENDA_ID, -1)).enqueue(agendaCallback);
         } else {
             // the item is no longer loaded so we can't open this activity, thus we'll close it
@@ -137,7 +138,7 @@ public class AgendaActivity extends BasicActivity {
         }
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
@@ -202,7 +203,6 @@ public class AgendaActivity extends BasicActivity {
 
     @Override
     public void onResume() {
-
         super.onResume();
 
         if(!EventBus.getDefault().isRegistered(this))
@@ -233,11 +233,9 @@ public class AgendaActivity extends BasicActivity {
         MenuItem removeCalendarButton = menu.findItem(R.id.action_remove_from_calendar);
 
         if(exportButton == null) {
-            Log.e(getClass().getSimpleName(), "Export button is null. Whyyy");
             return;
         }
         if(removeCalendarButton == null) {
-            Log.e(getClass().getSimpleName(), "Remove from calendar button is null. Whyyy");
             return;
         }
 
@@ -314,7 +312,7 @@ public class AgendaActivity extends BasicActivity {
 
                         @Override
                         public String getMessage() {
-                            return "Kan niet unsubscriben door een unsubscribe deadline!";
+                            return getString(R.string.agenda_unsubscribe_deadline_past);
                         }
 
                     }));

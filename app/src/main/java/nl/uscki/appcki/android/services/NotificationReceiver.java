@@ -24,6 +24,7 @@ import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.activities.MeetingActivity;
+import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.calendar.AgendaSubscribeServiceHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarServiceHelper;
@@ -182,8 +183,8 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 n.setGroup(GROUP_KEY_FORUM + id);
                 break;
             case agenda_announcement:
-                // TODO: at some point, open the comments tab automatically
                 intent = new Intent(this, AgendaActivity.class);
+                intent.setAction(CommentsFragment.ACTION_VIEW_COMMENTS);
                 intent.putExtra(AgendaActivity.PARAM_AGENDA_ID, id);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_EVENT);
@@ -203,8 +204,8 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
             case agenda_reply:
-                // TODO: at some point, open the comments tab automatically
                 intent = new Intent(this, AgendaActivity.class);
+                intent.setAction(CommentsFragment.ACTION_VIEW_COMMENTS);
                 intent.putExtra(AgendaActivity.PARAM_AGENDA_ID, id);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_SOCIAL);
