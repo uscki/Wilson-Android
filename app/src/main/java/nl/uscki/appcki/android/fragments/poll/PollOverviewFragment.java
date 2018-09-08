@@ -52,7 +52,7 @@ public class PollOverviewFragment extends PageableFragment<PollPage> {
 
     @Override
     public String getEmptyText() {
-        return "todo"; // TODO: add empty text
+        return getString(R.string.no_polls_found);
     }
 
     @Override

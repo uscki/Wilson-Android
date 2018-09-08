@@ -68,17 +68,21 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
     }
 
     public void showLoadingMoreItems(boolean show) {
-        Log.e(getClass().toString(), "Called showLoaindgMoreItems with param " + show);
         if(show && loadingMoreIndex < 0) {
             LoadingMoreItem item = new LoadingMoreItem();
             this.loadingMoreIndex = this.items.size();
             this.items.add((K) item);
             this.notifyDataSetChanged();
         } else {
-            if(loadingMoreIndex >= 0 && this.items.get(loadingMoreIndex) instanceof LoadingMoreItem) {
-                this.items.remove(loadingMoreIndex);
+            try {
+                if (loadingMoreIndex >= 0 && this.items.get(loadingMoreIndex) instanceof LoadingMoreItem) {
+                    this.items.remove(loadingMoreIndex);
+                    this.notifyDataSetChanged();
+                }
+            } catch(IndexOutOfBoundsException e) {
+                Log.d(getClass().getSimpleName(), "Loading-more-items spinner already removed earlier");
+            } finally {
                 loadingMoreIndex = -1;
-                this.notifyDataSetChanged();
             }
         }
     }
