@@ -96,7 +96,7 @@
                 android:background="@drawable/rounded_resource_colour"
                 android:textColor="@color/colorWhite"
                 app:srcCompat="@drawable/plus"
-                android:layout_gravity="center_vertical"
+                android:layout_gravity="bottom"
                 />
 
         </LinearLayout>
