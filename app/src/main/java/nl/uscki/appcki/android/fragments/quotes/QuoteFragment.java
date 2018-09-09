@@ -75,7 +75,7 @@ public class QuoteFragment extends PageableFragment<QuotesPage> {
 
     @Override
     public String getEmptyText() {
-        return null;
+        return getString(R.string.no_quotes_found);
     }
 
     @Override

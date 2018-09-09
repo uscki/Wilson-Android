@@ -51,7 +51,6 @@
 
     <string name="agenda_inschrijven_verplicht">Inschrijven verplicht</string>
     <string name="agenda_archive_menu_string">Archief</string>
-    <string name="poll_archive_menu_string">Archief</string>
     <string name="vote_imperative">Stemmen</string>
     <string name="action_agenda_export">Opslaan</string>
     <string name="action_agenda_remove_from_calendar">Verwijderen uit agenda</string>
@@ -67,7 +66,8 @@
     <string name="connection_error">Er ging iets fout tijdens het verbinden met de server!</string>
 
     <string name="agenda_confirm_unsubscribe_message">Weet je zeker dat je je wil uitschrijven?</string>
-    <string name="agenda_confirm_unsubscribe_positive">Unsubscribe!</string>
+    <string name="agenda_confirm_unsubscribe_positive">Uitschrijven!</string>
+    <string name="agenda_unsubscribe_deadline_past">De deadline om je te kunnen uitschrijven is verstreken</string>
 
     <string name="person_not_display_online_msg">Deze persoon kan niet worden opgeslagen vanwege zijn of haar privacy instellingen</string>
     <string name="agenda_subscribe_success">Je bent ingeschreven voor dit evenement!</string>
@@ -278,4 +278,9 @@
 
     <!-- Quote -->
     <string name="quote">Quote</string>
+    <string name="no_quotes_found">Geen quotes om weer te geven</string>
+
+    <!-- Poll -->
+    <string name="poll_archive_menu_string">Archief</string>
+    <string name="no_polls_found">Geen polls om weer te geven</string>
 </resources>
