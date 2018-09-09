@@ -24,6 +24,7 @@ import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.activities.MeetingActivity;
+import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.calendar.AgendaSubscribeServiceHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarServiceHelper;
@@ -37,8 +38,14 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
     public static final String PARAM_NOTIFICATION_TITLE = "nl.uscki.appcki.android.services.extra.PARAM_NOTIFICATION_TITLE";
     public static final String PARAM_NOTIFICATION_CONTENT = "nl.uscki.appcki.android.services.extra.PARAM_NOTIFICATION_CONTENT";
+    public static final String PARAM_NOTIFICATION_TAG = "nl.uscki.appcki.android.services.extra.PARAM_NOTIFICATION_TAG";
     public static final String PARAM_NOTIFICATION_ID = "nl.uscki.appcki.android.services.extra.PARAM_NOTIFICATION_ID";
     public static final String PARAM_VIEW_ITEM_ID = "nl.uscki.appcki.android.services.extra.PARAM_VIEW_ITEM_ID";
+
+    // Groups should be appended with the ID of the item in that group
+    private static final String GROUP_KEY_AGENDA = "nl.uscki.appcki.android.groupkey.AGENDA.";
+    private static final String GROUP_KEY_MEETING = "nl.uscki.appcki.android.groupkey.MEETING.";
+    private static final String GROUP_KEY_FORUM = "nl.uscki.appcki.android.groupkey.FORUM.";
 
     private Context context;
 
@@ -97,6 +104,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
         NotificationCompat.Builder n = getIntentlessBaseNotification(type, title, content);
 
         Intent intent = null;
+        String notificationTag = type.toString();
 
         String mainBackstackAction = null;
 
@@ -171,8 +179,8 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 n.setContentIntent(pIntent);
                 break;
             case agenda_announcement:
-                // TODO: at some point, open the comments tab automatically
                 intent = new Intent(this, AgendaActivity.class);
+                intent.setAction(CommentsFragment.ACTION_VIEW_COMMENTS);
                 intent.putExtra(AgendaActivity.PARAM_AGENDA_ID, id);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_EVENT);
@@ -183,15 +191,15 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_EVENT);
                 }
-                addAgendaActions(n, id,true, true, title, content, id);
+                addAgendaActions(n, id,true, true, title, content, id, notificationTag);
                 intent = new Intent(this, AgendaActivity.class);
                 intent.putExtra(AgendaActivity.PARAM_AGENDA_ID, id);
-                addReproducabilityExtras(intent, title, content, id, id);
+                addReproducabilityExtras(intent, title, content, notificationTag, id, id);
                 mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
             case agenda_reply:
-                // TODO: at some point, open the comments tab automatically
                 intent = new Intent(this, AgendaActivity.class);
+                intent.setAction(CommentsFragment.ACTION_VIEW_COMMENTS);
                 intent.putExtra(AgendaActivity.PARAM_AGENDA_ID, id);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_SOCIAL);
@@ -224,7 +232,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(this);
-        notificationManager.notify(id, n.build());
+        notificationManager.notify(notificationTag, id, n.build());
 
         NotificationUtil nUtil = new NotificationUtil(this);
         nUtil.vibrateIfEnabled(type);
@@ -273,15 +281,17 @@ public class NotificationReceiver extends FirebaseMessagingService {
      * @param intent        The intent to put the extras to
      * @param title         The notification title
      * @param content       The notification body
+     * @param tag           Tag with which the user is notified of this notification
      * @param id            The ID of the notification (for overwriting purposes)
      * @param itemId        The ID of the item the action view should open (-1 for empty)
      */
-    public void addReproducabilityExtras(Intent intent, String title, String content, int id, int itemId) {
+    public void addReproducabilityExtras(Intent intent, String title, String content, String tag, int id, int itemId) {
         intent.putExtra(PARAM_NOTIFICATION_ID, id);
+        intent.putExtra(PARAM_NOTIFICATION_TAG, tag);
         intent.putExtra(PARAM_NOTIFICATION_TITLE, title);
         intent.putExtra(PARAM_NOTIFICATION_CONTENT, content);
         intent.putExtra(PARAM_VIEW_ITEM_ID, itemId);
-        // TODO extend with notification group and tag
+        // TODO extend with notification group
     }
 
     /**
@@ -321,13 +331,15 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
     /**
      * Add export and subscribe action buttons to a new agenda event notification
-     * @param notification          New Agenda Event base notification
+     * @param notification          New Agenda Event base notification to add these buttons to
      * @param agendaId              ID of the new agenda event
      * @param allowExport           True if export button should be added
      * @param allowSubscribe        True if subscribe button should be added
      * @param title                 Title of the event
      * @param content               Notification body, i.e. event extra information
-     * @param notificationid        The notification object to add these buttons to
+     * @param notificationid        ID with which the user will be notified of this event
+     * @param notificationTag       Tag with which the user will be notified of this event
+     *
      */
     public void addAgendaActions(
             NotificationCompat.Builder notification,
@@ -336,13 +348,14 @@ public class NotificationReceiver extends FirebaseMessagingService {
             boolean allowSubscribe,
             String title,
             String content,
-            int notificationid
+            int notificationid,
+            String notificationTag
             )
     {
         if(allowExport) {
             // Build an export action
             Intent exportAgendaIntent = new Intent(context, EventExportIntentService.class);
-            addReproducabilityExtras(exportAgendaIntent, title, content, notificationid, agendaId);
+            addReproducabilityExtras(exportAgendaIntent, title, content, notificationTag, notificationid, agendaId);
             exportAgendaIntent.setAction(CalendarServiceHelper.ACTION_AGENDA_EXPORT);
             exportAgendaIntent.putExtra(CalendarServiceHelper.PARAM_AGENDA_ID, agendaId);
 
@@ -363,7 +376,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
             // Creating a pending intent for this action
             Intent subscribeIntent = new Intent(context, AgendaSubscriberIntentService.class);
-            addReproducabilityExtras(subscribeIntent, title, content, notificationid, agendaId);
+            addReproducabilityExtras(subscribeIntent, title, content, notificationTag, notificationid, agendaId);
             subscribeIntent.setAction(AgendaSubscribeServiceHelper.ACTION_SUBSCRIBE_AGENDA);
             subscribeIntent.putExtra(AgendaSubscribeServiceHelper.PARAM_AGENDA_ID, agendaId);
             PendingIntent agendaSubscribepIntent = PendingIntent.getService(
@@ -391,31 +404,27 @@ public class NotificationReceiver extends FirebaseMessagingService {
      * @param allowSubscribe    True iff subscribe buttons should be added
      */
     public void buildNewAgendaItemNotificationFromIntent(Intent intent, boolean allowExport, boolean allowSubscribe) {
-        Log.e("BuildAgendaNotification", "Building new agenda notification from existing intent");
+        // Extract information from existing intent
         String title = intent.getStringExtra(PARAM_NOTIFICATION_TITLE);
         String content = intent.getStringExtra(PARAM_NOTIFICATION_CONTENT);
         int notification_id = intent.getIntExtra(PARAM_NOTIFICATION_ID, -1);
         int agenda_id = intent.getIntExtra(PARAM_VIEW_ITEM_ID, -1);
+        String notification_tag = intent.getStringExtra(PARAM_NOTIFICATION_TAG);
 
+        // Build similar notification
         NotificationCompat.Builder notification = getIntentlessBaseNotification(NotificationType.agenda_new, title, content);
-        addAgendaActions(notification, agenda_id, allowExport, allowSubscribe, title, content, notification_id);
+        addAgendaActions(notification, agenda_id, allowExport, allowSubscribe, title, content, notification_id, notification_tag);
 
         // Create a new intention, because the last was already final
         Intent newIntention = new Intent(context, AgendaActivity.class);
         addIntentionsToNotification(notification, newIntention, null);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
-        // TODO: Disable making a sound or vibrating, below does not work
-        notification.setDefaults(Notification.DEFAULT_ALL);
-        notificationManager.notify(notification_id, notification.build());
-
-        // TODO: Check if the follow *does* work
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notification.setGroupAlertBehavior(Notification.GROUP_ALERT_SUMMARY);
-        }
-
-        // TODO: This might work as well:
+        // Don't make a sound this time (update quietly)
         notification.setOnlyAlertOnce(true);
+
+        // Update
+        notificationManager.notify(notification_tag, notification_id, notification.build());
     }
 
     @Override

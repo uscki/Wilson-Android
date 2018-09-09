@@ -34,7 +34,6 @@
                 android:contentDescription="@string/action_comment" />
 
 
-
             <RelativeLayout
                 android:id="@+id/comment_meta_data"
                 android:layout_width="match_parent"
@@ -75,23 +74,17 @@
             app:layoutManager="LinearLayoutManager"
             />
     </TableRow>
-    <TableRow>
-        <FrameLayout/>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/comment_reply_placeholder"
-            android:layout_marginStart="@dimen/text_margin"
-            />
-    </TableRow>
     <TableRow android:id="@+id/comment_reply_row">
         <FrameLayout/>
-        <RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
             <EditText
                 android:id="@+id/comment_edit_text"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="34dp"
                 android:hint="@string/comment_hint"
                 android:inputType="textCapSentences|textAutoComplete|textAutoCorrect|textMultiLine"
                 />
@@ -100,13 +93,13 @@
                 android:id="@+id/place_comment_button"
                 android:layout_width="34dp"
                 android:layout_height="34dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
                 android:background="@drawable/rounded_resource_colour"
                 android:textColor="@color/colorWhite"
-                app:srcCompat="@drawable/plus" />
+                app:srcCompat="@drawable/plus"
+                android:layout_gravity="bottom"
+                />
 
-        </RelativeLayout>
+        </LinearLayout>
     </TableRow>
     <TableRow android:background="@drawable/list_divider" android:id="@+id/comment_list_divider" android:layout_marginTop="2dp">
     </TableRow>

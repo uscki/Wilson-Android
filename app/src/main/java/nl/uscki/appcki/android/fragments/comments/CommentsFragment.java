@@ -25,6 +25,9 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public abstract class CommentsFragment extends PageableFragment<CommentPage> {
+
+    public static final String ACTION_VIEW_COMMENTS = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_COMMENTS";
+
     private static final int COMMENTS_PAGE_SIZE = 10;
 
     protected int commentOnTopicId;
