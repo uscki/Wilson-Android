@@ -93,18 +93,7 @@ public class AgendaActivity extends BasicActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Check if we're running on Android 5.0 or higher
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        } else {
-            // Implement this feature without material design
-        }*/
-
-        if(!UserHelper.getInstance().isLoggedIn()) {
-            startActivity(new Intent(this, MainActivity.class));
-        }
-
+        
         setContentView(R.layout.activity_agenda);
 
         toolbar = findViewById(R.id.toolbar);
@@ -159,6 +148,9 @@ public class AgendaActivity extends BasicActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.clear();
+
+        if (this.item.getMaxregistrations() == 0)
+            return super.onCreateOptionsMenu(menu);
 
         getMenuInflater().inflate(R.menu.agenda_menu, menu);
         this.menu = menu;
