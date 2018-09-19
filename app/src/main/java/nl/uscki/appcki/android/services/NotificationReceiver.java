@@ -96,7 +96,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
             String sentType = remoteMessage.getData().get("type");
             Log.e(TAG, "Getting type of " + sentType);
             type = NotificationType.valueOf(sentType);
-        } catch(NullPointerException e) {
+        } catch(NullPointerException|IllegalArgumentException e) {
             Log.e(TAG, e.toString());
             return;
         }
