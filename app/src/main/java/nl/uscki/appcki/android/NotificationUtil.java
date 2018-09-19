@@ -3,9 +3,11 @@ package nl.uscki.appcki.android;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.AudioManager;
@@ -23,6 +25,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 import nl.uscki.appcki.android.helpers.VibrationPatternPreferenceHelper;
 import nl.uscki.appcki.android.services.NotificationType;
@@ -72,10 +75,18 @@ public class NotificationUtil extends ContextWrapper {
                     NotificationManager.IMPORTANCE_DEFAULT);
             channelPriorities.put(NotificationType.agenda_announcement,
                     NotificationManager.IMPORTANCE_LOW);
+            channelPriorities.put(NotificationType.agenda_from_backup,
+                    NotificationManager.IMPORTANCE_DEFAULT);
             channelPriorities.put(NotificationType.agenda_new,
                     NotificationManager.IMPORTANCE_DEFAULT);
             channelPriorities.put(NotificationType.agenda_reply,
                     NotificationManager.IMPORTANCE_LOW);
+            channelPriorities.put(NotificationType.bugtracker_comment,
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channelPriorities.put(NotificationType.bugtracker_new,
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channelPriorities.put(NotificationType.bugtracker_status_changed,
+                    NotificationManager.IMPORTANCE_DEFAULT);
             channelPriorities.put(NotificationType.forum_new_topic,
                     NotificationManager.IMPORTANCE_LOW);
             channelPriorities.put(NotificationType.forum_reply,
@@ -95,10 +106,18 @@ public class NotificationUtil extends ContextWrapper {
                     NOTIFICATION_CHANNEL_PERSONAL);
             channelPriorities.put(NotificationType.agenda_announcement,
                     NOTIFICATION_CHANNEL_GENERAL);
+            channelPriorities.put(NotificationType.agenda_from_backup,
+                    NOTIFICATION_CHANNEL_PERSONAL);
             channelPriorities.put(NotificationType.agenda_new,
                     NOTIFICATION_CHANNEL_GENERAL);
             channelPriorities.put(NotificationType.agenda_reply,
                     NOTIFICATION_CHANNEL_PERSONAL);
+            channelPriorities.put(NotificationType.bugtracker_status_changed,
+                    NOTIFICATION_CHANNEL_GENERAL);
+            channelPriorities.put(NotificationType.bugtracker_new,
+                    NOTIFICATION_CHANNEL_GENERAL);
+            channelPriorities.put(NotificationType.bugtracker_comment,
+                    NOTIFICATION_CHANNEL_GENERAL);
             channelPriorities.put(NotificationType.forum_new_topic,
                     NOTIFICATION_CHANNEL_PERSONAL);
             channelPriorities.put(NotificationType.forum_reply,
@@ -141,6 +160,32 @@ public class NotificationUtil extends ContextWrapper {
         } else {
             return "main";
         }
+    }
+
+    /**
+     * Three different bugtracker notifications have to go to the bugtracker detail view on the
+     * website. For now, use this method
+     * @param context   Context from which this notification is being built
+     * @param n         Notification builder containing base notification
+     * @param id        ID of the ticket
+     * @return          Updates notification builder
+     */
+    public static NotificationCompat.Builder goToBugTracker(Context context, NotificationCompat.Builder n, int id) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            n.setCategory(Notification.CATEGORY_SOCIAL);
+        }
+        Intent bugtrackerIntent = new Intent(Intent.ACTION_VIEW);
+
+        bugtrackerIntent.setData(Uri.parse(String.format(
+                Locale.ENGLISH,
+                "https://www.uscki.nl/?pagina=Bugtracker/Ticket&id=%d",
+                id)
+                .trim()));
+
+        PendingIntent pIntent =
+                PendingIntent.getActivity(context, 0, bugtrackerIntent, 0);
+        n.setContentIntent(pIntent);
+        return n;
     }
 
     /**
