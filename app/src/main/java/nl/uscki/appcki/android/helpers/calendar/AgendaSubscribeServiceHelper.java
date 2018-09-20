@@ -64,7 +64,7 @@ public class AgendaSubscribeServiceHelper {
      */
     public void handleAgendaSubscribeAction(final int agendaId, final String subscribeComment, final Intent intent) {
         if(agendaId < 0) {
-            handleError(intent, context.getString(R.string.content_loading_error));
+            handleError(intent, context.getString(R.string.content_loading_error), false);
             return;
         }
 
@@ -86,6 +86,7 @@ public class AgendaSubscribeServiceHelper {
                             handleSuccess(response, agendaId, intent);
                         } else {
                             String errorMsg = context.getString(R.string.connection_error);
+                            boolean allowSubscribe = true;
                             try {
                                 Gson gson = new Gson();
                                 ServerError error = gson.fromJson(
@@ -93,8 +94,14 @@ public class AgendaSubscribeServiceHelper {
 
                                 if(error.getStatus() == 401) {
                                     errorMsg = context.getString(R.string.notauthorized);
+                                    allowSubscribe = false;
+                                }
+                                if(error.getStatus() == 400) {
+                                    errorMsg = context.getString(R.string.agenda_subscribe_bad_request_error);
+                                    allowSubscribe = false;
                                 } else if(error.getStatus() == 403) {
                                     errorMsg = context.getString(R.string.notloggedin);
+                                    allowSubscribe = false;
                                 } else if(error.getStatus() == 404) {
                                     errorMsg = context.getString(R.string.content_loading_error);
                                 } else if (error.getStatus() == 500) {
@@ -109,14 +116,14 @@ public class AgendaSubscribeServiceHelper {
                                         Toast.LENGTH_SHORT)
                                         .show();
                             }
-                            handleError(intent, errorMsg);
+                            handleError(intent, errorMsg, allowSubscribe);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<AgendaParticipantLists> call, Throwable t) {
                         Log.e(getClass().toString(), t.getMessage());
-                        handleError(intent, context.getString(R.string.unknown_server_error));
+                        handleError(intent, context.getString(R.string.unknown_server_error), true);
                     }
                 });
     }
@@ -161,9 +168,9 @@ public class AgendaSubscribeServiceHelper {
      * @param intent    Intent with which this service was started
      * @param error     Error message to show
      */
-    private void handleError(Intent intent, String error) {
+    private void handleError(Intent intent, String error, boolean allowExport) {
         NotificationReceiver notificationReceiver = new NotificationReceiver(context);
-        notificationReceiver.buildNewAgendaItemNotificationFromIntent(intent, true, true);
+        notificationReceiver.buildNewAgendaItemNotificationFromIntent(intent, allowExport, true);
         Toast.makeText(
                 context,
                 error,
