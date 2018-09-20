@@ -43,6 +43,7 @@
     <string name="roephoek_no_new_shouts">Er zijn geen roepen meer.</string>
 
     <string name="agenda_dialog_note_hint">Notitie</string>
+    <string name="agenda_dialog_question_hint">Antwoord op inschrijfvraag (verplicht)</string>
     <string name="agenda_dialog_ok">Inschrijven</string>
     <string name="agenda_dialog_cancel">Annuleren</string>
     <string name="agenda_no_new_agendas">Er zijn geen evenementen meer.</string>
@@ -74,6 +75,7 @@
 
     <string name="person_not_display_online_msg">Deze persoon kan niet worden opgeslagen vanwege zijn of haar privacy instellingen</string>
     <string name="agenda_subscribe_success">Je bent ingeschreven voor dit evenement!</string>
+    <string name="agenda_subscribe_no_answer_selected">Kies een antwoord voor de inschrijfvraag</string>
 
     <string name="main_failure_to_show_newsitem">Dit nieuwsitem kon niet worden getoond. Probeer het later opnieuw.</string>
 

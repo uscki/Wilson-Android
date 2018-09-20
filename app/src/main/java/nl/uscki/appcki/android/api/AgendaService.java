@@ -34,6 +34,10 @@ public interface AgendaService {
     Call<AgendaParticipantLists> subscribe(@Field("id") Integer id, @Field("note") String note);
 
     @FormUrlEncoded
+    @POST("agenda/subscribe")
+    Call<AgendaParticipantLists> subscribe(@Field("id") Integer id, @Field("note") String note, @Field("answer") String answer);
+
+    @FormUrlEncoded
     @POST("agenda/unsubscribe")
     Call<AgendaParticipantLists> unsubscribe(@Field("id") Integer id);
 
