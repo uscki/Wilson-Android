@@ -4,17 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
-
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
-
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.services.NotificationReceiver;
 
 /**
  * Created by peter on 1/31/16.
@@ -62,12 +59,8 @@ public class UserHelper {
     public void logout() {
         ServiceGenerator.client.dispatcher().cancelAll();
 
-        try {
-            // unregister this device from fcm
-            FirebaseInstanceId.getInstance().deleteInstanceId();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // unregister this device from fcm
+        NotificationReceiver.invalidateFirebaseInstanceId(false);
 
         if(preferences.contains("TOKEN")) {
             Log.d("UserHelper", "token in place, removing it");

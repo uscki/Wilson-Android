@@ -71,14 +71,9 @@
         <service android:name=".services.NotificationReceiver">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.iid.TOKEN_REFRESH" />
             </intent-filter>
         </service>
-        <service android:name=".services.FCMInstanceIdService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
-
         <activity
             android:name=".activities.NewsActivity"
             android:label="@string/title_activity_news"
@@ -107,7 +102,7 @@
             android:exported="false" />
         <service
             android:name=".services.AgendaSubscriberIntentService"
-            android:exported="false"></service>
+            android:exported="false"/>
     </application>
 
 </manifest>
