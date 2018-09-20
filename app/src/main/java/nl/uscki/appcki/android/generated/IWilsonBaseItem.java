@@ -1,5 +1,7 @@
 package nl.uscki.appcki.android.generated;
 
-public interface IWilsonBaseItem {
+import java.io.Serializable;
+
+public interface IWilsonBaseItem extends Serializable {
     Integer getId();
 }
