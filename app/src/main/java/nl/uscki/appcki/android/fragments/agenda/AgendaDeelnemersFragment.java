@@ -3,6 +3,7 @@ package nl.uscki.appcki.android.fragments.agenda;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,8 +35,8 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
     @BindView(R.id.empty_text)
     TextView emptyText;
 
-    @BindView(R.id.refreshContainer)
-    SwipeRefreshLayout participantList;
+    @BindView(R.id.recyclerView)
+    RecyclerView participantList;
 
     private Callback<AgendaItem> refreshCallback = new Callback<AgendaItem>() {
         @Override

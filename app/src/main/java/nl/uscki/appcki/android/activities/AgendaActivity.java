@@ -152,57 +152,6 @@ public class AgendaActivity extends BasicActivity {
         getMenuInflater().inflate(R.menu.agenda_menu, menu);
         this.menu = menu;
 
-        if(item == null) return false;
-
-        if (this.item.getMaxregistrations() != null && this.item.getMaxregistrations() == 0) {
-            this.menu.findItem(R.id.action_agenda_subscribe)
-                    .setIcon(R.drawable.plus_disabled)
-                    .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem menuItem) {
-                            Toast.makeText(
-                                    AgendaActivity.this,
-                                    R.string.agenda_prepublished_event_registration_closed,
-                                    Toast.LENGTH_LONG).show();
-
-                            return true;
-                        }
-                    });
-            this.menu.findItem(R.id.action_agenda_unsubscribe)
-                    .setIcon(R.drawable.close_disabled)
-                    .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem menuItem) {
-                            Toast.makeText(
-                                    AgendaActivity.this,
-                                    R.string.agenda_prepublished_event_registration_closed,
-                                    Toast.LENGTH_LONG).show();
-
-                            return true;
-                        }
-                    });
-        } else {
-            this.menu.findItem(R.id.action_agenda_subscribe)
-                    .setIcon(R.drawable.plus)
-                    .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            subscribeToAgenda(true);
-                            return true;
-                        }
-                    });
-
-            this.menu.findItem(R.id.action_agenda_unsubscribe)
-                    .setIcon(R.drawable.close)
-                    .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    subscribeToAgenda(false);
-                    return true;
-                }
-            });
-        }
-
         this.menu.findItem(R.id.action_agenda_export).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -282,13 +231,83 @@ public class AgendaActivity extends BasicActivity {
     private void setSubscribeButtons() {
         if(menu == null) return;
 
-        if(foundUser) {
-            menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
-            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
-        } else {
-            menu.findItem(R.id.action_agenda_subscribe).setVisible(true);
-            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
+        MenuItem subscribe = menu.findItem(R.id.action_agenda_subscribe);
+        MenuItem unsubscribe = menu.findItem(R.id.action_agenda_unsubscribe);
+
+        if(subscribe == null || unsubscribe == null) {
+            Log.e(getClass().getSimpleName(), "Trying to set button behavior before menu is created");
+            return;
         }
+
+        if(foundUser) {
+            subscribe.setVisible(false);
+            unsubscribe.setVisible(true);
+        } else {
+            subscribe.setVisible(true);
+            unsubscribe.setVisible(false);
+        }
+
+        if(item == null) {
+            Log.e(getClass().getSimpleName(), "Trying to set button behavior before item is loaded");
+            return;
+        }
+
+        if (this.item.getMaxregistrations() != null && this.item.getMaxregistrations() == 0) {
+            prepareSubscribeButtonsForNoRegistration(subscribe, unsubscribe);
+        } else {
+            prepareSubscribeButtonsForRegistration(subscribe, unsubscribe);
+        }
+    }
+
+    private void prepareSubscribeButtonsForRegistration(MenuItem subscribeButton, MenuItem unsubscribeButton) {
+        subscribeButton
+            .setIcon(R.drawable.plus)
+            .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    subscribeToAgenda(true);
+                    return true;
+                }
+            });
+
+        unsubscribeButton
+            .setIcon(R.drawable.close)
+            .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    subscribeToAgenda(false);
+                    return true;
+                }
+            });
+    }
+
+    private void prepareSubscribeButtonsForNoRegistration(MenuItem subscribeButton, MenuItem unsubscribeButton) {
+        subscribeButton
+            .setIcon(R.drawable.plus_disabled)
+            .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    Toast.makeText(
+                            AgendaActivity.this,
+                            R.string.agenda_prepublished_event_registration_closed,
+                            Toast.LENGTH_LONG).show();
+
+                    return true;
+                }
+            });
+        unsubscribeButton
+            .setIcon(R.drawable.close_disabled)
+            .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    Toast.makeText(
+                            AgendaActivity.this,
+                            R.string.agenda_prepublished_event_registration_closed,
+                            Toast.LENGTH_LONG).show();
+
+                    return true;
+                }
+            });
     }
 
     /**

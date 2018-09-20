@@ -32,9 +32,12 @@ import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.activities.MeetingActivity;
 import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
+import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
+import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.calendar.AgendaSubscribeServiceHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarServiceHelper;
 import retrofit2.Response;
@@ -263,6 +266,8 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_EVENT);
                 }
+                addAgendaActions(n, id, false, true, title, content, id, notificationTag);
+                addReproducabilityExtras(intent, title, content, notificationTag, id, id);
                 mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
             case agenda_new:
@@ -439,6 +444,11 @@ public class NotificationReceiver extends FirebaseMessagingService {
             String notificationTag
             )
     {
+        if(allowSubscribe) {
+            // No need to check this if subscribing from the notification is already enabled anyway
+            allowSubscribe = checkAllowSimpleSubscribe(agendaId);
+        }
+
         if(allowExport) {
             // Build an export action
             Intent exportAgendaIntent = new Intent(context, EventExportIntentService.class);
@@ -481,6 +491,37 @@ public class NotificationReceiver extends FirebaseMessagingService {
 
             notification.addAction(subscribeAction);
         }
+    }
+
+    private boolean checkAllowSimpleSubscribe(int agendaId) {
+        boolean allowSubscribe = true;
+
+        try {
+            // Make API available
+            ServiceGenerator.init();
+
+            // Get token active
+            UserHelper.getInstance().load();
+
+            // Yes, this is blocking, and yes, that's what we want. The service is already on a separate
+            // thread, and this way the notification is only shown after we checked what type of agenda
+            // item we have
+            Response<AgendaItem> agendaResponse = Services.getInstance().agendaService.get(agendaId).execute();
+            AgendaItem item = agendaResponse.body();
+
+            boolean hasQuestion = item.getQuestion() != null && !item.getQuestion().isEmpty();
+            boolean isPrepublished = item.getMaxregistrations() != null && item.getMaxregistrations() == 0;
+
+            if(hasQuestion || isPrepublished) {
+                allowSubscribe = false;
+            }
+        } catch(IOException|NullPointerException e) {
+            Log.e(getClass().getSimpleName(), e.getMessage());
+            Log.e(getClass().getSimpleName(), "Could not download agenda item with id " + agendaId +
+                    ". Assuming the worst");
+            allowSubscribe = false;
+        }
+        return allowSubscribe;
     }
 
     /**
