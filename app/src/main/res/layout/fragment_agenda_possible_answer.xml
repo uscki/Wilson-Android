@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/possible_answer_checkmark"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/text_margin"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/check" />
+
+    <TextView
+        android:id="@+id/possible_answer_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:text="testing testing text"
+        android:layout_toEndOf="@id/possible_answer_checkmark"
+        />
+
+</RelativeLayout>

@@ -149,11 +149,10 @@ public class AgendaActivity extends BasicActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.clear();
 
-        if (this.item.getMaxregistrations() == 0)
-            return super.onCreateOptionsMenu(menu);
-
         getMenuInflater().inflate(R.menu.agenda_menu, menu);
         this.menu = menu;
+
+        if(item == null) return false;
 
         if (this.item.getMaxregistrations() != null && this.item.getMaxregistrations() == 0) {
             this.menu.findItem(R.id.action_agenda_subscribe)
@@ -331,7 +330,8 @@ public class AgendaActivity extends BasicActivity {
         if(subscribe) {
             DialogFragment newFragment = new SubscribeDialogFragment();
             Bundle args = new Bundle();
-            args.putInt("id", item.getId());
+//            args.putInt("id", item.getId());
+            args.putSerializable("agenda_item", item);
             newFragment.setArguments(args);
             newFragment.show(getSupportFragmentManager(), "agenda_subscribe");
         } else {
