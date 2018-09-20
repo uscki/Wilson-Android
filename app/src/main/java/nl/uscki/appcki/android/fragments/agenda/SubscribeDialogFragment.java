@@ -154,7 +154,7 @@ public class SubscribeDialogFragment extends DialogFragment {
     }
 
     private void subscribeWithOpenQuestion() {
-        if((item.getQuestion() != null || !item.getQuestion().isEmpty()) && !note.getText().toString().trim().isEmpty()) {
+        if((item.getQuestion() != null || !item.getQuestion().isEmpty()) && !registrationQuestionAnswer.getText().toString().trim().isEmpty()) {
             Services.getInstance().agendaService
                     .subscribe(item.getId(),
                             note.getText().toString().trim(),
