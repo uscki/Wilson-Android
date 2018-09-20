@@ -32,10 +32,12 @@ import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.activities.MeetingActivity;
 import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
+import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.calendar.AgendaSubscribeServiceHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarServiceHelper;
 import retrofit2.Response;
@@ -495,6 +497,12 @@ public class NotificationReceiver extends FirebaseMessagingService {
         boolean allowSubscribe = true;
 
         try {
+            // Make API available
+            ServiceGenerator.init();
+
+            // Get token active
+            UserHelper.getInstance().load();
+
             // Yes, this is blocking, and yes, that's what we want. The service is already on a separate
             // thread, and this way the notification is only shown after we checked what type of agenda
             // item we have
