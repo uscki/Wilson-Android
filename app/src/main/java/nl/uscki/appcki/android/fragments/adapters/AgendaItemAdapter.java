@@ -66,12 +66,16 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             DateTime dateTime = new DateTime(item.getDeadline());
             holder.itemDeadline.setText(dateTime.toString("EEEE dd MMMM YYYY HH:mm")); // TODO API: richard gaat hier nog shit aan veranderen
         } else {
-            holder.inschrijvenVerplicht.setVisibility(View.GONE);
+            holder.itemDeadline.setVisibility(View.GONE);
         }
 
         if (item.getPosterid() != null) {
             holder.itemPoster.setImageURI(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.SMALL));
             //TODO open media browser with normal size poster
+        }
+
+        if(item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
+            holder.prepublishedNotice.setVisibility(View.VISIBLE);
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +101,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
 
         holder.inschrijvenVerplicht.setVisibility(View.VISIBLE);
         holder.itemWhere.setVisibility(View.VISIBLE);
+        holder.prepublishedNotice.setVisibility(View.GONE);
     }
 
     @Override
@@ -113,6 +118,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         public final SimpleDraweeView itemPoster;
         public final TextView itemDeadline;
         public final View inschrijvenVerplicht;
+        public final TextView prepublishedNotice;
         public AgendaItem mItem;
 
         public ViewHolder(View view) {
@@ -125,6 +131,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             itemPoster = (SimpleDraweeView) view.findViewById(R.id.agenda_item_poster);
             itemDeadline = (TextView) view.findViewById(R.id.inschrijven_verplicht_date);
             inschrijvenVerplicht = view.findViewById(R.id.agenda_inschrijven_verplicht);
+            prepublishedNotice = view.findViewById(R.id.prepublished_event_text);
         }
 
         @Override

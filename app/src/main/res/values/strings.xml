@@ -69,6 +69,7 @@
     <string name="agenda_confirm_unsubscribe_positive">Uitschrijven!</string>
     <string name="agenda_unsubscribe_deadline_past">De deadline om je te kunnen uitschrijven is verstreken</string>
     <string name="agenda_prepublished_event_registration_closed">De inschrijving voor dit evenement wordt op een later tijdstip geopend</string>
+    <string name="agenda_prepublished_event_registration_closed_short_message">Inschrijving opent later</string>
     <string name="agenda_participants_list_empty">Nog geen deelnemers voor dit evenement</string>
 
     <string name="person_not_display_online_msg">Deze persoon kan niet worden opgeslagen vanwege zijn of haar privacy instellingen</string>
