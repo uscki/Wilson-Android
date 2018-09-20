@@ -165,7 +165,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
             String sentType = remoteMessage.getData().get("type");
             Log.e(TAG, "Getting type of " + sentType);
             type = NotificationType.valueOf(sentType);
-        } catch(NullPointerException e) {
+        } catch(NullPointerException|IllegalArgumentException e) {
             Log.e(TAG, e.toString());
             return;
         }
@@ -185,6 +185,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
                     n.setCategory(Notification.CATEGORY_STATUS);
                 }
                 mainBackstackAction = MainActivity.ACTION_MEETING_OVERVIEW;
+                break;
             case meeting_planned:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_EVENT);
@@ -256,6 +257,14 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 }
                 mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
                 break;
+            case agenda_from_backup:
+                intent = new Intent(this, AgendaActivity.class);
+                intent.putExtra(AgendaActivity.PARAM_AGENDA_ID, id);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    n.setCategory(Notification.CATEGORY_EVENT);
+                }
+                mainBackstackAction = MainActivity.ACTION_AGENDA_OVERVIEW;
+                break;
             case agenda_new:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_EVENT);
@@ -287,6 +296,15 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     n.setCategory(Notification.CATEGORY_PROMO);
                 }
+                break;
+            case bugtracker_comment:
+                n = NotificationUtil.goToBugTracker(this, n, id);
+                break;
+            case bugtracker_new:
+                n = NotificationUtil.goToBugTracker(this, n, id);
+                break;
+            case bugtracker_status_changed:
+                n = NotificationUtil.goToBugTracker(this, n, id);
                 break;
             case other: // what we do?
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
