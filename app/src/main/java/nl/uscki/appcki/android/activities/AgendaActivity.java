@@ -155,20 +155,55 @@ public class AgendaActivity extends BasicActivity {
         getMenuInflater().inflate(R.menu.agenda_menu, menu);
         this.menu = menu;
 
-        this.menu.findItem(R.id.action_agenda_unsubscribe).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                subscribeToAgenda(false);
-                return true;
-            }
-        });
-        this.menu.findItem(R.id.action_agenda_subscribe).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                subscribeToAgenda(true);
-                return true;
-            }
-        });
+        if (this.item.getMaxregistrations() != null && this.item.getMaxregistrations() == 0) {
+            this.menu.findItem(R.id.action_agenda_subscribe)
+                    .setIcon(R.drawable.plus_disabled)
+                    .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            Toast.makeText(
+                                    AgendaActivity.this,
+                                    R.string.agenda_prepublished_event_registration_closed,
+                                    Toast.LENGTH_LONG).show();
+
+                            return true;
+                        }
+                    });
+            this.menu.findItem(R.id.action_agenda_unsubscribe)
+                    .setIcon(R.drawable.close_disabled)
+                    .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            Toast.makeText(
+                                    AgendaActivity.this,
+                                    R.string.agenda_prepublished_event_registration_closed,
+                                    Toast.LENGTH_LONG).show();
+
+                            return true;
+                        }
+                    });
+        } else {
+            this.menu.findItem(R.id.action_agenda_subscribe)
+                    .setIcon(R.drawable.plus)
+                    .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            subscribeToAgenda(true);
+                            return true;
+                        }
+                    });
+
+            this.menu.findItem(R.id.action_agenda_unsubscribe)
+                    .setIcon(R.drawable.close)
+                    .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    subscribeToAgenda(false);
+                    return true;
+                }
+            });
+        }
+
         this.menu.findItem(R.id.action_agenda_export).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -215,12 +250,6 @@ public class AgendaActivity extends BasicActivity {
 
         int calendarEventItemId;
 
-        try {
-            calendarEventItemId = CalendarHelper.getInstance().getEventIdForItemIfExists(item);
-        } catch(SecurityException e) {
-            return;
-        }
-
         MenuItem exportButton = menu.findItem(R.id.action_agenda_export);
         MenuItem removeCalendarButton = menu.findItem(R.id.action_remove_from_calendar);
 
@@ -229,6 +258,13 @@ public class AgendaActivity extends BasicActivity {
         }
         if(removeCalendarButton == null) {
             return;
+        }
+
+        try {
+            calendarEventItemId = CalendarHelper.getInstance().getEventIdForItemIfExists(item);
+        } catch(SecurityException e) {
+            // No access to calendar. Always show export button
+            calendarEventItemId = -1;
         }
 
         if(calendarEventItemId > 0)
@@ -287,6 +323,11 @@ public class AgendaActivity extends BasicActivity {
     }
 
     private void subscribeToAgenda(boolean subscribe) {
+        if(item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
+            // Don't allow subscribing if max registrations is 0
+            return;
+        }
+
         if(subscribe) {
             DialogFragment newFragment = new SubscribeDialogFragment();
             Bundle args = new Bundle();

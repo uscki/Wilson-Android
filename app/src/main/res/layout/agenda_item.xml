@@ -106,6 +106,19 @@
             android:layout_marginLeft="20dp"
             android:layout_marginBottom="4dp"
             android:textColor="#fff" />
+
+        <TextView
+            android:id="@+id/prepublished_event_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/inschrijven_verplicht_date"
+            android:text="@string/agenda_prepublished_event_registration_closed_short_message"
+            android:textColor="#fff"
+            android:visibility="gone"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="4dp"
+            />
+
     </RelativeLayout>
 
     <ImageView
