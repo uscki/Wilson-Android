@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 import butterknife.BindView;
@@ -26,7 +24,7 @@ import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
 import nl.uscki.appcki.android.helpers.UserHelper;
-import nl.uscki.appcki.android.services.FCMInstanceIdService;
+import nl.uscki.appcki.android.services.NotificationReceiver;
 import retrofit2.Response;
 
 /**
@@ -47,7 +45,7 @@ public abstract class BasicActivity extends AppCompatActivity {
             UserHelper.getInstance().load();
         }
 
-        Log.e(getClass().getSimpleName(), "Firebase notification token: " + FirebaseInstanceId.getInstance().getToken());
+        NotificationReceiver.logToken();
 
         super.onCreate(savedInstanceState);
     }
