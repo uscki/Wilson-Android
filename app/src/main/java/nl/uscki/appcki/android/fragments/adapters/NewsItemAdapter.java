@@ -40,7 +40,6 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
 
     @Override
     public void onBindCustomViewHolder(ViewHolder holder, int position) {
-        Log.e(getClass().getSimpleName(), "OnBindViewHolder!");
         final NewsItem item = items.get(position);
         holder.mItem = item;
         holder.title.setText(item.getTitle());
