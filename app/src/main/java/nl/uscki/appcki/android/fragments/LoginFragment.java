@@ -24,12 +24,14 @@ import com.google.gson.Gson;
 import java.io.UnsupportedEncodingException;
 
 import de.greenrobot.event.EventBus;
+import nl.uscki.appcki.android.BuildConfig;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import nl.uscki.appcki.android.services.NotificationReceiver;
 import okhttp3.Headers;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -147,11 +149,16 @@ public class LoginFragment extends Fragment {
                         Gson gson = new Gson();
 
                         try {
-                            //TODO REMOVE THIS IN PRODUCTION
-                            Log.i("LoginActivity: ", "token: " + token);
-                            Log.i("LoginActivity: ", "decoded: " + new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
+                            if(BuildConfig.DEBUG) {
+                                Log.i("LoginActivity: ", "token: " + token);
+                                Log.i("LoginActivity: ", "decoded: " + new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
+                            }
                             PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
                             UserHelper.getInstance().login(token, person);
+
+                            // Firebase generates token before login. Invalidate so a new one is sent
+                            // which we can then send to the server
+                            NotificationReceiver.invalidateFirebaseInstanceId(true);
 
                             EventBus.getDefault().post(new UserLoggedInEvent(true));
                         } catch (UnsupportedEncodingException e) {
