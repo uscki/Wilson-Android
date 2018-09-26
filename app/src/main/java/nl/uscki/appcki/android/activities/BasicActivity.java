@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 import butterknife.BindView;
@@ -38,10 +38,8 @@ public abstract class BasicActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if(savedInstanceState != null) {
-            Crashlytics.log("savedInstanceState != null");
             UserHelper.getInstance().load(savedInstanceState.getString("token"));
         } else {
-            Crashlytics.log("savedInstanceState == null");
             UserHelper.getInstance().load();
         }
 
@@ -86,7 +84,6 @@ public abstract class BasicActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Crashlytics.log("onSaveInstanceState");
         if(MainActivity.currentScreen != null)
             outState.putInt("screen", MainActivity.currentScreen.ordinal());
         outState.putString("token", UserHelper.getInstance().getToken());
@@ -139,7 +136,6 @@ public abstract class BasicActivity extends AppCompatActivity {
                 toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
                 toast.show();
                 Gson gson = new Gson();
-                Crashlytics.logException(new Exception(gson.toJson(event.error))); // just log this server error to firebase
         }
     }
 
