@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.crashlytics.android.Crashlytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import de.greenrobot.event.EventBus;
@@ -99,7 +98,6 @@ public class MainActivity extends BasicActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Crashlytics.log("Creating MainActivity");
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
@@ -308,7 +306,6 @@ public class MainActivity extends BasicActivity
     }
 
     private void openTab(int index, int scrollToId) {
-        Crashlytics.log("openTab(" + index + ")");
 
         if (
                 homeScreenExists &&
@@ -351,7 +348,6 @@ public class MainActivity extends BasicActivity
 
     private void openFragment(Fragment fragment, Bundle arguments) {
         if (fragment instanceof LoginFragment) {
-            Crashlytics.log("openFragment: setting soft input mode");
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         } else {
             // TODO: 5/28/16 currently keyboard overlaps in agenda detail, but this needs a new
@@ -360,11 +356,9 @@ public class MainActivity extends BasicActivity
         }
 
         if (arguments != null) {
-            Crashlytics.log("openFragment: adding a bundle to this fragment");
             fragment.setArguments(arguments);
         }
 
-        Crashlytics.log("openFragment: beginTransition.replace");
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();

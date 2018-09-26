@@ -17,11 +17,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            dependencies {
-                compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
-                    transitive = true
-                }
-            }
         }
     }
     packagingOptions {
