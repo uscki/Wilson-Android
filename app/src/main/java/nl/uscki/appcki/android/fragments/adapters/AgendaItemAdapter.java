@@ -66,7 +66,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             DateTime dateTime = new DateTime(item.getDeadline());
             holder.itemDeadline.setText(dateTime.toString("EEEE dd MMMM YYYY HH:mm")); // TODO API: richard gaat hier nog shit aan veranderen
         } else {
-            holder.itemDeadline.setVisibility(View.GONE);
+            holder.inschrijvenVerplicht.setVisibility(View.GONE);
         }
 
         if (item.getPosterid() != null) {
@@ -76,6 +76,8 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
 
         if(item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
             holder.prepublishedNotice.setVisibility(View.VISIBLE);
+            holder.inschrijvenVerplicht.setVisibility(View.VISIBLE);
+            holder.itemDeadline.setVisibility(View.GONE);
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
