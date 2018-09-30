@@ -90,19 +90,48 @@ public abstract class BasicActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * Show a person's smobo page, if the current user has sufficient permission to view it, or
+     * show an error otherwise.
+     *
+     * @param person    Person object for the person for whom to show the smobo page
+     */
     public void openSmoboFor(final PersonSimpleName person) {
-        Services.getInstance().permissionsService.hasPermission("useradmin", "admin").enqueue(new Callback<Boolean>() {
-            @Override
-            public void onSucces(Response<Boolean> response) {
-                if(person.getDisplayonline() || response.body()) {
-                    Intent smoboIntent = new Intent(BasicActivity.this, SmoboActivity.class);
-                    smoboIntent.putExtra("id", person.getId());
-                    smoboIntent.putExtra("name", person.getPostalname());
-                    smoboIntent.putExtra("photo", person.getPhotomediaid());
-                    startActivity(smoboIntent);
+        if(person.getDisplayonline() || person.getId() == UserHelper.getInstance().getPerson().getId()) {
+            forceOpenSmobo(person.getId(), person.getPostalname(), person.getPhotomediaid());
+        } else {
+            Services.getInstance().permissionsService.hasPermission("useradmin", "admin").enqueue(new Callback<Boolean>() {
+                @Override
+                public void onSucces(Response<Boolean> response) {
+                    if (response.body()) {
+                        forceOpenSmobo(person.getId(), person.getPostalname(), person.getPhotomediaid());
+                    } else {
+                        Toast.makeText(
+                                BasicActivity.this,
+                                getString(R.string.person_not_display_online_error),
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
                 }
-            }
-        });
+            });
+        }
+    }
+
+    /**
+     * Private helper function to open a person's smobo page after all checks have passed.
+     * This function is private so it cannot accidentally be called from another class. Before
+     * this function is called, a permission check needs to have been performed
+     *
+     * @param personId      ID of person to show
+     * @param postalName    Postal name of person to show
+     * @param photoMediaId  ID of photo media for the profile of the person to show
+     */
+    private void forceOpenSmobo(int personId, String postalName, int photoMediaId) {
+        Intent smoboIntent = new Intent(BasicActivity.this, SmoboActivity.class);
+        smoboIntent.putExtra("id", personId);
+        smoboIntent.putExtra("name", postalName);
+        smoboIntent.putExtra("photo", photoMediaId);
+        startActivity(smoboIntent);
     }
 
     public void openSmoboFor(PersonWithNote person) {
