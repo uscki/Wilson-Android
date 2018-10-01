@@ -25,6 +25,7 @@ public abstract class Callback<T> implements retrofit2.Callback<T> {
             onSucces(response);
         } else {
             handleError(response);
+            onError(response);
         }
     }
 
@@ -35,8 +36,6 @@ public abstract class Callback<T> implements retrofit2.Callback<T> {
     }
 
     private void handleError(Response<T> response) {
-        // TODO maybe move this code to a static helper, so the same error handling can be used
-        // at other places? This is a pretty generic way we want to handle these errors, I presume?
         try {
             Gson gson = new Gson();
             ServerError error = gson.fromJson(response.errorBody().string(), ServerError.class);
@@ -52,4 +51,10 @@ public abstract class Callback<T> implements retrofit2.Callback<T> {
     }
 
     public abstract void onSucces(Response<T> response);
+
+    /**
+     * Optional class for additional error handling on top of the default error handling
+     * @param response  Original response
+     */
+    public void onError(Response<T> response) { }
 }
