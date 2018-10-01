@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 import butterknife.BindView;
@@ -21,6 +20,7 @@ import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.LinkClickedEvent;
 import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
+import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -97,7 +97,7 @@ public abstract class BasicActivity extends AppCompatActivity {
      * @param person    Person object for the person for whom to show the smobo page
      */
     public void openSmoboFor(final PersonSimpleName person) {
-        if(person.getDisplayonline() || person.getId() == UserHelper.getInstance().getPerson().getId()) {
+        if(person.getDisplayonline() || person.getId().equals(UserHelper.getInstance().getPerson().getId())) {
             forceOpenSmobo(person.getId(), person.getPostalname(), person.getPhotomediaid());
         } else {
             Services.getInstance().permissionsService.hasPermission("useradmin", "admin").enqueue(new Callback<Boolean>() {
@@ -136,6 +136,18 @@ public abstract class BasicActivity extends AppCompatActivity {
 
     public void openSmoboFor(PersonWithNote person) {
         openSmoboFor(person.getPerson());
+    }
+
+    public void openSmoboFor(PersonSimple person) {
+        // TODO beetje dirty, general superclass voor person zou netter zijn, maar schijnt moeilijk te zijn voor retrofit?
+        PersonSimpleName tempPerson = new PersonSimpleName();
+        tempPerson.setId(person.getId());
+        tempPerson.setPostalname(person.getPostalname());
+        tempPerson.setDisplayonline(person.getDisplayonline());
+        if(person.getPhotomediaid() != null) {
+            tempPerson.setPhotomediaid(person.getPhotomediaid());
+        }
+        openSmoboFor(tempPerson);
     }
 
     public void onEventMainThread(ErrorEvent event) {
