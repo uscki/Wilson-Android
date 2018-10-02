@@ -124,7 +124,7 @@ public class SmoboPersonFragment extends Fragment {
         widget.setArguments(bundle);
         context.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.smobo_address_info, widget)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private void createEmailInfoWidget(SmoboItem p) {
@@ -137,7 +137,7 @@ public class SmoboPersonFragment extends Fragment {
         widget.setArguments(bundle);
         context.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.smobo_email_info, widget)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private void createPhoneInfoWidget(SmoboItem p) {
@@ -151,7 +151,7 @@ public class SmoboPersonFragment extends Fragment {
             widget.setArguments(bundle);
             context.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.smobo_phone_info, widget)
-                    .commit();
+                    .commitAllowingStateLoss();
         } else {
             phoneInfo.setPadding(0,0,0,0);
         }
@@ -168,7 +168,7 @@ public class SmoboPersonFragment extends Fragment {
             widget.setArguments(bundle);
             context.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.smobo_mobile_info, widget)
-                    .commit();
+                    .commitAllowingStateLoss();
         } else {
             mobileInfo.setPadding(0,0,0,0);
         }
@@ -186,7 +186,7 @@ public class SmoboPersonFragment extends Fragment {
             widget.setArguments(bundle);
             context.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.smobo_birthday_info, widget)
-                    .commit();
+                    .commitAllowingStateLoss();
         } else {
             mobileInfo.setPadding(0,0,0,0);
         }
@@ -204,7 +204,7 @@ public class SmoboPersonFragment extends Fragment {
             widget.setArguments(bundle);
             context.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.smobo_homepage_info, widget)
-                    .commit();
+                    .commitAllowingStateLoss();
         } else {
             homepageInfo.setPadding(0,0,0,0);
         }
