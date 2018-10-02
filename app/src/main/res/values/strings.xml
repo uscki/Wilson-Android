@@ -75,6 +75,7 @@
     <string name="agenda_participants_list_empty">Nog geen deelnemers voor dit evenement</string>
 
     <string name="person_not_display_online_msg">Deze persoon kan niet worden opgeslagen vanwege zijn of haar privacy instellingen</string>
+    <string name="person_not_display_online_error">Dit profiel is verborgen</string>
     <string name="agenda_subscribe_success">Je bent ingeschreven voor dit evenement!</string>
     <string name="agenda_subscribe_no_answer_selected">Kies een antwoord voor de inschrijfvraag</string>
 

@@ -33,6 +33,7 @@ import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.helpers.ContactHelper;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
+import retrofit2.Call;
 import retrofit2.Response;
 
 /**
@@ -60,6 +61,13 @@ public class SmoboPersonFragment extends Fragment {
             noMoreContent = response.body().getLast();
             scrollLoad = false;
             ((BaseItemAdapter) mediaGrid.getAdapter()).addItems(response.body().getContent());
+        }
+
+        @Override
+        public void onError(Response<Pageable<MediaFileMetaData>> response) {
+            super.onError(response);
+            noMoreContent = true;
+            scrollLoad = false;
         }
     };
 
@@ -97,6 +105,12 @@ public class SmoboPersonFragment extends Fragment {
             createWebsiteInfoWidget(p);
 
             ((BaseItemAdapter) smoboGroups.getAdapter()).update(p.getGroups());
+        }
+
+        @Override
+        public void onError(Response<SmoboItem> response) {
+            super.onError(response);
+            swipeContainer.setRefreshing(false);
         }
     };
 

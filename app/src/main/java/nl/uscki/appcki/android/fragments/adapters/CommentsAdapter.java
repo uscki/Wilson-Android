@@ -1,6 +1,6 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
-import android.content.Intent;
+import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,7 +22,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
-import nl.uscki.appcki.android.activities.SmoboActivity;
+import nl.uscki.appcki.android.activities.AgendaActivity;
+import nl.uscki.appcki.android.activities.BasicActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.comments.Comment;
@@ -59,31 +59,35 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
      *
      * If properties are not explicitly set, they can take the value of the wrong comment
      * 
-     * @param holder
-     * @param position
+     * @param holder        ViewHolder to populate
+     * @param position      Position of the item in the adapter, which contains the data to populate
+     *                      the viewholder with
      */
     @Override
     public void onBindCustomViewHolder(@NonNull final CommentsAdapter.ViewHolder holder, int position) {
+        holder.actualCommentText.setText("");
         holder.comment = items.get(position);
 
         // Set the photo of the commenter
         Integer profilePictureId = holder.comment.person.getPhotomediaid();
         if(profilePictureId != null) {
             holder.commenterPhoto.setImageURI(MediaAPI.getMediaUri(profilePictureId, MediaAPI.MediaSize.SMALL));
+        } else {
+            holder.commenterPhoto.setImageURI("");
         }
 
-        // If privacy allows it, link the photo to the smobo
-        if(holder.comment.person.getDisplayonline()) {
+        final AgendaActivity act = (AgendaActivity)holder.mView.getContext();
+        if(act != null) {
             holder.commenterPhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent smoboIntent = new Intent(view.getContext(), SmoboActivity.class);
-                    smoboIntent.putExtra("id", holder.comment.person.getId());
-                    smoboIntent.putExtra("name", holder.comment.person.getPostalname());
-                    smoboIntent.putExtra("photo", holder.comment.person.getPhotomediaid());
-                    view.getContext().startActivity(smoboIntent);
+                    act.openSmoboFor(holder.comment.person);
                 }
             });
+        } else {
+            Log.e(getClass().getSimpleName(),
+                    "Could not obtain AgendaActivity from viewholder view. " +
+                            "Can't register onClick listener for smobo picture");
         }
 
         // Set name of commenter
@@ -104,12 +108,15 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
             // Adapter can have trace replies from previous load. Clear first
             holder.adapter.addItems(holder.comment.reactions);
         }
+
         // Set visibilities depending on level of recursion
         holder.replyRow.setVisibility(View.GONE);
         if(isNested) {
             holder.itemView.findViewById(R.id.comment_list_divider).setVisibility(View.GONE);
             holder.replyButton.setVisibility(View.INVISIBLE);
         } else {
+            holder.itemView.findViewById(R.id.comment_list_divider).setVisibility(View.VISIBLE);
+            holder.replyButton.setVisibility(View.VISIBLE);
             holder.replyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
