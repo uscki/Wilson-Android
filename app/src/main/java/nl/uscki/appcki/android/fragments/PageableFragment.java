@@ -289,7 +289,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
             widget.setFocusOnCreateView(true);
             ft.addToBackStack("new_item");
         }
-        ft.commit();
+        ft.commitAllowingStateLoss();
 
         View view = getView();
         if(onlyWhenFab && view != null) {
@@ -305,7 +305,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
         fm.beginTransaction()
                 .replace(editBoxPosition, new Fragment())
-                .commit();
+                .commitAllowingStateLoss();
 
         View view = getView();
         if(view != null)

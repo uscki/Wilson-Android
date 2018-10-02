@@ -2,6 +2,7 @@ package nl.uscki.appcki.android.fragments.agenda;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,18 +53,20 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
             holder.profile.setImageURI(MediaAPI.getMediaUri(profile, MediaAPI.MediaSize.SMALL));
         }
 
-        if(item.getPerson().getDisplayonline()) {
+        final AgendaActivity act = (AgendaActivity)holder.mView.getContext();
+        if(act != null) {
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    Intent smoboIntent = new Intent(holder.mView.getContext(), SmoboActivity.class);
-                    smoboIntent.putExtra("id", item.getPerson().getId());
-                    smoboIntent.putExtra("name", item.getPerson().getPostalname());
-                    smoboIntent.putExtra("photo", item.getPerson().getPhotomediaid());
-                    holder.mView.getContext().startActivity(smoboIntent);
+                public void onClick(View view) {
+                    act.openSmoboFor(item.getPerson());
                 }
             });
+        } else {
+            Log.e(getClass().getSimpleName(),
+                    "Could not obtain AgendaActivity from viewholder view. " +
+                            "Can't register onClick listener for smobo picture");
         }
+
     }
 
     private void unsetViews(ViewHolder vh) {

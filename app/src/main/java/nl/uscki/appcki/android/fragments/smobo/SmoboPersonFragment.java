@@ -33,6 +33,7 @@ import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.helpers.ContactHelper;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
+import retrofit2.Call;
 import retrofit2.Response;
 
 /**
@@ -60,6 +61,13 @@ public class SmoboPersonFragment extends Fragment {
             noMoreContent = response.body().getLast();
             scrollLoad = false;
             ((BaseItemAdapter) mediaGrid.getAdapter()).addItems(response.body().getContent());
+        }
+
+        @Override
+        public void onError(Response<Pageable<MediaFileMetaData>> response) {
+            super.onError(response);
+            noMoreContent = true;
+            scrollLoad = false;
         }
     };
 
@@ -98,6 +106,12 @@ public class SmoboPersonFragment extends Fragment {
 
             ((BaseItemAdapter) smoboGroups.getAdapter()).update(p.getGroups());
         }
+
+        @Override
+        public void onError(Response<SmoboItem> response) {
+            super.onError(response);
+            swipeContainer.setRefreshing(false);
+        }
     };
 
     private void createAddressInfoWidget(SmoboItem p) {
@@ -110,7 +124,7 @@ public class SmoboPersonFragment extends Fragment {
         widget.setArguments(bundle);
         context.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.smobo_address_info, widget)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private void createEmailInfoWidget(SmoboItem p) {
@@ -123,7 +137,7 @@ public class SmoboPersonFragment extends Fragment {
         widget.setArguments(bundle);
         context.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.smobo_email_info, widget)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private void createPhoneInfoWidget(SmoboItem p) {
@@ -137,7 +151,7 @@ public class SmoboPersonFragment extends Fragment {
             widget.setArguments(bundle);
             context.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.smobo_phone_info, widget)
-                    .commit();
+                    .commitAllowingStateLoss();
         } else {
             phoneInfo.setPadding(0,0,0,0);
         }
@@ -154,7 +168,7 @@ public class SmoboPersonFragment extends Fragment {
             widget.setArguments(bundle);
             context.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.smobo_mobile_info, widget)
-                    .commit();
+                    .commitAllowingStateLoss();
         } else {
             mobileInfo.setPadding(0,0,0,0);
         }
@@ -172,7 +186,7 @@ public class SmoboPersonFragment extends Fragment {
             widget.setArguments(bundle);
             context.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.smobo_birthday_info, widget)
-                    .commit();
+                    .commitAllowingStateLoss();
         } else {
             mobileInfo.setPadding(0,0,0,0);
         }
@@ -190,7 +204,7 @@ public class SmoboPersonFragment extends Fragment {
             widget.setArguments(bundle);
             context.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.smobo_homepage_info, widget)
-                    .commit();
+                    .commitAllowingStateLoss();
         } else {
             homepageInfo.setPadding(0,0,0,0);
         }
