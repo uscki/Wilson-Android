@@ -1,5 +1,6 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,6 +21,7 @@ import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
+import nl.uscki.appcki.android.events.AgendaItemUpdatedEvent;
 import nl.uscki.appcki.android.events.AgendaSubscribersEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
@@ -37,6 +39,8 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
 
     @BindView(R.id.recyclerView)
     RecyclerView participantList;
+
+    private AgendaActivity activity;
 
     private Callback<AgendaItem> refreshCallback = new Callback<AgendaItem>() {
         @Override
@@ -63,6 +67,26 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
         }
     };
 
+    private void setupParticipantList(AgendaItem item) {
+        if (getAdapter() instanceof AgendaDeelnemersAdapter) {
+            ((AgendaDeelnemersAdapter)getAdapter()).update(item.getParticipants());
+        }
+        if(emptyText != null && participantList != null) {
+            if (item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
+                emptyText.setText(getString(R.string.agenda_prepublished_event_registration_closed));
+                emptyText.setVisibility(View.VISIBLE);
+                participantList.setVisibility(View.GONE);
+            } else if (item.getParticipants().isEmpty()) {
+                emptyText.setText(getString(R.string.agenda_participants_list_empty));
+                emptyText.setVisibility(View.VISIBLE);
+                participantList.setVisibility(View.GONE);
+            } else {
+                emptyText.setVisibility(View.GONE);
+                participantList.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,9 +99,13 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        if (getArguments() != null) {
-            id = getArguments().getInt("id");
-            Services.getInstance().agendaService.get(getArguments().getInt("id")).enqueue(refreshCallback);
+//        if (getArguments() != null) {
+//            id = getArguments().getInt("id");
+//            Services.getInstance().agendaService.get(getArguments().getInt("id")).enqueue(refreshCallback);
+//        }
+
+        if(activity != null) {
+            setupParticipantList(activity.getAgendaItem());
         }
 
         return view;
@@ -85,14 +113,16 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().agendaService.get(id).enqueue(refreshCallback);
+//        Services.getInstance().agendaService.get(id).enqueue(refreshCallback);
+        activity.refreshAgendaItem();
     }
 
     @Override
     public void onAttach(Context context) {
         if (context instanceof AgendaActivity) {
+            this.activity = (AgendaActivity) context;
             AgendaDeelnemersAdapter adapter = new AgendaDeelnemersAdapter(new ArrayList<AgendaParticipant>());
-            adapter.activity = (AgendaActivity) context;
+            adapter.activity = this.activity;
             setAdapter(adapter);
         }
         super.onAttach(context);
@@ -114,6 +144,11 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
                 getAdapter().update(event.subscribed.getParticipants());
             }
         }
+    }
+
+    public void onEventMainThread(AgendaItemUpdatedEvent event) {
+        swipeContainer.setRefreshing(false);
+        // TODO do something with the item
     }
 
     @Override
