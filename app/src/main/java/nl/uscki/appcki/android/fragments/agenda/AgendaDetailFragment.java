@@ -1,6 +1,8 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,7 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
@@ -21,18 +26,28 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class AgendaDetailFragment extends RefreshableFragment {
-    private TextView title;
-    private TextView when;
-    private BBTextView longText;
+    @BindView(R.id.agenda_detail_time)
+    TextView startTime;
 
-    private TextView summaryCommissie;
-    private TextView summaryTitle;
-    private TextView summaryWaar;
-    private TextView summaryWhen;
-    private TextView summaryCost;
-    private View root;
+    @BindView(R.id.agenda_detail_longtext)
+    BBTextView longText;
+
+    @BindView(R.id.agenda_summary_commissie_text)
+    TextView summaryCommissie;
+    @BindView(R.id.agenda_summary_title_text)
+    TextView summaryTitle;
+    @BindView(R.id.agenda_summary_waar_text)
+    TextView summaryWaar;
+    @BindView(R.id.agenda_summary_when_text)
+    TextView summaryWhen;
+    @BindView(R.id.agenda_summary_cost_text)
+    TextView summaryCost;
+    @BindView(R.id.agenda_detail_root)
+    View root;
 
     public static AgendaItem item;
+
+    private AgendaActivity activity;
 
     public AgendaDetailFragment() {
         // Required empty public constructor
@@ -44,7 +59,7 @@ public class AgendaDetailFragment extends RefreshableFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_agenda_detail, container, false);
-
+        ButterKnife.bind(this, view);
         setupSwipeContainer(view);
 
         if (getArguments() != null) {
@@ -56,25 +71,29 @@ public class AgendaDetailFragment extends RefreshableFragment {
                     swipeContainer.setRefreshing(false);
                     item = response.body();
                     root.setVisibility(View.VISIBLE);
-                    findViews(view);
                     setupViews(view);
                 }
             });
         }
 
-        findViews(view);
         root.setVisibility(View.INVISIBLE);
 
         return view;
     }
 
     private void setupViews(View view) {
-        title.setText(item.getTitle());
+        // the title is set in AgendaActivity
+
+        String format = "EEEE, dd MMMM, HH:mm";
         if (item.getEnd() != null) {
-            String whenStr = item.getStart().toString("EEEE dd MMMM YYYY HH:mm") + " - " + item.getEnd().toString("EEEE dd MMMM YYYY HH:mm");
-            when.setText(whenStr);
+            if (item.getEnd().toLocalDate().equals(item.getStart().toLocalDate())) {
+                format = "EEEE, dd MMMM \n HH:mm - ";
+                startTime.setText(item.getStart().toString(format) + item.getEnd().toString("HH:mm"));
+            } else {
+                startTime.setText(item.getStart().toString(format) + "\n" + item.getEnd().toString(format));
+            }
         } else {
-            when.setText(item.getStart().toString("EEEE dd MMMM YYYY HH:mm"));
+            startTime.setText(item.getStart().toString(format));
         }
         longText.setText(Parser.parse(item.getDescriptionJSON(), true, longText));
 
@@ -85,23 +104,9 @@ public class AgendaDetailFragment extends RefreshableFragment {
         if (item.getEnd() != null) {
             summaryWhen.setText(item.getWhen());
         } else {
-            summaryWhen.setText(item.getStart().toString("EEEE dd MMMM YYYY HH:mm"));
+            summaryWhen.setText(item.getStart().toString(format));
         }
         setTextView(view, item.getCosts(), R.id.agenda_summary_cost_text);
-    }
-
-    private void findViews(View view) {
-        root = view.findViewById(R.id.agenda_detail_root);
-
-        title = (TextView) view.findViewById(R.id.agenda_detail_title);
-        when = (TextView) view.findViewById(R.id.agenda_detail_when);
-        longText = (BBTextView) view.findViewById(R.id.agenda_detail_longtext);
-
-        summaryCommissie = (TextView) view.findViewById(R.id.agenda_summary_commissie_text);
-        summaryTitle = (TextView) view.findViewById(R.id.agenda_summary_title_text);
-        summaryWaar = (TextView) view.findViewById(R.id.agenda_summary_waar_text);
-        summaryWhen = (TextView) view.findViewById(R.id.agenda_summary_when_text);
-        summaryCost = (TextView) view.findViewById(R.id.agenda_summary_cost_text);
     }
 
     private void setTextView(View v, String str, int id) {
@@ -122,5 +127,13 @@ public class AgendaDetailFragment extends RefreshableFragment {
                 swipeContainer.setRefreshing(false);
             }
         });
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        if (context instanceof AgendaActivity) {
+            activity = (AgendaActivity) context;
+        }
+        super.onAttach(context);
     }
 }

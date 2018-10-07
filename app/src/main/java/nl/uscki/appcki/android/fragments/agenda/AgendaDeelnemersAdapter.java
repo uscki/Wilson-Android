@@ -91,10 +91,10 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            profile = (SimpleDraweeView) view.findViewById(R.id.person_list_item_profile);
+            profile = view.findViewById(R.id.person_list_item_profile);
 
-            name = (TextView) view.findViewById(R.id.person_list_item_name);
-            note = (TextView) view.findViewById(R.id.person_list_item_note);
+            name = view.findViewById(R.id.person_list_item_name);
+            note = view.findViewById(R.id.person_list_item_note);
             note.setVisibility(View.VISIBLE);
         }
 
