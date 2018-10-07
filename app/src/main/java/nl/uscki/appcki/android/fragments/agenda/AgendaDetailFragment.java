@@ -1,10 +1,9 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
-
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +11,14 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
-import nl.uscki.appcki.android.api.Callback;
-import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.events.AgendaItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,14 +43,11 @@ public class AgendaDetailFragment extends RefreshableFragment {
     @BindView(R.id.agenda_detail_root)
     View root;
 
-    public static AgendaItem item;
-
     private AgendaActivity activity;
 
     public AgendaDetailFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,27 +57,41 @@ public class AgendaDetailFragment extends RefreshableFragment {
         ButterKnife.bind(this, view);
         setupSwipeContainer(view);
 
-        if (getArguments() != null) {
-            int id = getArguments().getInt("id");
-            swipeContainer.setRefreshing(true);
-            Services.getInstance().agendaService.get(id).enqueue(new Callback<AgendaItem>() {
-                @Override
-                public void onSucces(Response<AgendaItem> response) {
-                    swipeContainer.setRefreshing(false);
-                    item = response.body();
-                    root.setVisibility(View.VISIBLE);
-                    setupViews(view);
-                }
-            });
-        }
+//        if (getArguments() != null) {
+//            int id = getArguments().getInt("id");
+//            swipeContainer.setRefreshing(true);
+//            Services.getInstance().agendaService.get(id).enqueue(new Callback<AgendaItem>() {
+//                @Override
+//                public void onSucces(Response<AgendaItem> response) {
+//                    swipeContainer.setRefreshing(false);
+//                    item = response.body();
+//                    root.setVisibility(View.VISIBLE);
+//                    setupViews(view);
+//                }
+//            });
+//        }
+//
+//
+//
+//        root.setVisibility(View.INVISIBLE);
 
-        root.setVisibility(View.INVISIBLE);
+        if(activity.getAgendaItem() != null) {
+            setupViews(view, activity.getAgendaItem());
+        }
 
         return view;
     }
 
-    private void setupViews(View view) {
-        // the title is set in AgendaActivity
+    public void onEventMainThread(AgendaItemUpdatedEvent event) {
+        swipeContainer.setRefreshing(false);
+        if(getView() != null) {
+            setupViews(getView(), event.getUpdatedItem());
+        } else {
+            Log.e(getClass().getSimpleName(), "Trying to update agenda item, but view is null");
+        }
+    }
+
+    private void setupViews(View view, AgendaItem item) {
 
         String format = "EEEE, dd MMMM, HH:mm";
         if (item.getEnd() != null) {
@@ -119,14 +128,15 @@ public class AgendaDetailFragment extends RefreshableFragment {
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().agendaService.get(item.getId()).enqueue(new Callback<AgendaItem>() {
-            @Override
-            public void onSucces(Response<AgendaItem> response) {
-                item = response.body();
-                getView().invalidate();
-                swipeContainer.setRefreshing(false);
-            }
-        });
+//        Services.getInstance().agendaService.get(item.getId()).enqueue(new Callback<AgendaItem>() {
+//            @Override
+//            public void onSucces(Response<AgendaItem> response) {
+//                item = response.body();
+//                getView().invalidate();
+//                swipeContainer.setRefreshing(false);
+//            }
+//        });
+        activity.refreshAgendaItem();
     }
 
     @Override
@@ -135,5 +145,19 @@ public class AgendaDetailFragment extends RefreshableFragment {
             activity = (AgendaActivity) context;
         }
         super.onAttach(context);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 }
