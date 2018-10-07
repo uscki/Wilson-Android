@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "377183099884",
+    "firebase_url": "https://badwolf-278f8.firebaseio.com",
+    "project_id": "badwolf-278f8",
+    "storage_bucket": "badwolf-278f8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:377183099884:android:ce7a0fae4803c8c9",
+        "android_client_info": {
+          "package_name": "nl.uscki.appcki.android.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "377183099884-3n0hubdtfgmjcjol8lkqv2s5mdacam8k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrnkEvdav8rs1eht5XC3HBwxBy_u2hDY8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "377183099884-3n0hubdtfgmjcjol8lkqv2s5mdacam8k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
