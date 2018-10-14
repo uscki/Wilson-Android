@@ -174,6 +174,7 @@ public class AgendaActivity extends BasicActivity {
 
         createAdapter();
 
+        // TODO create handleIntent function, so onIntentReceived also works
         if (getIntent().getBundleExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), AgendaItem.class);
