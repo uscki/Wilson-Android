@@ -112,11 +112,18 @@ public class AgendaActivity extends BasicActivity {
         EventBus.getDefault().post(new AgendaItemUpdatedEvent(item));
 
         if(item.getPosterid() != null && item.getPosterid() >= 0) {
+            // TODO: Can we scale to width, maintaining aspect ratio, and then readjusting the height
+            // to fit the poster exactly?
             poster.setImageURI(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.NORMAL));
         }
 
+        // TODO neither of this works?
         if(getSupportActionBar() != null) {
+            Log.e(getClass().getSimpleName(), "Setting title in support action bar to " + item.getTitle());
             getSupportActionBar().setTitle(item.getTitle());
+        } else if (toolbar != null) {
+            Log.e(getClass().getSimpleName(), "Setting title the toolbar to " + item.getTitle());
+            toolbar.setTitle(item.getTitle());
         }
 
         foundUser = false;
