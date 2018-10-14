@@ -1,9 +1,7 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,10 +17,8 @@ import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.api.Callback;
-import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.events.AgendaItemUpdatedEvent;
-import nl.uscki.appcki.android.events.AgendaSubscribersEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
@@ -32,8 +28,6 @@ import retrofit2.Response;
  * A fragment representing a list of AgendaParticipants.
  */
 public class AgendaDeelnemersFragment extends RefreshableFragment {
-    private int id;
-
     @BindView(R.id.empty_text)
     TextView emptyText;
 
@@ -42,6 +36,7 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
 
     private AgendaActivity activity;
 
+    // TODO remove this? But also make update texts somewhere
     private Callback<AgendaItem> refreshCallback = new Callback<AgendaItem>() {
         @Override
         public void onSucces(Response<AgendaItem> response) {
@@ -69,7 +64,7 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
 
     private void setupParticipantList(AgendaItem item) {
         if (getAdapter() instanceof AgendaDeelnemersAdapter) {
-            ((AgendaDeelnemersAdapter)getAdapter()).update(item.getParticipants());
+            getAdapter().update(item.getParticipants());
         }
         if(emptyText != null && participantList != null) {
             if (item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
@@ -130,13 +125,6 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
 
     // EVENT HANDLING
 
-    public void onEventMainThread(AgendaSubscribersEvent event) {
-        swipeContainer.setRefreshing(false);
-        if (getAdapter() instanceof AgendaDeelnemersAdapter) {
-            getAdapter().update(event.subscribers.getContent());
-        }
-    }
-
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
         swipeContainer.setRefreshing(false);
         if (getAdapter() instanceof AgendaDeelnemersAdapter) {
@@ -148,7 +136,9 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
 
     public void onEventMainThread(AgendaItemUpdatedEvent event) {
         swipeContainer.setRefreshing(false);
-        // TODO do something with the item
+        if(getAdapter() instanceof AgendaDeelnemersAdapter) {
+            getAdapter().update(event.getUpdatedItem().getParticipants());
+        }
     }
 
     @Override
