@@ -96,7 +96,6 @@ public class AgendaActivity extends BasicActivity {
             Services.getInstance().agendaService.get(agendaId).enqueue(agendaCallback);
         } else {
             Log.e(getClass().getSimpleName(), "ID not yet present");
-//            throw new IllegalStateException("No ID given for agenda item");
         }
     }
 
@@ -120,6 +119,7 @@ public class AgendaActivity extends BasicActivity {
             getSupportActionBar().setTitle(item.getTitle());
         }
 
+        foundUser = false;
         for (AgendaParticipant part : item.getParticipants()) {
             if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
                 if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
@@ -504,6 +504,7 @@ public class AgendaActivity extends BasicActivity {
 
     // TODO never used, in theory replaced by newer stuff? Can this be made more decent
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
+        item.setParticipants(event.subscribed.getParticipants());
         if(!event.showSubscribe) {
             setAlarmForEvent(item);
             menu.findItem(R.id.action_agenda_subscribe).setVisible(false);

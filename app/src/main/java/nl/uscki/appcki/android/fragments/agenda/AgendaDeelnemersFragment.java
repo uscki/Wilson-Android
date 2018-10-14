@@ -36,32 +36,6 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
 
     private AgendaActivity activity;
 
-    // TODO remove this? But also make update texts somewhere
-    private Callback<AgendaItem> refreshCallback = new Callback<AgendaItem>() {
-        @Override
-        public void onSucces(Response<AgendaItem> response) {
-            Log.e(getClass().getSimpleName(), "Succesful callback on participants!");
-            swipeContainer.setRefreshing(false);
-            if (getAdapter() instanceof AgendaDeelnemersAdapter) {
-                getAdapter().update(response.body().getParticipants());
-            }
-            if(emptyText != null && participantList != null) {
-                if (response.body().getMaxregistrations() != null && response.body().getMaxregistrations() == 0) {
-                    emptyText.setText(getString(R.string.agenda_prepublished_event_registration_closed));
-                    emptyText.setVisibility(View.VISIBLE);
-                    participantList.setVisibility(View.GONE);
-                } else if (response.body().getParticipants().isEmpty()) {
-                    emptyText.setText(getString(R.string.agenda_participants_list_empty));
-                    emptyText.setVisibility(View.VISIBLE);
-                    participantList.setVisibility(View.GONE);
-                } else {
-                    emptyText.setVisibility(View.GONE);
-                    participantList.setVisibility(View.VISIBLE);
-                }
-            }
-        }
-    };
-
     private void setupParticipantList(AgendaItem item) {
         if (getAdapter() instanceof AgendaDeelnemersAdapter) {
             getAdapter().update(item.getParticipants());
@@ -94,11 +68,6 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, view);
 
-//        if (getArguments() != null) {
-//            id = getArguments().getInt("id");
-//            Services.getInstance().agendaService.get(getArguments().getInt("id")).enqueue(refreshCallback);
-//        }
-
         if(activity != null) {
             setupParticipantList(activity.getAgendaItem());
         }
@@ -108,7 +77,6 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
 
     @Override
     public void onSwipeRefresh() {
-//        Services.getInstance().agendaService.get(id).enqueue(refreshCallback);
         activity.refreshAgendaItem();
     }
 
