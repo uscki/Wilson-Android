@@ -126,7 +126,7 @@ public abstract class BasicActivity extends AppCompatActivity {
      * @param postalName    Postal name of person to show
      * @param photoMediaId  ID of photo media for the profile of the person to show
      */
-    private void forceOpenSmobo(int personId, String postalName, int photoMediaId) {
+    private void forceOpenSmobo(int personId, String postalName, Integer photoMediaId) {
         Intent smoboIntent = new Intent(BasicActivity.this, SmoboActivity.class);
         smoboIntent.putExtra("id", personId);
         smoboIntent.putExtra("name", postalName);

@@ -10,8 +10,6 @@ import org.joda.time.DateTime;
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
 public class Person extends PersonSimple implements IWilsonBaseItem {
-    @Expose
-    private   Integer id;
 
     @Expose
     private String address1;
@@ -29,131 +27,27 @@ public class Person extends PersonSimple implements IWilsonBaseItem {
     private String country;
 
     @Expose
-    private boolean displayonline;
+    private String emailaddress;
 
     @Expose
-    private  String emailaddress;
+    private String gender;
 
     @Expose
-    private  String firstname;
-
-    @Expose
-    private  String gender;
-
-    @Expose
-    private   String homepage;
-
-    @Expose
-    private   String lastname;
-
-    @Expose
-    private   String middlename;
+    private String homepage;
 
     @SerializedName("mobilenumber")
     @Expose
     private   String mobilenumber;
-
-    @Expose
-    private   String nickname;
 
     @SerializedName("phonenumber")
     @Expose
     private   String phonenumber;
 
     @Expose
-    private   Integer photomediaid;
-
-    @Expose
-    private   String postalname;
-
-    @Expose
     private   String signature;
 
     @Expose
     private    String zipcode;
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getNickname() {
-        return nickname;
-    }
-
-    @Override
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    @Override
-    public String getPostalname() {
-        return postalname;
-    }
-
-    @Override
-    public void setPostalname(String postalname) {
-        this.postalname = postalname;
-    }
-
-    @Override
-    public Integer getPhotomediaid() { return photomediaid; }
-
-    @Override
-    public void setPhotomediaid(Integer photomediaid) { this.photomediaid = photomediaid; }
-
-    @Override
-    public Boolean getDisplayonline() {
-        return displayonline;
-    }
-
-    @Override
-    public void setDisplayonline(Boolean displayonline) {
-        this.displayonline = displayonline;
-    }
-
-    public String getUsername() { return null; }
-
-    public void setUsername(String username) {  }
-
-    @Override
-    public String getFirstname() {
-        return firstname;
-    }
-
-    @Override
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    @Override
-    public String getMiddlename() {
-        return middlename;
-    }
-
-    @Override
-    public void setMiddlename(String middlename) {
-        this.middlename = middlename;
-    }
-
-    @Override
-    public String getLastname() {
-        return lastname;
-    }
-
-    @Override
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-
-    /* Start fields not in PersonSimpleName */
 
     public String getAddress2() {
         return address2;
