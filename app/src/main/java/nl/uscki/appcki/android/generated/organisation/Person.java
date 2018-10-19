@@ -3,237 +3,180 @@ package nl.uscki.appcki.android.generated.organisation;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.internal.bind.DateTypeAdapter;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
-public class Person implements IWilsonBaseItem {
+public class Person extends PersonSimple implements IWilsonBaseItem {
     @Expose
-    String address1;
+    private   Integer id;
+
     @Expose
-    String address2;
+    private String address1;
+
     @Expose
-    Long birthdate;
+    private String address2;
+
     @Expose
-    String city;
+    private Long birthdate;
+
     @Expose
-    String country;
+    private String city;
+
     @Expose
-    boolean displayonline;
+    private String country;
+
     @Expose
-    String emailaddress;
+    private boolean displayonline;
+
     @Expose
-    String firstname;
+    private  String emailaddress;
+
     @Expose
-    String gender;
+    private  String firstname;
+
     @Expose
-    String homepage;
+    private  String gender;
+
     @Expose
-    Integer id;
+    private   String homepage;
+
     @Expose
-    String lastname;
+    private   String lastname;
+
     @Expose
-    String middlename;
+    private   String middlename;
+
     @SerializedName("mobilenumber")
     @Expose
-    String mobilenumber;
+    private   String mobilenumber;
+
     @Expose
-    String nickname;
+    private   String nickname;
+
     @SerializedName("phonenumber")
     @Expose
-    String phonenumber;
+    private   String phonenumber;
+
     @Expose
-    Integer photomediaid;
+    private   Integer photomediaid;
+
     @Expose
-    String postalname;
+    private   String postalname;
+
     @Expose
-    String signature;
+    private   String signature;
+
     @Expose
-    String zipcode;
-    /**
-     * 
-     * @return
-     *     The id
-     */
+    private    String zipcode;
+
+    @Override
     public Integer getId() {
         return id;
     }
 
-    /**
-     * 
-     * @param id
-     *     The id
-     */
-    public void setId(Integer id) {
+    @Override
+    public void setId(int id) {
         this.id = id;
     }
 
-    /**
-     * 
-     * @return
-     *     The firstname
-     */
-    public String getFirstname() {
-        return firstname;
-    }
-
-    /**
-     * 
-     * @param firstname
-     *     The firstname
-     */
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    /**
-     * 
-     * @return
-     *     The middlename
-     */
-    public String getMiddlename() {
-        return middlename;
-    }
-
-    /**
-     * 
-     * @param middlename
-     *     The middlename
-     */
-    public void setMiddlename(String middlename) {
-        this.middlename = middlename;
-    }
-
-    /**
-     * 
-     * @return
-     *     The lastname
-     */
-    public String getLastname() {
-        return lastname;
-    }
-
-    /**
-     * 
-     * @param lastname
-     *     The lastname
-     */
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    /**
-     * 
-     * @return
-     *     The address2
-     */
-    public String getAddress2() {
-        return address2;
-    }
-
-    /**
-     * 
-     * @param address2
-     *     The address2
-     */
-    public void setAddress2(String address2) {
-        this.address2 = address2;
-    }
-
-    /**
-     * 
-     * @return
-     *     The gender
-     */
-    public String getGender() {
-        return gender;
-    }
-
-    /**
-     * 
-     * @param gender
-     *     The gender
-     */
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    /**
-     * 
-     * @return
-     *     The signature
-     */
-    public String getSignature() {
-        return signature;
-    }
-
-    /**
-     * 
-     * @param signature
-     *     The signature
-     */
-    public void setSignature(String signature) {
-        this.signature = signature;
-    }
-
-    /**
-     * 
-     * @return
-     *     The displayonline
-     */
-    public Boolean getDisplayonline() {
-        return displayonline;
-    }
-
-    /**
-     * 
-     * @param displayonline
-     *     The displayonline
-     */
-    public void setDisplayonline(Boolean displayonline) {
-        this.displayonline = displayonline;
-    }
-
-    /**
-     * 
-     * @return
-     *     The nickname
-     */
+    @Override
     public String getNickname() {
         return nickname;
     }
 
-    /**
-     * 
-     * @param nickname
-     *     The nickname
-     */
+    @Override
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
 
-    /**
-     * 
-     * @return
-     *     The photomediaid
-     */
-    public Integer getPhotomediaid() {
-        return photomediaid;
+    @Override
+    public String getPostalname() {
+        return postalname;
     }
-    /*public MediaFile getPhotomediaid() {
-        return photomediaid;
-    }*/
 
-    /**
-     * 
-     * @param photomediaid
-     *     The photomediaid
-     */
-    public void setPhotomediaid(Integer photomediaid) {
-        this.photomediaid = photomediaid;
+    @Override
+    public void setPostalname(String postalname) {
+        this.postalname = postalname;
+    }
+
+    @Override
+    public Integer getPhotomediaid() { return photomediaid; }
+
+    @Override
+    public void setPhotomediaid(Integer photomediaid) { this.photomediaid = photomediaid; }
+
+    @Override
+    public Boolean getDisplayonline() {
+        return displayonline;
+    }
+
+    @Override
+    public void setDisplayonline(Boolean displayonline) {
+        this.displayonline = displayonline;
+    }
+
+    public String getUsername() { return null; }
+
+    public void setUsername(String username) {  }
+
+    @Override
+    public String getFirstname() {
+        return firstname;
+    }
+
+    @Override
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    @Override
+    public String getMiddlename() {
+        return middlename;
+    }
+
+    @Override
+    public void setMiddlename(String middlename) {
+        this.middlename = middlename;
+    }
+
+    @Override
+    public String getLastname() {
+        return lastname;
+    }
+
+    @Override
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+
+    /* Start fields not in PersonSimpleName */
+
+    public String getAddress2() {
+        return address2;
+    }
+
+    public void setAddress2(String address2) {
+        this.address2 = address2;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
     public String getAddress1() {
@@ -268,14 +211,6 @@ public class Person implements IWilsonBaseItem {
         this.country = country;
     }
 
-    public boolean isDisplayonline() {
-        return displayonline;
-    }
-
-    public void setDisplayonline(boolean displayonline) {
-        this.displayonline = displayonline;
-    }
-
     public String getEmailaddress() {
         return emailaddress;
     }
@@ -308,14 +243,6 @@ public class Person implements IWilsonBaseItem {
         this.phonenumber = phonenumber;
     }
 
-    public String getPostalname() {
-        return postalname;
-    }
-
-    public void setPostalname(String postalname) {
-        this.postalname = postalname;
-    }
-
     public String getZipcode() {
         return zipcode;
     }
@@ -327,17 +254,5 @@ public class Person implements IWilsonBaseItem {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if(o instanceof Person) {
-            return ((Person)o).getId().equals(this.getId());
-        } else if(o instanceof  PersonSimple) {
-            return ((PersonSimple)o).getId().equals(this.getId());
-        } else if (o instanceof PersonSimpleName) {
-            return ((PersonSimpleName)o).getId().equals(this.getId());
-        }
-        return false;
     }
 }
