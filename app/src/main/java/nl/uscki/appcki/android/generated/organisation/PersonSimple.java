@@ -12,76 +12,16 @@ import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
 public class PersonSimple extends PersonSimpleName implements IWilsonBaseItem {
     @Expose
-    private Integer id;
-    @Expose
     private String username;
+
     @Expose
     private String firstname;
+
     @Expose
     private String middlename;
+
     @Expose
     private String lastname;
-    @Expose
-    private String nickname;
-    @Expose
-    private String postalname;
-    @Expose
-    private Integer photomediaid;
-    @Expose
-    @SerializedName("displayonline")
-    private Boolean displayonline;
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getNickname() {
-        return nickname;
-    }
-
-    @Override
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    @Override
-    public String getPostalname() {
-        return postalname;
-    }
-
-    @Override
-    public void setPostalname(String postalname) {
-        this.postalname = postalname;
-    }
-
-    @Override
-    public Integer getPhotomediaid() {
-        return photomediaid;
-    }
-
-    @Override
-    public void setPhotomediaid(Integer photomediaid) {
-        this.photomediaid = photomediaid;
-    }
-
-    @Override
-    public Boolean getDisplayonline() {
-        return displayonline;
-    }
-
-    @Override
-    public void setDisplayonline(Boolean displayonline) {
-        this.displayonline = displayonline;
-    }
-
-    /* Start fields not in PersonSimpleName */
 
     public String getUsername() { return username; }
 
