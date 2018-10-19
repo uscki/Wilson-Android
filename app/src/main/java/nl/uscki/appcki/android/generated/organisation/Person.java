@@ -251,6 +251,20 @@ public class Person extends PersonSimple implements IWilsonBaseItem {
         this.zipcode = zipcode;
     }
 
+    public Integer getAge() {
+        int age = 42;
+        DateTime birthdate = getBirthdate();
+        DateTime now = new DateTime();
+        if(birthdate != null) {
+            age = now.getYear() - birthdate.getYear();
+            now = now.year().setCopy(birthdate.getYear());
+            if(now.isAfter(birthdate)) {
+                age++;
+            }
+        }
+        return age;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
