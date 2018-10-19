@@ -152,8 +152,8 @@ public class Person extends PersonSimple implements IWilsonBaseItem {
         if(birthdate != null) {
             age = now.getYear() - birthdate.getYear();
             now = now.year().setCopy(birthdate.getYear());
-            if(now.isAfter(birthdate)) {
-                age++;
+            if(now.isBefore(birthdate)) {
+                age--;
             }
         }
         return age;
