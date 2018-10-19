@@ -138,18 +138,6 @@ public abstract class BasicActivity extends AppCompatActivity {
         openSmoboFor(person.getPerson());
     }
 
-    public void openSmoboFor(PersonSimple person) {
-        // TODO beetje dirty, general superclass voor person zou netter zijn, maar schijnt moeilijk te zijn voor retrofit?
-        PersonSimpleName tempPerson = new PersonSimpleName();
-        tempPerson.setId(person.getId());
-        tempPerson.setPostalname(person.getPostalname());
-        tempPerson.setDisplayonline(person.getDisplayonline());
-        if(person.getPhotomediaid() != null) {
-            tempPerson.setPhotomediaid(person.getPhotomediaid());
-        }
-        openSmoboFor(tempPerson);
-    }
-
     public void onEventMainThread(ErrorEvent event) {
         Toast toast = Toast.makeText(getApplicationContext(), event.error.getMessage(), Toast.LENGTH_SHORT);
         toast.show();
