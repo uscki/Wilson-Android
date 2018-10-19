@@ -380,7 +380,7 @@ public class MainActivity extends BasicActivity
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openSmoboFor(PersonSimpleName.from(UserHelper.getInstance().getPerson()));
+                openSmoboFor(UserHelper.getInstance().getPerson());
             }
         });
         // load the users profile picture
