@@ -298,4 +298,7 @@
     <!-- Poll -->
     <string name="poll_archive_menu_string">Archief</string>
     <string name="no_polls_found">Geen polls om weer te geven</string>
+    
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
