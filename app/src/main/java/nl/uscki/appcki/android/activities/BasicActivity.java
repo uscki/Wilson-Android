@@ -1,5 +1,6 @@
 package nl.uscki.appcki.android.activities;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,9 +21,11 @@ import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.LinkClickedEvent;
 import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
+import nl.uscki.appcki.android.fragments.PrivacyPolicyModalFragment;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
+import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.services.NotificationReceiver;
 import retrofit2.Response;
@@ -50,6 +53,14 @@ public abstract class BasicActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+
+        if(!PermissionHelper.hasAgreedToBasicPolicy(this)) {
+            // User needs to agree with privacy policy
+
+            PrivacyPolicyModalFragment privacyPolicyModalFragment = new PrivacyPolicyModalFragment();
+            privacyPolicyModalFragment.show(getSupportFragmentManager(), "privacyPolicyDialog");
+        }
+
         if (!UserHelper.getInstance().isLoggedIn() || UserHelper.getInstance().getPerson() == null) {
             UserHelper.getInstance().load();
             UserHelper.getInstance().loadCurrentUser();
