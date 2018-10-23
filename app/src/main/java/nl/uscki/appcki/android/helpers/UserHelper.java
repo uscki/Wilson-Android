@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import java.io.UnsupportedEncodingException;
 
 import nl.uscki.appcki.android.App;
+import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
@@ -32,6 +33,11 @@ public class UserHelper {
         this.person = null;
         this.loggedIn = false;
         preferences = App.getContext().getSharedPreferences("userinfo", Context.MODE_PRIVATE);
+
+        // Explicitly enable firebase, if user has agreed to permissions
+        NotificationUtil.setFirebaseEnabled(
+                preferences.getBoolean(PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY, false)
+        );
     }
 
     public static synchronized UserHelper getInstance( ) {
