@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.EventBusException;
+import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
@@ -45,6 +46,14 @@ public abstract class BasicActivity extends AppCompatActivity {
         } else {
             UserHelper.getInstance().load();
         }
+
+        // Force enable FCM if user has agreed to terms
+        NotificationUtil.setFirebaseEnabled(
+                PermissionHelper.getPreferenceBoolean(
+                        this,
+                        PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY
+                )
+        );
 
         NotificationReceiver.logToken();
 

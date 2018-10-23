@@ -5,9 +5,11 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.RemoteInput;
@@ -15,13 +17,17 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.joda.time.DateTime;
+
 import java.io.IOException;
+import java.util.Date;
 import java.util.Locale;
 
 import nl.uscki.appcki.android.BuildConfig;
@@ -77,36 +83,58 @@ public class NotificationReceiver extends FirebaseMessagingService {
             Log.d(TAG, "Refreshed firebase Token: " + refreshedToken);
         }
 
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
-        //sendRegistrationToServer(refreshedToken);
-        Services.getInstance().userService.registerDeviceId(refreshedToken).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onSucces(Response<Boolean> response) {
-                if(response.body()) {
-                    Log.d(NotificationReceiver.class.getSimpleName(), "New firebase token succesfully communicated with server");
-                } else {
-                    Log.e(NotificationReceiver.class.getSimpleName(), "New firebase token rejected by server");
+        if(PermissionHelper.getPreferenceBoolean(
+                this,
+                PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY)) {
+            // If you want to send messages to this application instance or
+            // manage this apps subscriptions on the server side, send the
+            // Instance ID token to your app server.
+            //sendRegistrationToServer(refreshedToken);
+            Services.getInstance().userService.registerDeviceId(refreshedToken)
+                    .enqueue(new Callback<Boolean>() {
+                @Override
+                public void onSucces(Response<Boolean> response) {
+                    if(response.body()) {
+                        Log.d(NotificationReceiver.class.getSimpleName(),
+                                "New firebase token succesfully communicated with server");
+                    } else {
+                        Log.e(NotificationReceiver.class.getSimpleName(),
+                                "New firebase token rejected by server");
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            Log.e(getClass().getSimpleName(), "DANGER! User did not consent to sharing " +
+                    "identifiable token with FCM, yet a refreshed token was still sent to " +
+                    "this device");
+        }
     }
 
     /**
      * Log the current firebase token
      */
     public static void logToken() {
-        Task<InstanceIdResult> instanceIdResultTask = FirebaseInstanceId.getInstance().getInstanceId();
-        instanceIdResultTask.addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
-            @Override
-            public void onSuccess(InstanceIdResult instanceIdResult) {
-                String token = instanceIdResult.getToken();
-                if(BuildConfig.DEBUG) {
+        if(BuildConfig.DEBUG && FirebaseMessaging.getInstance().isAutoInitEnabled()) {
+
+            // WARNING! Calling the following automatically generates an FCM token and communicates
+            // this token with the Firebase servers. If user has not granted permission to do so,
+            // this should not be done. DO NOT REMOVE THIS IF STATEMENT
+
+            Task<InstanceIdResult> instanceIdResultTask = FirebaseInstanceId.getInstance().getInstanceId();
+            instanceIdResultTask.addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+                @Override
+                public void onSuccess(InstanceIdResult instanceIdResult) {
+                    String token = instanceIdResult.getToken();
                     Log.d(NotificationReceiver.class.getSimpleName(), "Firebase Token: " + token);
                 }
-            }
-        });
+            });
+        } else {
+            Log.d(NotificationReceiver.class.getSimpleName(),
+                    "User has not consented with sharing an identifier in favour of receiving " +
+                            "notifications. No firebase token exists");
+            Log.d(NotificationReceiver.class.getSimpleName(),
+                    "The current instance ID is " + FirebaseInstanceId.getInstance().getId());
+        }
     }
 
     /**
@@ -116,15 +144,15 @@ public class NotificationReceiver extends FirebaseMessagingService {
      */
     public static void invalidateFirebaseInstanceId(boolean allowNew) {
         Log.e(NotificationReceiver.class.getSimpleName(), "Invalidating firebase instance ID");
-        FirebaseMessaging.getInstance().setAutoInitEnabled(allowNew);
+        NotificationUtil.setFirebaseEnabled(allowNew);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     FirebaseInstanceId.getInstance().deleteInstanceId();
-                    Log.e(NotificationReceiver.class.getSimpleName(), "Firebase instance ID invalidated");
+                    Log.d(NotificationReceiver.class.getSimpleName(), "Firebase instance ID invalidated");
                 } catch (IOException e) {
-                    Log.e(NotificationReceiver.class.getSimpleName(), e.getMessage());
+                    Log.d(NotificationReceiver.class.getSimpleName(), e.getMessage());
                 }
             }
         }).start();

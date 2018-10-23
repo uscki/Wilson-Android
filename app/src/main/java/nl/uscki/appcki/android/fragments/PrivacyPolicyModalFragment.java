@@ -1,5 +1,6 @@
 package nl.uscki.appcki.android.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.SharedPreferences;
@@ -19,6 +20,7 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.events.PrivacyPolicyPreferenceChangedEvent;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import nl.uscki.appcki.android.services.NotificationReceiver;
 
 /**
  * A fragment that displays the privacy policy and allows the user to agree or disagree
@@ -117,6 +119,7 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
      * If the user agrees with at least the two basic policies, they can continue
      */
     private View.OnClickListener acceptPolicyListener = new View.OnClickListener() {
+        @SuppressLint("ApplySharedPref")
         @Override
         public void onClick(View view) {
             if(generalPolicyAgreed && appPolicyAgreed) {
@@ -125,7 +128,7 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
                 editor.putBoolean(PermissionHelper.AGREE_GENERAL_POLICY_KEY, generalPolicyAgreed);
                 editor.putBoolean(PermissionHelper.AGREE_APP_POLICY_KEY, appPolicyAgreed);
                 editor.putBoolean(PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY, notificationPolicyAgreed);
-                editor.apply();
+                editor.commit();
 
                 // Create notification channels
                 NotificationUtil nu = new NotificationUtil(getActivity());
@@ -133,8 +136,14 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
                 if(!notificationPolicyAgreed) {
                     // Remove notification channels
                     nu.removeExistingChannels();
+
+                    // Remove existing firebase messaging token and prevent generation of new one
+                    NotificationReceiver.invalidateFirebaseInstanceId(false);
+                } else {
+                    NotificationUtil.setFirebaseEnabled(true);
                 }
 
+                // Notify listeners of change in policy agreement
                 EventBus.getDefault().post(
                         new PrivacyPolicyPreferenceChangedEvent(
                                 generalPolicyAgreed,
@@ -157,6 +166,7 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
      * sure all data gathering activities are blocked and close the application
      */
     private View.OnClickListener rejectPolicyListener = new View.OnClickListener() {
+        @SuppressLint("ApplySharedPref")
         @Override
         public void onClick(View view) {
 
