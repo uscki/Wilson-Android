@@ -58,7 +58,7 @@ public abstract class BasicActivity extends AppCompatActivity {
             // User needs to agree with privacy policy
 
             PrivacyPolicyModalFragment privacyPolicyModalFragment = new PrivacyPolicyModalFragment();
-            privacyPolicyModalFragment.show(getSupportFragmentManager(), "privacyPolicyDialog");
+            privacyPolicyModalFragment.show(getFragmentManager(), "privacyPolicyDialog");
         }
 
         if (!UserHelper.getInstance().isLoggedIn() || UserHelper.getInstance().getPerson() == null) {

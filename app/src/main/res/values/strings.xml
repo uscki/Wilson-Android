@@ -352,15 +352,18 @@
     <string name="privacy_policy_agreed">Je hebt ingestemd met deze voorwaarde</string>
     <string name="privacy_policy_disagreed">Je hebt niet ingestemd met deze voorwaarde</string>
     <string name="privacy_policy_action_show">Toon privacy policy en wijzig persoonlijk akkoord</string>
-    <string name="privacy_policy_action_show_summary">Akkoord met sommige voorwaarden zijn vereist voor
+    <string name="privacy_policy_action_show_summary">Akkoord met sommige voorwaarden is vereist voor
         het gebruik van deze app. Bij het intrekken van toestemming kan u uitgelogd worden,
         waarna deze app zal sluiten</string>
+    <string name="privacy_policy_status">Status</string>
 
     <string name="privacy_policy_button_agree">Opslaan</string>
     <string name="privacy_policy_button_disagree">Weigeren en sluiten</string>
 
     <string name="privacy_policy_external_url">https://www.uscki.nl/?pagina=Media/FileView&amp;id=85459&amp;size=large</string>
     <string name="privacy_policy_data_policy_url">https://www.uscki.nl/?pagina=Media/FileView&amp;id=86516&amp;size=large</string>
+    <string name="privacy_policy_notifications_disabled">Notificaties uitgeschakeld</string>
+    <string name="privacy_policy_notifications_disabled_summary">Om notificaties te kunnen ontvangen moet je het privacybeleid accepteren</string>
 
 
 </resources>

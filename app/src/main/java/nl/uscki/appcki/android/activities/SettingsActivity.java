@@ -34,8 +34,10 @@ import android.util.Pair;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.events.PrivacyPolicyPreferenceChangedEvent;
 import nl.uscki.appcki.android.fragments.PrivacyPolicyModalFragment;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.VibrationPatternPreferenceHelper;
@@ -311,19 +313,30 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             setHasOptionsMenu(true);
 
             updatePolicySummaries();
+            registerOpenPolicyListener();
+            EventBus.getDefault().register(this);
         }
 
+        /**
+         * Register an OnClickListener to open the privacy policy dialog when the user taps on
+         * the corresponding preference
+         */
         private void registerOpenPolicyListener() {
+
             Preference pref = findPreference("privacy_policy_show_modal");
             pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     PrivacyPolicyModalFragment policyModalFragment = new PrivacyPolicyModalFragment();
+                    policyModalFragment.show(getFragmentManager(), "privacyPolicyDialog");
                     return false;
                 }
             });
         }
 
+        /**
+         * Update all policy summaries to reflect the user's choice
+         */
         private void updatePolicySummaries() {
             updateHasAgreedPolicySummary(
                     "privacy_policy_general_agreement",
@@ -336,6 +349,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY);
         }
 
+        /**
+         * Update a single policy summary to reflect the user's choice
+         * @param preferenceKey         Key of the preference on the screen
+         * @param storedPreferenceKey   Key of the preference in the stored preferences
+         */
         private void updateHasAgreedPolicySummary(String preferenceKey, String storedPreferenceKey) {
             Preference agreedPreference = findPreference(preferenceKey);
             boolean agreed = PermissionHelper.getPreferenceBoolean(getActivity(), storedPreferenceKey);
@@ -350,6 +368,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             }
             return super.onOptionsItemSelected(item);
+        }
+
+        /**
+         * Listen to changes in the policy agreement of the user, so the summaries on this
+         * page can be updated accordingly
+         *
+         * @param event Event signaling a possible change in status of user agreement with policies
+         */
+        public void onEventMainThread(PrivacyPolicyPreferenceChangedEvent event) {
+            updatePolicySummaries();
         }
     }
 
@@ -393,18 +421,27 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 }
             });
 
+            Preference vibration = findPreference("notifications_oreo_vibrate");
+            Preference vibrationPattern = findPreference("notifications_oreo_vibration_pattern");
+            Preference notificationsDisabled = findPreference("privacy_policy_notifications_disabled");
+
+            if(PermissionHelper.getPreferenceBoolean(getContext(), PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY)) {
+                getPreferenceScreen().removePreference(notificationsDisabled);
+                vibration.setEnabled(true);
+                vibrationPattern.setEnabled(true);
+            }
+
             Vibrator v = (Vibrator) App.getContext().getSystemService(VIBRATOR_SERVICE);
             if(v == null || !v.hasVibrator()) {
                 // Remove vibration options from menu
                 PreferenceScreen screen = getPreferenceScreen();
-                screen.removePreference(findPreference("notifications_oreo_vibration_pattern"));
+                screen.removePreference(vibrationPattern);
             } else {
                 // Bind and trigger summary changed
-                bindPreferenceSummaryToValue(
-                        findPreference("notifications_oreo_vibration_pattern"));
+                bindPreferenceSummaryToValue(vibrationPattern);
 
                 // Replace the listener with one that also vibrates on change
-                findPreference("notifications_oreo_vibration_pattern")
+                vibrationPattern
                         .setOnPreferenceChangeListener(sVibratePreferenceValueChangedListener);
             }
         }
@@ -420,6 +457,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
 
             PreferenceScreen screen = getPreferenceScreen();
+            Preference notificationsDisabled = findPreference("privacy_policy_notifications_disabled");
+
+            if(PermissionHelper.getPreferenceBoolean(getActivity(), PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY)) {
+                screen.removePreference(notificationsDisabled);
+                findPreference("notifications_cat_interactive").setEnabled(true);
+                findPreference("notifications_cat_updates").setEnabled(true);
+                findPreference("notifications_cat_personal").setEnabled(true);
+            }
 
             Vibrator v = (Vibrator) App.getContext().getSystemService(VIBRATOR_SERVICE);
             if(v != null && v.hasVibrator()) {

@@ -1,6 +1,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
+        android:title="@string/privacy_policy_action_show"
+        android:key="privacy_policy_show_modal"
+        android:summary="@string/privacy_policy_action_show_summary"
+        />
+
+    <PreferenceCategory
+        android:title="@string/privacy_policy_status"
+        >
+
+    <Preference
         android:title="@string/privacy_policy_agree_terms_general_summary"
         android:key="privacy_policy_general_agreement"
         />
@@ -14,11 +24,8 @@
         android:title="@string/privacy_policy_agree_terms_general_summary"
         android:key="privacy_policy_notifications_agreement"
         />
+    </PreferenceCategory>
 
-    <Preference
-        android:title="@string/privacy_policy_action_show"
-        android:key="privacy_policy_show_modal"
-        android:summary="@string/privacy_policy_action_show_summary"
-        />
+
 
 </PreferenceScreen>
