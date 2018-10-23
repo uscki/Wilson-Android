@@ -1,10 +1,10 @@
 package nl.uscki.appcki.android.fragments;
 
+import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +13,10 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.events.PrivacyPolicyPreferenceChangedEvent;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 
@@ -51,15 +53,16 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         // Check current status of user agreement
         generalPolicyAgreed = PermissionHelper.getPreferenceBoolean(
-                getContext(), PermissionHelper.AGREE_GENERAL_POLICY_KEY);
+                getActivity(), PermissionHelper.AGREE_GENERAL_POLICY_KEY);
         appPolicyAgreed = PermissionHelper.getPreferenceBoolean(
-                getContext(), PermissionHelper.AGREE_APP_POLICY_KEY);
+                getActivity(), PermissionHelper.AGREE_APP_POLICY_KEY);
         notificationPolicyAgreed = PermissionHelper.getPreferenceBoolean(
-                getContext(), PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY);
+                getActivity(), PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY);
     }
 
     @Override
@@ -96,13 +99,13 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             switch (compoundButton.getId()) {
                 case(R.id.checkboxPrivacyPolicyGeneral):
-                    generalPolicyAgreed = true;
+                    generalPolicyAgreed = compoundButton.isChecked();
                     break;
                 case(R.id.checkboxPrivacyPolicyAppSpecific):
-                    appPolicyAgreed = true;
+                    appPolicyAgreed = compoundButton.isChecked();
                     break;
                 case(R.id.checkboxPrivacyPolicyNotificationToken):
-                    notificationPolicyAgreed = true;
+                    notificationPolicyAgreed = compoundButton.isChecked();
                     break;
             }
 
@@ -124,10 +127,21 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
                 editor.putBoolean(PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY, notificationPolicyAgreed);
                 editor.apply();
 
-                if(notificationPolicyAgreed) {
-                    // Create notification channels
-                    new NotificationUtil(getContext());
+                // Create notification channels
+                NotificationUtil nu = new NotificationUtil(getActivity());
+
+                if(!notificationPolicyAgreed) {
+                    // Remove notification channels
+                    nu.removeExistingChannels();
                 }
+
+                EventBus.getDefault().post(
+                        new PrivacyPolicyPreferenceChangedEvent(
+                                generalPolicyAgreed,
+                                appPolicyAgreed,
+                                notificationPolicyAgreed
+                        )
+                );
 
                 // Close this dialog fragment
                 dismiss();
@@ -158,20 +172,28 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
             editor.putBoolean(PermissionHelper.CALENDAR_EXPORT_MEETING_AUTO_KEY, false);
             editor.putBoolean(PermissionHelper.USE_PEOPLE_EXPORT_KEY, false);
 
-            editor.apply();
+            editor.commit();
+
+            EventBus.getDefault().post(
+                    new PrivacyPolicyPreferenceChangedEvent(
+                            false,
+                            false,
+                            false
+                    )
+            );
 
             // Remove notification channels
-            new NotificationUtil(getContext()).removeExistingChannels();
+            new NotificationUtil(getActivity()).removeExistingChannels();
 
             // Logout (which also removes notification token)
             UserHelper.getInstance().logout();
 
             // Close application. Nothing to do here anymore
-            FragmentActivity activity = getActivity();
+            Activity activity = getActivity();
             if(activity != null) {
                 activity.finishAffinity();
             }
-            System.exit(0);
+//            System.exit(0);
         }
     };
 }
