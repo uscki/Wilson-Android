@@ -135,6 +135,8 @@ public class NotificationUtil extends ContextWrapper {
         }
     }
 
+
+
     /**
      * Try to create a notification channel for each notification type
      * we currently know of
@@ -143,6 +145,17 @@ public class NotificationUtil extends ContextWrapper {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             for(NotificationType nt : NotificationType.values()) {
                 createChannel(nt);
+            }
+        }
+    }
+
+    /**
+     * Remove existing notification channels
+     */
+    public void removeExistingChannels() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            for(NotificationType nt : NotificationType.values()) {
+                getManager().deleteNotificationChannel(getChannel(nt));
             }
         }
     }
