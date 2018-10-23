@@ -298,4 +298,69 @@
     <!-- Poll -->
     <string name="poll_archive_menu_string">Archief</string>
     <string name="no_polls_found">Geen polls om weer te geven</string>
+
+    <!-- Privacy Policy -->
+    <string name="privacy_policy_header">Privacy policy</string>
+    <string name="privacy_policy_body_introduction">Deze applicatie maakt gebruik van de servers van
+        U.S.C.K.I Incognito (hierna: Incognito) voor het tonen en delen van informatie. Om deze
+        applicatie te gebruiken, dient u een account te hebben bij Incognito, waardoor u al hebt
+        ingestemd met het privacy regelement van Incognito. Dit privacy regelement kunt u hier
+        vinden:</string>
+    <string name="privacy_policy_body_data_policy_introduction">Het gegevensverwerkingsbeleid kunt u hier vinden:</string>
+    <string name="privacy_policy_app_terms">Alle informatie die getoond wordt in deze applicatie is afkomstig van de servers
+        van Incognito. Indien u zelf bijdraagt aan deze content, wordt deze informatie direct naar deze servers geuploadt.
+        Doordat deze applicatie gebruik maakt van deze servers, is internettoegang vereist.\n\n
+
+        Persoonlijke informatie die wordt verzameld in deze applicatie wordt niet gedeeld met de servers van Incognito,
+        tenzij deze gegevens al bekend zijn bij Incognito, of u er zelf voor kiest expliciet persoonlijke informatie
+        toe te voegen aan nieuwe content die u zelf plaatst. De enige uitzondering hier op is dat Incognito een token
+        genereert dat uniek met uw account en dit apparaat verbonden is, welke maximaal 30 dagen geldig blijft.
+        Dit token is bedoeld om notificaties te kunnen sturen naar uw telefoon. U kunt er voor kiezen\n\n
+
+        Deze applicatie kan toestemming vragen tot het inzien en wijzigen van uw agenda.
+        Toestemming geven is niet verplicht en kan ten alle tijden weer worden ingetrokken via de
+        instellingen van uw Androidapparaat. Indien toestemming wordt verleend, wordt informatie
+        afkomstig uit uw agenda alleen op dit apparaat verwerkt en nooit gedeeld met de servers van
+        Incognito of enige andere partij. Het doel van deze toestemming is zodat u evenementen die via
+        deze applicatie worden aangeboden direct kunt exporteren uit uw agenda, of deze weer kan verwijderen,
+        direct uit deze applicatie.\n\n
+
+        Om gebruik te maken van deze applicatie dient u expliciet akkoord te gaan met deze voorwaarden,
+        alsmede nogmaals expliciet uw akkoord te geven voor de algemene voorwaarden geldende voor Incognito.
+        Met het gebruik van een persoonlijk identificeerbaar token hoeft u niet akkoord te gaan, tenzij u notificaties
+        van Incognito wilt ontvangen op dit apparaat.</string>
+    <string name="privacy_policy_agreement_required_footnote">* Om gebruik te maken van deze applicatie moet je met tenminste deze voorwaarde akkoord gaan.</string>
+    <string name="privacy_policy_agree_terms_general">
+        * Ik ga akkoord met het algemene privacy- en dataverzamelingsbeleid van U.S.C.K.I. Incognito
+    </string>
+    <string name="privacy_policy_agree_terms_app_specific">
+        * Ik ga akkoord met de specifieke voorwaarden geldende voor deze applicatie
+    </string>
+    <string name="privacy_policy_agree_terms_notification_token">
+        Ik ga akkoord met het uploaden van een persoonlijk identificeerbaar token voor het ontvangen van notificaties
+    </string>
+
+    <string name="privacy_policy_agree_terms_general_summary">
+        Algemene voorwaarden (vereist)
+    </string>
+    <string name="privacy_policy_agree_terms_app_specific_summary">
+        App-specifieke voorwaarden (vereist)
+    </string>
+    <string name="privacy_policy_agree_terms_notification_token_summary">
+        Identificeerbare informatie (vereist voor notificaties)
+    </string>
+    <string name="privacy_policy_agreed">Je hebt ingestemd met deze voorwaarde</string>
+    <string name="privacy_policy_disagreed">Je hebt niet ingestemd met deze voorwaarde</string>
+    <string name="privacy_policy_action_show">Toon privacy policy en wijzig persoonlijk akkoord</string>
+    <string name="privacy_policy_action_show_summary">Akkoord met sommige voorwaarden zijn vereist voor
+        het gebruik van deze app. Bij het intrekken van toestemming kan u uitgelogd worden,
+        waarna deze app zal sluiten</string>
+
+    <string name="privacy_policy_button_agree">Opslaan</string>
+    <string name="privacy_policy_button_disagree">Weigeren en sluiten</string>
+
+    <string name="privacy_policy_external_url">https://www.uscki.nl/?pagina=Media/FileView&amp;id=85459&amp;size=large</string>
+    <string name="privacy_policy_data_policy_url">https://www.uscki.nl/?pagina=Media/FileView&amp;id=86516&amp;size=large</string>
+
+
 </resources>
