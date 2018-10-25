@@ -37,7 +37,7 @@ public class NotificationUtil extends ContextWrapper {
 
     public NotificationUtil(Context base) {
         super(base);
-        if(PermissionHelper.getPreferenceBoolean(base, PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY)) {
+        if(PermissionHelper.hasAgreedToNotificationPolicy(base)) {
             // Only create notification channels if the user has agreed to collecting a personal
             // identifier to send notifications to this device
             createNotificationChannels();

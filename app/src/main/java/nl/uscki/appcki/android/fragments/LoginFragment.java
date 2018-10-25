@@ -157,7 +157,7 @@ public class LoginFragment extends Fragment {
                             PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
                             UserHelper.getInstance().login(token, person);
 
-                            if(PermissionHelper.getPreferenceBoolean(getContext(), PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY)) {
+                            if(PermissionHelper.hasAgreedToNotificationPolicy(getContext())) {
                                 // Force firebase to generate a new notification token by invalidating the current token
                                 NotificationReceiver.invalidateFirebaseInstanceId(true);
                             }

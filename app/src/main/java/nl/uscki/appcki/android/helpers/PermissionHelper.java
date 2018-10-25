@@ -71,7 +71,7 @@ public class PermissionHelper {
     /**
      * Check if a certain policy has been agreed to according to the stored preferences of the user
      * @param policyKey     Key to the policy
-     * @return              Boolean
+     * @return              Boolean value, defaults to false
      */
     public static boolean getPreferenceBoolean(Context context, String policyKey) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -88,5 +88,16 @@ public class PermissionHelper {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(AGREE_GENERAL_POLICY_KEY, false) &&
                 prefs.getBoolean(AGREE_APP_POLICY_KEY, false);
+    }
+
+    /**
+     * Check if the user has explicitly agreed to the privacy policy regarding the collecting of
+     * a personalized device token in favour of receiving notifications
+     *
+     * @param context       Active context
+     * @return              Boolean indicating user agreement with notification policy
+     */
+    public static boolean hasAgreedToNotificationPolicy(Context context) {
+        return getPreferenceBoolean(context, PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY);
     }
 }

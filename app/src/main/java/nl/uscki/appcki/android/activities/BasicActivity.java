@@ -48,12 +48,7 @@ public abstract class BasicActivity extends AppCompatActivity {
         }
 
         // Force enable FCM if user has agreed to terms
-        NotificationUtil.setFirebaseEnabled(
-                PermissionHelper.getPreferenceBoolean(
-                        this,
-                        PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY
-                )
-        );
+        NotificationUtil.setFirebaseEnabled(PermissionHelper.hasAgreedToBasicPolicy(this));
 
         NotificationReceiver.logToken();
 
