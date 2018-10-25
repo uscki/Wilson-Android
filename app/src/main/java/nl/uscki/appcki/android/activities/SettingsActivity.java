@@ -425,7 +425,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             Preference vibrationPattern = findPreference("notifications_oreo_vibration_pattern");
             Preference notificationsDisabled = findPreference("privacy_policy_notifications_disabled");
 
-            if(PermissionHelper.getPreferenceBoolean(getContext(), PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY)) {
+            if(PermissionHelper.hasAgreedToNotificationPolicy(getContext())) {
                 getPreferenceScreen().removePreference(notificationsDisabled);
                 vibration.setEnabled(true);
                 vibrationPattern.setEnabled(true);
@@ -459,7 +459,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             PreferenceScreen screen = getPreferenceScreen();
             Preference notificationsDisabled = findPreference("privacy_policy_notifications_disabled");
 
-            if(PermissionHelper.getPreferenceBoolean(getActivity(), PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY)) {
+            if(PermissionHelper.hasAgreedToNotificationPolicy(getActivity())) {
                 screen.removePreference(notificationsDisabled);
                 findPreference("notifications_cat_interactive").setEnabled(true);
                 findPreference("notifications_cat_updates").setEnabled(true);

@@ -83,9 +83,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
             Log.d(TAG, "Refreshed firebase Token: " + refreshedToken);
         }
 
-        if(PermissionHelper.getPreferenceBoolean(
-                this,
-                PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY)) {
+        if(PermissionHelper.hasAgreedToNotificationPolicy(this)) {
             // If you want to send messages to this application instance or
             // manage this apps subscriptions on the server side, send the
             // Instance ID token to your app server.
