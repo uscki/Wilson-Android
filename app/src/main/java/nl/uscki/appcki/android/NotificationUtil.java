@@ -470,6 +470,7 @@ public class NotificationUtil extends ContextWrapper {
      * @param enabled   True to enable services, false to disable services
      */
     public static void setFirebaseEnabled(boolean enabled) {
+        Log.d(NotificationUtil.class.getSimpleName(), "Setting initialization of firebase to " + enabled);
         FirebaseMessaging.getInstance().setAutoInitEnabled(enabled);
     }
 

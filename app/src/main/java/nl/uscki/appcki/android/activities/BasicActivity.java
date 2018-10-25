@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -48,9 +49,9 @@ public abstract class BasicActivity extends AppCompatActivity {
         }
 
         // Force enable FCM if user has agreed to terms
-        NotificationUtil.setFirebaseEnabled(PermissionHelper.hasAgreedToBasicPolicy(this));
+        NotificationUtil.setFirebaseEnabled(PermissionHelper.hasAgreedToNotificationPolicy(this));
 
-        NotificationReceiver.logToken();
+        NotificationReceiver.logToken(this);
 
         super.onCreate(savedInstanceState);
     }

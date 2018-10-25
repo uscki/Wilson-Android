@@ -5,31 +5,21 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.RemoteInput;
 import android.util.Log;
-
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-
-import org.joda.time.DateTime;
-
 import java.io.IOException;
-import java.util.Date;
 import java.util.Locale;
-
 import nl.uscki.appcki.android.BuildConfig;
 import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
@@ -102,19 +92,35 @@ public class NotificationReceiver extends FirebaseMessagingService {
                 }
             });
         } else {
-            Log.e(getClass().getSimpleName(), "DANGER! User did not consent to sharing " +
-                    "identifiable token with FCM, yet a refreshed token was still sent to " +
-                    "this device");
+            // A horrible feature of firebase was just activated. Unless you know about this, you
+            // won't know to avoid it. Incredibly extensive error message to alert developers and
+            // catch their attention
+            Log.e(getClass().getSimpleName(),
+                    "\n===================================================================================\n" +
+                    "===================================================================================\n" +
+                    "= 																				  =\n" +
+                    "= 							!!!	DANGER !!!!										  =\n" +
+                    "= 																				  =\n" +
+                    "===================================================================================\n" +
+                    "===================================================================================\n" +
+                    "DANGER! User did not consent with sharing an FCM token with firebase, but a token\n" +
+                    "refresh was still registered.\n" +
+                    "Make sure nowhere in the code an instance of Firebase, FirebaseMessaging or\n" +
+                    "FirebaseInstanceID is requested, unless the user has SPECIFICALLY agreed to sharing\n" +
+                    "this token with Firebase. Requesting any of these instances automatically initiates\n" +
+                    "Firebase, and triggers the sharing of such a token.\n" +
+                    "===================================================================================");
         }
     }
 
     /**
      * Log the current firebase token
      */
-    public static void logToken() {
-        if(BuildConfig.DEBUG && FirebaseMessaging.getInstance().isAutoInitEnabled()) {
+    public static void logToken(Context context) {
+        if(BuildConfig.DEBUG && PermissionHelper.hasAgreedToNotificationPolicy(context)) {
 
-            // WARNING! Calling the following automatically generates an FCM token and communicates
+            // WARNING! Requesting a firebase, firebase instance ID or firebase messaging instance
+            // automatically generates a firebase messaging token and communicates
             // this token with the Firebase servers. If user has not granted permission to do so,
             // this should not be done. DO NOT REMOVE THIS IF STATEMENT
 
@@ -130,8 +136,6 @@ public class NotificationReceiver extends FirebaseMessagingService {
             Log.d(NotificationReceiver.class.getSimpleName(),
                     "User has not consented with sharing an identifier in favour of receiving " +
                             "notifications. No firebase token exists");
-            Log.d(NotificationReceiver.class.getSimpleName(),
-                    "The current instance ID is " + FirebaseInstanceId.getInstance().getId());
         }
     }
 

@@ -33,11 +33,6 @@ public class UserHelper {
         this.person = null;
         this.loggedIn = false;
         preferences = App.getContext().getSharedPreferences("userinfo", Context.MODE_PRIVATE);
-
-        // Explicitly enable firebase, if user has agreed to permissions
-        NotificationUtil.setFirebaseEnabled(
-                preferences.getBoolean(PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY, false)
-        );
     }
 
     public static synchronized UserHelper getInstance( ) {
