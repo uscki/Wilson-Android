@@ -19,10 +19,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.firebase.iid.FirebaseInstanceId;
-
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
@@ -427,13 +424,6 @@ public class MainActivity extends BasicActivity
         if (event.loggedIn) {
             initLoggedInUI();
             openTab(HomeFragment.NEWS);
-
-            Services.getInstance().userService.registerDeviceId(FirebaseInstanceId.getInstance().getToken()).enqueue(new Callback<Boolean>() {
-                @Override
-                public void onSucces(Response<Boolean> response) {
-
-                }
-            });
         } else {
             initLoggedOutUI();
         }
