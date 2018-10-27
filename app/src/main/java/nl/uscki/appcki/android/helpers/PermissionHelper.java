@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import java.util.prefs.Preferences;
 
 import nl.uscki.appcki.android.App;
+import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.generated.meeting.Preference;
 
 public class PermissionHelper {
@@ -98,6 +99,61 @@ public class PermissionHelper {
      * @return              Boolean indicating user agreement with notification policy
      */
     public static boolean hasAgreedToNotificationPolicy(Context context) {
-        return getPreferenceBoolean(context, PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY);
+        return getAgreeToPolicyLatest(context, PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY);
+    }
+
+    /**
+     * Updat ethe users agreement with a specific policy key governed by a specific policy text
+     * version.
+     *
+     * @param context       Application context
+     * @param policyKey     Static policy preference key
+     * @param policyVersion Version code of a policy text version
+     * @param value         New value: True if agreed, false if disagreed
+     */
+    public static void setAgreeToPolicy(Context context, String policyKey, int policyVersion, boolean value) {
+        // TODO
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(getPolicyKeyForVersion(policyKey, policyVersion), value);
+        editor.commit();
+    }
+
+    /**
+     * Get the state of the user agreement with a specific policy governed by a specific policy
+     * text version
+     * @param context       Application context
+     * @param policyKey     Static policy preference key
+     * @param policyVersion Version code of a policy text version
+     * @return  Boolean, true if agreed, false if disagreed or not yet known
+     */
+    public static boolean getAgreeToPolicy(Context context, String policyKey, int policyVersion) {
+        return getPreferenceBoolean(context, getPolicyKeyForVersion(policyKey, policyVersion));
+    }
+
+    /**
+     * Get the state of the user agreement with a specific policy governed by the latest policy
+     * text version
+     * @param context       Application context
+     * @param policyKey     Static policy preference key
+     * @return              Boolean, true if agreed, false if disagreed or not yet known
+     */
+    public static boolean getAgreeToPolicyLatest(Context context, String policyKey) {
+        int currentPrivacyPolicyIndex = context.getResources().getInteger(R.integer.privacy_policy_current_version_index);
+        int[] privacyPolicyVersionNumbers = context.getResources().getIntArray(R.array.privacy_policy_version_numbers);
+        int currentVersion = privacyPolicyVersionNumbers[currentPrivacyPolicyIndex];
+        return getAgreeToPolicy(context, policyKey, currentVersion);
+    }
+
+    /**
+     * Method to append a policy version code to a policy preference key. This method performs a
+     * simple concat, but is intended to keep policy versioning consistent
+     *
+     * @param policyKey         Static key of the policy
+     * @param policyVersion     Current policy version code
+     * @return                  Policy key annotated with version code
+     */
+    private static String getPolicyKeyForVersion(String policyKey, int policyVersion) {
+        return policyKey + "." + policyVersion;
     }
 }

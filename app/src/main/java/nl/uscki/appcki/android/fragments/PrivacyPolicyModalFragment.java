@@ -65,6 +65,8 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
     private boolean appPolicyAgreed;
     private boolean notificationPolicyAgreed;
 
+    private int versionCode;
+
     public PrivacyPolicyModalFragment() {
         // Required empty public constructor
         setCancelable(false);
@@ -124,7 +126,7 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
         int[] privacyPolicyVersionNumbers = getResources().getIntArray(R.array.privacy_policy_version_numbers);
         String[] privacyPolicyVersionFiles = getResources().getStringArray(R.array.privacy_policy_versions);
 
-        int currentVersion = privacyPolicyVersionNumbers[currentPrivacyPolicyIndex];
+        versionCode = privacyPolicyVersionNumbers[currentPrivacyPolicyIndex];
         String privacyPolicyKey = privacyPolicyVersionFiles[currentPrivacyPolicyIndex];
 
         int privacyPolicyIdentifier =
