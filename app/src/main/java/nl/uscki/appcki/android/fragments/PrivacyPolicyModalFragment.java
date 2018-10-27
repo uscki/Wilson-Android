@@ -12,6 +12,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -19,13 +28,22 @@ import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.events.PrivacyPolicyPreferenceChangedEvent;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
+import nl.uscki.appcki.android.helpers.ResourceHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.services.NotificationReceiver;
+import nl.uscki.appcki.android.views.BBTextView;
 
 /**
  * A fragment that displays the privacy policy and allows the user to agree or disagree
  */
 public class PrivacyPolicyModalFragment extends DialogFragment {
+
+    @BindView(R.id.privacy_policy_updated_notice_text)
+    TextView updateNoticeText;
+
+    @BindView(R.id.privacyPolicyMainText)
+    BBTextView mainText;
 
     @BindView(R.id.checkboxPrivacyPolicyGeneral)
     CheckBox agreeGeneralPolicy;
@@ -75,6 +93,8 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_privacy_policy_modal, container, false);
         ButterKnife.bind(this, view);
 
+        setPolicyText();
+
         // Set state of checkboxes based on previous decisions
         agreeGeneralPolicy.setChecked(generalPolicyAgreed);
         agreeAppPolicy.setChecked(appPolicyAgreed);
@@ -93,6 +113,29 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
         rejectButton.setOnClickListener(rejectPolicyListener);
 
         return view;
+    }
+
+    /**
+     * Load the JSON containing the latest privacy policy from the resources, and show it
+     * in the dialog view
+     */
+    private void setPolicyText() {
+        int currentPrivacyPolicyIndex = getResources().getInteger(R.integer.privacy_policy_current_version_index);
+        int[] privacyPolicyVersionNumbers = getResources().getIntArray(R.array.privacy_policy_version_numbers);
+        String[] privacyPolicyVersionFiles = getResources().getStringArray(R.array.privacy_policy_versions);
+
+        int currentVersion = privacyPolicyVersionNumbers[currentPrivacyPolicyIndex];
+        String privacyPolicyKey = privacyPolicyVersionFiles[currentPrivacyPolicyIndex];
+
+        int privacyPolicyIdentifier =
+                getResources().getIdentifier(privacyPolicyKey, "raw", getActivity().getPackageName());
+
+        InputStream inputStream = getResources().openRawResource(privacyPolicyIdentifier);
+        String json = ResourceHelper.getRawStringResourceFromStream(inputStream);
+
+        Type objectListType = new TypeToken<ArrayList<Object>>() { }.getType();
+        List<Object> policyText = new Gson().fromJson(json, objectListType);
+        mainText.setText(Parser.parse(policyText, true, mainText));
     }
 
     private CompoundButton.OnCheckedChangeListener onCheckChangeListener =
@@ -203,7 +246,6 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
             if(activity != null) {
                 activity.finishAffinity();
             }
-//            System.exit(0);
         }
     };
 }
