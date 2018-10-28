@@ -1,6 +1,7 @@
 package nl.uscki.appcki.android.helpers;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -86,9 +87,8 @@ public class PermissionHelper {
      * @return          Boolean
      */
     public static boolean hasAgreedToBasicPolicy(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(AGREE_GENERAL_POLICY_KEY, false) &&
-                prefs.getBoolean(AGREE_APP_POLICY_KEY, false);
+        return getAgreeToPolicyLatest(context, AGREE_GENERAL_POLICY_KEY) &&
+                getAgreeToPolicyLatest(context, AGREE_APP_POLICY_KEY);
     }
 
     /**
@@ -111,11 +111,20 @@ public class PermissionHelper {
      * @param policyVersion Version code of a policy text version
      * @param value         New value: True if agreed, false if disagreed
      */
+    @SuppressLint("ApplySharedPref")
     public static void setAgreeToPolicy(Context context, String policyKey, int policyVersion, boolean value) {
-        // TODO
+        // Acquire a shared preference editor
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
+
+        // Also store on the default key, so we can verify if the user did not agree yet at all,
+        // or just not to the current policy
+        editor.putBoolean(policyKey, value);
+
+        // Store the preference for the given version
         editor.putBoolean(getPolicyKeyForVersion(policyKey, policyVersion), value);
+
+        // Commit changes. Use commit, because app may not be open long enough for an apply
         editor.commit();
     }
 
@@ -155,5 +164,18 @@ public class PermissionHelper {
      */
     private static String getPolicyKeyForVersion(String policyKey, int policyVersion) {
         return policyKey + "." + policyVersion;
+    }
+
+    /**
+     * If a user has not agreed to the latest privacy policy, this method can be used to verify
+     * if the user has never agreed to the privacy policy (or rejected it), or if the user already
+     * did agree to a previous version of the privacy policy
+     *
+     * @param context   Application context
+     * @return  Boolean, true if user has explicitly agreed with at least one version of the
+     *          privacy policy for this key. False otherwise
+     */
+    public static boolean getAgreeToOverallPolicy(Context context, String policyKey) {
+        return getPreferenceBoolean(context, policyKey);
     }
 }

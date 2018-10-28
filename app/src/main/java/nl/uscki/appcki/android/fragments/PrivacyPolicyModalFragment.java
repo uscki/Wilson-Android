@@ -66,6 +66,7 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
     private boolean notificationPolicyAgreed;
 
     private int versionCode;
+    private boolean hasAgreedToPreviousVersion;
 
     public PrivacyPolicyModalFragment() {
         // Required empty public constructor
@@ -79,12 +80,15 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         // Check current status of user agreement
-        generalPolicyAgreed = PermissionHelper.getPreferenceBoolean(
+        generalPolicyAgreed = PermissionHelper.getAgreeToPolicyLatest(
                 getActivity(), PermissionHelper.AGREE_GENERAL_POLICY_KEY);
-        appPolicyAgreed = PermissionHelper.getPreferenceBoolean(
+        appPolicyAgreed = PermissionHelper.getAgreeToPolicyLatest(
                 getActivity(), PermissionHelper.AGREE_APP_POLICY_KEY);
-        notificationPolicyAgreed = PermissionHelper.getPreferenceBoolean(
+        notificationPolicyAgreed = PermissionHelper.getAgreeToPolicyLatest(
                 getActivity(), PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY);
+
+        hasAgreedToPreviousVersion = PermissionHelper.getAgreeToOverallPolicy(
+                        getActivity(), PermissionHelper.AGREE_APP_POLICY_KEY);
     }
 
     @Override
@@ -94,6 +98,10 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_privacy_policy_modal, container, false);
         ButterKnife.bind(this, view);
+
+        if(hasAgreedToPreviousVersion && !appPolicyAgreed) {
+            updateNoticeText.setVisibility(View.VISIBLE);
+        }
 
         setPolicyText();
 
@@ -169,11 +177,23 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
         public void onClick(View view) {
             if(generalPolicyAgreed && appPolicyAgreed) {
 
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean(PermissionHelper.AGREE_GENERAL_POLICY_KEY, generalPolicyAgreed);
-                editor.putBoolean(PermissionHelper.AGREE_APP_POLICY_KEY, appPolicyAgreed);
-                editor.putBoolean(PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY, notificationPolicyAgreed);
-                editor.commit();
+                PermissionHelper.setAgreeToPolicy(
+                        view.getContext(),
+                        PermissionHelper.AGREE_GENERAL_POLICY_KEY,
+                        versionCode,
+                        generalPolicyAgreed);
+
+                PermissionHelper.setAgreeToPolicy(
+                        view.getContext(),
+                        PermissionHelper.AGREE_APP_POLICY_KEY,
+                        versionCode,
+                        appPolicyAgreed);
+
+                PermissionHelper.setAgreeToPolicy(
+                        view.getContext(),
+                        PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY,
+                        versionCode,
+                        notificationPolicyAgreed);
 
                 // Create notification channels
                 NotificationUtil nu = new NotificationUtil(getActivity());
@@ -216,12 +236,26 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
         public void onClick(View view) {
 
             // Store disagree choice for all policies
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(PermissionHelper.AGREE_GENERAL_POLICY_KEY, false);
-            editor.putBoolean(PermissionHelper.AGREE_APP_POLICY_KEY, false);
-            editor.putBoolean(PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY, false);
+            PermissionHelper.setAgreeToPolicy(
+                    view.getContext(),
+                    PermissionHelper.AGREE_GENERAL_POLICY_KEY,
+                    versionCode,
+                    false);
+
+            PermissionHelper.setAgreeToPolicy(
+                    view.getContext(),
+                    PermissionHelper.AGREE_APP_POLICY_KEY,
+                    versionCode,
+                    false);
+
+            PermissionHelper.setAgreeToPolicy(
+                    view.getContext(),
+                    PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY,
+                    versionCode,
+                    false);
 
             // Reset permissions from setting menu if applicable
+            SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean(PermissionHelper.USE_CALENDAR_EXPORT_KEY, false);
             editor.putBoolean(PermissionHelper.CALENDAR_EXPORT_EVENT_AUTO_KEY, false);
             editor.putBoolean(PermissionHelper.CALENDAR_EXPORT_MEETING_AUTO_KEY, false);
