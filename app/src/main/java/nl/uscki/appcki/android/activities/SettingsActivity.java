@@ -356,7 +356,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
          */
         private void updateHasAgreedPolicySummary(String preferenceKey, String storedPreferenceKey) {
             Preference agreedPreference = findPreference(preferenceKey);
-            boolean agreed = PermissionHelper.getPreferenceBoolean(getActivity(), storedPreferenceKey);
+            boolean agreed = PermissionHelper.getAgreeToPolicyLatest(getActivity(), storedPreferenceKey);
             agreedPreference.setSummary(agreed ? R.string.privacy_policy_agreed : R.string.privacy_policy_disagreed);
         }
 
