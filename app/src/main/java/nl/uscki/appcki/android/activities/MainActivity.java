@@ -40,7 +40,6 @@ import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
 import nl.uscki.appcki.android.fragments.poll.PollResultFragment;
 import nl.uscki.appcki.android.fragments.quotes.QuoteFragment;
 import nl.uscki.appcki.android.fragments.search.SmoboSearch;
-import nl.uscki.appcki.android.fragments.shop.StoreFragment;
 import nl.uscki.appcki.android.fragments.shop.StoreSelectionFragment;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
@@ -88,7 +87,9 @@ public class MainActivity extends BasicActivity
         QUOTE_OVERVIEW,
         POLL_DETAIL,
         POLL_ACTIVE,
-        SMOBO_SEARCH
+        SMOBO_SEARCH,
+        STORE_SELECTION,
+        STORE_BUY
     }
 
     public static Screen currentScreen;
@@ -179,7 +180,7 @@ public class MainActivity extends BasicActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        Log.d(TAG, "back: " + currentScreen.name());
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -199,6 +200,8 @@ public class MainActivity extends BasicActivity
                 openFragment(new PollOverviewFragment(), null);
             } else if (currentScreen == Screen.POLL_OVERVIEW) {
                 openFragment(new PollResultFragment(), null);
+            } else if (currentScreen == Screen.STORE_BUY) {
+                openFragment(new StoreSelectionFragment(), null);
             } else if (currentScreen != Screen.NEWS) {
                 openTab(HomeFragment.NEWS);
             }
@@ -272,7 +275,7 @@ public class MainActivity extends BasicActivity
             } else if (id == R.id.nav_agenda) {
                 openTab(HomeFragment.AGENDA);
             } else if (id == R.id.nav_shop) {
-                openFragment(new StoreFragment(), null);
+                openFragment(new StoreSelectionFragment(), null);
             } else if (id == R.id.nav_quotes) {
                 openFragment(new QuoteFragment(), null);
             } else if (id == R.id.nav_poll) {
