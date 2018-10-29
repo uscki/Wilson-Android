@@ -6,9 +6,11 @@ import android.app.DialogFragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -284,4 +286,18 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
             }
         }
     };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Lots of text, so let's try to use as much screen as we can
+        Window window = getDialog().getWindow();
+        if(window != null) {
+            ViewGroup.LayoutParams params = window.getAttributes();
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            window.setAttributes((android.view.WindowManager.LayoutParams) params);
+        }
+    }
 }
