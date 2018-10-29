@@ -1,11 +1,11 @@
 [
-  "Deze applicatie maakt gebruik van de servers van U.S.C.K.I Incognito (hierna: Incognito) voor het tonen en delen van informatie. Om deze applicatie te gebruiken, dient u een account te hebben bij Incognito, waardoor u al hebt ingestemd met het ",
+  "Deze applicatie maakt gebruik van de servers van U.S.C.K.I Incognito (hierna: Incognito) voor het tonen en delen van informatie. Om deze applicatie te gebruiken, dient u een account te hebben bij Incognito. Dit account is onderheven aan het ",
   {
     "type": "Link",
     "content": [
       "privacy regelement"
     ],
-    "parameter": "https://www.uscki.nl/?pagina=Media/FileView&amp;id=85459&amp;size=large",
+    "parameter": "https://www.uscki.nl/?pagina=Media/FileView&id=85459&size=large",
     "parseContents": true,
     "replaceEmoji": false
   },
@@ -15,11 +15,11 @@
     "content": [
       "gegevensverwerkingsbeleid"
     ],
-    "parameter": "https://www.uscki.nl/?pagina=Media/FileView&amp;id=86516&amp;size=large",
+    "parameter": "https://www.uscki.nl/?pagina=Media/FileView&id=86516&size=large",
     "parseContents": true,
     "replaceEmoji": false
   },
-  " van Incognito.\n\nAlle informatie die getoond wordt in deze applicatie is afkomstig van de servers van Incognito. Indien u zelf bijdraagt aan deze content, wordt deze informatie direct naar deze servers geuploadt. Omdat deze applicatie gebruik maakt van deze servers, is internettoegang vereist.\n\n",
+  " van Incognito.\n\nAlle informatie die getoond wordt in deze applicatie is afkomstig van de servers van Incognito. Indien u zelf bijdraagt aan deze content, wordt deze informatie direct naar deze servers geupload. Omdat deze applicatie gebruik maakt van deze servers, is internettoegang vereist.\n\n",
   {
     "type": "H2",
     "content": [
@@ -29,7 +29,7 @@
     "parseContents": true,
     "replaceEmoji": true
   },
-  "\n\nIncognito maakt gebruik van de Firebase services van Google (hierna: Firebase) voor het verzenden van pushnotificaties. Om pushnotificaties mogelijk te maken, wordt een identificatiecode gegenereerd (het Firebase Instance ID), die uniek met dit apparaat gekoppeld is. Deze identificatiecode wordt gedeeld met Firebase. Wanneer deze code geregistreerd is bij Firebase worden periodiek apparaatgegevens en informatie over deze applicatie uitgewisseld met Firebase, met als doel het uniek identificeren van dit apparaat indien een notificatie naar dit apparaat verzonden dient te worden. Naast deze identificatiecode wordt geen persoonlijk identificeerbare informatie gedeeld met Firebase of Google. Indien u helemaal niets wilt delen met Google, kunt u er voor kiezen hieronder niet uw akkoord te geven voor het genereren van een persoonlijk identificeerbaar token voor het ontvangen voor notificaties. Als u niet met die specifieke voorwaarde akkoord gaat kunt u gebruik blijven maken van deze applicatie, maar zullen notificaties niet werken.\n\nIncognito verzamelt crashgegevens over deze applicatie via het Android platform. Deze dataverzameling wordt niet gecontroleerd door deze applicatie, maar door het besturingssysteem van uw apparaat. U kunt dit gedrag wijzigen in het systeemmenu van uw apparaat, door instellingen voor het verzamelen van diagnostische gegevens door Google aan te passen. Dit is een systeeminstelling en niet verbonden aan deze applicatie.\n\nNaast wat reeds in deze sectie genoemd is, verzamelt Incognito geen gegevens, behalve die gegevens die u expliciet deelt met Incognito door het plaatsen van nieuwe content via normale functies van deze applicatie. Deze applicatie verzamelt geen gegevens over uw gedrag in deze applicatie of op dit apparaat, en deelt zulke gegevens ook niet met de servers van Incognito.\n\n",
+  "\n\nIncognito maakt gebruik van de Firebase services van Google (hierna: Firebase) voor het verzenden van pushnotificaties. Om pushnotificaties mogelijk te maken, wordt een identificatiecode gegenereerd (het Firebase Instance ID), die uniek aan dit apparaat gekoppeld wordt. Deze identificatiecode wordt gedeeld met Firebase. Wanneer deze code geregistreerd is bij Firebase worden periodiek geautomatiseerd apparaatgegevens en informatie over deze applicatie uitgewisseld met Firebase, met als doel het uniek identificeren van dit apparaat voor het verzenden van pushnotificaties naar dit apparaat. Naast deze identificatiecode wordt geen persoonlijk identificeerbare informatie gedeeld met Firebase of Google. Indien u helemaal niets wilt delen met Google, kunt u er voor kiezen hieronder niet uw akkoord te geven voor het genereren van deze persoonlijk identificeerbare code voor het ontvangen voor notificaties. Als u niet met die specifieke voorwaarde akkoord gaat kunt u gebruik blijven maken van deze applicatie, maar zullen notificaties niet werken.\n\nIncognito verzamelt crashgegevens over deze applicatie via het Android platform. Deze dataverzameling wordt niet uitgevoerd door deze applicatie, maar door het besturingssysteem van uw apparaat. U kunt dit gedrag wijzigen in het systeemmenu van uw apparaat, door instellingen voor het verzamelen van diagnostische gegevens door Google aan te passen. Dit is een systeeminstelling en niet verbonden aan deze applicatie.\n\nNaast wat reeds in deze sectie genoemd is, verzamelt Incognito geen gegevens, behalve die gegevens die u expliciet deelt met Incognito door het plaatsen van nieuwe content via normale functies van deze applicatie. Deze applicatie verzamelt absoluut geen gegevens over uw gedrag in deze applicatie, noch over uw gedrag op dit apparaat.\n\n",
   {
     "type": "H2",
     "content": [
@@ -39,7 +39,7 @@
     "parseContents": true,
     "replaceEmoji": true
   },
-  "\n\nDeze applicatie kan toestemming vragen tot het inzien en wijzigen van uw agenda. Toestemming geven is niet verplicht en kan ten alle tijden weer worden ingetrokken via de instellingen van uw Androidapparaat. Indien toestemming wordt verleend, wordt informatie afkomstig uit uw agenda alleen op dit apparaat verwerkt en nooit gedeeld met de servers van Incognito of enige andere partij. Het doel van deze toestemming is zodat u evenementen die via deze applicatie worden aangeboden direct kunt exporteren naar uw agenda, of deze weer kan verwijderen, direct uit deze applicatie.\n\n",
+  "\n\nDeze applicatie kan toestemming vragen tot het inzien en wijzigen van uw agenda. Toestemming geven is niet verplicht en kan ten alle tijden weer worden ingetrokken via de systeeminstellingen van uw apparaat. Indien toestemming wordt verleend, wordt informatie afkomstig uit uw agenda alleen op dit apparaat verwerkt en nooit gedeeld met de Incognito of enige andere partij. Deze toestemming wordt slechts gebruikt voor het automatisch exporteren van evenementen die in deze applicatie worden aangeboden, en deze op uw verzoek weer te verwijderen, zonder het hoeven openen van een andere applicatie.\n\n",
   {
     "type": "H2",
     "content": [
@@ -49,5 +49,5 @@
     "parseContents": true,
     "replaceEmoji": true
   },
-  "\n\nOm gebruik te maken van deze applicatie dient u expliciet akkoord te gaan met deze voorwaarden, alsmede nogmaals expliciet uw akkoord te geven voor de algemene voorwaarden geldende voor Incognito en het bijbehorende gegevensverwerkingsbeleid. Met het gebruik van een persoonlijk identificeerbaar token hoeft u niet akkoord te gaan. In dat geval zal u echter geen notificaties kunnen ontvangen."
+  "\n\nOm gebruik te maken van deze applicatie dient u expliciet akkoord te gaan met deze voorwaarden, alsmede nogmaals expliciet uw akkoord te geven voor de algemene voorwaarden geldende voor Incognito en het bijbehorende gegevensverwerkingsbeleid. Met het gebruik van een persoonlijk identificeerbare code hoeft u niet akkoord te gaan. In dat geval zal u echter geen notificaties kunnen ontvangen."
 ]

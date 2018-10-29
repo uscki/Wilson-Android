@@ -309,7 +309,7 @@
         * Ik ga akkoord met de specifieke voorwaarden geldende voor deze applicatie
     </string>
     <string name="privacy_policy_agree_terms_notification_token">
-        Ik ga akkoord met het uploaden van een persoonlijk identificeerbaar token voor het ontvangen van notificaties
+        Ik ga akkoord met het uploaden van een persoonlijk identificeerbare code ten behoeve van het ontvangen van notificaties
     </string>
 
     <string name="privacy_policy_agree_terms_general_summary">
@@ -330,9 +330,9 @@
     <string name="privacy_policy_status">Status</string>
 
     <string name="privacy_policy_button_agree">Opslaan</string>
-    <string name="privacy_policy_button_disagree">Weigeren en sluiten</string>
+    <string name="privacy_policy_button_disagree">Weigeren, uitloggen en sluiten</string>
 
     <string name="privacy_policy_notifications_disabled">Notificaties uitgeschakeld</string>
     <string name="privacy_policy_notifications_disabled_summary">Om notificaties te kunnen ontvangen moet je het privacybeleid accepteren</string>
-    <string name="privacy_policy_updated_notice">We hebben ons privacybeleid bijgewerkt. Om gebruik te blijven maken van deze applicatie dient u opnieuw akkoord te gaan met deze nieuwe voorwaarden.</string>
+    <string name="privacy_policy_updated_notice">We hebben ons privacybeleid bijgewerkt. Om gebruik te blijven maken van deze applicatie dient u (opnieuw) akkoord te gaan met deze nieuwe voorwaarden.</string>
 </resources>
