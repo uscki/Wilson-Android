@@ -49,7 +49,7 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
         if (product.image != null)
             holder.image.setImageURI(MediaAPI.getMediaUri(product.image));
         else
-            holder.image.setImageDrawable(null);
+            holder.image.setImageURI("http://thecatapi.com/api/images/get?format=src");
 
         holder.product_order.setOnClickListener(new View.OnClickListener() {
             @Override
