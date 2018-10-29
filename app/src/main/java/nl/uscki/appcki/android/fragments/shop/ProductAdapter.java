@@ -40,7 +40,7 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
     }
 
     @Override
-    public void onBindCustomViewHolder(ViewHolder holder, int position) {
+    public void onBindCustomViewHolder(final ViewHolder holder, int position) {
         final Product product = items.get(position);
 
         holder.name.setText(product.title);
@@ -48,6 +48,8 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
 
         if (product.image != null)
             holder.image.setImageURI(MediaAPI.getMediaUri(product.image));
+        else
+            holder.image.setImageDrawable(null);
 
         holder.product_order.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +61,7 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
                     public void onSucces(Response<Boolean> response) {
                         if (response.body()) {
                             UserHelper.getInstance().addPreferedProduct(product);
+                            holder.stock.setText(String.format(Locale.getDefault(), "%d", product.stock - 1));
                             Toast.makeText(v.getContext(), "Je hebt 1 " + product.title + " besteld!", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(v.getContext(), "Bestelling mislukt!", Toast.LENGTH_SHORT).show();
