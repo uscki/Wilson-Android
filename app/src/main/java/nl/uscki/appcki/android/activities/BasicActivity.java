@@ -126,7 +126,7 @@ public abstract class BasicActivity extends AppCompatActivity {
      * @param postalName    Postal name of person to show
      * @param photoMediaId  ID of photo media for the profile of the person to show
      */
-    private void forceOpenSmobo(int personId, String postalName, int photoMediaId) {
+    private void forceOpenSmobo(int personId, String postalName, Integer photoMediaId) {
         Intent smoboIntent = new Intent(BasicActivity.this, SmoboActivity.class);
         smoboIntent.putExtra("id", personId);
         smoboIntent.putExtra("name", postalName);
@@ -136,18 +136,6 @@ public abstract class BasicActivity extends AppCompatActivity {
 
     public void openSmoboFor(PersonWithNote person) {
         openSmoboFor(person.getPerson());
-    }
-
-    public void openSmoboFor(PersonSimple person) {
-        // TODO beetje dirty, general superclass voor person zou netter zijn, maar schijnt moeilijk te zijn voor retrofit?
-        PersonSimpleName tempPerson = new PersonSimpleName();
-        tempPerson.setId(person.getId());
-        tempPerson.setPostalname(person.getPostalname());
-        tempPerson.setDisplayonline(person.getDisplayonline());
-        if(person.getPhotomediaid() != null) {
-            tempPerson.setPhotomediaid(person.getPhotomediaid());
-        }
-        openSmoboFor(tempPerson);
     }
 
     public void onEventMainThread(ErrorEvent event) {
