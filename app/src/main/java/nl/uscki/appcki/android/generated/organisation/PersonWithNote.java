@@ -55,7 +55,7 @@ public class PersonWithNote implements IWilsonBaseItem {
         List<PersonWithNote> persons = new ArrayList<>();
         for (Preference p : slot.getPreferences()) {
             if (p.getCanattend()) {
-                persons.add(new PersonWithNote(PersonSimpleName.from(p.getPerson()), p.getNotes()));
+                persons.add(new PersonWithNote(p.getPerson(), p.getNotes()));
             }
         }
         return  persons;
@@ -65,7 +65,7 @@ public class PersonWithNote implements IWilsonBaseItem {
         List<PersonWithNote> persons = new ArrayList<>();
         for (Preference p : slot.getPreferences()) {
             if (!p.getCanattend()) {
-                persons.add(new PersonWithNote(PersonSimpleName.from(p.getPerson()), p.getNotes()));
+                persons.add(new PersonWithNote(p.getPerson(), p.getNotes()));
             }
         }
         return  persons;
