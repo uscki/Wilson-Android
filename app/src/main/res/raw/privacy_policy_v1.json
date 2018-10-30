@@ -5,7 +5,7 @@
     "content": [
       "privacy regelement"
     ],
-    "parameter": "https://www.uscki.nl/?pagina=Media/FileView&id=85459&size=large",
+    "parameter": "https://www.uscki.nl/?pagina=Wicki&subject=Privacy_Policy",
     "parseContents": true,
     "replaceEmoji": false
   },
@@ -15,7 +15,7 @@
     "content": [
       "gegevensverwerkingsbeleid"
     ],
-    "parameter": "https://www.uscki.nl/?pagina=Media/FileView&id=86516&size=large",
+    "parameter": "https://www.uscki.nl/?pagina=Wicki&subject=dataindexatie",
     "parseContents": true,
     "replaceEmoji": false
   },
