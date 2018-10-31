@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import java.io.UnsupportedEncodingException;
 
 import nl.uscki.appcki.android.App;
+import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
