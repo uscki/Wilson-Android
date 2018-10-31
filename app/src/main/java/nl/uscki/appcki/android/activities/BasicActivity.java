@@ -1,11 +1,13 @@
 package nl.uscki.appcki.android.activities;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -13,6 +15,7 @@ import com.google.gson.Gson;
 import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.EventBusException;
+import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
@@ -20,9 +23,11 @@ import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.LinkClickedEvent;
 import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
+import nl.uscki.appcki.android.fragments.PrivacyPolicyModalFragment;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
+import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.services.NotificationReceiver;
 import retrofit2.Response;
@@ -43,13 +48,24 @@ public abstract class BasicActivity extends AppCompatActivity {
             UserHelper.getInstance().load();
         }
 
-        NotificationReceiver.logToken();
+        // Force enable FCM if user has agreed to terms
+        NotificationUtil.setFirebaseEnabled(PermissionHelper.hasAgreedToNotificationPolicy(this));
+
+        NotificationReceiver.logToken(this);
 
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void onStart() {
+
+        if(!PermissionHelper.hasAgreedToBasicPolicy(this)) {
+            // User needs to agree with privacy policy
+
+            PrivacyPolicyModalFragment privacyPolicyModalFragment = new PrivacyPolicyModalFragment();
+            privacyPolicyModalFragment.show(getFragmentManager(), "privacyPolicyDialog");
+        }
+
         if (!UserHelper.getInstance().isLoggedIn() || UserHelper.getInstance().getPerson() == null) {
             UserHelper.getInstance().load();
             UserHelper.getInstance().loadCurrentUser();
