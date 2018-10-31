@@ -298,4 +298,41 @@
     <!-- Poll -->
     <string name="poll_archive_menu_string">Archief</string>
     <string name="no_polls_found">Geen polls om weer te geven</string>
+
+    <!-- Privacy Policy -->
+    <string name="privacy_policy_header">Privacy policy</string>
+    <string name="privacy_policy_agreement_required_footnote">* Om gebruik te maken van deze applicatie moet je met tenminste deze voorwaarde akkoord gaan.</string>
+    <string name="privacy_policy_agree_terms_general">
+        * Ik ga akkoord met het algemene privacy- en dataverzamelingsbeleid van U.S.C.K.I. Incognito
+    </string>
+    <string name="privacy_policy_agree_terms_app_specific">
+        * Ik ga akkoord met de specifieke voorwaarden geldende voor deze applicatie
+    </string>
+    <string name="privacy_policy_agree_terms_notification_token">
+        Ik ga akkoord met het uploaden van een persoonlijk identificeerbare code ten behoeve van het ontvangen van notificaties
+    </string>
+
+    <string name="privacy_policy_agree_terms_general_summary">
+        Algemene voorwaarden (vereist)
+    </string>
+    <string name="privacy_policy_agree_terms_app_specific_summary">
+        App-specifieke voorwaarden (vereist)
+    </string>
+    <string name="privacy_policy_agree_terms_notification_token_summary">
+        Identificeerbare informatie (vereist voor notificaties)
+    </string>
+    <string name="privacy_policy_agreed">Je hebt ingestemd met deze voorwaarde</string>
+    <string name="privacy_policy_disagreed">Je hebt niet ingestemd met deze voorwaarde</string>
+    <string name="privacy_policy_action_show">Toon privacy policy en wijzig persoonlijk akkoord</string>
+    <string name="privacy_policy_action_show_summary">Akkoord met sommige voorwaarden is vereist voor
+        het gebruik van deze app. Bij het intrekken van toestemming kan u uitgelogd worden,
+        waarna deze app zal sluiten</string>
+    <string name="privacy_policy_status">Status</string>
+
+    <string name="privacy_policy_button_agree">Opslaan</string>
+    <string name="privacy_policy_button_disagree">Weigeren, uitloggen en sluiten</string>
+
+    <string name="privacy_policy_notifications_disabled">Notificaties uitgeschakeld</string>
+    <string name="privacy_policy_notifications_disabled_summary">Om notificaties te kunnen ontvangen moet je het privacybeleid accepteren</string>
+    <string name="privacy_policy_updated_notice">We hebben ons privacybeleid bijgewerkt. Om gebruik te blijven maken van deze applicatie dient u (opnieuw) akkoord te gaan met deze nieuwe voorwaarden.</string>
 </resources>
