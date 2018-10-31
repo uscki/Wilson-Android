@@ -9,8 +9,8 @@ android {
         applicationId "nl.uscki.appcki.android"
         minSdkVersion 17
         targetSdkVersion 27
-        versionCode 8
-        versionName "v2.1.1"
+        versionCode 9
+        versionName "v2.1.2"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
