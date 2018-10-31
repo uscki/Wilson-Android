@@ -5,8 +5,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import java.util.prefs.Preferences;
 
@@ -148,8 +150,19 @@ public class PermissionHelper {
      * @return              Boolean, true if agreed, false if disagreed or not yet known
      */
     public static boolean getAgreeToPolicyLatest(Context context, String policyKey) {
-        int currentPrivacyPolicyIndex = context.getResources().getInteger(R.integer.privacy_policy_current_version_index);
-        int[] privacyPolicyVersionNumbers = context.getResources().getIntArray(R.array.privacy_policy_version_numbers);
+        Resources resources;
+        try {
+            resources = context.getResources();
+        } catch(NullPointerException e) {
+            Log.e(PermissionHelper.class.getSimpleName(), "Trying to get resources from context, but we have a problem");
+            Log.e(PermissionHelper.class.getSimpleName(), e.getMessage());
+            for(StackTraceElement ste : e.getStackTrace()) {
+                Log.e(PermissionHelper.class.getSimpleName(), ste.toString());
+            }
+            return false;
+        }
+        int currentPrivacyPolicyIndex = resources.getInteger(R.integer.privacy_policy_current_version_index);
+        int[] privacyPolicyVersionNumbers = resources.getIntArray(R.array.privacy_policy_version_numbers);
         int currentVersion = privacyPolicyVersionNumbers[currentPrivacyPolicyIndex];
         return getAgreeToPolicy(context, policyKey, currentVersion);
     }
