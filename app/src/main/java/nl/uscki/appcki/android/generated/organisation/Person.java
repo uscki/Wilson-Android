@@ -3,237 +3,74 @@ package nl.uscki.appcki.android.generated.organisation;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.internal.bind.DateTypeAdapter;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
-public class Person implements IWilsonBaseItem {
+public class Person extends PersonSimple implements IWilsonBaseItem {
+
     @Expose
-    String address1;
+    private String address1;
+
     @Expose
-    String address2;
+    private String address2;
+
     @Expose
-    Long birthdate;
+    private Long birthdate;
+
     @Expose
-    String city;
+    private String city;
+
     @Expose
-    String country;
+    private String country;
+
     @Expose
-    boolean displayonline;
+    private String emailaddress;
+
     @Expose
-    String emailaddress;
+    private String gender;
+
     @Expose
-    String firstname;
-    @Expose
-    String gender;
-    @Expose
-    String homepage;
-    @Expose
-    Integer id;
-    @Expose
-    String lastname;
-    @Expose
-    String middlename;
+    private String homepage;
+
     @SerializedName("mobilenumber")
     @Expose
-    String mobilenumber;
-    @Expose
-    String nickname;
+    private   String mobilenumber;
+
     @SerializedName("phonenumber")
     @Expose
-    String phonenumber;
+    private   String phonenumber;
+
     @Expose
-    Integer photomediaid;
+    private   String signature;
+
     @Expose
-    String postalname;
-    @Expose
-    String signature;
-    @Expose
-    String zipcode;
-    /**
-     * 
-     * @return
-     *     The id
-     */
-    public Integer getId() {
-        return id;
-    }
+    private    String zipcode;
 
-    /**
-     * 
-     * @param id
-     *     The id
-     */
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    /**
-     * 
-     * @return
-     *     The firstname
-     */
-    public String getFirstname() {
-        return firstname;
-    }
-
-    /**
-     * 
-     * @param firstname
-     *     The firstname
-     */
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    /**
-     * 
-     * @return
-     *     The middlename
-     */
-    public String getMiddlename() {
-        return middlename;
-    }
-
-    /**
-     * 
-     * @param middlename
-     *     The middlename
-     */
-    public void setMiddlename(String middlename) {
-        this.middlename = middlename;
-    }
-
-    /**
-     * 
-     * @return
-     *     The lastname
-     */
-    public String getLastname() {
-        return lastname;
-    }
-
-    /**
-     * 
-     * @param lastname
-     *     The lastname
-     */
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    /**
-     * 
-     * @return
-     *     The address2
-     */
     public String getAddress2() {
         return address2;
     }
 
-    /**
-     * 
-     * @param address2
-     *     The address2
-     */
     public void setAddress2(String address2) {
         this.address2 = address2;
     }
 
-    /**
-     * 
-     * @return
-     *     The gender
-     */
     public String getGender() {
         return gender;
     }
 
-    /**
-     * 
-     * @param gender
-     *     The gender
-     */
     public void setGender(String gender) {
         this.gender = gender;
     }
 
-    /**
-     * 
-     * @return
-     *     The signature
-     */
     public String getSignature() {
         return signature;
     }
 
-    /**
-     * 
-     * @param signature
-     *     The signature
-     */
     public void setSignature(String signature) {
         this.signature = signature;
-    }
-
-    /**
-     * 
-     * @return
-     *     The displayonline
-     */
-    public Boolean getDisplayonline() {
-        return displayonline;
-    }
-
-    /**
-     * 
-     * @param displayonline
-     *     The displayonline
-     */
-    public void setDisplayonline(Boolean displayonline) {
-        this.displayonline = displayonline;
-    }
-
-    /**
-     * 
-     * @return
-     *     The nickname
-     */
-    public String getNickname() {
-        return nickname;
-    }
-
-    /**
-     * 
-     * @param nickname
-     *     The nickname
-     */
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    /**
-     * 
-     * @return
-     *     The photomediaid
-     */
-    public Integer getPhotomediaid() {
-        return photomediaid;
-    }
-    /*public MediaFile getPhotomediaid() {
-        return photomediaid;
-    }*/
-
-    /**
-     * 
-     * @param photomediaid
-     *     The photomediaid
-     */
-    public void setPhotomediaid(Integer photomediaid) {
-        this.photomediaid = photomediaid;
     }
 
     public String getAddress1() {
@@ -268,14 +105,6 @@ public class Person implements IWilsonBaseItem {
         this.country = country;
     }
 
-    public boolean isDisplayonline() {
-        return displayonline;
-    }
-
-    public void setDisplayonline(boolean displayonline) {
-        this.displayonline = displayonline;
-    }
-
     public String getEmailaddress() {
         return emailaddress;
     }
@@ -308,14 +137,6 @@ public class Person implements IWilsonBaseItem {
         this.phonenumber = phonenumber;
     }
 
-    public String getPostalname() {
-        return postalname;
-    }
-
-    public void setPostalname(String postalname) {
-        this.postalname = postalname;
-    }
-
     public String getZipcode() {
         return zipcode;
     }
@@ -324,20 +145,22 @@ public class Person implements IWilsonBaseItem {
         this.zipcode = zipcode;
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+    public Integer getAge() {
+        int age = 42;
+        DateTime birthdate = getBirthdate();
+        DateTime now = new DateTime();
+        if(birthdate != null) {
+            age = now.getYear() - birthdate.getYear();
+            now = now.year().setCopy(birthdate.getYear());
+            if(now.isBefore(birthdate)) {
+                age--;
+            }
+        }
+        return age;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if(o instanceof Person) {
-            return ((Person)o).getId().equals(this.getId());
-        } else if(o instanceof  PersonSimple) {
-            return ((PersonSimple)o).getId().equals(this.getId());
-        } else if (o instanceof PersonSimpleName) {
-            return ((PersonSimpleName)o).getId().equals(this.getId());
-        }
-        return false;
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

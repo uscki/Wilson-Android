@@ -63,7 +63,7 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
         List<PersonWithNote> personWithNotes = new ArrayList<>();
         if(item.getMeeting().getStartdate() != null) {
             for(Preference p : item.getMeeting().getActual_slot().getPreferences()) {
-                personWithNotes.add(new PersonWithNote(PersonSimpleName.from(p.getPerson()), p.getNotes()));
+                personWithNotes.add(new PersonWithNote(p.getPerson(), p.getNotes()));
             }
         } else {
             for (PersonSimpleName person : item.getEnrolledPersons()) {
