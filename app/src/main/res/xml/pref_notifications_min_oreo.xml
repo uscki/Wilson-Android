@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:key="privacy_policy_notifications_disabled"
+        android:title="@string/privacy_policy_notifications_disabled"
+        android:summary="@string/privacy_policy_notifications_disabled_summary"
+        />
+
     <Preference
         android:key="notifications_system_preferences"
         android:title="@string/pref_system_notification_settings"
@@ -10,6 +17,7 @@
         android:title="@string/pref_custom_vibrate"
         android:summary="@string/pref_custom_vibrate_summary"
         android:defaultValue="true"
+        android:enabled="false"
         />
 
     <ListPreference
@@ -19,5 +27,6 @@
         android:entryValues="@array/vibration_pattern_names"
         android:dependency="notifications_oreo_vibrate"
         android:defaultValue="@string/vibration_pattern_default"
+        android:enabled="false"
         />
 </PreferenceScreen>

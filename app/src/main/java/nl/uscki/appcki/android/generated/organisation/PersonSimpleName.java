@@ -12,20 +12,25 @@ import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 public class PersonSimpleName implements IWilsonBaseItem {
     @Expose
     @SerializedName("id")
-    Integer id;
+    private Integer id;
+
     @Expose
     @SerializedName("nickname")
-    String nickname;
+    private String nickname;
+
     @Expose
     @SerializedName("postalname")
-    String postalname;
+    private String postalname;
+
     @Expose
     @SerializedName("photomediaid")
-    int photomediaid;
+    private Integer photomediaid;
+
     @Expose
     @SerializedName("displayonline")
-    Boolean displayonline;
+    private Boolean displayonline;
 
+    @Override
     public Integer getId() {
         return id;
     }
@@ -50,11 +55,11 @@ public class PersonSimpleName implements IWilsonBaseItem {
         this.postalname = postalname;
     }
 
-    public int getPhotomediaid() {
+    public Integer getPhotomediaid() {
         return photomediaid;
     }
 
-    public void setPhotomediaid(int photomediaid) {
+    public void setPhotomediaid(Integer photomediaid) {
         this.photomediaid = photomediaid;
     }
 
@@ -66,25 +71,10 @@ public class PersonSimpleName implements IWilsonBaseItem {
         this.displayonline = displayonline;
     }
 
-    public static PersonSimpleName from(PersonSimple p) {
-        PersonSimpleName simple = new PersonSimpleName();
-        simple.setDisplayonline(p.getDisplayonline());
-        simple.setId(p.getId());
-        simple.setNickname(p.getNickname());
-        if (null != p.getPhotomediaid())
-            simple.setPhotomediaid(p.getPhotomediaid());
-        simple.setPostalname(p.getPostalname());
-        return simple;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if(o instanceof Person) {
-            return ((Person)o).getId().equals(this.getId());
-        } else if(o instanceof  PersonSimple) {
-            return ((PersonSimple)o).getId().equals(this.getId());
-        } else if (o instanceof PersonSimpleName) {
-            return ((PersonSimpleName)o).getId().equals(this.getId());
+        if(o instanceof PersonSimpleName) {
+            return ((PersonSimpleName) o).getId().equals(getId());
         }
         return false;
     }
