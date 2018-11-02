@@ -91,20 +91,17 @@ public class NewShoutWidget extends NewPageableItem {
         @Override
         public void onTextChanged(CharSequence charSequence, int start, int count, int after) {
             Log.e(getClass().getSimpleName(), "Content line length: " + content.getLineCount());
-
+            int l = charSequence.length();
             if(content.getLineCount() > 1) {
-                int l = charSequence.length();
                 int c = getResources().getColor(l <= 160 ? android.R.color.primary_text_light : R.color.colorRed);
                 remainingChars.setText(String.format(Locale.getDefault(), "%d", 160-l));
                 remainingChars.setTextColor(c);
                 remainingChars.setVisibility(View.VISIBLE);
-                confirmShout.setEnabled(true);
             } else {
                 Log.e(getClass().getSimpleName(), "WTF?");
                 remainingChars.setVisibility(View.GONE);
-                confirmShout.setEnabled(false);
             }
-
+            confirmShout.setEnabled(l <= 160);
         }
 
         @Override
