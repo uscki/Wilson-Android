@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/roephoek_dialog_name_hint"
         android:inputType="textCapWords|textShortMessage"
+        android:maxLength="25"
          />
 
     <LinearLayout
@@ -29,6 +30,7 @@
             android:layout_height="wrap_content"
             android:ems="40"
             android:hint="@string/roephoek_dialog_content_hint"
+            android:maxLength="160"
             android:inputType="textCapSentences|textAutoComplete|textAutoCorrect|textMultiLine"
             />
 
