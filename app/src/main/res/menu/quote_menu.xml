@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:id="@+id/quote_sort"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="@string/quote_sort_title"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/quote_sort_time_desc"
+                android:icon="@drawable/check"
+                android:title="@string/quote_sort_option_time_desc" />
+            <item
+                android:id="@+id/quote_sort_time_asc"
+                android:title="@string/quote_sort_option_time_asc" />
+            <item
+                android:id="@+id/quote_sort_toonkans_desc"
+                android:title="@string/quote_sort_option_toonkans_desc" />
+            <item
+                android:id="@+id/quote_sort_toonkans_asc"
+                android:title="@string/quote_sort_option_toonkans_asc" />
+            <item
+                android:id="@+id/quote_sort_positives_votes_desc"
+                android:title="@string/quote_sort_option_positives_votes_desc" />
+            <item
+                android:id="@+id/quote_sort_negative_votes_asc"
+                android:title="@string/quote_sort_option_negative_votes_asc" />
+        </menu>
+    </item>
+</menu>
