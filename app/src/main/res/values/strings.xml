@@ -294,6 +294,14 @@
     <!-- Quote -->
     <string name="quote">Quote</string>
     <string name="no_quotes_found">Geen quotes om weer te geven</string>
+    <string name="quote_sort_title">Sorteren</string>
+    <string name="quote_sort_option_time_desc">Nieuwste eerst</string>
+    <string name="quote_sort_option_time_asc">Oudste eerst</string>
+    <string name="quote_sort_option_toonkans_desc">Hoogste toonkans</string>
+    <string name="quote_sort_option_toonkans_asc">Laagste toonkans</string>
+    <string name="quote_sort_option_positives_votes_desc">Meeste positief</string>
+    <string name="quote_sort_option_negative_votes_asc">Minste negatief</string>
+
 
     <!-- Poll -->
     <string name="poll_archive_menu_string">Archief</string>
