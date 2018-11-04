@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="privacy_policy_versions">
+        <item>privacy_policy_v1</item>
+    </array>
+    <integer-array name="privacy_policy_version_numbers">
+        <item>1</item>
+    </integer-array>
+
+    <integer name="privacy_policy_current_version_index">0</integer>
+
+</resources>
