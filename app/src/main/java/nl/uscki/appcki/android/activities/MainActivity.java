@@ -40,9 +40,11 @@ import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
 import nl.uscki.appcki.android.fragments.poll.PollResultFragment;
 import nl.uscki.appcki.android.fragments.quotes.QuoteFragment;
 import nl.uscki.appcki.android.fragments.search.SmoboSearch;
+import nl.uscki.appcki.android.fragments.shop.StoreFragment;
 import nl.uscki.appcki.android.fragments.shop.StoreSelectionFragment;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
+import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -275,7 +277,14 @@ public class MainActivity extends BasicActivity
             } else if (id == R.id.nav_agenda) {
                 openTab(HomeFragment.AGENDA);
             } else if (id == R.id.nav_shop) {
-                openFragment(new StoreSelectionFragment(), null);
+                ShopPreferenceHelper shopPreferenceHelper = new ShopPreferenceHelper(this);
+                if(shopPreferenceHelper.getShop() < 0) {
+                    openFragment(new StoreSelectionFragment(), null);
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("id", shopPreferenceHelper.getShop());
+                    openFragment(new StoreFragment(), bundle);
+                }
             } else if (id == R.id.nav_quotes) {
                 openFragment(new QuoteFragment(), null);
             } else if (id == R.id.nav_poll) {

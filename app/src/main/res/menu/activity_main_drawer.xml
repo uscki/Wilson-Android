@@ -24,8 +24,8 @@
             android:title="Quotes" />
         <item
             android:id="@+id/nav_shop"
-            android:icon="@drawable/format_quote_close"
-            android:title="Shops" />
+            android:icon="@drawable/cash_multiple"
+            android:title="@string/shop_header" />
         <item
             android:id="@+id/nav_meeting"
             android:icon="@drawable/account_multiple"

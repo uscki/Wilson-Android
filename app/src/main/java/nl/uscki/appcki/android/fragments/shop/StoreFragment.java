@@ -3,6 +3,9 @@ package nl.uscki.appcki.android.fragments.shop;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -10,13 +13,17 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
+import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.shop.Product;
 import nl.uscki.appcki.android.generated.shop.Store;
+import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Response;
 
@@ -51,7 +58,11 @@ public class StoreFragment extends RefreshableFragment {
 
         if (this.storeId != -1) {
             Services.getInstance().shopService.getProductsForStore(storeId).enqueue(callback);
+            ShopPreferenceHelper shopPreferenceHelper = new ShopPreferenceHelper(getActivity());
+            shopPreferenceHelper.setLastShop(storeId);
         }
+
+        setHasOptionsMenu(true);
 
         setAdapter(new ProductAdapter(new ArrayList<Product>()));
     }
@@ -65,5 +76,22 @@ public class StoreFragment extends RefreshableFragment {
     @Override
     public void onSwipeRefresh() {
         Services.getInstance().shopService.getProductsForStore(this.storeId).enqueue(callback);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.menu_shops, menu);
+
+        MenuItem changeShop = menu.findItem(R.id.shops_change_shop);
+        changeShop.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                EventBus.getDefault().post(new OpenFragmentEvent(new StoreSelectionFragment(), null));
+                return true;
+            }
+        });
+
     }
 }
