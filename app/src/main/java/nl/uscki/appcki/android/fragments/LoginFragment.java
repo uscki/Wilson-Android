@@ -30,6 +30,7 @@ import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.services.NotificationReceiver;
 import okhttp3.Headers;
@@ -156,9 +157,10 @@ public class LoginFragment extends Fragment {
                             PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
                             UserHelper.getInstance().login(token, person);
 
-                            // Firebase generates token before login. Invalidate so a new one is sent
-                            // which we can then send to the server
-                            NotificationReceiver.invalidateFirebaseInstanceId(true);
+                            if(PermissionHelper.hasAgreedToNotificationPolicy(getContext())) {
+                                // Force firebase to generate a new notification token by invalidating the current token
+                                NotificationReceiver.invalidateFirebaseInstanceId(true);
+                            }
 
                             EventBus.getDefault().post(new UserLoggedInEvent(true));
                         } catch (UnsupportedEncodingException e) {

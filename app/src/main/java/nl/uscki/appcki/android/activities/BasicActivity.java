@@ -1,11 +1,13 @@
 package nl.uscki.appcki.android.activities;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -13,6 +15,7 @@ import com.google.gson.Gson;
 import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.EventBusException;
+import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
@@ -20,9 +23,11 @@ import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.LinkClickedEvent;
 import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
+import nl.uscki.appcki.android.fragments.PrivacyPolicyModalFragment;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
+import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.services.NotificationReceiver;
 import retrofit2.Response;
@@ -43,13 +48,24 @@ public abstract class BasicActivity extends AppCompatActivity {
             UserHelper.getInstance().load();
         }
 
-        NotificationReceiver.logToken();
+        // Force enable FCM if user has agreed to terms
+        NotificationUtil.setFirebaseEnabled(PermissionHelper.hasAgreedToNotificationPolicy(this));
+
+        NotificationReceiver.logToken(this);
 
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void onStart() {
+
+        if(!PermissionHelper.hasAgreedToBasicPolicy(this)) {
+            // User needs to agree with privacy policy
+
+            PrivacyPolicyModalFragment privacyPolicyModalFragment = new PrivacyPolicyModalFragment();
+            privacyPolicyModalFragment.show(getFragmentManager(), "privacyPolicyDialog");
+        }
+
         if (!UserHelper.getInstance().isLoggedIn() || UserHelper.getInstance().getPerson() == null) {
             UserHelper.getInstance().load();
             UserHelper.getInstance().loadCurrentUser();
@@ -126,7 +142,7 @@ public abstract class BasicActivity extends AppCompatActivity {
      * @param postalName    Postal name of person to show
      * @param photoMediaId  ID of photo media for the profile of the person to show
      */
-    private void forceOpenSmobo(int personId, String postalName, int photoMediaId) {
+    private void forceOpenSmobo(int personId, String postalName, Integer photoMediaId) {
         Intent smoboIntent = new Intent(BasicActivity.this, SmoboActivity.class);
         smoboIntent.putExtra("id", personId);
         smoboIntent.putExtra("name", postalName);
@@ -136,18 +152,6 @@ public abstract class BasicActivity extends AppCompatActivity {
 
     public void openSmoboFor(PersonWithNote person) {
         openSmoboFor(person.getPerson());
-    }
-
-    public void openSmoboFor(PersonSimple person) {
-        // TODO beetje dirty, general superclass voor person zou netter zijn, maar schijnt moeilijk te zijn voor retrofit?
-        PersonSimpleName tempPerson = new PersonSimpleName();
-        tempPerson.setId(person.getId());
-        tempPerson.setPostalname(person.getPostalname());
-        tempPerson.setDisplayonline(person.getDisplayonline());
-        if(person.getPhotomediaid() != null) {
-            tempPerson.setPhotomediaid(person.getPhotomediaid());
-        }
-        openSmoboFor(tempPerson);
     }
 
     public void onEventMainThread(ErrorEvent event) {

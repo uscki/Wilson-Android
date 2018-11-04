@@ -51,7 +51,9 @@ public class SmoboSearchResultAdapter extends BaseItemAdapter<SmoboSearchResultA
         holder.mItem = person;
         holder.name.setText(person.getPostalname());
         holder.note.setText("");
-        holder.profile.setImageURI(MediaAPI.getMediaUri(person.getPhotomediaid(), MediaAPI.MediaSize.SMALL));
+        if(person.getPhotomediaid() != null) {
+            holder.profile.setImageURI(MediaAPI.getMediaUri(person.getPhotomediaid(), MediaAPI.MediaSize.SMALL));
+        }
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
