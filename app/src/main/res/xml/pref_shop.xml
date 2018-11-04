@@ -1,0 +1,15 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="preference_default_shop"
+        android:title="@string/shop_preference_default"
+        android:defaultValue="@string/shop_preference_default_latest"
+        />
+
+    <SwitchPreference
+        android:key="preference_shop_confirm_before_order"
+        android:summary="@string/shop_preference_confirm_before_order_summary"
+        android:title="@string/shop_preference_confirm_before_order"
+        android:defaultValue="true"
+        />
+
+</PreferenceScreen>
