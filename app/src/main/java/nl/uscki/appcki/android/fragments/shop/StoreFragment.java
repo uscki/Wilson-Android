@@ -1,17 +1,18 @@
 package nl.uscki.appcki.android.fragments.shop;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
@@ -22,27 +23,27 @@ import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.shop.Product;
-import nl.uscki.appcki.android.generated.shop.Store;
 import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Response;
 
-public class StoreFragment extends RefreshableFragment {
+public class StoreFragment extends RefreshableFragment implements Serializable {
+
+    private int scrollToX = 0;
+
     Callback<Pageable<Product>> callback = new Callback<Pageable<Product>>() {
         @Override
         public void onSucces(Response<Pageable<Product>> response) {
-            Log.e("storefragment", "test");
             response.body().getContent().sort(new Comparator<Product>() {
                 @Override
                 public int compare(Product o1, Product o2) {
                     return UserHelper.getInstance().isPreferedProduct(o1, o2);
                 }
             });
-            for (Product product : response.body().getContent()) {
-                Log.e("storeFragment", product.title);
-            }
             getAdapter().update(response.body().getContent());
             StoreFragment.this.swipeContainer.setRefreshing(false);
+            swipeContainer.scrollTo(scrollToX, 0);
+            scrollToX = 0;
         }
     };
 
@@ -57,14 +58,15 @@ public class StoreFragment extends RefreshableFragment {
         this.storeId = getArguments().getInt("id", -1);
 
         if (this.storeId != -1) {
-            Services.getInstance().shopService.getProductsForStore(storeId).enqueue(callback);
             ShopPreferenceHelper shopPreferenceHelper = new ShopPreferenceHelper(getActivity());
+            Services.getInstance().shopService.getProductsForStore(storeId).enqueue(callback);
             shopPreferenceHelper.setLastShop(storeId);
         }
 
         setHasOptionsMenu(true);
-
-        setAdapter(new ProductAdapter(new ArrayList<Product>()));
+        ProductAdapter adapter = new ProductAdapter(new ArrayList<Product>());
+        adapter.setStoreInfo(this, storeId);
+        setAdapter(adapter);
     }
 
     @Override
@@ -92,6 +94,37 @@ public class StoreFragment extends RefreshableFragment {
                 return true;
             }
         });
+    }
 
+    /**
+     * Place an order. All orders should be handled here for consistent behavior
+     * @param context
+     * @param product
+     * @param amount
+     */
+    public void orderProduct(final Context context, final Product product, final int amount) {
+        Services.getInstance().shopService.placeOrder(product.id, amount).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onSucces(Response<Boolean> response) {
+                if(response.body()) {
+                    UserHelper.getInstance().addPreferedProduct(product);
+                    scrollToX = swipeContainer.getScrollX();
+                    onSwipeRefresh();
+                    Toast.makeText(
+                            context,
+                            context.getString(
+                                    R.string.shop_msg_confirm_order,
+                                    amount,
+                                    product.title
+                                    ),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(
+                            context,
+                            context.getString(R.string.shop_msg_order_failed),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

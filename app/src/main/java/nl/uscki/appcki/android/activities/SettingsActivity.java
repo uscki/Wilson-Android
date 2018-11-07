@@ -35,6 +35,8 @@ import android.util.Pair;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
@@ -44,12 +46,12 @@ import nl.uscki.appcki.android.events.PrivacyPolicyPreferenceChangedEvent;
 import nl.uscki.appcki.android.fragments.PrivacyPolicyModalFragment;
 import nl.uscki.appcki.android.generated.shop.Store;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
+import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import nl.uscki.appcki.android.helpers.VibrationPatternPreferenceHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 import retrofit2.Response;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static butterknife.internal.Utils.arrayOf;
@@ -541,6 +543,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     if(response == null) {
                         Toast.makeText(getActivity(), R.string.shop_msg_failed_loading_stores, Toast.LENGTH_SHORT).show();
                     } else {
+                        Gson gson = new Gson();
+                        ShopPreferenceHelper shopPreferenceHelper = new ShopPreferenceHelper(getActivity());
+                        shopPreferenceHelper.updateShops(gson.toJson(response.body()));
                         String[] keys = new String[response.body().size() + 2];
                         String[] values = new String[response.body().size() + 2];
 
