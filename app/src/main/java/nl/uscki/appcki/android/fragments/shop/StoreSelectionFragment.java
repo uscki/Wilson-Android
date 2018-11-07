@@ -3,10 +3,11 @@ package nl.uscki.appcki.android.fragments.shop;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.shop.Store;
+import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import retrofit2.Response;
 
 /**
@@ -38,6 +40,9 @@ public class StoreSelectionFragment extends RefreshableFragment {
             @Override
             public void onSucces(Response<List<Store>> response) {
                 getAdapter().update(response.body());
+                ShopPreferenceHelper shopPreferenceHelper = new ShopPreferenceHelper(getActivity());
+                Gson gson = new Gson();
+                shopPreferenceHelper.updateShops(gson.toJson(response.body()));
             }
         });
     }

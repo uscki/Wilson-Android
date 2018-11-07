@@ -1,30 +1,30 @@
 package nl.uscki.appcki.android.fragments.shop;
 
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.facebook.drawee.view.SimpleDraweeView;
-
 import java.util.List;
 import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
-import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.shop.Product;
-import nl.uscki.appcki.android.helpers.UserHelper;
-import retrofit2.Response;
+import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 
 public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, Product> {
+
+    private StoreFragment storeFragment;
+    private int storeId;
+
     public ProductAdapter(List<Product> productList) {
         super(productList);
     }
@@ -34,6 +34,11 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.store_product, parent, false);
         return new ViewHolder(view);
+    }
+
+    public void setStoreInfo(StoreFragment storeFragment, int storeId) {
+        this.storeFragment = storeFragment;
+        this.storeId = storeId;
     }
 
     @Override
@@ -51,28 +56,32 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
         holder.product_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Services.getInstance().shopService.placeOrder(product.id, 1).enqueue(new Callback<Boolean>() {
-                    @Override
-                    public void onSucces(Response<Boolean> response) {
-                        if (response.body()) {
-                            UserHelper.getInstance().addPreferedProduct(product);
-                            holder.stock.setText(String.format(Locale.getDefault(), "%d", product.stock - 1));
-                            Toast.makeText(
-                                    v.getContext(),
-                                    v.getResources().getString(
-                                            R.string.shop_msg_confirm_order,
-                                            1,
-                                            product.title),
-                                    Toast.LENGTH_SHORT
-                            ).show();
-                        } else {
-                            Toast.makeText(v.getContext(),
-                                    R.string.shop_msg_order_failed, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                ShopPreferenceHelper shopPreferenceHelper =
+                        new ShopPreferenceHelper(holder.mView.getContext());
+                if(shopPreferenceHelper.getShowConfirm()) {
+                    showConfirmDialog(product, holder);
+                } else {
+                    placeOrder(product, holder);
+                }
             }
         });
+    }
+
+
+    private void placeOrder(final Product product, final ViewHolder holder) {
+        storeFragment.orderProduct(holder.mView.getContext(), product, 1);
+    }
+
+    private void showConfirmDialog(final Product product, final ViewHolder holder) {
+        FragmentActivity activity = (FragmentActivity)holder.mView.getContext();
+        FragmentManager manager = activity.getSupportFragmentManager();
+        ConfirmOrderDialog confirmOrderDialog = new ConfirmOrderDialog();
+        Bundle confirmDialogArguments = new Bundle();
+        confirmDialogArguments.putSerializable("storeFragment", storeFragment);
+        confirmDialogArguments.putInt("storeId", storeId);
+        confirmDialogArguments.putSerializable("product", product);
+        confirmOrderDialog.setArguments(confirmDialogArguments);
+        confirmOrderDialog.show(manager, "confirm_order_dialog");
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
