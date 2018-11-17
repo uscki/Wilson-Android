@@ -67,6 +67,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         public final View mView;
 
         private float startingX;
+        private boolean hasAnimated = false;
 
         @BindView(R.id.pollOptionBackground)
         RelativeLayout background;
@@ -97,7 +98,8 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
                 bar.setVisibility(View.INVISIBLE);
                 name.setVisibility(View.INVISIBLE);
                 centeredName.setVisibility(View.VISIBLE);
-                startAnimation();
+                if(!hasAnimated)
+                    startAnimation();
             } else {
                 mView.setOnClickListener(null);
                 bar.setVisibility(View.VISIBLE);
@@ -113,6 +115,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         }
 
         private void startAnimation() {
+            hasAnimated = true;
             startingX = 400f + (100 * getAdapterPosition());
             int startDropDelay = (25 * getAdapterPosition());
 
