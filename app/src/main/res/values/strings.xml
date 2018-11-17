@@ -301,5 +301,7 @@
     
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="shop_order_history_header">Aankoopgeschiedenis</string>
     <string name="shop_order_history_empty">Geen ordergeschiedenis gevonden</string>
+    <string name="shop_products_empty">Geen producten in deze winkel</string>
 </resources>

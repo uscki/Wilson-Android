@@ -19,6 +19,8 @@ public class Order implements IWilsonBaseItem {
     @SerializedName("date")
     Long date;
 
+    private int amount = 1;
+
     public Integer getId() {
         return id;
     }
@@ -33,5 +35,25 @@ public class Order implements IWilsonBaseItem {
 
     public Long getDate() {
         return date;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public void increaseAmount(int amount) {
+        this.amount += amount;
+    }
+
+    public void increaseAmount(){
+        this.amount++;
+    }
+
+    public int getAmount() {
+        return this.amount;
+    }
+
+    public boolean equals(Order obj) {
+        return this.product.equals(obj.getProduct()) && this.date.equals(obj.date) && this.price.equals(obj.price);
     }
 }

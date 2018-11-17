@@ -1,20 +1,25 @@
 package nl.uscki.appcki.android.fragments.shop;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.shop.Order;
 
@@ -30,17 +35,59 @@ public class OrderHistoryAdapter extends BaseItemAdapter<OrderHistoryAdapter.Vie
     }
 
     @Override
+    public void update(List<Order> items) {
+        this.items.clear();
+
+        if(items.isEmpty()) return;
+
+        Order last = items.get(0);
+
+        for(int i = 1; i < items.size(); i++) {
+            if(last.equals(items.get(i))) {
+                last.increaseAmount();
+            } else {
+                this.items.add(last);
+                last = items.get(i);
+            }
+        }
+
+        this.items.add(last);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void addItems(List<Order> items) {
+        if(items.size() == 0) return;
+
+        if(this.items.isEmpty()) {
+            update(items);
+            return;
+        }
+
+        Order last = items.remove(items.size() - 1);
+
+        for(Order item : items) {
+            if(last.equals(item)) {
+                last.increaseAmount();
+            } else {
+                this.items.add(last);
+                last = item;
+            }
+        }
+
+        this.items.add(last);
+        notifyDataSetChanged();
+    }
+
+
+    @Override
     public void onBindCustomViewHolder(ViewHolder holder, int position) {
         Order order = getItems().get(position);
 
         // TODO figure out a way to get the store name, and set it. Else:
-        holder.storeNameContainer.setVisibility(View.GONE);
+        holder.storeName.setVisibility(View.GONE);
 
-        if(order.getProduct() != null && !order.getProduct().trim().equals("")) {
-            holder.productName.setText(order.getProduct());
-        } else {
-            holder.productNameContainer.setVisibility(View.GONE);
-        }
+        holder.productName.setText(order.getProduct());
 
         // TODO figure out a way to get product image, and set it. If empty:
         holder.productImage.setVisibility(View.GONE);
@@ -48,33 +95,18 @@ public class OrderHistoryAdapter extends BaseItemAdapter<OrderHistoryAdapter.Vie
         holder.price.setText(String.format(
                 Locale.getDefault(), "€%.2f", order.getPrice()));
 
-        // TODO if amount becomes something, set it and the total price, otherwise:
-        holder.amount.setText("1");
+        holder.amount.setText(String.valueOf(order.getAmount()));
         holder.totalPrice.setText(String.format(
-                Locale.getDefault(), "€%.2f", order.getPrice()));
+                Locale.getDefault(), "€%.2f", order.getPrice() * order.getAmount()));
 
+        holder.date.setText(Utils.timestampConversion(order.getDate()));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
 
-        @BindView(R.id.product_image)
+        @BindView(R.id.order_history_product_image)
         SimpleDraweeView productImage;
-
-        @BindView(R.id.store_name_container)
-        LinearLayout storeNameContainer;
-
-        @BindView(R.id.product_name_container)
-        LinearLayout productNameContainer;
-
-        @BindView(R.id.price_container)
-        LinearLayout priceContainer;
-
-        @BindView(R.id.amount_container)
-        LinearLayout amountContainer;
-
-        @BindView(R.id.total_price_container)
-        LinearLayout totalPriceContainer;
 
         @BindView(R.id.store_name)
         TextView storeName;
@@ -90,6 +122,9 @@ public class OrderHistoryAdapter extends BaseItemAdapter<OrderHistoryAdapter.Vie
 
         @BindView(R.id.total_price)
         TextView totalPrice;
+
+        @BindView(R.id.order_date)
+        TextView date;
 
         public ViewHolder(View view) {
             super(view);
