@@ -7,10 +7,6 @@
     tools:context="nl.uscki.appcki.android.fragments.poll.PollResultFragment"
     android:id="@+id/refreshContainer"
     >
-<android.support.v4.widget.NestedScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -41,5 +37,4 @@
             app:layoutManager="LinearLayoutManager"/>
 
     </RelativeLayout>
-</android.support.v4.widget.NestedScrollView>
 </android.support.v4.widget.SwipeRefreshLayout>
