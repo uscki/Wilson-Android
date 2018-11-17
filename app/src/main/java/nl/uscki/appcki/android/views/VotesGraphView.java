@@ -15,6 +15,8 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 
+import java.util.Locale;
+
 import nl.uscki.appcki.android.R;
 
 /**
@@ -28,10 +30,6 @@ public class VotesGraphView extends View {
 
     private int barColor = Color.RED; // TODO: use a default from R.color...
 
-    private TextPaint mTextPaint;
-    private float mTextWidth;
-    private float mTextHeight;
-
     private Paint barPaint;
     private RectF roundEnd;
     private int barSize;
@@ -40,7 +38,6 @@ public class VotesGraphView extends View {
 
     private int votes = 0;
     private int votesTotal = 1;
-    private String votesStr = "";
     private int direction;
     int width;
 
@@ -77,32 +74,14 @@ public class VotesGraphView extends View {
 
         a.recycle();
 
-        // Set up a default TextPaint object
-        mTextPaint = new TextPaint();
-        mTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setTextAlign(Paint.Align.LEFT);
-
         barPaint = new Paint();
         barPaint.setColor(barColor);
-
-
 
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Point size = new Point();
         wm.getDefaultDisplay().getSize(size);
         width = size.x - paddingLeft - paddingRight;
 
-        // Update TextPaint and text measurements from attributes
-        invalidateTextPaintAndMeasurements();
-    }
-
-    private void invalidateTextPaintAndMeasurements() {
-        mTextPaint.setTextSize(BAR_HEIGHT - 6);
-        mTextPaint.setColor(ContextCompat.getColor(getContext(), R.color.colorWhite));
-        mTextWidth = mTextPaint.measureText(votesStr);
-
-        Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
-        mTextHeight = fontMetrics.bottom;
     }
 
     @Override
@@ -127,11 +106,6 @@ public class VotesGraphView extends View {
 
             roundEnd = new RectF(paddingLeft, 0, paddingLeft + round_bar_size, BAR_HEIGHT);
             canvas.drawRoundRect(roundEnd, round_bar_radius, round_bar_radius, barPaint);
-
-            canvas.drawText(votesStr,
-                    paddingLeft + mTextWidth,
-                    paddingTop + (contentHeight + mTextHeight) - (int)convertDpToPixel(8.333333f),
-                    mTextPaint);
         } else if(direction == DIRECTION_RIGHT) {
             int contentWidth = barSize - paddingRight;
             int x = (int)convertDpToPixel(1.666666f);
@@ -140,23 +114,22 @@ public class VotesGraphView extends View {
 
             roundEnd = new RectF(contentWidth - round_bar_size, 0, contentWidth, BAR_HEIGHT);
             canvas.drawRoundRect(roundEnd, round_bar_radius, round_bar_radius, barPaint);
-
-            canvas.drawText(votesStr,
-                    contentWidth - mTextWidth - round_bar_offset,
-                    paddingTop + (contentHeight + mTextHeight) - (int)convertDpToPixel(8.333333f),
-                    mTextPaint);
         }
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        String s = String.format(Locale.getDefault(), "(%d)", votes);
+        float textwidth = barPaint.measureText(s); // Probably not a good hack, but hey
+        float textMargin = getResources().getDimension(R.dimen.text_margin);
+        int maxWidth = width - (int)convertDpToPixel(6.6666665f + textMargin + textwidth);
         if(votes == 0) {
             barSize = (int)convertDpToPixel(6.6666665f);
         } else if (votes == votesTotal) {
-            barSize = width - (int)convertDpToPixel(6.6666665f);
+            barSize = maxWidth;
         } else {
             float percent = ((float)votes / (float)votesTotal) * 100;
-            barSize = (width * (int)percent) / 100;
+            barSize = (maxWidth * (int)percent) / 100;
         }
 
         //MUST CALL THIS
@@ -181,8 +154,6 @@ public class VotesGraphView extends View {
 
     public void setVotes(int votes) {
         this.votes = votes;
-        votesStr = String.format("%d", votes);
-        invalidateTextPaintAndMeasurements();
     }
 
     public void setVotesAnimated(int votes) {
