@@ -12,11 +12,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
+import nl.uscki.appcki.android.generated.poll.PollItem;
 import nl.uscki.appcki.android.generated.poll.PollOption;
 import nl.uscki.appcki.android.views.VotesGraphView;
 
@@ -46,11 +48,13 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
 
     @Override
     public void onBindCustomViewHolder(ViewHolder holder, int position) {
-        holder.setOptionName(items.get(position).getName());
+        PollOption item = items.get(position);
 
+        holder.setOptionName(item.getName());
+        holder.voteCount.setText(String.format(Locale.getDefault(), "(%d)", item.getVoteCount()));
 
         try {
-            holder.bar.setBarColor(Color.parseColor(items.get(position).getColor().toLowerCase()));
+            holder.bar.setBarColor(Color.parseColor(item.getColor().toLowerCase()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,6 +71,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         public final View mView;
 
         private float startingX;
+        private boolean hasAnimated = false;
 
         @BindView(R.id.pollOptionBackground)
         RelativeLayout background;
@@ -83,6 +88,9 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         @BindView(R.id.poll_result_option_bar)
         VotesGraphView bar;
 
+        @BindView(R.id.poll_option_vote_count)
+        TextView voteCount;
+
         public ViewHolder(View view) {
             super(view);
             mView = view;
@@ -97,12 +105,16 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
                 bar.setVisibility(View.INVISIBLE);
                 name.setVisibility(View.INVISIBLE);
                 centeredName.setVisibility(View.VISIBLE);
-                startAnimation();
+                voteCount.setVisibility(View.GONE);
+                voteCount.setText("");
+                if(!hasAnimated)
+                    startAnimation();
             } else {
                 mView.setOnClickListener(null);
                 bar.setVisibility(View.VISIBLE);
                 name.setVisibility(View.VISIBLE);
                 centeredName.setVisibility(View.GONE);
+                voteCount.setVisibility(View.VISIBLE);
                 ObjectAnimator.ofInt(bar, "VotesAnimated", 0, items.get(getAdapterPosition()).getVoteCount()).setDuration(400).start();
             }
         }
@@ -113,6 +125,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         }
 
         private void startAnimation() {
+            hasAnimated = true;
             startingX = 400f + (100 * getAdapterPosition());
             int startDropDelay = (25 * getAdapterPosition());
 
