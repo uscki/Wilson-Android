@@ -49,6 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:textAppearance="?attr/textAppearanceListItem"
         />
 
     <TextView
@@ -56,8 +57,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/poll_result_option_name"
         android:visibility="invisible"
+        android:textAppearance="?attr/textAppearanceListItem"
         />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/poll_result_option_name"
+        >
     <nl.uscki.appcki.android.views.VotesGraphView
         android:id="@+id/poll_result_option_bar"
         android:layout_width="match_parent"
@@ -65,8 +72,17 @@
         android:layout_marginTop="@dimen/text_margin"
         app:direction="right"
         android:paddingStart="@dimen/text_margin"
-        android:layout_below="@id/poll_result_option_name"
         android:visibility="invisible"/>
+        <TextView
+            android:id="@+id/poll_option_vote_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/poll_result_option_bar"
+            android:layout_marginStart="@dimen/text_margin"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:layout_alignParentBottom="true"
+            />
+    </RelativeLayout>
 
 
 </RelativeLayout>
