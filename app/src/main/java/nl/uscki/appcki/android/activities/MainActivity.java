@@ -113,10 +113,10 @@ public class MainActivity extends BasicActivity
             initLoggedOutUI();
         } else {
             initLoggedInUI();
-        }
 
-        // Get the intent, verify the action and get the query
-        handleIntention(getIntent());
+            // Get the intent, verify the action and get the query
+            handleIntention(getIntent());
+        }
     }
 
     @Override
