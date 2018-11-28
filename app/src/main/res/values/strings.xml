@@ -355,5 +355,6 @@
     <string name="shop_preference_confirm_before_order">Bevestigen voor bestellen</string>
     <string name="shop_preference_confirm_before_order_summary">Als deze optie uitgeschakeld is, wordt een bestelling direct doorgevoerd zodra je op de groene plus klikt. Dit kan niet ongedaan worden gemaakt.</string>
     <string name="shop_confirm_checkbox_dont_show_again">Niet meer tonen</string>
+    <string name="shop_preference_summary_loading">Voorkeurswinkel wordt geladen</string>
 
 </resources>
