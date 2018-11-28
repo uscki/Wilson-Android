@@ -529,7 +529,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // updated to reflect the new value, per the Android Design
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("preference_default_shop"));
-            loadAvailableShopsToList(); // TODO maybe before registering listener? idk
+            loadAvailableShopsToList();
         }
 
         private void loadAvailableShopsToList() {
@@ -559,8 +559,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                             keys[i+2] = response.body().get(i).getId().toString();
                             values[i+2] = response.body().get(i).title;
                         }
+
+                        // Attach keys and values to preference element
                         shopPreference.setEntryValues(keys);
                         shopPreference.setEntries(values);
+
+                        // Update summary to reflect the current value
+                        sBindPreferenceSummaryToValueListener.onPreferenceChange(
+                                shopPreference,
+                                shopPreference.getValue()
+                        );
                     }
                 }
             });
