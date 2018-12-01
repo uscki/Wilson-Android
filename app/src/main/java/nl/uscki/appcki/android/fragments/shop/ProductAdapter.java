@@ -73,13 +73,20 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
     }
 
     private void showConfirmDialog(final Product product, final ViewHolder holder) {
+        // Find fragment manager
         FragmentActivity activity = (FragmentActivity)holder.mView.getContext();
         FragmentManager manager = activity.getSupportFragmentManager();
+
+        // Create confirm dialog
         ConfirmOrderDialog confirmOrderDialog = new ConfirmOrderDialog();
+
+        // Create argument bundle
         Bundle confirmDialogArguments = new Bundle();
         confirmDialogArguments.putSerializable("storeFragment", storeFragment);
         confirmDialogArguments.putInt("storeId", storeId);
         confirmDialogArguments.putSerializable("product", product);
+
+        // Set arguments on dialog, and show
         confirmOrderDialog.setArguments(confirmDialogArguments);
         confirmOrderDialog.show(manager, "confirm_order_dialog");
     }
