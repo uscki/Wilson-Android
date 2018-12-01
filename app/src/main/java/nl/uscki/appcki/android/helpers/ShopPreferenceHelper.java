@@ -5,10 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +40,9 @@ public class ShopPreferenceHelper {
      * @param shopId    ID of the shop that was last opened
      */
     public void setLastShop(int shopId){
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("last_opened_shop", shopId);
-        editor.apply();
+        preferences.edit()
+            .putInt("last_opened_shop", shopId)
+            .apply();
     }
 
     /**
@@ -55,9 +51,9 @@ public class ShopPreferenceHelper {
      *                      finalized
      */
     public void setShowConfirm(boolean showConfirm) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("preference_shop_confirm_before_order", showConfirm);
-        editor.apply();
+        preferences.edit()
+            .putBoolean("preference_shop_confirm_before_order", showConfirm)
+            .apply();
     }
 
     /**
@@ -70,9 +66,9 @@ public class ShopPreferenceHelper {
     }
 
     public void updateShops(String jsonShopList) {
-        SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("cached_store_set", jsonShopList);
-        editor.apply();
+        preferences.edit()
+            .putString("cached_store_set", jsonShopList)
+            .apply();
     }
 
     public List<Store> getLastShopList() {
@@ -90,37 +86,8 @@ public class ShopPreferenceHelper {
         List<Store> lastShopList = getLastShopList();
         if (lastShopList == null) return null;
         for (Store store : lastShopList) {
-            if (store.id.equals(id)) {
-                return store;
-            }
+            if (store.id.equals(id)) return store;
         }
         return null;
-    }
-
-    private class StoreNameIdPair implements Serializable {
-        private int id;
-        private String name;
-
-        StoreNameIdPair(int id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String encode() throws IOException {
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(os);
-            oos.writeObject(this);
-            oos.close();
-            return os.toString();
-        }
-
     }
 }
