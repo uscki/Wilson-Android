@@ -56,7 +56,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/product_name"
             app:layout_constraintVertical_bias="0.0"
-            android:text="Op voorraad" />
+            android:text="@string/shop_in_stock" />
 
         <TextView
             android:id="@+id/product_stock"
