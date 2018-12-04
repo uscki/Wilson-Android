@@ -343,4 +343,25 @@
     <string name="privacy_policy_notifications_disabled">Notificaties uitgeschakeld</string>
     <string name="privacy_policy_notifications_disabled_summary">Om notificaties te kunnen ontvangen moet je het privacybeleid accepteren</string>
     <string name="privacy_policy_updated_notice">We hebben ons privacybeleid bijgewerkt. Om gebruik te blijven maken van deze applicatie dient u (opnieuw) akkoord te gaan met deze nieuwe voorwaarden.</string>
+
+    <!-- Shops -->
+    <string name="shop_header">Shop</string>
+    <string name="product_header">Product</string>
+    <string name="shop_confirm_header">Bestelling bevestigen</string>
+    <string name="shop_confirm_amount_hint">Aantal</string>
+    <string name="shop_select">Selecteer winkel</string>
+    <string name="shop_in_stock">Op voorraad</string>
+    <string name="shop_amount">Aantal</string>
+    <string name="shop_confirm">Bevestigen</string>
+    <string name="shop_msg_confirm_order">Je hebt %d %s afgerekend</string>
+    <string name="shop_msg_order_failed">Bestelling mislukt. Je hebt niet betaald.</string>
+    <string name="shop_msg_failed_loading_stores">Winkels konden niet worden geladen</string>
+    <string name="shop_preference_default">Standaard winkel</string>
+    <string name="shop_preference_default_latest">Laatst gebruikte</string>
+    <string name="shop_preference_default_always_choose">Laat me altijd kiezen</string>
+    <string name="shop_preference_confirm_before_order">Bevestigen voor bestellen</string>
+    <string name="shop_preference_confirm_before_order_summary">Als deze optie uitgeschakeld is, wordt een bestelling direct doorgevoerd zodra je op de groene plus klikt. Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="shop_confirm_checkbox_dont_show_again">Niet meer tonen</string>
+    <string name="shop_preference_summary_loading">Voorkeurswinkel wordt geladen</string>
+
 </resources>
