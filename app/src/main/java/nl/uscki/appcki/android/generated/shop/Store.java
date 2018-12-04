@@ -20,7 +20,7 @@ public class Store implements IWilsonBaseItem {
     public String title;
 
     @Override
-    public Object getId() {
+    public Integer getId() {
         return id;
     }
 }
