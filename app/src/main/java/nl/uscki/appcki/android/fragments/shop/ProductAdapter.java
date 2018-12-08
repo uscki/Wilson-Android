@@ -1,5 +1,7 @@
 package nl.uscki.appcki.android.fragments.shop;
 
+import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
@@ -75,19 +77,26 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
         else
             holder.image.setImageURI("http://thecatapi.com/api/images/get?format=src");
 
-        holder.product_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
+        if(product.stock == null || product.stock < 1) {
+            // Disabling FABs is hard
+            holder.product_order.setBackgroundTintList(ColorStateList.valueOf(holder.mView.getResources().getColor(R.color.lb_grey)));
+            holder.product_order.setBackgroundTintMode(PorterDuff.Mode.DARKEN);
+            holder.product_order.setOnClickListener(null);
+        } else {
+            holder.product_order.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
 
-                ShopPreferenceHelper shopPreferenceHelper =
-                        new ShopPreferenceHelper(holder.mView.getContext());
-                if(shopPreferenceHelper.getShowConfirm()) {
-                    showConfirmDialog(product, holder);
-                } else {
-                    placeOrder(product, holder);
+                    ShopPreferenceHelper shopPreferenceHelper =
+                            new ShopPreferenceHelper(holder.mView.getContext());
+                    if (shopPreferenceHelper.getShowConfirm()) {
+                        showConfirmDialog(product, holder);
+                    } else {
+                        placeOrder(product, holder);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void placeOrder(final Product product, final ViewHolder holder) {
