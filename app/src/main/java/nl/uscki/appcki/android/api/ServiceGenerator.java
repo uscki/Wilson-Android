@@ -44,6 +44,10 @@ public class ServiceGenerator {
                 if(UserHelper.getInstance().getToken() == null) {
                     return chain.proceed(original);
                 }
+
+                if (!original.url().host().contains("uscki.nl"))
+                    return chain.proceed(original);
+
                 Request.Builder requestBuilder = original.newBuilder()
                         .header("X-AUTH-TOKEN", UserHelper.getInstance().getToken())
                         .method(original.method(), original.body());
