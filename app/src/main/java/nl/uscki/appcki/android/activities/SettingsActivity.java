@@ -21,6 +21,7 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -34,14 +35,21 @@ import android.util.Pair;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.PrivacyPolicyPreferenceChangedEvent;
 import nl.uscki.appcki.android.fragments.PrivacyPolicyModalFragment;
+import nl.uscki.appcki.android.generated.shop.Store;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
+import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import nl.uscki.appcki.android.helpers.VibrationPatternPreferenceHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
+import retrofit2.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -212,6 +220,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         if (actionBar != null) {
             // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
         }
     }
 
@@ -240,6 +249,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || PrivacyPolicyPreferenceFragment.class.getName().equals(fragmentName)
                 || exportOptionsPreferenceFragment.class.getName().equals(fragmentName)
+                || ShopPreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
@@ -503,6 +513,66 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             }
             return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class ShopPreferenceFragment extends PreferenceFragment {
+
+        @Override
+        public void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_shop);
+            setHasOptionsMenu(true);
+
+            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
+            // to their values. When their values change, their summaries are
+            // updated to reflect the new value, per the Android Design
+            // guidelines.
+            bindPreferenceSummaryToValue(findPreference("preference_default_shop"));
+            loadAvailableShopsToList();
+        }
+
+        private void loadAvailableShopsToList() {
+            final ListPreference shopPreference = (ListPreference) findPreference("preference_default_shop");
+            shopPreference.setEntries(new String[] {getString(R.string.shop_preference_default_latest)});
+            shopPreference.setEntryValues(new String[]{"-1"});
+
+            Services.getInstance().shopService.getStores().enqueue(new Callback<List<Store>>() {
+                @Override
+                public void onSucces(Response<List<Store>> response) {
+                    if(response == null) {
+                        Toast.makeText(getActivity(), R.string.shop_msg_failed_loading_stores, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Gson gson = new Gson();
+                        ShopPreferenceHelper shopPreferenceHelper = new ShopPreferenceHelper(getActivity());
+                        shopPreferenceHelper.updateShops(gson.toJson(response.body()));
+                        String[] keys = new String[response.body().size() + 2];
+                        String[] values = new String[response.body().size() + 2];
+
+                        keys[0] = "-1";
+                        values[0] = getString(R.string.shop_preference_default_latest);
+
+                        keys[1] = "-2";
+                        values[1] = getString(R.string.shop_preference_default_always_choose);
+
+                        for(int i = 0; i < response.body().size(); i++) {
+                            keys[i+2] = response.body().get(i).getId().toString();
+                            values[i+2] = response.body().get(i).title;
+                        }
+
+                        // Attach keys and values to preference element
+                        shopPreference.setEntryValues(keys);
+                        shopPreference.setEntries(values);
+
+                        // Update summary to reflect the current value
+                        sBindPreferenceSummaryToValueListener.onPreferenceChange(
+                                shopPreference,
+                                shopPreference.getValue()
+                        );
+                    }
+                }
+            });
         }
     }
 

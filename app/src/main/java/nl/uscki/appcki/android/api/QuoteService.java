@@ -27,7 +27,13 @@ public interface QuoteService {
     Call<QuotesPage> older(@Query("page") Integer page, @Query("size") Integer size);
 
     @GET("quote/older")
+    Call<QuotesPage> older(@Query("page") Integer page, @Query("size") Integer size, @Query("sort") String... sort);
+
+    @GET("quote/older")
     Call<QuotesPage> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
+
+    @GET("quote/older")
+    Call<QuotesPage> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older, @Query("sort") String... sort);
 
     @FormUrlEncoded
     @POST("quote/vote")
