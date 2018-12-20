@@ -5,9 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.WindowManager;
-
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.generated.quotes.Quote;
 
@@ -56,9 +53,6 @@ public class QuoteVoteGraphView extends VotesGraphView<Quote> {
             fractionNegative = negative / (float) total;
             fractionPositive = positive / (float) total;
         }
-
-//        positiveTextWidth = (int) convertDpToPixel(textPaint.measureText(Integer.toString(positive)));
-//        negativeTextWidth = (int) convertDpToPixel(textPaint.measureText(Integer.toString(negative)));
 
         positiveTextWidth = (int) textPaint.measureText(Integer.toString(positive));
         negativeTextWidth = (int) textPaint.measureText(Integer.toString(negative));

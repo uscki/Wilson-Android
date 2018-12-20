@@ -61,13 +61,13 @@
         />
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/poll_result_option_name"
         >
         <nl.uscki.appcki.android.views.votesGraphView.PollVotesGraphView
             android:id="@+id/poll_result_option_bar"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin"
             android:visibility="invisible"/>
