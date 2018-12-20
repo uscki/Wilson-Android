@@ -2,25 +2,20 @@ package nl.uscki.appcki.android.fragments.poll;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import java.util.List;
 import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
-import nl.uscki.appcki.android.generated.poll.PollItem;
 import nl.uscki.appcki.android.generated.poll.PollOption;
 import nl.uscki.appcki.android.views.votesGraphView.PollVotesGraphView;
-import nl.uscki.appcki.android.views.votesGraphView.VotesGraphView;
 
 /**
  * Created by peter on 3/20/17.
@@ -62,12 +57,6 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         holder.setOptionName(item.getName());
         holder.voteCount.setText(String.format(Locale.getDefault(), "(%d)", item.getVoteCount()));
 
-//        try {
-//            holder.bar.setBarColor(Color.parseColor(item.getColor().toLowerCase()));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
         holder.setCanVote(canVote);
     }
 
@@ -107,7 +96,6 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         }
 
         public void setCanVote(boolean canVote) {
-//            bar.setVotesTotal(totalvotes);
 
             if(canVote) {
                 mView.setOnClickListener(this);
@@ -124,9 +112,6 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
                 name.setVisibility(View.VISIBLE);
                 centeredName.setVisibility(View.GONE);
                 voteCount.setVisibility(View.VISIBLE);
-
-                // TODO do we want animation? How?
-//                ObjectAnimator.ofInt(bar, "VotesAnimated", 0, items.get(getAdapterPosition()).getVoteCount()).setDuration(400).start();
             }
         }
 
