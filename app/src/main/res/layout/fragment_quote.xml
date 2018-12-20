@@ -19,25 +19,27 @@
         android:id="@+id/quote_graph"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/quote_quote"
         android:layout_centerHorizontal="true"
-        android:orientation="horizontal"
-        android:layout_below="@id/quote_quote">
-        <nl.uscki.appcki.android.views.VotesGraphView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <nl.uscki.appcki.android.views.votesGraphView.VotesGraphView
             android:id="@+id/votes_positive"
-            android:src="@drawable/left_bar_votes"
-            android:paddingLeft="@dimen/text_margin"
-            android:paddingStart="@dimen/text_margin"
-            app:direction="left"
-            app:barColor="@color/colorGreen"/>
-        <nl.uscki.appcki.android.views.VotesGraphView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/text_margin"
+            android:paddingLeft="@dimen/text_margin"
+            android:src="@drawable/left_bar_votes"
+            app:barColor="@color/colorGreen"
+            app:direction="left" />
+
+        <nl.uscki.appcki.android.views.votesGraphView.VotesGraphView
             android:id="@+id/votes_negative"
-            android:src="@drawable/right_bar_votes"
-            android:paddingRight="@dimen/text_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:paddingEnd="@dimen/text_margin"
+            android:paddingRight="@dimen/text_margin"
+            android:src="@drawable/right_bar_votes"
             app:barColor="@color/colorRed" />
     </LinearLayout>
 
@@ -49,7 +51,7 @@
         android:layout_marginTop="26dp"
         android:layout_marginLeft="@dimen/text_margin"
         android:background="@android:color/transparent"
-        android:src="@drawable/thumb_up_outline"/>
+        app:srcCompat="@drawable/thumb_up_outline"/>
 
     <TextView
         android:id="@+id/quote_toonkans"
@@ -71,7 +73,7 @@
         android:paddingEnd="@dimen/text_margin"
         android:paddingRight="@dimen/text_margin"
         android:background="@android:color/transparent"
-        android:src="@drawable/thumb_down_outline"/>
+        app:srcCompat="@drawable/thumb_down_outline"/>
 
     <ImageView
         android:layout_width="match_parent"

@@ -4,7 +4,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,8 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.poll.PollItem;
 import nl.uscki.appcki.android.generated.poll.PollOption;
-import nl.uscki.appcki.android.views.VotesGraphView;
+import nl.uscki.appcki.android.views.votesGraphView.PollVotesGraphView;
+import nl.uscki.appcki.android.views.votesGraphView.VotesGraphView;
 
 /**
  * Created by peter on 3/20/17.
@@ -28,6 +28,7 @@ import nl.uscki.appcki.android.views.VotesGraphView;
 
 public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHolder, PollOption> {
     int totalvotes;
+    int maxVote = 0;
     private boolean canVote;
 
     public PollResultAdapter(List<PollOption> items, boolean canVote) {
@@ -36,6 +37,12 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
 
         for (PollOption item : items) {
             totalvotes += item.getVoteCount();
+            if(item.getVoteCount() > maxVote) maxVote = item.getVoteCount();
+        }
+
+        for(PollOption item : items) {
+            item.setTotalVoteCount(totalvotes);
+            item.setMaxVote(maxVote);
         }
     }
 
@@ -50,14 +57,16 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
     public void onBindCustomViewHolder(ViewHolder holder, int position) {
         PollOption item = items.get(position);
 
+        holder.bar.setVoteItem(item);
+
         holder.setOptionName(item.getName());
         holder.voteCount.setText(String.format(Locale.getDefault(), "(%d)", item.getVoteCount()));
 
-        try {
-            holder.bar.setBarColor(Color.parseColor(item.getColor().toLowerCase()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            holder.bar.setBarColor(Color.parseColor(item.getColor().toLowerCase()));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         holder.setCanVote(canVote);
     }
@@ -86,7 +95,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         TextView centeredName;
 
         @BindView(R.id.poll_result_option_bar)
-        VotesGraphView bar;
+        PollVotesGraphView bar;
 
         @BindView(R.id.poll_option_vote_count)
         TextView voteCount;
@@ -98,7 +107,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         }
 
         public void setCanVote(boolean canVote) {
-            bar.setVotesTotal(totalvotes);
+//            bar.setVotesTotal(totalvotes);
 
             if(canVote) {
                 mView.setOnClickListener(this);
@@ -115,7 +124,9 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
                 name.setVisibility(View.VISIBLE);
                 centeredName.setVisibility(View.GONE);
                 voteCount.setVisibility(View.VISIBLE);
-                ObjectAnimator.ofInt(bar, "VotesAnimated", 0, items.get(getAdapterPosition()).getVoteCount()).setDuration(400).start();
+
+                // TODO do we want animation? How?
+//                ObjectAnimator.ofInt(bar, "VotesAnimated", 0, items.get(getAdapterPosition()).getVoteCount()).setDuration(400).start();
             }
         }
 

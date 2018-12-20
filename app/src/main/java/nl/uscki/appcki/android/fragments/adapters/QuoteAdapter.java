@@ -2,10 +2,12 @@ package nl.uscki.appcki.android.fragments.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -16,7 +18,7 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.generated.quotes.Quote;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
-import nl.uscki.appcki.android.views.VotesGraphView;
+import nl.uscki.appcki.android.views.votesGraphView.VotesGraphView;
 import retrofit2.Response;
 
 /**
@@ -45,14 +47,18 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
 
             int positive = items.get(position).getPositiveVotes();
             int negative = items.get(position).getNegativeVotes();
-            holder.votes_negative.setVotes(negative);
-            holder.votes_negative.setVotesTotal(negative+positive);
-
-            holder.votes_positive.setVotes(positive);
-            holder.votes_positive.setVotesTotal(negative+positive);
+//            holder.votes_negative.setVotes(negative);
+//            holder.votes_negative.setVotesTotal(negative+positive);
+//
+//            holder.votes_positive.setVotes(positive);
+//            holder.votes_positive.setVotesTotal(negative+positive);
 
             holder.votes_negative.invalidate();
             holder.votes_positive.invalidate();
+
+//            holder.votes_negative.setDrawVoteCount(true);
+//            holder.votes_positive.setDrawVoteCount(true);
+
             holder.votes_negative.requestLayout();
             holder.votes_positive.requestLayout();
 
@@ -70,6 +76,12 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
     public void onBindCustomViewHolder(final ViewHolder holder, int position) {
         holder.mItem = this.items.get(position);
 
+        if(holder.mItem.getNegativeVotes() + holder.mItem.getPositiveVotes() == 0) {
+            holder.quote_graph.setGravity(Gravity.CENTER);
+        } else {
+            holder.quote_graph.setGravity(Gravity.START);
+        }
+
         SpannableStringBuilder text = Parser.parse(items.get(position).getQuoteJSON(), true, holder.quote);
         holder.quote.setText(text);
         double toonkans = ((double)holder.mItem.getWeight()/(double)holder.mItem.getTotalWeight()) * 100;
@@ -77,13 +89,18 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
 
         int positive = items.get(position).getPositiveVotes();
         int negative = items.get(position).getNegativeVotes();
-        holder.votes_negative.setVotes(negative);
-        holder.votes_negative.setVotesTotal(negative+positive);
+//        holder.votes_negative.setVotes(negative);
+//        holder.votes_negative.setVotesTotal(negative+positive);
+//
+//        holder.votes_positive.setVotes(positive);
+//        holder.votes_positive.setVotesTotal(negative+positive);
 
-        holder.votes_positive.setVotes(positive);
-        holder.votes_positive.setVotesTotal(negative+positive);
+//        holder.votes_positive.setDrawVoteCount(true);
+//        holder.votes_negative.setDrawVoteCount(true);
 
         // update measurements and view
+        holder.votes_negative.invalidate();
+        holder.votes_positive.invalidate();
         holder.votes_negative.requestLayout();
         holder.votes_positive.requestLayout();
 
@@ -137,6 +154,7 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
         public final ImageButton plus;
         public final ImageButton minus;
         public final TextView toonkans;
+        public final LinearLayout quote_graph;
         public Quote mItem;
 
         public ViewHolder(View view) {
@@ -148,6 +166,7 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
             plus = (ImageButton) view.findViewById(R.id.quote_vote_plus);
             minus = (ImageButton) view.findViewById(R.id.quote_vote_minus);
             toonkans = (TextView) view.findViewById(R.id.quote_toonkans);
+            quote_graph = (LinearLayout) view.findViewById(R.id.quote_graph);
         }
     }
 }
