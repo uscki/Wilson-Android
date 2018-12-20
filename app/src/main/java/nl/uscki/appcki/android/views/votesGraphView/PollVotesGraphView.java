@@ -60,7 +60,7 @@ public class PollVotesGraphView extends VotesGraphView<PollOption> {
 
     int measure() {
         barWidth = (int) (fraction * (
-                        getEffectiveContentWidth(1) - convertDpToPixel(expectedTextWidth)
+                        getEffectiveContentWidth() - convertDpToPixel(expectedTextWidth)
         ));
 
         Log.e(getClass().getSimpleName(), String.format("Calculated bar width for %d votes is %d based on fraction %f", item.getVoteCount(), width, fraction));
