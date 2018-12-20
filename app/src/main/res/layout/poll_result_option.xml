@@ -70,7 +70,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin"
-            android:paddingStart="@dimen/text_margin"
             android:visibility="invisible"/>
         <TextView
             android:id="@+id/poll_option_vote_count"
