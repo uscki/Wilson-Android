@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
@@ -16,7 +17,7 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.generated.quotes.Quote;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
-import nl.uscki.appcki.android.views.VotesGraphView;
+import nl.uscki.appcki.android.views.votesgraphview.QuoteVoteGraphView;
 import retrofit2.Response;
 
 /**
@@ -43,18 +44,8 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
             items.set(position, quote);
             holder.mItem = quote;
 
-            int positive = items.get(position).getPositiveVotes();
-            int negative = items.get(position).getNegativeVotes();
-            holder.votes_negative.setVotes(negative);
-            holder.votes_negative.setVotesTotal(negative+positive);
-
-            holder.votes_positive.setVotes(positive);
-            holder.votes_positive.setVotesTotal(negative+positive);
-
-            holder.votes_negative.invalidate();
-            holder.votes_positive.invalidate();
-            holder.votes_negative.requestLayout();
-            holder.votes_positive.requestLayout();
+            holder.votes_graph.setVoteItem(holder.mItem);
+            holder.votes_graph.invalidate();
 
             if(holder.mItem.isHasVoted()) {
                 holder.plus.setVisibility(View.INVISIBLE);
@@ -75,17 +66,8 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
         double toonkans = ((double)holder.mItem.getWeight()/(double)holder.mItem.getTotalWeight()) * 100;
         holder.toonkans.setText(roundOffTo2DecPlaces(toonkans));
 
-        int positive = items.get(position).getPositiveVotes();
-        int negative = items.get(position).getNegativeVotes();
-        holder.votes_negative.setVotes(negative);
-        holder.votes_negative.setVotesTotal(negative+positive);
-
-        holder.votes_positive.setVotes(positive);
-        holder.votes_positive.setVotesTotal(negative+positive);
-
-        // update measurements and view
-        holder.votes_negative.requestLayout();
-        holder.votes_positive.requestLayout();
+        holder.votes_graph.setVoteItem(holder.mItem);
+        holder.votes_graph.invalidate();
 
         if(holder.mItem.isHasVoted()) {
             holder.plus.setVisibility(View.INVISIBLE);
@@ -121,7 +103,7 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
     }
 
     private String roundOffTo2DecPlaces(double val) {
-        return String.format("toonkans: %.2f", val);
+        return String.format(Locale.getDefault(), "toonkans: %.2f", val);
     }
 
     @Override
@@ -132,8 +114,7 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final BBTextView quote;
-        public final VotesGraphView votes_positive;
-        public final VotesGraphView votes_negative;
+        public final QuoteVoteGraphView votes_graph;
         public final ImageButton plus;
         public final ImageButton minus;
         public final TextView toonkans;
@@ -143,8 +124,7 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
             super(view);
             mView = view;
             quote = (BBTextView) view.findViewById(R.id.quote_quote);
-            votes_positive = (VotesGraphView) view.findViewById(R.id.votes_positive);
-            votes_negative = (VotesGraphView) view.findViewById(R.id.votes_negative);
+            votes_graph = (QuoteVoteGraphView) view.findViewById(R.id.quote_graph);
             plus = (ImageButton) view.findViewById(R.id.quote_vote_plus);
             minus = (ImageButton) view.findViewById(R.id.quote_vote_minus);
             toonkans = (TextView) view.findViewById(R.id.quote_toonkans);
