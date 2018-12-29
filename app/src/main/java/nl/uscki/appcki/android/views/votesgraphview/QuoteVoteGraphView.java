@@ -1,4 +1,4 @@
-package nl.uscki.appcki.android.views.votesGraphView;
+package nl.uscki.appcki.android.views.votesgraphview;
 
 import android.content.Context;
 import android.graphics.Canvas;

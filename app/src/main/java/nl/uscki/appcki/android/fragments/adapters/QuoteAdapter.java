@@ -17,7 +17,7 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.generated.quotes.Quote;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
-import nl.uscki.appcki.android.views.votesGraphView.QuoteVoteGraphView;
+import nl.uscki.appcki.android.views.votesgraphview.QuoteVoteGraphView;
 import retrofit2.Response;
 
 /**
