@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.List;
-import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
@@ -22,21 +21,22 @@ import nl.uscki.appcki.android.views.votesGraphView.PollVotesGraphView;
  */
 
 public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHolder, PollOption> {
-    int totalvotes;
-    int maxVote = 0;
+
     private boolean canVote;
 
     public PollResultAdapter(List<PollOption> items, boolean canVote) {
         super(items);
         this.canVote = canVote;
+        int totalVotes = 0;
+        int maxVote = 0;
 
         for (PollOption item : items) {
-            totalvotes += item.getVoteCount();
+            totalVotes += item.getVoteCount();
             if(item.getVoteCount() > maxVote) maxVote = item.getVoteCount();
         }
 
         for(PollOption item : items) {
-            item.setTotalVoteCount(totalvotes);
+            item.setTotalVoteCount(totalVotes);
             item.setMaxVote(maxVote);
         }
     }
@@ -51,12 +51,8 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
     @Override
     public void onBindCustomViewHolder(ViewHolder holder, int position) {
         PollOption item = items.get(position);
-
         holder.bar.setVoteItem(item);
-
         holder.setOptionName(item.getName());
-        holder.voteCount.setText(String.format(Locale.getDefault(), "(%d)", item.getVoteCount()));
-
         holder.setCanVote(canVote);
     }
 
@@ -86,24 +82,19 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         @BindView(R.id.poll_result_option_bar)
         PollVotesGraphView bar;
 
-        @BindView(R.id.poll_option_vote_count)
-        TextView voteCount;
-
         public ViewHolder(View view) {
             super(view);
             mView = view;
             ButterKnife.bind(this, view);
         }
 
-        public void setCanVote(boolean canVote) {
+        void setCanVote(boolean canVote) {
 
             if(canVote) {
                 mView.setOnClickListener(this);
                 bar.setVisibility(View.INVISIBLE);
                 name.setVisibility(View.INVISIBLE);
                 centeredName.setVisibility(View.VISIBLE);
-                voteCount.setVisibility(View.GONE);
-                voteCount.setText("");
                 if(!hasAnimated)
                     startAnimation();
             } else {
@@ -111,7 +102,6 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
                 bar.setVisibility(View.VISIBLE);
                 name.setVisibility(View.VISIBLE);
                 centeredName.setVisibility(View.GONE);
-                voteCount.setVisibility(View.VISIBLE);
             }
         }
 

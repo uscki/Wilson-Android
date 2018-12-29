@@ -12,9 +12,19 @@ import nl.uscki.appcki.android.generated.poll.PollOption;
 public class PollVotesGraphView extends VotesGraphView<PollOption> {
 
     /**
+     * Margin to the left of the vote bar, between vote bar and vote string
+     */
+    private final int VOTE_STRING_MARGIN = (int) convertDpToPixel(6);
+
+    /**
      * Paint used to draw the vote graph for this poll option (based on poll option colour)
      */
     private Paint barPaint;
+
+    /**
+     * Paint used to draw the vote string for this poll option
+     */
+    private TextPaint textPaint;
 
     /**
      * The width of the bar for this poll option
@@ -32,6 +42,11 @@ public class PollVotesGraphView extends VotesGraphView<PollOption> {
      */
     private float fraction;
 
+    /**
+     * The string showing the number of votes for this poll option
+     */
+    private String voteString;
+
     @Override
     void prepareItem() {
         barPaint = new Paint();
@@ -41,10 +56,12 @@ public class PollVotesGraphView extends VotesGraphView<PollOption> {
             getDefaultPaint();
         }
 
-        Paint p = new TextPaint();
-        p.setTextSize(getResources().getDimension(R.dimen.lb_basic_card_content_text_size));
-        p.setAntiAlias(true);
-        expectedTextWidth = p.measureText(String.format(Locale.getDefault(), "(%d)", item.getMaxVote()));
+        textPaint = new TextPaint();
+        textPaint.setTextSize(BAR_HEIGHT - 16);
+        textPaint.setAntiAlias(true);
+        textPaint.setColor(getResources().getColor(R.color.colorBlack));
+        voteString = String.format(Locale.getDefault(), "(%d)", item.getVoteCount());
+        expectedTextWidth = textPaint.measureText(voteString);
 
         fraction = (float) item.getVoteCount() / (float) item.getMaxVote();
     }
@@ -52,14 +69,19 @@ public class PollVotesGraphView extends VotesGraphView<PollOption> {
     @Override
     void drawItemBars(Canvas canvas) {
         drawRectangle(0, barWidth, false, barPaint, canvas);
+        canvas.drawText(
+                voteString,
+                barWidth + VOTE_STRING_MARGIN,
+                getPaddingTop() + getHeight() + textPaint.getFontMetrics().bottom - (int) convertDpToPixel(10),
+                textPaint);
     }
 
     int measure() {
         barWidth = round_bar_size + (int) (
-                (getEffectiveContentWidth() - round_bar_size - expectedTextWidth) * fraction
+                (getEffectiveContentWidth() - VOTE_STRING_MARGIN - round_bar_size - expectedTextWidth) * fraction
             );
 
-        return barWidth;
+        return width;
     }
 
     public PollVotesGraphView(Context context) {
