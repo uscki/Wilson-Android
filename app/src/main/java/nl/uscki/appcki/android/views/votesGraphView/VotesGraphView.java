@@ -14,7 +14,10 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
 /**
- * TODO: document your custom view class.
+ * This abstract class is extended when a colored bar, indicating a number (e.g. number of votes)
+ * should be shown on the screen. The bar is always of a set height, but this class makes it
+ * easier to calculate a percentage of the available width and draw the (vote) bar within that
+ * width
  */
 public abstract class VotesGraphView<T extends IWilsonBaseItem> extends View {
 
@@ -27,7 +30,6 @@ public abstract class VotesGraphView<T extends IWilsonBaseItem> extends View {
     final int round_bar_size = (int)convertDpToPixel(13.333333f);
     final int bar_margin = (int)convertDpToPixel(1.666666f);
 
-
     /**
      * Item that is drawn using this view
      */
@@ -38,25 +40,38 @@ public abstract class VotesGraphView<T extends IWilsonBaseItem> extends View {
      */
     int width;
 
-    private void init() {
-        if(item != null) prepareItem();
-    }
 
+    /**
+     * This method is called when the item is set by the calling view. In this function,
+     * calculations that depend on the item should be made, e.g. width such that the bar covers
+     * a certain percentage of the available width. For available width,
+     * see {@link #getEffectiveContentWidth()}
+     */
     abstract void prepareItem();
 
+    /**
+     * This method is called on a layout update. Using measurements calculated in {@link #prepareItem()},
+     * the bar should be drawn on the screen. For a default bar with one rounded corner, use
+     * {@link #drawRectangle(int, int, boolean, Paint, Canvas)}
+     * @param canvas
+     */
     abstract void drawItemBars(Canvas canvas);
 
+    /**
+     * Calculate the final width this view element should take. Depending on how this view element
+     * is included in the parent, that view will be set to the final view by this abstract class.
+     * However, it is not guaranteed this width can be set, so during development, check if this
+     * view does what it should
+     *
+     * @return  Integer for the preferred width of this element (use {@link #width} for default)
+     */
     abstract int measure();
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        drawItemBars(canvas);
-    }
 
     /**
      * Calculate the effective content width that can be used to draw bars. This
-     * is the actual content width, minus all space used for padding.
+     * is the actual content width allocated to this view, excluding paddings. When making
+     * calculations, always use this width. If paddings are not taken into account, content may
+     * be cropped.
      */
     protected int getEffectiveContentWidth() {
         return width - getPaddingLeft() - getPaddingRight();
@@ -65,7 +80,8 @@ public abstract class VotesGraphView<T extends IWilsonBaseItem> extends View {
     /**
      * Draw a default bar, starting from <i>start</i>, <i>width</i> wide. Excluding padding but
      * including rounded corners, which are drawn within the range of the bar. It is up to the
-     * implementing class to ensure that the bar falls within the effective content width
+     * implementing class to ensure that the bar falls within the effective content width (see
+     * {@link #getEffectiveContentWidth()})
      *
      * @param start         Start position of the bar
      * @param width         Desired width of the bar, including rounded corner
@@ -164,15 +180,16 @@ public abstract class VotesGraphView<T extends IWilsonBaseItem> extends View {
         return p;
     }
 
+    /**
+     * Set the item that contains the numbers used to visualize a bar
+     * @param item  Item
+     */
     public void setVoteItem(@NonNull T item) {
         this.item = item;
         prepareItem();
     }
 
-    /**
-     * Constructors
-     * @param context
-     */
+
     public VotesGraphView(Context context) {
         super(context);
         init();
@@ -186,5 +203,15 @@ public abstract class VotesGraphView<T extends IWilsonBaseItem> extends View {
     public VotesGraphView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        drawItemBars(canvas);
+    }
+
+    private void init() {
+        if(item != null) prepareItem();
     }
 }
