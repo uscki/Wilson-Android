@@ -11,40 +11,21 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
-import nl.uscki.appcki.android.fragments.RefreshableFragment;
+import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.shop.Product;
 import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
-import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Response;
 
-public class StoreFragment extends RefreshableFragment implements Serializable {
+public class StoreFragment extends PageableFragment<Pageable<Product>> implements Serializable {
 
-    private int scrollToX = 0;
-
-    Callback<Pageable<Product>> callback = new Callback<Pageable<Product>>() {
-        @Override
-        public void onSucces(Response<Pageable<Product>> response) {
-            response.body().getContent().sort(new Comparator<Product>() {
-                @Override
-                public int compare(Product o1, Product o2) {
-                    return UserHelper.getInstance().isPreferedProduct(o1, o2);
-                }
-            });
-
-            getAdapter().update(response.body().getContent());
-            StoreFragment.this.swipeContainer.setRefreshing(false);
-            swipeContainer.scrollTo(scrollToX, 0);
-            scrollToX = 0;
-        }
-    };
+    private static final int PRODUCT_PAGE_SIZE = 6;
 
     private Integer storeId;
 
@@ -58,25 +39,44 @@ public class StoreFragment extends RefreshableFragment implements Serializable {
 
         if (this.storeId != -1) {
             ShopPreferenceHelper shopPreferenceHelper = new ShopPreferenceHelper(getActivity());
-            Services.getInstance().shopService.getProductsForStore(storeId).enqueue(callback);
-            shopPreferenceHelper.setLastShop(storeId);
+            shopPreferenceHelper.setLastShop(this.storeId);
         }
 
         setHasOptionsMenu(true);
-        ProductAdapter adapter = new ProductAdapter(new ArrayList<Product>());
-        adapter.setStoreInfo(this, storeId);
-        setAdapter(adapter);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Create an adapter for this fragment
+        ProductAdapter adapter = new ProductAdapter(new ArrayList<Product>());
+        adapter.setStoreInfo(this, this.storeId);
+        setAdapter(adapter);
+
+        // Load initial data
+        onSwipeRefresh();
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().shopService.getProductsForStore(this.storeId).enqueue(callback);
+        Services.getInstance().shopService.getProductsForStore(this.storeId, this.page, getPageSize()).enqueue(this.callback);
+    }
+
+
+    @Override
+    public void onScrollRefresh() {
+        Services.getInstance().shopService.getProductsForStore(this.storeId, this.page, getPageSize()).enqueue(this.callback);
+    }
+
+    @Override
+    public String getEmptyText() {
+        return getResources().getString(R.string.shop_empty);
+    }
+
+    @Override
+    protected int getPageSize() {
+        return PRODUCT_PAGE_SIZE;
     }
 
     @Override
@@ -106,9 +106,8 @@ public class StoreFragment extends RefreshableFragment implements Serializable {
             @Override
             public void onSucces(Response<Boolean> response) {
                 if(response.body()) {
-                    UserHelper.getInstance().addPreferedProduct(product);
-                    scrollToX = swipeContainer.getScrollX();
-                    onSwipeRefresh();
+                    product.stock -= amount; // TODO use API callback when available
+                    ((ProductAdapter) getAdapter()).updateProduct(product);
                     Toast.makeText(
                             context,
                             context.getString(
