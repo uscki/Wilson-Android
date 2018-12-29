@@ -62,8 +62,7 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
 
     public void updateProduct(Product product) {
         int position = this.items.indexOf(product);
-        this.items.remove(position);
-        this.items.add(position, product);
+        this.items.set(position, product);
         this.notifyDataSetChanged();
     }
 
