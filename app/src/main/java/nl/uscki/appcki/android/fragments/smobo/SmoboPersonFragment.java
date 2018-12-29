@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -178,6 +179,7 @@ public class SmoboPersonFragment extends Fragment {
         if (p.getPerson().getMobilenumber() != null) {
             Bundle bundle = new Bundle();
             String birthday = p.getPerson().getBirthdate().toString("dd-MM-yyyy");
+            birthday += String.format(Locale.getDefault(), " (%d)", p.getPerson().getAge());
             bundle.putString("maintext", birthday);
             bundle.putString("subtext", "Verjaardag");
             bundle.putInt("infotype", SmoboInfoWidget.InfoType.BIRTHDAY.ordinal());

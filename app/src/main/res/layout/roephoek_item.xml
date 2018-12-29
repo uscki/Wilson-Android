@@ -3,6 +3,10 @@
     android:orientation="vertical" android:layout_width="fill_parent"
     android:layout_height="wrap_content">
 
+    <RelativeLayout
+        android:id="@+id/roephoek_item_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,12 +22,26 @@
         android:layout_marginRight="10dp"
         style="@style/AppTheme.TextSubHeader" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/roephoek_item_time"
+            style="@style/AppTheme.Text"
+            android:layout_alignBaseline="@+id/roephoek_item_nickname"
+            android:layout_alignBottom="@+id/roephoek_item_nickname"
+            android:layout_toRightOf="@+id/roephoek_item_nickname"
+            android:layout_toEndOf="@+id/roephoek_item_nickname" />
+
+    </RelativeLayout>
+
     <nl.uscki.appcki.android.views.BBTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/roephoek_item_message"
-        android:layout_below="@+id/roephoek_item_nickname"
+        android:layout_below="@+id/roephoek_item_header"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="false"
@@ -32,15 +50,5 @@
         android:layout_marginLeft="10dp"
         style="@style/AppTheme.Text" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/roephoek_item_time"
-        style="@style/AppTheme.Text"
-        android:layout_alignBaseline="@+id/roephoek_item_nickname"
-        android:layout_alignBottom="@+id/roephoek_item_nickname"
-        android:layout_toRightOf="@+id/roephoek_item_nickname"
-        android:layout_toEndOf="@+id/roephoek_item_nickname" />
+
 </RelativeLayout>

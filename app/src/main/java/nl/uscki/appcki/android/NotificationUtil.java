@@ -24,9 +24,12 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import java.util.HashMap;
 import java.util.Locale;
 
+import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.VibrationPatternPreferenceHelper;
 import nl.uscki.appcki.android.services.NotificationType;
 
@@ -34,7 +37,11 @@ public class NotificationUtil extends ContextWrapper {
 
     public NotificationUtil(Context base) {
         super(base);
-        createNotificationChannels();
+        if(PermissionHelper.hasAgreedToNotificationPolicy(base)) {
+            // Only create notification channels if the user has agreed to collecting a personal
+            // identifier to send notifications to this device
+            createNotificationChannels();
+        }
     }
 
     private NotificationManager notificationManager;
@@ -135,6 +142,8 @@ public class NotificationUtil extends ContextWrapper {
         }
     }
 
+
+
     /**
      * Try to create a notification channel for each notification type
      * we currently know of
@@ -143,6 +152,17 @@ public class NotificationUtil extends ContextWrapper {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             for(NotificationType nt : NotificationType.values()) {
                 createChannel(nt);
+            }
+        }
+    }
+
+    /**
+     * Remove existing notification channels
+     */
+    public void removeExistingChannels() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            for(NotificationType nt : NotificationType.values()) {
+                getManager().deleteNotificationChannel(getChannel(nt));
             }
         }
     }
@@ -366,7 +386,7 @@ public class NotificationUtil extends ContextWrapper {
             // Check if vibration is already handled by the notification channel
             NotificationManager manager = getManager();
             NotificationChannel channel = manager.getNotificationChannel(channelId(notificationType));
-            if(channel.shouldVibrate())
+            if(channel != null && channel.shouldVibrate())
                 // Vibration is already handled by the channel. Vibrating here would just
                 // be conflicting
                 return;
@@ -437,6 +457,21 @@ public class NotificationUtil extends ContextWrapper {
         }
 
         return notificationManager;
+    }
+
+    /**
+     * Enable or disable generation of tokens for the firebase messaging service. This is disabled
+     * by default, but needs to be enabled to receive notifications.
+     *
+     * This value persists through app restarts, according to the documentation, so make sure to
+     * not use this lightly:
+     * https://firebase.google.com/docs/cloud-messaging/android/client#prevent-auto-init
+     *
+     * @param enabled   True to enable services, false to disable services
+     */
+    public static void setFirebaseEnabled(boolean enabled) {
+        Log.d(NotificationUtil.class.getSimpleName(), "Setting initialization of firebase to " + enabled);
+        FirebaseMessaging.getInstance().setAutoInitEnabled(enabled);
     }
 
 }
