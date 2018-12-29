@@ -28,16 +28,16 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         super(items);
         this.canVote = canVote;
         int totalVotes = 0;
-        int maxVote = 0;
+        int highestVoteCount = 0;
 
         for (PollOption item : items) {
             totalVotes += item.getVoteCount();
-            if(item.getVoteCount() > maxVote) maxVote = item.getVoteCount();
+            if(item.getVoteCount() > highestVoteCount) highestVoteCount = item.getVoteCount();
         }
 
         for(PollOption item : items) {
             item.setTotalVoteCount(totalVotes);
-            item.setMaxVote(maxVote);
+            item.setMaxVote(highestVoteCount);
         }
     }
 
