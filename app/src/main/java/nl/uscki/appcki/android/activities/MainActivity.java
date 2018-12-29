@@ -19,10 +19,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.iid.FirebaseInstanceId;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -45,8 +43,10 @@ import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
 import nl.uscki.appcki.android.fragments.poll.PollResultFragment;
 import nl.uscki.appcki.android.fragments.quotes.QuoteFragment;
 import nl.uscki.appcki.android.fragments.search.SmoboSearch;
+import nl.uscki.appcki.android.fragments.shop.StoreFragment;
+import nl.uscki.appcki.android.fragments.shop.StoreSelectionFragment;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
-import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
+import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -99,7 +99,9 @@ public class MainActivity extends BasicActivity
         QUOTE_OVERVIEW,
         POLL_DETAIL,
         POLL_ACTIVE,
-        SMOBO_SEARCH
+        SMOBO_SEARCH,
+        STORE_SELECTION,
+        STORE_BUY
     }
 
     public static Screen currentScreen;
@@ -126,20 +128,20 @@ public class MainActivity extends BasicActivity
             initLoggedOutUI();
         } else {
             initLoggedInUI();
+
+            logout.setClickable(true);
+            logout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UserHelper.getInstance().logout();
+                    initLoggedOutUI();
+                    currentScreen = Screen.LOGIN;
+                }
+            });
+
+            // Get the intent, verify the action and get the query
+            handleIntention(getIntent());
         }
-
-        logout.setClickable(true);
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UserHelper.getInstance().logout();
-                initLoggedOutUI();
-                currentScreen = Screen.LOGIN;
-            }
-        });
-
-        // Get the intent, verify the action and get the query
-        handleIntention(getIntent());
     }
 
     @Override
@@ -200,7 +202,7 @@ public class MainActivity extends BasicActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        Log.d(TAG, "back: " + currentScreen.name());
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -220,6 +222,8 @@ public class MainActivity extends BasicActivity
                 openFragment(new PollOverviewFragment(), null);
             } else if (currentScreen == Screen.POLL_OVERVIEW) {
                 openFragment(new PollResultFragment(), null);
+            } else if (currentScreen == Screen.STORE_BUY) {
+                openFragment(new StoreSelectionFragment(), null);
             } else if (currentScreen != Screen.NEWS) {
                 openTab(HomeFragment.NEWS);
             }
@@ -292,6 +296,15 @@ public class MainActivity extends BasicActivity
                 openTab(HomeFragment.NEWS);
             } else if (id == R.id.nav_agenda) {
                 openTab(HomeFragment.AGENDA);
+            } else if (id == R.id.nav_shop) {
+                ShopPreferenceHelper shopPreferenceHelper = new ShopPreferenceHelper(this);
+                if(shopPreferenceHelper.getShop() < 0) {
+                    openFragment(new StoreSelectionFragment(), null);
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("id", shopPreferenceHelper.getShop());
+                    openFragment(new StoreFragment(), bundle);
+                }
             } else if (id == R.id.nav_quotes) {
                 openFragment(new QuoteFragment(), null);
             } else if (id == R.id.nav_poll) {
@@ -390,7 +403,7 @@ public class MainActivity extends BasicActivity
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openSmoboFor(PersonSimpleName.from(UserHelper.getInstance().getPerson()));
+                openSmoboFor(UserHelper.getInstance().getPerson());
             }
         });
         // load the users profile picture
@@ -436,13 +449,6 @@ public class MainActivity extends BasicActivity
         if (event.loggedIn) {
             initLoggedInUI();
             openTab(HomeFragment.NEWS);
-
-            Services.getInstance().userService.registerDeviceId(FirebaseInstanceId.getInstance().getToken()).enqueue(new Callback<Boolean>() {
-                @Override
-                public void onSucces(Response<Boolean> response) {
-
-                }
-            });
         } else {
             initLoggedOutUI();
         }

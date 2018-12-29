@@ -2,38 +2,42 @@ package nl.uscki.appcki.android.fragments.poll;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.poll.PollOption;
-import nl.uscki.appcki.android.views.VotesGraphView;
+import nl.uscki.appcki.android.views.votesgraphview.PollVotesGraphView;
 
 /**
  * Created by peter on 3/20/17.
  */
 
 public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHolder, PollOption> {
-    int totalvotes;
+
     private boolean canVote;
 
     public PollResultAdapter(List<PollOption> items, boolean canVote) {
         super(items);
         this.canVote = canVote;
+        int totalVotes = 0;
+        int highestVoteCount = 0;
 
         for (PollOption item : items) {
-            totalvotes += item.getVoteCount();
+            totalVotes += item.getVoteCount();
+            if(item.getVoteCount() > highestVoteCount) highestVoteCount = item.getVoteCount();
+        }
+
+        for(PollOption item : items) {
+            item.setTotalVoteCount(totalVotes);
+            item.setMaxVote(highestVoteCount);
         }
     }
 
@@ -46,15 +50,9 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
 
     @Override
     public void onBindCustomViewHolder(ViewHolder holder, int position) {
-        holder.setOptionName(items.get(position).getName());
-
-
-        try {
-            holder.bar.setBarColor(Color.parseColor(items.get(position).getColor().toLowerCase()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        PollOption item = items.get(position);
+        holder.bar.setVoteItem(item);
+        holder.setOptionName(item.getName());
         holder.setCanVote(canVote);
     }
 
@@ -67,6 +65,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         public final View mView;
 
         private float startingX;
+        private boolean hasAnimated = false;
 
         @BindView(R.id.pollOptionBackground)
         RelativeLayout background;
@@ -81,7 +80,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         TextView centeredName;
 
         @BindView(R.id.poll_result_option_bar)
-        VotesGraphView bar;
+        PollVotesGraphView bar;
 
         public ViewHolder(View view) {
             super(view);
@@ -89,21 +88,20 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
             ButterKnife.bind(this, view);
         }
 
-        public void setCanVote(boolean canVote) {
-            bar.setVotesTotal(totalvotes);
+        void setCanVote(boolean canVote) {
 
             if(canVote) {
                 mView.setOnClickListener(this);
                 bar.setVisibility(View.INVISIBLE);
                 name.setVisibility(View.INVISIBLE);
                 centeredName.setVisibility(View.VISIBLE);
-                startAnimation();
+                if(!hasAnimated)
+                    startAnimation();
             } else {
                 mView.setOnClickListener(null);
                 bar.setVisibility(View.VISIBLE);
                 name.setVisibility(View.VISIBLE);
                 centeredName.setVisibility(View.GONE);
-                ObjectAnimator.ofInt(bar, "VotesAnimated", 0, items.get(getAdapterPosition()).getVoteCount()).setDuration(400).start();
             }
         }
 
@@ -113,6 +111,7 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         }
 
         private void startAnimation() {
+            hasAnimated = true;
             startingX = 400f + (100 * getAdapterPosition());
             int startDropDelay = (25 * getAdapterPosition());
 

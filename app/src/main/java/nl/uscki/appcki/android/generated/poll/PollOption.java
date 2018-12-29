@@ -28,6 +28,9 @@ public class PollOption implements IWilsonBaseItem {
     @SerializedName("voteCount")
     Integer voteCount;
 
+    private int totalVoteCount;
+    private int maxVote; // Best result for this poll
+
     public Integer getId() {
         return id;
     }
@@ -58,5 +61,21 @@ public class PollOption implements IWilsonBaseItem {
 
     public void setVoteCount(Integer voteCount) {
         this.voteCount = voteCount;
+    }
+
+    public int getTotalVoteCount() {
+        return totalVoteCount;
+    }
+
+    public void setTotalVoteCount(int totalVoteCount) {
+        this.totalVoteCount = totalVoteCount;
+    }
+
+    public int getMaxVote() {
+        return maxVote;
+    }
+
+    public void setMaxVote(int maxVote) {
+        this.maxVote = maxVote;
     }
 }
