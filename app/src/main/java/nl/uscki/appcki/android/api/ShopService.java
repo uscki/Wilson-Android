@@ -17,10 +17,10 @@ public interface ShopService {
     Call<List<Store>> getStores();
 
     @GET("shop/stores/{store}/products")
-    Call<Pageable<Product>> getProductsForStore(@Path("store") Integer store);
+    Call<Pageable<Product>> getProductsForStore(@Path("store") Integer store, @Query("page") Integer page, @Query("size") Integer size);
 
     @GET("shop/orders/")
-    Call<List<Order>> getOrders();
+    Call<Pageable<Order>> getOrders(@Query("page") Integer page, @Query("size") Integer size);
 
     @POST("shop/orders/new")
     Call<Boolean> placeOrder(@Query("id") Integer productId, @Query("amount") Integer amount);
