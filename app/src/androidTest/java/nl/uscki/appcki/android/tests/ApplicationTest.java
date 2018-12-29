@@ -1,4 +1,4 @@
-package me.blackwolf12333.appcki;
+package nl.uscki.appcki.android.tests;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
