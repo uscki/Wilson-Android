@@ -39,11 +39,10 @@ public class StoreFragment extends PageableFragment<Pageable<Product>> implement
 
         if (this.storeId != -1) {
             ShopPreferenceHelper shopPreferenceHelper = new ShopPreferenceHelper(getActivity());
-            shopPreferenceHelper.setLastShop(storeId);
+            shopPreferenceHelper.setLastShop(this.storeId);
         }
 
         setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -51,7 +50,7 @@ public class StoreFragment extends PageableFragment<Pageable<Product>> implement
                              Bundle savedInstanceState) {
         // Create an adapter for this fragment
         ProductAdapter adapter = new ProductAdapter(new ArrayList<Product>());
-        adapter.setStoreInfo(this, storeId);
+        adapter.setStoreInfo(this, this.storeId);
         setAdapter(adapter);
 
         // Load initial data
@@ -61,13 +60,13 @@ public class StoreFragment extends PageableFragment<Pageable<Product>> implement
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().shopService.getProductsForStore(this.storeId, page, getPageSize()).enqueue(callback);
+        Services.getInstance().shopService.getProductsForStore(this.storeId, this.page, getPageSize()).enqueue(this.callback);
     }
 
 
     @Override
     public void onScrollRefresh() {
-        Services.getInstance().shopService.getProductsForStore(this.storeId, page, getPageSize()).enqueue(callback);
+        Services.getInstance().shopService.getProductsForStore(this.storeId, this.page, getPageSize()).enqueue(this.callback);
     }
 
     @Override
