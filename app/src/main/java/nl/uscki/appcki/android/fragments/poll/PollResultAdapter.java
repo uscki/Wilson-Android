@@ -14,7 +14,7 @@ import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.poll.PollOption;
-import nl.uscki.appcki.android.views.votesGraphView.PollVotesGraphView;
+import nl.uscki.appcki.android.views.votesgraphview.PollVotesGraphView;
 
 /**
  * Created by peter on 3/20/17.

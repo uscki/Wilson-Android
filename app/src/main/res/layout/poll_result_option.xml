@@ -60,7 +60,7 @@
         android:textAppearance="?attr/textAppearanceListItem"
         />
 
-    <nl.uscki.appcki.android.views.votesGraphView.PollVotesGraphView
+    <nl.uscki.appcki.android.views.votesgraphview.PollVotesGraphView
         android:id="@+id/poll_result_option_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

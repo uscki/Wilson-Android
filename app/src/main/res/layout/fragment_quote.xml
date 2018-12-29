@@ -15,7 +15,7 @@
         android:text="These are the three tapes of our Turing Machine. They look like baguettes. - Benjamin Rin"
         android:textAlignment="center" />
 
-    <nl.uscki.appcki.android.views.votesGraphView.QuoteVoteGraphView
+    <nl.uscki.appcki.android.views.votesgraphview.QuoteVoteGraphView
         android:id="@+id/quote_graph"
         android:layout_width="match_parent"
         android:paddingStart="@dimen/text_margin"
