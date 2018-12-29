@@ -12,8 +12,6 @@ import android.util.Log;
 import android.view.View;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
-import nl.uscki.appcki.android.generated.poll.PollOption;
-import nl.uscki.appcki.android.generated.quotes.Quote;
 
 /**
  * TODO: document your custom view class.
@@ -124,20 +122,20 @@ public abstract class VotesGraphView<T extends IWilsonBaseItem> extends View {
             }
         }
 
-        String itemSTr = "None";
-        if(item instanceof PollOption) {
-            itemSTr = ((PollOption) item).getName();
-        } else if (item instanceof Quote) {
-            itemSTr = ((Quote) item).getQuote();
-        }
-
-        Log.e(getClass().getSimpleName(), String.format("Measured width for [%s] is %d but setting %d. Mode is %s", itemSTr, targetWidth, finalWidth, MeasureSpec.toString(widthMeasureSpec)));
-
+        // Some safeguards for developing
         if(finalWidth < targetWidth) {
             Log.e(getClass().getSimpleName(),
                     String.format(
-                            "Requested size of %d but can only set %d. Content may be cut off",
+                            "Requested width (size) of %d but can only set %d. Content may be cut off",
                             targetWidth, finalWidth));
+        }
+
+        // Some safeguards for developing (Cont.d)
+        if(finalHeight < targetHeight) {
+            Log.e(getClass().getSimpleName(),
+                    String.format(
+                            "Requested height (size) of %d but can only set %d. Content may be cut off",
+                            targetHeight, finalWidth));
         }
 
         setMeasuredDimension(finalWidth, finalHeight);

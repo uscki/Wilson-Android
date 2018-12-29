@@ -15,34 +15,6 @@
         android:text="These are the three tapes of our Turing Machine. They look like baguettes. - Benjamin Rin"
         android:textAlignment="center" />
 
-    <!--<LinearLayout-->
-        <!--android:id="@+id/quote_graph"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@id/quote_quote"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:orientation="horizontal">-->
-
-        <!--<nl.uscki.appcki.android.views.votesGraphView.VotesGraphView-->
-            <!--android:id="@+id/votes_positive"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:paddingStart="@dimen/text_margin"-->
-            <!--android:paddingLeft="@dimen/text_margin"-->
-            <!--android:src="@drawable/left_bar_votes"-->
-            <!--app:barColor="@color/colorGreen"-->
-            <!--app:direction="left" />
-
-            <nl.uscki.appcki.android.views.votesGraphView.VotesGraphView-->
-            <!--android:id="@+id/votes_negative"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:paddingEnd="@dimen/text_margin"-->
-            <!--android:paddingRight="@dimen/text_margin"-->
-            <!--android:src="@drawable/right_bar_votes"-->
-            <!--app:barColor="@color/colorRed" />
-    </LinearLayout>-->
-
     <nl.uscki.appcki.android.views.votesGraphView.QuoteVoteGraphView
         android:id="@+id/quote_graph"
         android:layout_width="match_parent"
