@@ -350,10 +350,10 @@
     <string name="shop_confirm_header">Bestelling bevestigen</string>
     <string name="shop_confirm_amount_hint">Aantal</string>
     <string name="shop_select">Selecteer winkel</string>
-    <string name="shop_in_stock">Op voorraad</string>
+    <string name="shop_in_stock">Op voorraad:</string>
     <string name="shop_amount">Aantal</string>
     <string name="shop_confirm">Bevestigen</string>
-    <string name="shop_msg_confirm_order">Je hebt %d %s afgerekend</string>
+    <string name="shop_msg_confirm_order">Je hebt %d %s afgerekend voor €%.2f</string>
     <string name="shop_msg_order_failed">Bestelling mislukt. Je hebt niet betaald.</string>
     <string name="shop_msg_failed_loading_stores">Winkels konden niet worden geladen</string>
     <string name="shop_preference_default">Standaard winkel</string>
@@ -364,5 +364,9 @@
     <string name="shop_confirm_checkbox_dont_show_again">Niet meer tonen</string>
     <string name="shop_preference_summary_loading">Voorkeurswinkel wordt geladen</string>
     <string name="shop_empty">Geen producten gevonden voor deze shop</string>
+    <string name="shop_price_header">Prijs</string>
+    <string name="shop_price_total_header">Totaal:</string>
+    <string name="shop_price_format">€%.2f p.st.</string>
+    <string name="shop_price_format_simple">€%.2f</string>
 
 </resources>
