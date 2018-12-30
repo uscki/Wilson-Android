@@ -113,7 +113,8 @@ public class StoreFragment extends PageableFragment<Pageable<Product>> implement
                             context.getString(
                                     R.string.shop_msg_confirm_order,
                                     amount,
-                                    product.title
+                                    product.title,
+                                    product.price * amount
                                     ),
                             Toast.LENGTH_SHORT).show();
                 } else {
