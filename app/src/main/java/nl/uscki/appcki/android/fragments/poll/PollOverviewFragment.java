@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -51,7 +52,7 @@ public class PollOverviewFragment extends PageableFragment<PollPage> {
 
     @Override
     public String getEmptyText() {
-        return "todo"; // TODO: add empty text
+        return getString(R.string.no_polls_found);
     }
 
     @Override

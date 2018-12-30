@@ -57,6 +57,7 @@ public class AgendaDetailTabsFragment extends Fragment implements ConfirmationDi
 
     public static final int AGENDA = 0;
     public static final int DEELNEMERS = 1;
+    public static final int COMMENTS = 2;
 
     public AgendaDetailTabsFragment() {
         // Required empty public constructor
@@ -65,47 +66,48 @@ public class AgendaDetailTabsFragment extends Fragment implements ConfirmationDi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        MainActivity.currentScreen = MainActivity.Screen.AGENDA_DETAIL;
-        setHasOptionsMenu(true);
-
-        // Inflate the layout for this fragment
+//        MainActivity.currentScreen = MainActivity.Screen.AGENDA_DETAIL;
+//        setHasOptionsMenu(true);
+//
+//        // Inflate the layout for this fragment
         View inflatedView = inflater.inflate(R.layout.fragment_tabs, container, false);
-
-        tabLayout = (TabLayout) inflatedView.findViewById(R.id.tabLayout);
-        tabLayout.addTab(tabLayout.newTab().setText("Agenda"));
-        tabLayout.addTab(tabLayout.newTab().setText("Deelnemers"));
-        viewPager = (ViewPager) inflatedView.findViewById(R.id.viewpager);
-
-        if (getArguments() != null) {
-            Gson gson = new Gson();
-            item = gson.fromJson(getArguments().getString("item"), AgendaItem.class);
-            viewPager.setAdapter(new AgendaDetailAdapter(getFragmentManager(), item));
-        }
-
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        for (AgendaParticipant part : item.getParticipants()) {
-            if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
-                foundUser = true;
-            }
-        }
-
+//
+//        tabLayout = (TabLayout) inflatedView.findViewById(R.id.tabLayout);
+//        tabLayout.addTab(tabLayout.newTab().setText("Agenda"));
+//        tabLayout.addTab(tabLayout.newTab().setText("Deelnemers"));
+//        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.comments)));
+//        viewPager = (ViewPager) inflatedView.findViewById(R.id.viewpager);
+//
+//        if (getArguments() != null) {
+//            Gson gson = new Gson();
+//            item = gson.fromJson(getArguments().getString("item"), AgendaItem.class);
+//            viewPager.setAdapter(new AgendaDetailAdapter(getFragmentManager()));
+//        }
+//
+//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+//        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                viewPager.setCurrentItem(tab.getPosition());
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//
+//            }
+//        });
+//
+//        for (AgendaParticipant part : item.getParticipants()) {
+//            if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
+//                foundUser = true;
+//            }
+//        }
+//
         return inflatedView;
     }
 
@@ -150,45 +152,45 @@ public class AgendaDetailTabsFragment extends Fragment implements ConfirmationDi
     }
 
     private void subscribeToAgenda(boolean subscribe) {
-        if(subscribe) {
-            DialogFragment newFragment = new SubscribeDialogFragment();
-            Bundle args = new Bundle();
-            args.putInt("id", item.getId());
-            newFragment.setArguments(args);
-            newFragment.show(getFragmentManager(), "agenda_subscribe");
-        } else {
-            AgendaItem item = AgendaDetailFragment.item;
-            if(item.getHasUnregisterDeadline()) {
-                DateTime deadline = new DateTime(item.getUnregisterDeadline());
-                if(!deadline.isAfterNow()) {
-                    EventBus.getDefault().post(new ErrorEvent(new Error() {
-                        @Override
-                        public String getMessage() {
-                            return "Kan niet unsubscriben door een unsubscribe deadline!";
-                        }
-                    }));
-                    return; // don't still try to unsubscribe
-                }
-            }
-
-            // no deadline for unsubscribing
-            Log.d("AgendaDetailTabs", "unsubscribing for:" + AgendaDetailFragment.item.getId());
-            Services.getInstance().agendaService.unsubscribe(AgendaDetailFragment.item.getId()).enqueue(new Callback<AgendaParticipantLists>() {
-                @Override
-                public void onResponse(Call<AgendaParticipantLists> call, Response<AgendaParticipantLists> response) {
-                    EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body(), true));
-                }
-
-                @Override
-                public void onFailure(Call<AgendaParticipantLists> call, Throwable t) {
-                    if (t instanceof ConnectException) {
-                        new ConnectionError(t); // handle connection error in MainActivity
-                    } else {
-                        throw new RuntimeException(t);
-                    }
-                }
-            });
-        }
+//        if(subscribe) {
+//            DialogFragment newFragment = new SubscribeDialogFragment();
+//            Bundle args = new Bundle();
+//            args.putInt("id", item.getId());
+//            newFragment.setArguments(args);
+//            newFragment.show(getFragmentManager(), "agenda_subscribe");
+//        } else {
+//            AgendaItem item = AgendaDetailFragment.item;
+//            if(item.getHasUnregisterDeadline()) {
+//                DateTime deadline = new DateTime(item.getUnregisterDeadline());
+//                if(!deadline.isAfterNow()) {
+//                    EventBus.getDefault().post(new ErrorEvent(new Error() {
+//                        @Override
+//                        public String getMessage() {
+//                            return "Kan niet unsubscriben door een unsubscribe deadline!";
+//                        }
+//                    }));
+//                    return; // don't still try to unsubscribe
+//                }
+//            }
+//
+//            // no deadline for unsubscribing
+//            Log.d("AgendaDetailTabs", "unsubscribing for:" + AgendaDetailFragment.item.getId());
+//            Services.getInstance().agendaService.unsubscribe(AgendaDetailFragment.item.getId()).enqueue(new Callback<AgendaParticipantLists>() {
+//                @Override
+//                public void onResponse(Call<AgendaParticipantLists> call, Response<AgendaParticipantLists> response) {
+//                    EventBus.getDefault().post(new AgendaItemSubscribedEvent(response.body(), true));
+//                }
+//
+//                @Override
+//                public void onFailure(Call<AgendaParticipantLists> call, Throwable t) {
+//                    if (t instanceof ConnectException) {
+//                        new ConnectionError(t); // handle connection error in MainActivity
+//                    } else {
+//                        throw new RuntimeException(t);
+//                    }
+//                }
+//            });
+//        }
     }
 
     @Override

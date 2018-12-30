@@ -2,6 +2,8 @@ package nl.uscki.appcki.android.helpers.bbparser.spans;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.text.Layout;
 import android.text.style.LeadingMarginSpan;
 import android.text.style.UpdateAppearance;
@@ -17,12 +19,21 @@ import nl.uscki.appcki.android.R;
 public class QuoteSpan implements UpdateAppearance, UpdateLayout, LeadingMarginSpan {
     private static final int STRIPE_WIDTH = 5;
     private static final int GAP_WIDTH = 10;
+    private int mColor;
 
-    private int mColor = App.getContext().getColor(R.color.colorAccent);
+    public QuoteSpan() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mColor = App.getContext().getColor(R.color.colorAccent);
+        } else {
+            mColor = App.getContext().getResources().getColor(R.color.colorAccent);
+        }
+    }
+
 
     public int getLeadingMargin(boolean first) {
         return STRIPE_WIDTH + GAP_WIDTH;
     }
+
     public void drawLeadingMargin(Canvas c, Paint p, int x, int dir,
                                   int top, int baseline, int bottom,
                                   CharSequence text, int start, int end,

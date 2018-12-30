@@ -31,14 +31,14 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.agenda_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindCustomViewHolder(final ViewHolder holder, int position) {
         unsetViews(holder);
         resetViews(holder, items.get(position));
     }
@@ -74,6 +74,12 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             //TODO open media browser with normal size poster
         }
 
+        if(item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
+            holder.prepublishedNotice.setVisibility(View.VISIBLE);
+            holder.inschrijvenVerplicht.setVisibility(View.VISIBLE);
+            holder.itemDeadline.setVisibility(View.GONE);
+        }
+
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +103,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
 
         holder.inschrijvenVerplicht.setVisibility(View.VISIBLE);
         holder.itemWhere.setVisibility(View.VISIBLE);
+        holder.prepublishedNotice.setVisibility(View.GONE);
     }
 
     @Override
@@ -113,6 +120,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         public final SimpleDraweeView itemPoster;
         public final TextView itemDeadline;
         public final View inschrijvenVerplicht;
+        public final TextView prepublishedNotice;
         public AgendaItem mItem;
 
         public ViewHolder(View view) {
@@ -125,6 +133,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             itemPoster = (SimpleDraweeView) view.findViewById(R.id.agenda_item_poster);
             itemDeadline = (TextView) view.findViewById(R.id.inschrijven_verplicht_date);
             inschrijvenVerplicht = view.findViewById(R.id.agenda_inschrijven_verplicht);
+            prepublishedNotice = view.findViewById(R.id.prepublished_event_text);
         }
 
         @Override

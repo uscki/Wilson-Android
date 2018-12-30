@@ -1,21 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+<RelativeLayout
+    android:id="@+id/pollOptionBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorGreen"
+    >
+
+    <ImageView
+        android:id="@+id/pollVoteBackgroundButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/lb_ic_thumb_up"
+        android:contentDescription="@string/vote_imperative"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/text_margin"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:text="@string/vote_imperative"
+        android:textColor="@color/colorWhite"
+        android:layout_toEndOf="@id/pollVoteBackgroundButton"
+        android:layout_marginEnd="@dimen/text_margin"
+        />
+</RelativeLayout>
+
+<RelativeLayout
+    android:id="@+id/pollOptionForeground"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/text_margin">
+    android:background="@color/colorWhite"
+    android:padding="@dimen/text_margin"
+    >
 
     <TextView
-        android:id="@+id/poll_result_option_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:id="@+id/poll_result_option_name_centered"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textAppearance="?attr/textAppearanceListItem"
+        />
 
-    <nl.uscki.appcki.android.views.VotesGraphView
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/poll_result_option_name"
+        android:visibility="invisible"
+        android:textAppearance="?attr/textAppearanceListItem"
+        />
+
+    <nl.uscki.appcki.android.views.votesgraphview.PollVotesGraphView
         android:id="@+id/poll_result_option_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/poll_result_option_name"
         android:layout_marginTop="@dimen/text_margin"
-        app:direction="right"
-        android:paddingStart="@dimen/text_margin"/>
-</LinearLayout>
+        android:visibility="invisible"/>
+
+</RelativeLayout>
+    <ImageView
+        android:id="@+id/poll_separator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/list_divider"
+        android:layout_gravity="bottom"
+        />
+</FrameLayout>

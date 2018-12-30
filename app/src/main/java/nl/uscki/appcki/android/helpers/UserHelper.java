@@ -4,27 +4,36 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
-
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
-
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 import nl.uscki.appcki.android.App;
+import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.services.NotificationReceiver;
+import nl.uscki.appcki.android.generated.shop.Product;
 
 /**
  * Created by peter on 1/31/16.
  */
 public class UserHelper {
     private static UserHelper singleton;
-    public String TOKEN;
+    private String TOKEN;
     private PersonSimple person;
     private boolean loggedIn;
     private SharedPreferences preferences;
+    private Map<Integer, Integer> preferedProducts = new HashMap<>();
+
+    public String getToken() {
+        return this.TOKEN;
+    }
 
     private UserHelper() {
         this.TOKEN = null;
@@ -35,8 +44,38 @@ public class UserHelper {
 
     public static synchronized UserHelper getInstance( ) {
         if (singleton == null)
-            singleton=new UserHelper();
+            singleton = new UserHelper();
         return singleton;
+    }
+
+    public void addPreferedProduct(Product p) {
+        if (this.preferedProducts.containsKey(p.id)) {
+            Integer count = this.preferedProducts.get(p.id);
+            this.preferedProducts.remove(p.id);
+            this.preferedProducts.put(p.id, ++count);
+        } else {
+            this.preferedProducts.put(p.id, 1);
+        }
+    }
+
+    public int isPreferedProduct(Product p, Product competitor) {
+       /* if (this.preferedProducts.containsKey(p.id) && this.preferedProducts.containsKey(competitor.id)) {
+            Log.e("UserHelper", "found 2 competitors");
+            int productCount = this.preferedProducts.get(p.id);
+            int competitorCount = this.preferedProducts.get(competitor.id);
+
+            return Integer.compare(productCount, competitorCount);
+        } else if (this.preferedProducts.containsKey(p.id) && !this.preferedProducts.containsKey(competitor.id)) {
+            Log.e("UserHelper", "contains prefered1 " + p.id);
+            return -1;
+        } else if (!this.preferedProducts.containsKey(p.id) && this.preferedProducts.containsKey(competitor.id)) {
+            Log.e("UserHelper", "contains prefered2 " + competitor.id);
+            return 1;
+        } else {
+            Log.e("UserHelper", "!contains prefered");
+            return p.title.compareTo(competitor.title);
+        }*/
+       return 0;
     }
 
     public PersonSimple getPerson() {
@@ -58,12 +97,8 @@ public class UserHelper {
     public void logout() {
         ServiceGenerator.client.dispatcher().cancelAll();
 
-        try {
-            // unregister this device from fcm
-            FirebaseInstanceId.getInstance().deleteInstanceId();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // unregister this device from fcm
+        NotificationReceiver.invalidateFirebaseInstanceId(false);
 
         if(preferences.contains("TOKEN")) {
             Log.d("UserHelper", "token in place, removing it");
