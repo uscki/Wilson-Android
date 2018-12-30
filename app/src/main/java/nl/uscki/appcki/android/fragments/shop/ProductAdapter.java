@@ -77,6 +77,7 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
 
         holder.name.setText(product.title);
         holder.stock.setText(String.format(Locale.getDefault(), "%d", product.stock));
+        holder.price.setText(holder.mView.getResources().getString(R.string.shop_price_format, product.price));
 
         if (product.image != null)
             holder.image.setImageURI(MediaAPI.getMediaUri(product.image));
@@ -139,6 +140,8 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
         TextView stock;
         @BindView(R.id.product_order)
         FloatingActionButton product_order;
+        @BindView(R.id.priceText)
+        TextView price;
 
         public ViewHolder(View view) {
             super(view);
