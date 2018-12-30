@@ -60,6 +60,12 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
         return new ViewHolder(view);
     }
 
+    public void updateProduct(Product product) {
+        int position = this.items.indexOf(product);
+        this.items.set(position, product);
+        this.notifyDataSetChanged();
+    }
+
     public void setStoreInfo(StoreFragment storeFragment, int storeId) {
         this.storeFragment = storeFragment;
         this.storeId = storeId;
