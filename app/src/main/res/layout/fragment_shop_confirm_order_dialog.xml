@@ -71,6 +71,25 @@
                     android:layout_height="wrap_content"
                     />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/shop_price_header"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu"
+                    android:layout_marginEnd="@dimen/text_margin"
+                    />
+                <TextView
+                    android:id="@+id/shop_item_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
@@ -93,6 +112,26 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/text_margin"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shop_price_total_header"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu"
+            android:layout_marginEnd="@dimen/text_margin"
+            />
+        <TextView
+            android:id="@+id/shop_confirm_total_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
     </LinearLayout>
 
     <CheckBox
