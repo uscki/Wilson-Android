@@ -24,10 +24,15 @@
     <string name="login">Login</string>
 
     <string name="notloggedin">Je bent niet ingelogd.</string>
+    <string name="notauthorized">Je hebt geen toegang tot deze content.</string>
+    <string name="agenda_subscribe_bad_request_error">Er is iets fout gegaan met je inschrijving. Open dit evenement in de app, en probeer het vanuit daar nogmaals.</string>
     <string name="content_loading_error">Er ging iets fout bij het laden van de content.</string>
+    <string name="unknown_server_error">Er is een onbekende fout opgetreden op de server. Probeer het later nog eens.</string>
 
     <string name="agenda_inschrijven">Inschrijven</string>
     <string name="agenda_uitschrijven">Uitschrijven</string>
+    <string name="tab_agenda_details">Details</string>
+    <string name="tab_agenda_participants">Deelnemers</string>
 
     <string name="title_activity_main">MainActivity</string>
 
@@ -41,6 +46,7 @@
     <string name="roephoek_no_new_shouts">Er zijn geen roepen meer.</string>
 
     <string name="agenda_dialog_note_hint">Notitie</string>
+    <string name="agenda_dialog_question_hint">Antwoord op inschrijfvraag (verplicht)</string>
     <string name="agenda_dialog_ok">Inschrijven</string>
     <string name="agenda_dialog_cancel">Annuleren</string>
     <string name="agenda_no_new_agendas">Er zijn geen evenementen meer.</string>
@@ -49,6 +55,7 @@
 
     <string name="agenda_inschrijven_verplicht">Inschrijven verplicht</string>
     <string name="agenda_archive_menu_string">Archief</string>
+    <string name="vote_imperative">Stemmen</string>
     <string name="action_agenda_export">Opslaan</string>
     <string name="action_agenda_remove_from_calendar">Verwijderen uit agenda</string>
 
@@ -63,7 +70,18 @@
     <string name="connection_error">Er ging iets fout tijdens het verbinden met de server!</string>
 
     <string name="agenda_confirm_unsubscribe_message">Weet je zeker dat je je wil uitschrijven?</string>
-    <string name="agenda_confirm_unsubscribe_positive">Unsubscribe!</string>
+    <string name="agenda_confirm_unsubscribe_positive">Uitschrijven!</string>
+    <string name="agenda_unsubscribe_deadline_past">De deadline om je te kunnen uitschrijven is verstreken</string>
+    <string name="agenda_prepublished_event_registration_closed">De inschrijving voor dit evenement wordt op een later tijdstip geopend</string>
+    <string name="agenda_prepublished_event_registration_closed_short_message">Inschrijving opent later</string>
+    <string name="agenda_participants_list_empty">Nog geen deelnemers voor dit evenement</string>
+
+    <string name="person_not_display_online_msg">Deze persoon kan niet worden opgeslagen vanwege zijn of haar privacy instellingen</string>
+    <string name="person_not_display_online_error">Dit profiel is verborgen</string>
+    <string name="agenda_subscribe_success">Je bent ingeschreven voor dit evenement!</string>
+    <string name="agenda_subscribe_no_answer_selected">Kies een antwoord voor de inschrijfvraag</string>
+
+    <string name="main_failure_to_show_newsitem">Dit nieuwsitem kon niet worden getoond. Probeer het later opnieuw.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_agenda">AgendaActivity</string>
@@ -160,7 +178,46 @@
     <string name="title_activity_news">NewsActivity</string>
     <string name="news_read_more">Read more</string>
 
+    <!-- Old type of notification channels -->
+    <string name="notification_channel_activities_name">Interactieve notificaties</string>
+    <string name="notification_channel_activities_description">Notificaties waarvoor vaak actie ondernomen kan worden, zoals nieuw geplande vergaderingen of nieuwe agenda items</string>
+    <string name="notification_channel_general_name">Algemene USCKI updates</string>
+    <string name="notification_channel_general_description">Notificaties die doorgaans alleen ter informatie dienen, zoals updates over nieuws of de roephoek</string>
+    <string name="notification_channel_personal_name">Persoonlijke updates</string>
+    <string name="notification_channel_personal_description">Minder belangrijke notificaties die ter informatie dienen, maar alleen worden gestuurd omdat je eerder te maken hebt gehad met het onderwerp van die notificatie</string>
     <string name="title_activity_settings">Instellingen</string>
+
+    <!-- Android Oreo+ notification channel names and descriptions -->
+    <string name="nl.uscki.appcki.android.notifications.name.ACHIEVEMENT">Achievements</string>
+    <string name="nl.uscki.appcki.android.notifications.description.ACHIEVEMENT">Notificaties voor behaalde achievements op de USCKI website of in de app</string>
+    <string name="nl.uscki.appcki.android.notifications.name.AGENDA_ANNOUNCEMENT">Agenda-aankondigingen</string>
+    <string name="nl.uscki.appcki.android.notifications.description.AGENDA_ANNOUNCEMENT">Aankondigingen betreffende bestaande agenda-evenementen</string>
+    <string name="nl.uscki.appcki.android.notifications.name.AGENDA_FROM_BACKUP">Van reservelijst af</string>
+    <string name="nl.uscki.appcki.android.notifications.description.AGENDA_FROM_BACKUP">Aankondigingen betreffende jouw positie op de reservelijst van inschrijvingen voor evenementen</string>
+    <string name="nl.uscki.appcki.android.notifications.name.AGENDA_NEW">Nieuwe activitieten</string>
+    <string name="nl.uscki.appcki.android.notifications.description.AGENDA_NEW">Aankondigingen van nieuwe activiteiten</string>
+    <string name="nl.uscki.appcki.android.notifications.name.AGENDA_REPLY">Agenda comment reacties</string>
+    <string name="nl.uscki.appcki.android.notifications.description.AGENDA_REPLY">Notificaties over reacties op agenda comments</string>
+    <string name="nl.uscki.appcki.android.notifications.name.BUGTRACKER_COMMENT">Bug report reacties</string>
+    <string name="nl.uscki.appcki.android.notifications.description.BUGTRACKER_COMMENT">Notificaties over reacties op tickets in de bug tracker die jou aan gaan</string>
+    <string name="nl.uscki.appcki.android.notifications.name.BUGTRACKER_NEW">Nieuwe bug reports</string>
+    <string name="nl.uscki.appcki.android.notifications.description.BUGTRACKER_NEW">Notificaties over nieuw aangemaakte tickets in de bug tracker</string>
+    <string name="nl.uscki.appcki.android.notifications.name.BUGTRACKER_STATUS_CHANGED">Ticketstatus gewijzigd</string>
+    <string name="nl.uscki.appcki.android.notifications.description.BUGTRACKER_STATUS_CHANGED">Notificaties over wijzigingen in de status van tickets in de bug tracker die jou aan gaan</string>
+    <string name="nl.uscki.appcki.android.notifications.name.FORUM_NEW_TOPIC">Nieuw forum topic</string>
+    <string name="nl.uscki.appcki.android.notifications.description.FORUM_NEW_TOPIC">Notificaties over nieuw aangemaakte topics op het forum</string>
+    <string name="nl.uscki.appcki.android.notifications.name.FORUM_REPLY">Forumreactie</string>
+    <string name="nl.uscki.appcki.android.notifications.description.FORUM_REPLY">Notificaties over nieuwe posts op het USCKI forum</string>
+    <string name="nl.uscki.appcki.android.notifications.name.OTHER">Overig</string>
+    <string name="nl.uscki.appcki.android.notifications.description.OTHER">Overige notificaties</string>
+    <string name="nl.uscki.appcki.android.notifications.name.MEETING_FILLEDIN">Vergaderplanner ingevuld</string>
+    <string name="nl.uscki.appcki.android.notifications.description.MEETING_FILLEDIN">Notificaties over nieuwe reacties op een vergaderplanner</string>
+    <string name="nl.uscki.appcki.android.notifications.name.MEETING_NEW">Nieuwe vergaderplanner</string>
+    <string name="nl.uscki.appcki.android.notifications.description.MEETING_NEW">Notificaties wanneer een nieuwe vergaderplanner wordt uitgestuurd</string>
+    <string name="nl.uscki.appcki.android.notifications.name.MEETING_PLANNED">Vergadering gepland</string>
+    <string name="nl.uscki.appcki.android.notifications.description.MEETING_PLANNED">Notificaties voor wanneer een vergadering is gepland en de tijd en locatie bekend zijn</string>
+    <string name="nl.uscki.appcki.android.notifications.name.NEWS">Nieuws</string>
+    <string name="nl.uscki.appcki.android.notifications.description.NEWS">Notificaties bij nieuwe nieuwsberichten</string>
 
     <!-- Strings related to Settings -->
 
@@ -178,21 +235,136 @@
     <string name="pref_calendar_export_auto_summary">Voeg evenementen waarvoor je je inschrijft automatisch toe aan je agenda</string>
     <string name="pref_meetingplanner_export_auto">Automatiseer vergaderplanners</string>
     <string name="pref_meetingplanner_export_auto_summary">Voeg geplande vergaderingen automatisch toe aan je agenda</string>
-
-    <string name="pref_save_in_contacts">Integreer met contacten</string>
-    <string name="pref_save_in_contacts_summary">Door deze optie te selecteren kun je contacten opslaan in je agenda zonder de Wilson app te verlaten</string>
-
-
-    <string name="pref_cat_people">Contacten</string>
-
+    <string name="pref_save_in_calendar_empty_calendar_list_error">Geen agenda\'s gevonden. Log in in tenminste één agenda in je agenda applicatie en probeer opnieuw.</string>
 
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notificaties</string>
-
     <string name="pref_title_new_message_notifications">Notificaties voor nieuwe berichten</string>
-
     <string name="pref_title_ringtone">Ringtoon</string>
     <string name="pref_ringtone_silent">Stil</string>
+    <string name="pref_title_vibrate">Trillen</string>
 
-    <string name="pref_title_vibrate">Vibreer</string>
+    <!-- Settings for exporting contacts -->
+    <string name="save_contact">Contact opslaan</string>
+    <string name="pref_cat_people">Contacten</string>
+    <string name="pref_save_in_contacts">Integreer met contacten</string>
+    <string name="pref_save_in_contacts_summary">Door deze optie te selecteren kun je contacten opslaan in je agenda zonder de Wilson app te verlaten</string>
+
+    <string name="pref_cat_people_fields">Contactgegevens om te exporteren</string>
+    <string name="pref_cat_people_fields_summary">Selecteer de velden die automatisch moeten worden toegevoegd aan contacten die je opslaat. De opslaanknop kan langer ingedrukt worden om dit voor individuele contacten te bepalen tijdens het opslaan.</string>
+    <string name="pref_contacts_store_fullname">Volledige naam</string>
+    <string name="pref_contacts_store_fullname_summary">Als deze optie aan staat wordt het contact automatisch opgeslagen onder de volledige naam. Anders wordt alleen de voornaam gebruikt.</string>
+    <string name="pref_contacts_store_nickname">Nickname</string>
+    <string name="pref_contacts_store_mobile">Mobiel nummer</string>
+    <string name="pref_contacts_store_phone">Telefoonnummer</string>
+    <string name="pref_contacts_store_email">E-mailaddres</string>
+    <string name="pref_contacts_store_address">Adres</string>
+    <string name="pref_contacts_store_website">Website</string>
+    <string name="pref_contacts_store_organisation">Organisatie</string>
+    <string name="pref_contacts_store_organisation_summary">Zet U.S.C.K.I Incognito automatisch als organisatie</string>
+
+    <string name="pref_custom_vibrate">Laat Wilson trillen</string>
+    <string name="pref_custom_vibrate_summary">Kies je eigen trilpatroon. Deze instelling wordt genegeerd als in de Android instellingen trillen voor Wilson notificaties wordt ingeschakeld</string>
+    <string name="pref_title_vibration_pattern">Trilpatroon</string>
+
+    <string name="pref_system_notification_settings">Systeeminstellingen</string>
+    <string name="pref_system_notification_settings_summary">Beheer notificatieinstellingen voor de applicatie in de opties van Android</string>
+
+    <string name="pref_title_notification_light">Notificatie LED</string>
+    <string name="pref_title_notification_light_summary">Indien aanwezig op apparaat</string>
+    <string name="pref_title_notification_light_mode">LED constant aan</string>
+    <string name="notification_light_constant">Constant</string>
+    <string name="notification_light_blink">Knipperen</string>
+
+    <!-- Vibration pattern names -->
+    <string name="vibration_pattern_short_once">Eén keer kort</string>
+    <string name="vibration_pattern_short_twice">Twee keer kort</string>
+    <string name="vibration_pattern_short_thrice">Drie keer kort</string>
+    <string name="vibration_pattern_long_once">Eén keer lang</string>
+    <string name="vibration_pattern_long_twice">Twee keer lang</string>
+    <string name="vibration_pattern_long_thrice">Drie keer lang</string>
+    <string name="vibration_pattern_imperial_march">Imperial March</string>
+    <string name="vibration_pattern_CKI_morse">CKI (morse)</string>
+    <string name="vibration_pattern_default">@string/vibration_pattern_long_twice</string>
+
+    <!-- Comments -->
+    <string name="comments_empty_text">Geen reacties</string>
+    <string name="comments">Reacties</string>
+    <string name="action_comment">Reageer</string>
+    <string name="comment_hint">Reactie</string>
+
+    <!-- Quote -->
+    <string name="quote">Quote</string>
+    <string name="no_quotes_found">Geen quotes om weer te geven</string>
+    <string name="quote_sort_title">Sorteren</string>
+    <string name="quote_sort_option_time_desc">Nieuwste eerst</string>
+    <string name="quote_sort_option_time_asc">Oudste eerst</string>
+    <string name="quote_sort_option_toonkans_desc">Hoogste toonkans</string>
+    <string name="quote_sort_option_toonkans_asc">Laagste toonkans</string>
+    <string name="quote_sort_option_positives_votes_desc">Meeste positief</string>
+    <string name="quote_sort_option_negative_votes_asc">Minste negatief</string>
+
+
+    <!-- Poll -->
+    <string name="poll_archive_menu_string">Archief</string>
+    <string name="no_polls_found">Geen polls om weer te geven</string>
+
+    <!-- Privacy Policy -->
+    <string name="privacy_policy_header">Privacy policy</string>
+    <string name="privacy_policy_agreement_required_footnote">* Om gebruik te maken van deze applicatie moet je met tenminste deze voorwaarde akkoord gaan.</string>
+    <string name="privacy_policy_agree_terms_general">
+        * Ik ga akkoord met het algemene privacy- en dataverzamelingsbeleid van U.S.C.K.I. Incognito
+    </string>
+    <string name="privacy_policy_agree_terms_app_specific">
+        * Ik ga akkoord met de specifieke voorwaarden geldende voor deze applicatie
+    </string>
+    <string name="privacy_policy_agree_terms_notification_token">
+        Ik ga akkoord met het uploaden van een persoonlijk identificeerbare code ten behoeve van het ontvangen van notificaties
+    </string>
+
+    <string name="privacy_policy_agree_terms_general_summary">
+        Algemene voorwaarden (vereist)
+    </string>
+    <string name="privacy_policy_agree_terms_app_specific_summary">
+        App-specifieke voorwaarden (vereist)
+    </string>
+    <string name="privacy_policy_agree_terms_notification_token_summary">
+        Identificeerbare informatie (vereist voor notificaties)
+    </string>
+    <string name="privacy_policy_agreed">Je hebt ingestemd met deze voorwaarde</string>
+    <string name="privacy_policy_disagreed">Je hebt niet ingestemd met deze voorwaarde</string>
+    <string name="privacy_policy_action_show">Toon privacy policy en wijzig persoonlijk akkoord</string>
+    <string name="privacy_policy_action_show_summary">Akkoord met sommige voorwaarden is vereist voor
+        het gebruik van deze app. Bij het intrekken van toestemming kan u uitgelogd worden,
+        waarna deze app zal sluiten</string>
+    <string name="privacy_policy_status">Status</string>
+
+    <string name="privacy_policy_button_agree">Opslaan</string>
+    <string name="privacy_policy_button_disagree">Weigeren, uitloggen en sluiten</string>
+
+    <string name="privacy_policy_notifications_disabled">Notificaties uitgeschakeld</string>
+    <string name="privacy_policy_notifications_disabled_summary">Om notificaties te kunnen ontvangen moet je het privacybeleid accepteren</string>
+    <string name="privacy_policy_updated_notice">We hebben ons privacybeleid bijgewerkt. Om gebruik te blijven maken van deze applicatie dient u (opnieuw) akkoord te gaan met deze nieuwe voorwaarden.</string>
+
+    <!-- Shops -->
+    <string name="shop_header">Shop</string>
+    <string name="product_header">Product</string>
+    <string name="shop_confirm_header">Bestelling bevestigen</string>
+    <string name="shop_confirm_amount_hint">Aantal</string>
+    <string name="shop_select">Selecteer winkel</string>
+    <string name="shop_in_stock">Op voorraad</string>
+    <string name="shop_amount">Aantal</string>
+    <string name="shop_confirm">Bevestigen</string>
+    <string name="shop_msg_confirm_order">Je hebt %d %s afgerekend</string>
+    <string name="shop_msg_order_failed">Bestelling mislukt. Je hebt niet betaald.</string>
+    <string name="shop_msg_failed_loading_stores">Winkels konden niet worden geladen</string>
+    <string name="shop_preference_default">Standaard winkel</string>
+    <string name="shop_preference_default_latest">Laatst gebruikte</string>
+    <string name="shop_preference_default_always_choose">Laat me altijd kiezen</string>
+    <string name="shop_preference_confirm_before_order">Bevestigen voor bestellen</string>
+    <string name="shop_preference_confirm_before_order_summary">Als deze optie uitgeschakeld is, wordt een bestelling direct doorgevoerd zodra je op de groene plus klikt. Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="shop_confirm_checkbox_dont_show_again">Niet meer tonen</string>
+    <string name="shop_preference_summary_loading">Voorkeurswinkel wordt geladen</string>
+    <string name="shop_empty">Geen producten gevonden voor deze shop</string>
+
 </resources>

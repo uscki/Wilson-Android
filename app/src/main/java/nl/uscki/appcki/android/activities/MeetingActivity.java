@@ -1,10 +1,11 @@
 package nl.uscki.appcki.android.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -15,10 +16,13 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingDetailAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
+import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 import retrofit2.Response;
 
-public class MeetingActivity extends AppCompatActivity {
+public class MeetingActivity extends BasicActivity {
+    public static final String PARAM_MEETING_ID = "nl.uscki.appcki.android.activities.param.MEETING_ID";
+
     MeetingItem item;
     TabLayout tabLayout;
     ViewPager viewPager;
@@ -51,6 +55,12 @@ public class MeetingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(!UserHelper.getInstance().isLoggedIn()) {
+            Log.e("AgendaActivity", "Starting MainActivity");
+            startActivity(new Intent(this, MainActivity.class));
+        }
+
         setContentView(R.layout.activity_agenda); // this is actually correct cause it uses the same layout
         MainActivity.currentScreen = MainActivity.Screen.MEETING_DETAIL;
 
@@ -67,9 +77,9 @@ public class MeetingActivity extends AppCompatActivity {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), MeetingItem.class);
             Services.getInstance().meetingService.get(item.getMeeting().getId()).enqueue(meetingCallback);
-        } else if (getIntent().getIntExtra("id", -1) != -1) {
+        } else if (getIntent().getIntExtra(PARAM_MEETING_ID, -1) != -1) {
             // this happens on receiving a notification from the server
-            Services.getInstance().meetingService.get(getIntent().getIntExtra("id", -1)).enqueue(meetingCallback);
+            Services.getInstance().meetingService.get(getIntent().getIntExtra(PARAM_MEETING_ID, -1)).enqueue(meetingCallback);
         }
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -118,9 +128,10 @@ public class MeetingActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+
     private void exportMeeting() {
         if(item.getMeeting().getActual_slot() == null) return;
-        CalendarHelper.getInstance().addMeeting(item);
+        CalendarHelper.getInstance().addItemToCalendar(item);
         setExportButtons();
     }
 
@@ -137,8 +148,17 @@ public class MeetingActivity extends AppCompatActivity {
     }
 
     private void setExportButtons() {
-        if(item.getMeeting().getActual_slot() == null || this.menu == null) return;
-        if(CalendarHelper.getInstance().AgendaItemExistsInCalendar(item) > 0) {
+        if(item == null || item.getMeeting().getActual_slot() == null || this.menu == null) return;
+
+        int calendarEventItemId;
+
+        try {
+            calendarEventItemId = CalendarHelper.getInstance().getEventIdForItemIfExists(item);
+        } catch(SecurityException e) {
+            return;
+        }
+
+        if(calendarEventItemId > 0) {
             menu.findItem(R.id.action_meeting_export).setVisible(false);
             menu.findItem(R.id.action_remove_meeting_from_calendar).setVisible(true);
         } else {

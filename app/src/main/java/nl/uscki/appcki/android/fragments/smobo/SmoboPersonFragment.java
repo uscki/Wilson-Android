@@ -10,11 +10,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,9 +29,12 @@ import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
 import nl.uscki.appcki.android.generated.common.Pageable;
+import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
 import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
+import nl.uscki.appcki.android.helpers.ContactHelper;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
+import retrofit2.Call;
 import retrofit2.Response;
 
 /**
@@ -47,13 +54,21 @@ public class SmoboPersonFragment extends Fragment {
     private int pageSize = 20;
     private boolean scrollLoad;
     private boolean noMoreContent;
+    private SmoboItem p;
 
-    private Callback<Pageable<Integer>> photosCallback = new Callback<Pageable<Integer>>() {
+    private Callback<Pageable<MediaFileMetaData>> photosCallback = new Callback<Pageable<MediaFileMetaData>>() {
         @Override
-        public void onSucces(Response<Pageable<Integer>> response) {
+        public void onSucces(Response<Pageable<MediaFileMetaData>> response) {
             noMoreContent = response.body().getLast();
             scrollLoad = false;
             ((BaseItemAdapter) mediaGrid.getAdapter()).addItems(response.body().getContent());
+        }
+
+        @Override
+        public void onError(Response<Pageable<MediaFileMetaData>> response) {
+            super.onError(response);
+            noMoreContent = true;
+            scrollLoad = false;
         }
     };
 
@@ -67,17 +82,19 @@ public class SmoboPersonFragment extends Fragment {
     FrameLayout mobileInfo;
     @BindView(R.id.smobo_birthday_info)
     FrameLayout birthdayInfo;
+    @BindView(R.id.smobo_homepage_info)
+    FrameLayout homepageInfo;
     @BindView(R.id.smobo_groups)
     RecyclerView smoboGroups;
-    //@BindView(R.id.smobo_media_gridview)
+    @BindView(R.id.smobo_media_gridview)
     HorizontalGridView mediaGrid;
     @BindView(R.id.smobo_swiperefresh)
     SwipeRefreshLayout swipeContainer;
 
-    private Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
+    private final Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
         @Override
         public void onSucces(Response<SmoboItem> response) {
-            SmoboItem p = response.body();
+            p = response.body();
             swipeContainer.setRefreshing(false);
             //scrollView.setVisibility(View.VISIBLE);
 
@@ -86,8 +103,15 @@ public class SmoboPersonFragment extends Fragment {
             createPhoneInfoWidget(p);
             createMobileInfoWidget(p);
             createBirthdayInfoWidget(p);
+            createWebsiteInfoWidget(p);
 
             ((BaseItemAdapter) smoboGroups.getAdapter()).update(p.getGroups());
+        }
+
+        @Override
+        public void onError(Response<SmoboItem> response) {
+            super.onError(response);
+            swipeContainer.setRefreshing(false);
         }
     };
 
@@ -101,7 +125,7 @@ public class SmoboPersonFragment extends Fragment {
         widget.setArguments(bundle);
         context.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.smobo_address_info, widget)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private void createEmailInfoWidget(SmoboItem p) {
@@ -114,7 +138,7 @@ public class SmoboPersonFragment extends Fragment {
         widget.setArguments(bundle);
         context.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.smobo_email_info, widget)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private void createPhoneInfoWidget(SmoboItem p) {
@@ -128,7 +152,7 @@ public class SmoboPersonFragment extends Fragment {
             widget.setArguments(bundle);
             context.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.smobo_phone_info, widget)
-                    .commit();
+                    .commitAllowingStateLoss();
         } else {
             phoneInfo.setPadding(0,0,0,0);
         }
@@ -145,7 +169,7 @@ public class SmoboPersonFragment extends Fragment {
             widget.setArguments(bundle);
             context.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.smobo_mobile_info, widget)
-                    .commit();
+                    .commitAllowingStateLoss();
         } else {
             mobileInfo.setPadding(0,0,0,0);
         }
@@ -155,6 +179,7 @@ public class SmoboPersonFragment extends Fragment {
         if (p.getPerson().getMobilenumber() != null) {
             Bundle bundle = new Bundle();
             String birthday = p.getPerson().getBirthdate().toString("dd-MM-yyyy");
+            birthday += String.format(Locale.getDefault(), " (%d)", p.getPerson().getAge());
             bundle.putString("maintext", birthday);
             bundle.putString("subtext", "Verjaardag");
             bundle.putInt("infotype", SmoboInfoWidget.InfoType.BIRTHDAY.ordinal());
@@ -163,9 +188,27 @@ public class SmoboPersonFragment extends Fragment {
             widget.setArguments(bundle);
             context.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.smobo_birthday_info, widget)
-                    .commit();
+                    .commitAllowingStateLoss();
         } else {
             mobileInfo.setPadding(0,0,0,0);
+        }
+    }
+
+    private void createWebsiteInfoWidget(SmoboItem p) {
+        if(p.getPerson().getHomepage() != null) {
+            Bundle bundle = new Bundle();
+            String homepage = p.getPerson().getHomepage();
+            bundle.putString("maintext", homepage);
+            bundle.putString("subtext", "homepage");
+            bundle.putInt("infotype", SmoboInfoWidget.InfoType.HOMEPAGE.ordinal());
+
+            SmoboInfoWidget widget = new SmoboInfoWidget();
+            widget.setArguments(bundle);
+            context.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.smobo_homepage_info, widget)
+                    .commitAllowingStateLoss();
+        } else {
+            homepageInfo.setPadding(0,0,0,0);
         }
     }
 
@@ -173,6 +216,8 @@ public class SmoboPersonFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_smobo_person, container, false);
         ButterKnife.bind(this, view);
+
+        setHasOptionsMenu(true);
 
         if (getArguments() != null) {
             this.id = getArguments().getInt("id");
@@ -187,6 +232,34 @@ public class SmoboPersonFragment extends Fragment {
         }
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+
+        inflater.inflate(R.menu.menu_smobo, menu);
+
+        menu.findItem(R.id.action_save_contact)
+                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                exportContact();
+                return true;
+            }
+
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void exportContact() {
+        if(p == null)
+            return;
+
+        // Initiate export via intent using contact helper
+        ContactHelper.getInstance().exportContactViaIntent(p.getPerson());
     }
 
     protected void setupSwipeContainer() {
@@ -209,7 +282,7 @@ public class SmoboPersonFragment extends Fragment {
         HorizontalGridView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         mediaGrid.setLayoutManager(layoutManager);
 
-        mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<Integer>()));
+        mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<MediaFileMetaData>()));
         mediaGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

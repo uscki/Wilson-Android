@@ -1,5 +1,6 @@
 package nl.uscki.appcki.android.activities;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,12 +10,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 
 import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.EventBusException;
+import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
@@ -22,9 +23,13 @@ import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.LinkClickedEvent;
 import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
+import nl.uscki.appcki.android.fragments.PrivacyPolicyModalFragment;
+import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
+import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import nl.uscki.appcki.android.services.NotificationReceiver;
 import retrofit2.Response;
 
 /**
@@ -35,19 +40,29 @@ public abstract class BasicActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if(savedInstanceState != null) {
-            Crashlytics.log("savedInstanceState != null");
             UserHelper.getInstance().load(savedInstanceState.getString("token"));
         } else {
-            Crashlytics.log("savedInstanceState == null");
             UserHelper.getInstance().load();
         }
+
+        // Force enable FCM if user has agreed to terms
+        NotificationUtil.setFirebaseEnabled(PermissionHelper.hasAgreedToNotificationPolicy(this));
+
+        NotificationReceiver.logToken(this);
 
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void onStart() {
-        Log.e("Main", "Loading onStart");
+
+        if(!PermissionHelper.hasAgreedToBasicPolicy(this)) {
+            // User needs to agree with privacy policy
+
+            PrivacyPolicyModalFragment privacyPolicyModalFragment = new PrivacyPolicyModalFragment();
+            privacyPolicyModalFragment.show(getFragmentManager(), "privacyPolicyDialog");
+        }
+
         if (!UserHelper.getInstance().isLoggedIn() || UserHelper.getInstance().getPerson() == null) {
             UserHelper.getInstance().load();
             UserHelper.getInstance().loadCurrentUser();
@@ -82,26 +97,54 @@ public abstract class BasicActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Crashlytics.log("onSaveInstanceState");
         if(MainActivity.currentScreen != null)
             outState.putInt("screen", MainActivity.currentScreen.ordinal());
-        outState.putString("token", UserHelper.getInstance().TOKEN);
+        outState.putString("token", UserHelper.getInstance().getToken());
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * Show a person's smobo page, if the current user has sufficient permission to view it, or
+     * show an error otherwise.
+     *
+     * @param person    Person object for the person for whom to show the smobo page
+     */
     public void openSmoboFor(final PersonSimpleName person) {
-        Services.getInstance().permissionsService.hasPermission("useradmin", "admin").enqueue(new Callback<Boolean>() {
-            @Override
-            public void onSucces(Response<Boolean> response) {
-                if(person.getDisplayonline() || response.body()) {
-                    Intent smoboIntent = new Intent(BasicActivity.this, SmoboActivity.class);
-                    smoboIntent.putExtra("id", person.getId());
-                    smoboIntent.putExtra("name", person.getPostalname());
-                    smoboIntent.putExtra("photo", person.getPhotomediaid());
-                    startActivity(smoboIntent);
+        if(person.getDisplayonline() || person.getId().equals(UserHelper.getInstance().getPerson().getId())) {
+            forceOpenSmobo(person.getId(), person.getPostalname(), person.getPhotomediaid());
+        } else {
+            Services.getInstance().permissionsService.hasPermission("useradmin", "admin").enqueue(new Callback<Boolean>() {
+                @Override
+                public void onSucces(Response<Boolean> response) {
+                    if (response.body()) {
+                        forceOpenSmobo(person.getId(), person.getPostalname(), person.getPhotomediaid());
+                    } else {
+                        Toast.makeText(
+                                BasicActivity.this,
+                                getString(R.string.person_not_display_online_error),
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
                 }
-            }
-        });
+            });
+        }
+    }
+
+    /**
+     * Private helper function to open a person's smobo page after all checks have passed.
+     * This function is private so it cannot accidentally be called from another class. Before
+     * this function is called, a permission check needs to have been performed
+     *
+     * @param personId      ID of person to show
+     * @param postalName    Postal name of person to show
+     * @param photoMediaId  ID of photo media for the profile of the person to show
+     */
+    private void forceOpenSmobo(int personId, String postalName, Integer photoMediaId) {
+        Intent smoboIntent = new Intent(BasicActivity.this, SmoboActivity.class);
+        smoboIntent.putExtra("id", personId);
+        smoboIntent.putExtra("name", postalName);
+        smoboIntent.putExtra("photo", photoMediaId);
+        startActivity(smoboIntent);
     }
 
     public void openSmoboFor(PersonWithNote person) {
@@ -117,7 +160,8 @@ public abstract class BasicActivity extends AppCompatActivity {
         Toast toast;
         switch (event.error.getStatus()) {
             case 401: // Unauthorized
-                // TODO what zijn permissions even?
+                toast = Toast.makeText(getApplicationContext(), getString(R.string.notauthorized), Toast.LENGTH_SHORT);
+                toast.show();
                 break;
             case 403: // Forbidden
                 toast = Toast.makeText(getApplicationContext(), getString(R.string.notloggedin), Toast.LENGTH_SHORT);
@@ -134,7 +178,6 @@ public abstract class BasicActivity extends AppCompatActivity {
                 toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
                 toast.show();
                 Gson gson = new Gson();
-                Crashlytics.logException(new Exception(gson.toJson(event.error))); // just log this server error to firebase
         }
     }
 

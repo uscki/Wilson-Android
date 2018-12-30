@@ -1,12 +1,14 @@
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="nl.uscki.appcki.android.fragments.poll.PollResultFragment">
+    tools:context="nl.uscki.appcki.android.fragments.poll.PollResultFragment"
+    android:id="@+id/refreshContainer"
+    >
 
     <RelativeLayout
-        android:layout_margin="@dimen/text_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <TextView
@@ -14,6 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/text_margin"
             android:textStyle="bold"
             android:textSize="16sp"
             style="@style/AppTheme.Text"/>
@@ -34,4 +37,4 @@
             app:layoutManager="LinearLayoutManager"/>
 
     </RelativeLayout>
-</android.support.v4.widget.NestedScrollView>
+</android.support.v4.widget.SwipeRefreshLayout>

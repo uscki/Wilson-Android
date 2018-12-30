@@ -1,15 +1,16 @@
 package nl.uscki.appcki.android.generated.agenda;
 
 import com.google.gson.annotations.Expose;
-
 import org.joda.time.DateTime;
-
+import java.util.ArrayList;
 import java.util.List;
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+import nl.uscki.appcki.android.generated.SingleValueWilsonItem;
 
 /**
  * Created by peter on 7/17/16.
  */
-public class AgendaItem {
+public class AgendaItem implements IWilsonBaseItem{
     @Expose
     private Integer id;
     @Expose
@@ -54,6 +55,9 @@ public class AgendaItem {
     private List<AgendaParticipant> backupList;
     @Expose
     private List<AgendaCategory> categories;
+    @Expose
+    private String question;
+    @Expose String[] possible_answers;
 
     public List<AgendaParticipant> getParticipants() {
         return participants;
@@ -229,5 +233,21 @@ public class AgendaItem {
 
     public void setCategories(List<AgendaCategory> categories) {
         this.categories = categories;
+    }
+
+    public String getQuestion() { return question; }
+
+    public void setQuestion(String question) {this.question = question; }
+
+    public String[] getPossibleAnswers() { return possible_answers; }
+
+    public void setPossibleAnswers(String[] possible_answers) { this.possible_answers = possible_answers; }
+
+    public List<SingleValueWilsonItem<String>> getPossibleAnswersAsWilsonItemList() {
+        List<SingleValueWilsonItem<String>> possibleAnswers = new ArrayList<>();
+        for(int i = 0; i < possible_answers.length; i++) {
+            possibleAnswers.add(new SingleValueWilsonItem<>(possible_answers[i], i));
+        }
+        return possibleAnswers;
     }
 }

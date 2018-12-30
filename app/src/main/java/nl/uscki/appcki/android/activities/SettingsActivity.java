@@ -2,8 +2,6 @@ package nl.uscki.appcki.android.activities;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,15 +12,19 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -31,15 +33,26 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.MenuItem;
-import android.widget.Switch;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.events.PrivacyPolicyPreferenceChangedEvent;
+import nl.uscki.appcki.android.fragments.PrivacyPolicyModalFragment;
+import nl.uscki.appcki.android.generated.shop.Store;
+import nl.uscki.appcki.android.helpers.PermissionHelper;
+import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
+import nl.uscki.appcki.android.helpers.VibrationPatternPreferenceHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
+import retrofit2.Response;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static butterknife.internal.Utils.arrayOf;
 
@@ -112,6 +125,53 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     };
 
     /**
+     * When a vibrate pattern is selected, vibrate that pattern as feedback on
+     * the chosen selection
+     */
+    private static Preference.OnPreferenceChangeListener sVibratePreferenceValueChangedListener =
+            new Preference.OnPreferenceChangeListener() {
+
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object value) {
+            // Can't have two onPreferenceChange listeners, so execute the other one as well
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, value);
+
+            ListPreference listPreference = (ListPreference) preference;
+
+            // Get the vibrator system service
+            Context context = App.getContext();
+            Vibrator v = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+            if(v == null || !v.hasVibrator()) {
+                return false;
+            }
+
+            // Get the index of the value
+            String stringValue = value.toString();
+            int index = listPreference.findIndexOfValue(stringValue);
+
+            // Create a vibration preference helper
+            VibrationPatternPreferenceHelper vibrationPreferenceHelper =
+                    new VibrationPatternPreferenceHelper();
+
+            // Acquire the pattern corresponding to the found index
+            int patternArrayId =
+                    vibrationPreferenceHelper.getVibrationPatternResourceIdAtIndex(index);
+            long[] pattern = vibrationPreferenceHelper.getVibrationPattern(patternArrayId);
+
+            // Vibrate using the selected pattern (method depends on API version)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                VibrationEffect vbe = VibrationEffect.createWaveform(pattern, -1);
+                v.vibrate(vbe);
+            } else {
+                v.vibrate(pattern, -1);
+            }
+
+            // We made it!
+            return true;
+        }
+    };
+
+    /**
      * Helper method to determine if the device has an extra-large screen. For
      * example, 10" tablets are extra-large.
      */
@@ -152,7 +212,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         super.onResume();
     }
 
-
     /**
      * Set up the {@link android.app.ActionBar}, if the API is available.
      */
@@ -161,6 +220,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         if (actionBar != null) {
             // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
         }
     }
 
@@ -187,8 +247,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
-                || GeneralPreferenceFragment.class.getName().equals(fragmentName)
+                || PrivacyPolicyPreferenceFragment.class.getName().equals(fragmentName)
                 || exportOptionsPreferenceFragment.class.getName().equals(fragmentName)
+                || ShopPreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
@@ -215,25 +276,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
     }
 
-    public void requestContactPermissions() {
-        if(
-                ContextCompat.checkSelfPermission(
-                        App.getContext(),
-                        Manifest.permission.WRITE_CONTACTS
-                ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.WRITE_CONTACTS),
-                    MY_PERMISSION_REQUEST_WRITE_CONTACT
-            );
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.e("PermissionResultCheck", grantResults.toString());
 
         exportOptionsPreferenceFragment sourceFragment =
                 (exportOptionsPreferenceFragment) getFragmentManager().findFragmentById(exportOptionsPreferenceFragment.id);
@@ -260,12 +305,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     }
                 }
             }
-            case MY_PERMISSION_REQUEST_WRITE_CONTACT: {
-                if(grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    ((SwitchPreference) sourceFragment.findPreference("people_use_export"))
-                            .setChecked(false);
-                }
-            }
         }
     }
 
@@ -276,19 +315,194 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GeneralPreferenceFragment extends PreferenceFragment {
+    public static class PrivacyPolicyPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_general);
+            addPreferencesFromResource(R.xml.pref_privacy_policy);
             setHasOptionsMenu(true);
 
+            updatePolicySummaries();
+            registerOpenPolicyListener();
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            EventBus.getDefault().register(this);
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            EventBus.getDefault().unregister(this);
+        }
+
+        /**
+         * Register an OnClickListener to open the privacy policy dialog when the user taps on
+         * the corresponding preference
+         */
+        private void registerOpenPolicyListener() {
+
+            Preference pref = findPreference("privacy_policy_show_modal");
+            pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    PrivacyPolicyModalFragment policyModalFragment = new PrivacyPolicyModalFragment();
+                    policyModalFragment.show(getFragmentManager(), "privacyPolicyDialog");
+                    return false;
+                }
+            });
+        }
+
+        /**
+         * Update all policy summaries to reflect the user's choice
+         */
+        private void updatePolicySummaries() {
+            updateHasAgreedPolicySummary(
+                    "privacy_policy_general_agreement",
+                    PermissionHelper.AGREE_GENERAL_POLICY_KEY);
+            updateHasAgreedPolicySummary(
+                    "privacy_policy_app_agreement",
+                    PermissionHelper.AGREE_APP_POLICY_KEY);
+            updateHasAgreedPolicySummary(
+                    "privacy_policy_notifications_agreement",
+                    PermissionHelper.AGREE_NOTIFICATION_POLICY_KEY);
+        }
+
+        /**
+         * Update a single policy summary to reflect the user's choice
+         * @param preferenceKey         Key of the preference on the screen
+         * @param storedPreferenceKey   Key of the preference in the stored preferences
+         */
+        private void updateHasAgreedPolicySummary(String preferenceKey, String storedPreferenceKey) {
+            Preference agreedPreference = findPreference(preferenceKey);
+            boolean agreed = PermissionHelper.getAgreeToPolicyLatest(getActivity(), storedPreferenceKey);
+            agreedPreference.setSummary(agreed ? R.string.privacy_policy_agreed : R.string.privacy_policy_disagreed);
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            int id = item.getItemId();
+            if (id == android.R.id.home) {
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
+        }
+
+        /**
+         * Listen to changes in the policy agreement of the user, so the summaries on this
+         * page can be updated accordingly
+         *
+         * @param event Event signaling a possible change in status of user agreement with policies
+         */
+        public void onEventMainThread(PrivacyPolicyPreferenceChangedEvent event) {
+            updatePolicySummaries();
+        }
+    }
+
+    /**
+     * This fragment shows notification preferences only. It is used when the
+     * activity is showing a two-pane settings UI.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class NotificationPreferenceFragment extends PreferenceFragment {
+        String[] catPrefix = new String[] {
+                "notifications_interactive_",
+                "notifications_general_",
+                "notifications_personal_",
+        };
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setHasOptionsMenu(true);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+               prepareForAndroidOreo();
+            } else {
+                prepareForOlderThanOreo();
+            }
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        private void prepareForAndroidOreo() {
+            addPreferencesFromResource(R.xml.pref_notifications_min_oreo);
+
+            Preference systemSettings = findPreference("notifications_system_preferences");
+            systemSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, App.getContext().getPackageName());
+                    startActivity(intent);
+                    return true;
+                }
+            });
+
+            Preference vibration = findPreference("notifications_oreo_vibrate");
+            Preference vibrationPattern = findPreference("notifications_oreo_vibration_pattern");
+            Preference notificationsDisabled = findPreference("privacy_policy_notifications_disabled");
+
+            if(PermissionHelper.hasAgreedToNotificationPolicy(getContext())) {
+                getPreferenceScreen().removePreference(notificationsDisabled);
+                vibration.setEnabled(true);
+                vibrationPattern.setEnabled(true);
+            }
+
+            Vibrator v = (Vibrator) App.getContext().getSystemService(VIBRATOR_SERVICE);
+            if(v == null || !v.hasVibrator()) {
+                // Remove vibration options from menu
+                PreferenceScreen screen = getPreferenceScreen();
+                screen.removePreference(vibrationPattern);
+            } else {
+                // Bind and trigger summary changed
+                bindPreferenceSummaryToValue(vibrationPattern);
+
+                // Replace the listener with one that also vibrates on change
+                vibrationPattern
+                        .setOnPreferenceChangeListener(sVibratePreferenceValueChangedListener);
+            }
+        }
+
+        private void prepareForOlderThanOreo() {
+            addPreferencesFromResource(R.xml.pref_notification);
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+            for(String prefKey : catPrefix) {
+                bindPreferenceSummaryToValue(findPreference(prefKey + "new_message_ringtone"));
+            }
+
+            PreferenceScreen screen = getPreferenceScreen();
+            Preference notificationsDisabled = findPreference("privacy_policy_notifications_disabled");
+
+            if(PermissionHelper.hasAgreedToNotificationPolicy(getActivity())) {
+                screen.removePreference(notificationsDisabled);
+                findPreference("notifications_cat_interactive").setEnabled(true);
+                findPreference("notifications_cat_updates").setEnabled(true);
+                findPreference("notifications_cat_personal").setEnabled(true);
+            }
+
+            Vibrator v = (Vibrator) App.getContext().getSystemService(VIBRATOR_SERVICE);
+            if(v != null && v.hasVibrator()) {
+                for(String prefKey : catPrefix) {
+                    // Bind and trigger summary changed
+                    bindPreferenceSummaryToValue(findPreference(prefKey + "vibration_pattern"));
+
+                    // Replace the listener with one that also vibrates on change
+                    findPreference(prefKey + "vibration_pattern")
+                            .setOnPreferenceChangeListener(sVibratePreferenceValueChangedListener);
+                }
+            } else {
+                for(String prefKey : catPrefix) {
+                    screen.removePreference(findPreference(prefKey + "new_message_vibrate"));
+                    screen.removePreference(findPreference(prefKey + "vibration_pattern"));
+                }
+            }
         }
 
         @Override
@@ -302,33 +516,63 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
     }
 
-    /**
-     * This fragment shows notification preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class NotificationPreferenceFragment extends PreferenceFragment {
+    public static class ShopPreferenceFragment extends PreferenceFragment {
+
         @Override
-        public void onCreate(Bundle savedInstanceState) {
+        public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_notification);
+            addPreferencesFromResource(R.xml.pref_shop);
             setHasOptionsMenu(true);
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+            bindPreferenceSummaryToValue(findPreference("preference_default_shop"));
+            loadAvailableShopsToList();
         }
 
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
+        private void loadAvailableShopsToList() {
+            final ListPreference shopPreference = (ListPreference) findPreference("preference_default_shop");
+            shopPreference.setEntries(new String[] {getString(R.string.shop_preference_default_latest)});
+            shopPreference.setEntryValues(new String[]{"-1"});
+
+            Services.getInstance().shopService.getStores().enqueue(new Callback<List<Store>>() {
+                @Override
+                public void onSucces(Response<List<Store>> response) {
+                    if(response == null) {
+                        Toast.makeText(getActivity(), R.string.shop_msg_failed_loading_stores, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Gson gson = new Gson();
+                        ShopPreferenceHelper shopPreferenceHelper = new ShopPreferenceHelper(getActivity());
+                        shopPreferenceHelper.updateShops(gson.toJson(response.body()));
+                        String[] keys = new String[response.body().size() + 2];
+                        String[] values = new String[response.body().size() + 2];
+
+                        keys[0] = "-1";
+                        values[0] = getString(R.string.shop_preference_default_latest);
+
+                        keys[1] = "-2";
+                        values[1] = getString(R.string.shop_preference_default_always_choose);
+
+                        for(int i = 0; i < response.body().size(); i++) {
+                            keys[i+2] = response.body().get(i).getId().toString();
+                            values[i+2] = response.body().get(i).title;
+                        }
+
+                        // Attach keys and values to preference element
+                        shopPreference.setEntryValues(keys);
+                        shopPreference.setEntries(values);
+
+                        // Update summary to reflect the current value
+                        sBindPreferenceSummaryToValueListener.onPreferenceChange(
+                                shopPreference,
+                                shopPreference.getValue()
+                        );
+                    }
+                }
+            });
         }
     }
 
@@ -373,13 +617,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onResume();
             getPreferenceScreen().getSharedPreferences()
                     .registerOnSharedPreferenceChangeListener(this);
-
-            if(PermissionChecker.checkSelfPermission(
-                    App.getContext(),
-                    Manifest.permission.WRITE_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-                ((SwitchPreference)findPreference("people_use_export")).setChecked(false);
-            }
         }
 
         @Override
@@ -402,9 +639,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         case "calendar_use_export":
                             settingsActivity.requestCalendarPermissions();
                             break;
-                        case "people_use_export":
-                            settingsActivity.requestContactPermissions();
-                            break;
                     }
                 }
             }
@@ -421,6 +655,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             if(calendarList.isEmpty()) {
                 SwitchPreference use_cal_export = (SwitchPreference) findPreference("calendar_use_export");
                 use_cal_export.setChecked(false);
+                String errorMessage = getResources().getString(R.string.pref_save_in_calendar_empty_calendar_list_error);
+                Context context = getActivity();
+                if(context != null) {
+                    Toast.makeText(
+                            context,
+                            errorMessage,
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+
                 return;
             }
 
@@ -435,6 +679,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             calendarValues.setEntries(calendarNames);
             calendarValues.setEntryValues(calendarIds);
+
+            // No value selected yet. Don't do anything
+            if(calendarValues.getValue() == null) return;
 
             sBindPreferenceSummaryToValueListener.onPreferenceChange(
                     calendarValues,

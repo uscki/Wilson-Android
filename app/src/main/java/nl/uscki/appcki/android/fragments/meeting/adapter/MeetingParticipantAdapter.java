@@ -31,14 +31,14 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_person_list_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindCustomViewHolder(final ViewHolder holder, final int position) {
         unsetViews(holder);
         resetViews(holder, items.get(position));
     }
@@ -49,38 +49,19 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
 
         holder.note.setText(item.getNote());
 
-        if(item.getPerson().getPhotomediaid() != 0) {
+        if(item.getPerson().getPhotomediaid() != null && item.getPerson().getPhotomediaid() != 0) {
             holder.profile.setImageURI(MediaAPI.getMediaUri(item.getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL));
         }
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                // TODO: 5/29/16 bekijk persoon
-
-                Intent smoboIntent = new Intent(v.getContext(), SmoboActivity.class);
-                smoboIntent.putExtra("id", holder.mItem.getPerson().getId());
-                smoboIntent.putExtra("name", holder.mItem.getPerson().getPostalname());
-                smoboIntent.putExtra("photo", holder.mItem.getPerson().getPhotomediaid());
-                v.getContext().startActivity(smoboIntent);
-                /*if (v.getContext() instanceof MeetingActivity) {
-                    MeetingActivity act = (MeetingActivity) v.getContext();
-
-                    *//*Services.getInstance().permissionsService.hasPermission("useradmin", "admin").enqueue(new Callback<Boolean>() {
-                        @Override
-                        public void onSucces(Response<Boolean> response) {
-                            if(holder.mItem.getDisplayonline() || response.body()) {*//*
-
-                    *//*        }
-                        }
-                    });*//*
-                    //act.openSmoboFor(holder.mItem);
-                } else if(v.getContext() instanceof BasicActivity) {
-                    BasicActivity act = (BasicActivity) v.getContext();
-                    act.openSmoboFor(holder.mItem);
-                }*/
-            }
-        });
+        final MeetingActivity meetingActivity = (MeetingActivity)holder.mView.getContext();
+        if(meetingActivity != null) {
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    meetingActivity.openSmoboFor(holder.mItem.getPerson());
+                }
+            });
+        }
     }
 
     private void unsetViews(ViewHolder vh) {

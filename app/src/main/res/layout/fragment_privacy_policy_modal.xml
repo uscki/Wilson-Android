@@ -1,0 +1,97 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="nl.uscki.appcki.android.fragments.PrivacyPolicyModalFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/text_margin"
+        >
+
+        <TextView
+            android:id="@+id/privacy_policy_updated_notice_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/privacy_policy_updated_notice"
+            android:visibility="gone"
+            />
+
+        <TextView
+            style="@style/AppTheme.TextHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/privacy_policy_header" />
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <nl.uscki.appcki.android.views.BBTextView
+                android:id="@+id/privacyPolicyMainText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/text_margin"
+                />
+
+            <CheckBox
+                android:id="@+id/checkboxPrivacyPolicyGeneral"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/privacy_policy_agree_terms_general" />
+
+            <CheckBox
+                android:id="@+id/checkboxPrivacyPolicyAppSpecific"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/privacy_policy_agree_terms_app_specific" />
+
+            <CheckBox
+                android:id="@+id/checkboxPrivacyPolicyNotificationToken"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/privacy_policy_agree_terms_notification_token" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:text="@string/privacy_policy_agreement_required_footnote"
+                />
+
+            <Button
+                android:id="@+id/privacyPolicyButtonAgree"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:gravity="end"
+                android:enabled="false"
+                android:text="@string/privacy_policy_button_agree"
+                />
+
+            <Button
+                android:id="@+id/privacyPolicyRejectButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/text_margin"
+                style="?android:attr/buttonBarButtonStyle"
+                android:text="@string/privacy_policy_button_disagree" />
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </LinearLayout>
+</ScrollView>

@@ -41,11 +41,15 @@ public class ServiceGenerator {
             @Override
             public Response intercept(Interceptor.Chain chain) throws IOException {
                 Request original = chain.request();
-                if(UserHelper.getInstance().TOKEN == null) {
+                if(UserHelper.getInstance().getToken() == null) {
                     return chain.proceed(original);
                 }
+
+                if (!original.url().host().contains("uscki.nl"))
+                    return chain.proceed(original);
+
                 Request.Builder requestBuilder = original.newBuilder()
-                        .header("X-AUTH-TOKEN", UserHelper.getInstance().TOKEN)
+                        .header("X-AUTH-TOKEN", UserHelper.getInstance().getToken())
                         .method(original.method(), original.body());
 
                 return chain.proceed(requestBuilder.build());

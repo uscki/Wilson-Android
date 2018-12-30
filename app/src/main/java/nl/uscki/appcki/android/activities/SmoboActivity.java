@@ -132,12 +132,10 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
             }
         } else if (type == SmoboInfoWidget.InfoType.PHONE) {
             Intent messagingIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + mainText));
-
             startActivity(Intent.createChooser(messagingIntent, "Send message..."));
         } else if (type == SmoboInfoWidget.InfoType.EMAIL) {
-            final Intent emailIntent = new Intent(Intent.ACTION_SEND);
-
-            emailIntent.setType("plain/text");
+            final Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+            emailIntent.setData(Uri.parse("mailto:"));
             emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{mainText});
 
             startActivity(Intent.createChooser(emailIntent, "Send mail..."));

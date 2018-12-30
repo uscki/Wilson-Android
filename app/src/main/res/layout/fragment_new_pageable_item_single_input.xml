@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/newQuoteLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/new_item_editbox_margin">
+
+    <LinearLayout
+        android:id="@+id/newQuoteButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <EditText
+            android:id="@+id/quoteTextInput"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="40"
+            android:hint="Hint"
+            android:inputType="textCapSentences|textAutoComplete|textAutoCorrect|textMultiLine" />
+
+        <ImageButton
+            android:id="@+id/confirmNewQuoteButton"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/rounded_resource_colour"
+            android:textColor="@color/colorWhite"
+            android:visibility="visible"
+            app:srcCompat="@drawable/plus"
+            android:layout_gravity="bottom"
+            />
+    </LinearLayout>
+</RelativeLayout>

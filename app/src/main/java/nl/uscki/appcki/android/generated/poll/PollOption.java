@@ -3,11 +3,13 @@ package nl.uscki.appcki.android.generated.poll;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+
 /**
  * Created by peter on 3/7/17.
  */
 
-public class PollOption {
+public class PollOption implements IWilsonBaseItem {
     /*
     * "color": "#ff000",
 "id": 0,
@@ -25,6 +27,9 @@ public class PollOption {
     @Expose
     @SerializedName("voteCount")
     Integer voteCount;
+
+    private int totalVoteCount;
+    private int maxVote; // Best result for this poll
 
     public Integer getId() {
         return id;
@@ -56,5 +61,21 @@ public class PollOption {
 
     public void setVoteCount(Integer voteCount) {
         this.voteCount = voteCount;
+    }
+
+    public int getTotalVoteCount() {
+        return totalVoteCount;
+    }
+
+    public void setTotalVoteCount(int totalVoteCount) {
+        this.totalVoteCount = totalVoteCount;
+    }
+
+    public int getMaxVote() {
+        return maxVote;
+    }
+
+    public void setMaxVote(int maxVote) {
+        this.maxVote = maxVote;
     }
 }

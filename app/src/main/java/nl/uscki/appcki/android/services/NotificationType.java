@@ -11,13 +11,17 @@ package nl.uscki.appcki.android.services;
 public enum NotificationType {
     achievement,
     agenda_announcement,
+    agenda_from_backup,
     agenda_new,
     agenda_reply,
+    bugtracker_comment,
+    bugtracker_new,
+    bugtracker_status_changed,
     forum_new_topic,
     forum_reply,
-    other,
     meeting_filledin,
     meeting_new,
     meeting_planned,
-    news
+    news,
+    other
 }

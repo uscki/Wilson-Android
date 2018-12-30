@@ -28,13 +28,13 @@ public class SmoboSearchResultAdapter extends BaseItemAdapter<SmoboSearchResultA
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindCustomViewHolder(ViewHolder holder, int position) {
         unsetViews(holder);
         resetViews(holder, items.get(position));
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_person_list_item, parent, false);
         return new ViewHolder(view);
@@ -51,7 +51,9 @@ public class SmoboSearchResultAdapter extends BaseItemAdapter<SmoboSearchResultA
         holder.mItem = person;
         holder.name.setText(person.getPostalname());
         holder.note.setText("");
-        holder.profile.setImageURI(MediaAPI.getMediaUri(person.getPhotomediaid(), MediaAPI.MediaSize.SMALL));
+        if(person.getPhotomediaid() != null) {
+            holder.profile.setImageURI(MediaAPI.getMediaUri(person.getPhotomediaid(), MediaAPI.MediaSize.SMALL));
+        }
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
