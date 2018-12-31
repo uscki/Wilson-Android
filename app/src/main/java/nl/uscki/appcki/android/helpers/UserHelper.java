@@ -1,6 +1,7 @@
 package nl.uscki.appcki.android.helpers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Base64;
 import android.util.Log;
@@ -16,7 +17,9 @@ import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.generated.organisation.Person;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.services.LoadFullUserInfoService;
 import nl.uscki.appcki.android.services.NotificationReceiver;
 import nl.uscki.appcki.android.generated.shop.Product;
 
@@ -27,6 +30,7 @@ public class UserHelper {
     private static UserHelper singleton;
     private String TOKEN;
     private PersonSimple person;
+    private Person fullPersonInfo;
     private boolean loggedIn;
     private SharedPreferences preferences;
     private Map<Integer, Integer> preferedProducts = new HashMap<>();
@@ -85,6 +89,13 @@ public class UserHelper {
     public void setPerson(PersonSimple person) {
         this.person = person;
     }
+
+    public Person getFullPersonInfo() throws NullPointerException {
+        if(fullPersonInfo == null) throw new NullPointerException("Full person not yet loaded");
+        return fullPersonInfo;
+    }
+
+    public void setFullPerson(Person person) {this.fullPersonInfo = person; }
 
     public void login(String token, PersonSimple person) {
         this.TOKEN = token;

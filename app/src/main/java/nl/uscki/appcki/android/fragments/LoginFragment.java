@@ -1,6 +1,8 @@
 package nl.uscki.appcki.android.fragments;
 
 import android.animation.ObjectAnimator;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -32,6 +34,7 @@ import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import nl.uscki.appcki.android.services.LoadFullUserInfoService;
 import nl.uscki.appcki.android.services.NotificationReceiver;
 import okhttp3.Headers;
 import retrofit2.Call;
@@ -160,6 +163,14 @@ public class LoginFragment extends Fragment {
                             if(PermissionHelper.hasAgreedToNotificationPolicy(getContext())) {
                                 // Force firebase to generate a new notification token by invalidating the current token
                                 NotificationReceiver.invalidateFirebaseInstanceId(true);
+                            }
+
+                            Context context = getContext();
+                            if(context != null) {
+                                Intent intent = new Intent(context, LoadFullUserInfoService.class);
+                                context.startService(intent);
+                            } else {
+                                Log.e(LoginFragment.class.getSimpleName(), "No context: Can't load full user info");
                             }
 
                             EventBus.getDefault().post(new UserLoggedInEvent(true));
