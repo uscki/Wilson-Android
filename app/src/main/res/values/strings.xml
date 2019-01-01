@@ -369,4 +369,7 @@
     <string name="shop_price_format">€%.2f p.st.</string>
     <string name="shop_price_format_simple">€%.2f</string>
 
+    <!-- Smobo -->
+    <string name="smobo_half_your_age_plus_seven">Half-your-age-plus-seven</string>
+
 </resources>

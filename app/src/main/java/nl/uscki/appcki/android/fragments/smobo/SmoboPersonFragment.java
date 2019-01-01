@@ -16,9 +16,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,8 +38,8 @@ import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
 import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.helpers.ContactHelper;
+import nl.uscki.appcki.android.helpers.DateRangeHelper;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
-import retrofit2.Call;
 import retrofit2.Response;
 
 /**
@@ -72,6 +77,9 @@ public class SmoboPersonFragment extends Fragment {
         }
     };
 
+    private Timer timer;
+    private TimerTask timerTask;
+
     @BindView(R.id.smobo_address_info)
     FrameLayout addressInfo;
     @BindView(R.id.smobo_email_info)
@@ -90,6 +98,14 @@ public class SmoboPersonFragment extends Fragment {
     HorizontalGridView mediaGrid;
     @BindView(R.id.smobo_swiperefresh)
     SwipeRefreshLayout swipeContainer;
+    @BindView(R.id.datable_range_info)
+    RelativeLayout datableRangeInfo;
+    @BindView(R.id.datable_range_icon)
+    ImageView datableRangeIcon;
+    @BindView(R.id.datable_range_love_status)
+    TextView loveStatus;
+    @BindView(R.id.datable_range_countdown)
+    TextView countdownText;
 
     private final Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
         @Override
@@ -104,6 +120,7 @@ public class SmoboPersonFragment extends Fragment {
             createMobileInfoWidget(p);
             createBirthdayInfoWidget(p);
             createWebsiteInfoWidget(p);
+            createCountdown();
 
             ((BaseItemAdapter) smoboGroups.getAdapter()).update(p.getGroups());
         }
@@ -212,6 +229,44 @@ public class SmoboPersonFragment extends Fragment {
         }
     }
 
+    private void createCountdown() {
+        final DateRangeHelper drh = new DateRangeHelper(p.getPerson());
+        if(!drh.isSucces()) {
+            datableRangeInfo.setVisibility(View.GONE);
+            return;
+        }
+
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String countdownString = drh.getFullCountdownString();
+
+                        // TODO use resource strings
+                        String loveStatusString;
+                        if(drh.getLoveStatus().equals(DateRangeHelper.DateRange.IN_RANGE)) {
+                            loveStatusString = String.format(Locale.getDefault(), "Jij en %s mogen daten!", p.getPerson().getFirstname());
+                        } else if(drh.getLoveStatus().equals(DateRangeHelper.DateRange.OTHER_TO_YOUNG)) {
+                            loveStatusString = String.format(Locale.getDefault(), "%s is te jong voor jou", p.getPerson().getFirstname());
+                        } else {
+                            loveStatusString = String.format(Locale.getDefault(), "Jij bent te jong voor %s", p.getPerson().getFirstname());
+                        }
+
+
+                        SmoboPersonFragment.this.countdownText.setText(countdownString);
+                        SmoboPersonFragment.this.loveStatus.setText(loveStatusString);
+                    }
+                });
+            }
+        };
+
+        timer = new Timer();
+        timer.schedule(timerTask, 0, 1000);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_smobo_person, container, false);
@@ -232,6 +287,14 @@ public class SmoboPersonFragment extends Fragment {
         }
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(timer != null) {
+            timer.cancel();
+        }
     }
 
     @Override
