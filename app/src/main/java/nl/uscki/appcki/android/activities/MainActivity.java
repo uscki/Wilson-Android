@@ -45,6 +45,7 @@ import nl.uscki.appcki.android.fragments.shop.StoreSelectionFragment;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import nl.uscki.appcki.android.services.LoadFullUserInfoService;
 import retrofit2.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -117,6 +118,14 @@ public class MainActivity extends BasicActivity
             initLoggedOutUI();
         } else {
             initLoggedInUI();
+
+            try {
+                UserHelper.getInstance().getFullPersonInfo();
+            } catch(NullPointerException e) {
+                Intent intent = new Intent(this, LoadFullUserInfoService.class);
+                intent.setAction(LoadFullUserInfoService.ACTION_LOAD_USER);
+                startService(intent);
+            }
 
             // Get the intent, verify the action and get the query
             handleIntention(getIntent());

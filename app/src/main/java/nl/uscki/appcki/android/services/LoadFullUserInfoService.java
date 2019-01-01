@@ -33,7 +33,7 @@ public class LoadFullUserInfoService extends IntentService {
         @Override
         public void onSucces(Response response) {
             Gson gson = new Gson();
-            SmoboItem mySmobo = gson.fromJson(response.body().toString(), SmoboItem.class);
+            SmoboItem mySmobo = (SmoboItem) response.body();
             Person person = mySmobo.getPerson();
             UserHelper.getInstance().setFullPerson(person);
         }

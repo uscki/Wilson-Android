@@ -165,14 +165,6 @@ public class LoginFragment extends Fragment {
                                 NotificationReceiver.invalidateFirebaseInstanceId(true);
                             }
 
-                            Context context = getContext();
-                            if(context != null) {
-                                Intent intent = new Intent(context, LoadFullUserInfoService.class);
-                                context.startService(intent);
-                            } else {
-                                Log.e(LoginFragment.class.getSimpleName(), "No context: Can't load full user info");
-                            }
-
                             EventBus.getDefault().post(new UserLoggedInEvent(true));
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
