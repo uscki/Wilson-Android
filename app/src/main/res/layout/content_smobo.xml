@@ -106,8 +106,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="@dimen/text_margin"
-                    android:paddingEnd="@dimen/text_margin"
+                    android:paddingEnd="0dp"
                     android:layout_below="@id/smobo_birthday_info"
+                    android:visibility="gone"
                     >
                     <ImageView
                         android:id="@+id/datable_range_icon"
@@ -121,7 +122,9 @@
                         android:layout_height="wrap_content"
                         android:layout_toEndOf="@id/datable_range_icon"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="25dp">
+                        android:layout_marginStart="25dp"
+                        android:layout_marginEnd="@dimen/text_margin"
+                        >
                         <TextView
                             android:id="@+id/datable_range_love_status"
                             android:layout_width="wrap_content"
@@ -134,9 +137,9 @@
                             android:id="@+id/datable_range_countdown"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
+                            android:layout_marginTop="6dp"
                             android:textColor="@color/colorBlack"
-                            android:textSize="18sp"
+                            android:textSize="14sp"
                             android:layout_below="@id/datable_range_love_status"
                             />
 

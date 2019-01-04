@@ -1,6 +1,7 @@
 package nl.uscki.appcki.android.fragments.smobo;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v4.app.Fragment;
@@ -247,17 +248,20 @@ public class SmoboPersonFragment extends Fragment {
 
                         // TODO use resource strings
                         String loveStatusString;
+                        int heartIcon = R.drawable.ic_outline_broken_heart_24px;
                         if(drh.getLoveStatus().equals(DateRangeHelper.DateRange.IN_RANGE)) {
                             loveStatusString = String.format(Locale.getDefault(), "Jij en %s mogen daten!", p.getPerson().getFirstname());
+                            heartIcon = R.drawable.ic_outline_favorite_24px;
                         } else if(drh.getLoveStatus().equals(DateRangeHelper.DateRange.OTHER_TO_YOUNG)) {
                             loveStatusString = String.format(Locale.getDefault(), "%s is te jong voor jou", p.getPerson().getFirstname());
                         } else {
                             loveStatusString = String.format(Locale.getDefault(), "Jij bent te jong voor %s", p.getPerson().getFirstname());
                         }
 
-
+                        SmoboPersonFragment.this.datableRangeIcon.setImageResource(heartIcon);
                         SmoboPersonFragment.this.countdownText.setText(countdownString);
                         SmoboPersonFragment.this.loveStatus.setText(loveStatusString);
+                        datableRangeInfo.setVisibility(View.VISIBLE);
                     }
                 });
             }
