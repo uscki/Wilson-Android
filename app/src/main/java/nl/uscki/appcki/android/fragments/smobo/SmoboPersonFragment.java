@@ -19,12 +19,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
@@ -232,11 +230,11 @@ public class SmoboPersonFragment extends Fragment {
     private void createCountdown() {
         final DateRangeHelper drh = new DateRangeHelper(getContext(), p.getPerson());
         if(!drh.isSuccess()) {
-            datableRangeInfo.setVisibility(View.GONE);
+            this.datableRangeInfo.setVisibility(View.GONE);
             return;
         }
 
-        timerTask = new TimerTask() {
+        this.timerTask = new TimerTask() {
             @Override
             public void run() {
 
@@ -265,8 +263,8 @@ public class SmoboPersonFragment extends Fragment {
             }
         };
 
-        timer = new Timer();
-        timer.schedule(timerTask, 0, 1000);
+        this.timer = new Timer();
+        this.timer.schedule(timerTask, 0, 1000);
     }
 
     @Override
@@ -294,8 +292,8 @@ public class SmoboPersonFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(timer != null) {
-            timer.cancel();
+        if(this.timer != null) {
+            this.timer.cancel();
         }
     }
 
