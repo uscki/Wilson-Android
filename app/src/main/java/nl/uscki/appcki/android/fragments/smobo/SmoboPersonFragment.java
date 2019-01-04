@@ -250,7 +250,7 @@ public class SmoboPersonFragment extends Fragment {
                         if(drh.getLoveStatus().equals(DateRangeHelper.DateRange.IN_RANGE)) {
                             loveStatusString = getString(R.string.hyap7_verdict_dating_allowed, p.getPerson().getFirstname());
                             heartIcon = R.drawable.ic_outline_favorite_24px;
-                        } else if(drh.getLoveStatus().equals(DateRangeHelper.DateRange.OTHER_TO_YOUNG)) {
+                        } else if(drh.getLoveStatus().equals(DateRangeHelper.DateRange.OTHER_TOO_YOUNG)) {
                             loveStatusString = getString(R.string.hyap7_verdict_dating_other_too_young, p.getPerson().getFirstname());
                         } else {
                             loveStatusString = getString(R.string.hyap7_verdict_dating_me_too_young, p.getPerson().getFirstname());
