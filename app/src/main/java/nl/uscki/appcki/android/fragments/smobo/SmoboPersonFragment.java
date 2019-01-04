@@ -194,7 +194,7 @@ public class SmoboPersonFragment extends Fragment {
     }
 
     private void createBirthdayInfoWidget(SmoboItem p) {
-        if (p.getPerson().getMobilenumber() != null) {
+        if (p.getPerson().getBirthdate() != null) {
             Bundle bundle = new Bundle();
             String birthday = p.getPerson().getBirthdate().toString("dd-MM-yyyy");
             birthday += String.format(Locale.getDefault(), " (%d)", p.getPerson().getAge());
@@ -208,7 +208,7 @@ public class SmoboPersonFragment extends Fragment {
                     .replace(R.id.smobo_birthday_info, widget)
                     .commitAllowingStateLoss();
         } else {
-            mobileInfo.setPadding(0,0,0,0);
+            birthdayInfo.setPadding(0,0,0,0);
         }
     }
 
