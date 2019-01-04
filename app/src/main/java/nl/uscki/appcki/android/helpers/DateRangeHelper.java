@@ -24,7 +24,7 @@ public class DateRangeHelper {
     private DateTime countdownDate;
     private DateRange loveStatus;
 
-    private boolean isSucces = false;
+    private boolean isSuccess = false;
 
     private Context context;
 
@@ -34,14 +34,14 @@ public class DateRangeHelper {
         try {
             this.me = UserHelper.getInstance().getFullPersonInfo();
             getCountdownDate();
-            isSucces = true;
+            isSuccess = true;
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), "No full user info loaded");
         }
     }
 
-    public boolean isSucces() {
-        return isSucces;
+    public boolean isSuccess() {
+        return isSuccess;
     }
 
     /**
@@ -51,18 +51,6 @@ public class DateRangeHelper {
      */
     public DateRange getLoveStatus() {
         return this.loveStatus;
-    }
-
-    /**
-     * Get the number of milliseconds until both people are within each other's datable range. If
-     * this value is negative, both are in each others datable range already and the sign of that
-     * number indicates the time passed since this epic event occurred.
-     *
-     * @return Long, milliseconds until both are in each others datable range
-     */
-    @Deprecated
-    public long millisUntilInRange() {
-        return this.countdownDate.getMillis() - DateTime.now().getMillis();
     }
 
     public Period getPeriodUntilCountdown() {
@@ -83,7 +71,7 @@ public class DateRangeHelper {
 
         if (meOldEnoughForThem.isAfter(themOldEnoughForMe)) {
             this.countdownDate = meOldEnoughForThem;
-            loveStatus = DateRange.ME_TO_YOUNG;
+            this.loveStatus = DateRange.ME_TO_YOUNG;
         } else {
             this.countdownDate = themOldEnoughForMe;
             this.loveStatus = DateRange.OTHER_TO_YOUNG;

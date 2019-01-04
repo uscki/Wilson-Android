@@ -1,7 +1,6 @@
 package nl.uscki.appcki.android.fragments.smobo;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v4.app.Fragment;
@@ -232,7 +231,7 @@ public class SmoboPersonFragment extends Fragment {
 
     private void createCountdown() {
         final DateRangeHelper drh = new DateRangeHelper(getContext(), p.getPerson());
-        if(!drh.isSucces()) {
+        if(!drh.isSuccess()) {
             datableRangeInfo.setVisibility(View.GONE);
             return;
         }
