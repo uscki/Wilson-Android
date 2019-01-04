@@ -3,7 +3,6 @@ package nl.uscki.appcki.android.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import com.google.gson.Gson;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.generated.organisation.Person;
@@ -32,10 +31,9 @@ public class LoadFullUserInfoService extends IntentService {
     Callback<SmoboItem> callback = new Callback<SmoboItem>() {
         @Override
         public void onSucces(Response response) {
-            Gson gson = new Gson();
             SmoboItem mySmobo = (SmoboItem) response.body();
             Person person = mySmobo.getPerson();
-            UserHelper.getInstance().setFullPerson(person);
+            UserHelper.getInstance().setFullPerson(LoadFullUserInfoService.this, person);
         }
     };
 }

@@ -120,7 +120,7 @@ public class MainActivity extends BasicActivity
             initLoggedInUI();
 
             try {
-                UserHelper.getInstance().getFullPersonInfo();
+                UserHelper.getInstance().getFullPersonInfo(MainActivity.this);
             } catch(NullPointerException e) {
                 Intent intent = new Intent(this, LoadFullUserInfoService.class);
                 intent.setAction(LoadFullUserInfoService.ACTION_LOAD_USER);

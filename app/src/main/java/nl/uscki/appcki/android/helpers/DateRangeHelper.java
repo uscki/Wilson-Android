@@ -32,7 +32,7 @@ public class DateRangeHelper {
         this.compareTo = compareTo;
         this.context = context;
         try {
-            this.me = UserHelper.getInstance().getFullPersonInfo();
+            this.me = UserHelper.getInstance().getFullPersonInfo(context);
             getCountdownDate();
             isSuccess = true;
         } catch (Exception e) {
