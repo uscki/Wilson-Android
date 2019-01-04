@@ -1,8 +1,6 @@
 package nl.uscki.appcki.android.fragments;
 
 import android.animation.ObjectAnimator;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -20,11 +18,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.google.gson.Gson;
-
 import java.io.UnsupportedEncodingException;
-
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.BuildConfig;
 import nl.uscki.appcki.android.R;
@@ -34,7 +29,6 @@ import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
-import nl.uscki.appcki.android.services.LoadFullUserInfoService;
 import nl.uscki.appcki.android.services.NotificationReceiver;
 import okhttp3.Headers;
 import retrofit2.Call;
