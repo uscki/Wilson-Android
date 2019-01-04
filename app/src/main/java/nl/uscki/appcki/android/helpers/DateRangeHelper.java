@@ -1,15 +1,11 @@
 package nl.uscki.appcki.android.helpers;
 
 import android.util.Log;
-
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.joda.time.Period;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimerTask;
 
 import nl.uscki.appcki.android.generated.organisation.Person;
 
@@ -111,17 +107,10 @@ public class DateRangeHelper {
      * @return DateTime specifying the exact moment q is old enough for p
      */
     private DateTime untilQOldEnoughForP(Person p, Person q) {
-        DateTime now = DateTime.now();
         long birthP = p.getBirthdate().getMillis();
         long birthQ = q.getBirthdate().getMillis();
 
-        Period ageP = new Period(p.getBirthdate().getMillis(), now.getMillis());
-        Log.e(getClass().getSimpleName(), String.format("%s is %s years old", p.getFirstname(), ageP.getYears()));
-
         long qOldEnoughForP = (long) ((2 * birthQ) - birthP + FOURTEEN_SOLAR_YEARS);
-
-        Log.e(getClass().getSimpleName(), "" +
-                String.format("%s is over %d milliseconden oud genoeg voor %s", q.getFirstname(), qOldEnoughForP, p.getFirstname()));
 
         return new DateTime(qOldEnoughForP);
     }
