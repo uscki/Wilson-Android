@@ -1,12 +1,12 @@
 package nl.uscki.appcki.android.helpers;
 
+import android.content.Context;
 import android.util.Log;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-
+import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.generated.organisation.Person;
 
 public class DateRangeHelper {
@@ -26,8 +26,11 @@ public class DateRangeHelper {
 
     private boolean isSucces = false;
 
-    public DateRangeHelper(Person compareTo) {
+    private Context context;
+
+    public DateRangeHelper(Context context, Person compareTo) {
         this.compareTo = compareTo;
+        this.context = context;
         try {
             this.me = UserHelper.getInstance().getFullPersonInfo();
             getCountdownDate();
@@ -78,12 +81,6 @@ public class DateRangeHelper {
         DateTime meOldEnoughForThem = untilQOldEnoughForP(compareTo, me);
         DateTime themOldEnoughForMe = untilQOldEnoughForP(me, compareTo);
 
-        Log.e(getClass().getSimpleName(), String.format(
-                "Op %s is %s oud genoeg voor %s. Op %s is %s oud genoeg voor %s",
-                meOldEnoughForThem.toString(), me.getFirstname(), compareTo.getFirstname(),
-                themOldEnoughForMe, compareTo.getFirstname(), me.getFirstname()
-        ));
-
         if (meOldEnoughForThem.isAfter(themOldEnoughForMe)) {
             this.countdownDate = meOldEnoughForThem;
             loveStatus = DateRange.OTHER_TO_YOUNG;
@@ -117,9 +114,9 @@ public class DateRangeHelper {
 
     public String getFullCountdownString() {
         if(loveStatus.equals(DateRange.IN_RANGE)) {
-            return String.format(Locale.getDefault(), "Jullie zijn al %s oud genoeg voor elkaar", constructStringFromMillis(getPeriodSinceCrossover()));
+            return this.context.getString(R.string.hyap7_time_since_in_range, constructStringFromMillis(getPeriodSinceCrossover()));
         } else {
-            return String.format(Locale.getDefault(), "Jullie moeten nog %s wachten", constructStringFromMillis(getPeriodUntilCountdown()));
+            return this.context.getString(R.string.hyap7_time_until_in_range, constructStringFromMillis(getPeriodUntilCountdown()));
         }
     }
 
@@ -129,32 +126,51 @@ public class DateRangeHelper {
      * @param period Period denoting remaining time
      * @return String
      */
-    // TODO use resources for strings
     public String constructStringFromMillis(Period period) {
         List<String> timeElements = new ArrayList<>();
         boolean fromHereOnOut = false;
         if (period.getYears() > 0) {
-            timeElements.add(String.format(Locale.getDefault(), "%d jaar", period.getYears()));
+            timeElements.add(
+                    this.context.getString(
+                            period.getYears() == 1 ? R.string.timestrings_x_year : R.string.timestring_x_years,
+                            period.getYears())
+            );
             fromHereOnOut = true;
         }
         if (fromHereOnOut || period.getMonths() > 0) {
-            String formatter = period.getMonths() == 1 ? "%d maand" : "%d maanden";
-            timeElements.add(String.format(Locale.getDefault(), formatter, period.getMonths()));
+            timeElements.add(
+                    this.context.getString(
+                            period.getMonths() == 1 ? R.string.timestrings_x_month : R.string.timestring_x_months,
+                            period.getMonths())
+            );
         }
         if (fromHereOnOut || period.getDays() > 0) {
-            String formatter = period.getDays() == 1 ? "%d dag" : "%d dagen";
-            timeElements.add(String.format(Locale.getDefault(), formatter, period.getDays()));
+            timeElements.add(
+                    this.context.getString(
+                            period.getDays() == 1 ? R.string.timestrings_x_day : R.string.timestring_x_days,
+                            period.getDays())
+            );
         }
         if (fromHereOnOut || period.getHours() > 0) {
-            timeElements.add(String.format(Locale.getDefault(), "%d uur", period.getHours()));
+            timeElements.add(
+                    this.context.getString(
+                            period.getHours() == 1 ? R.string.timestrings_x_hour : R.string.timestring_x_hours,
+                            period.getHours())
+            );
         }
         if (fromHereOnOut || period.getMinutes() > 0) {
-            String formatter = period.getMinutes() == 1 ? "%d minuut" : "%d minuten";
-            timeElements.add(String.format(Locale.getDefault(), formatter, period.getMinutes()));
+            timeElements.add(
+                    this.context.getString(
+                            period.getMinutes() == 1 ? R.string.timestrings_x_minute : R.string.timestring_x_minutes,
+                            period.getMinutes())
+            );
         }
         if (fromHereOnOut || period.getSeconds() > 0) {
-            String formatter = period.getSeconds() == 1 ? "%d seconde" : "%d seconden";
-            timeElements.add(String.format(Locale.getDefault(), formatter, period.getSeconds()));
+            timeElements.add(
+                    this.context.getString(
+                            period.getSeconds() == 1 ? R.string.timestrings_x_second : R.string.timestring_x_seconds,
+                            period.getSeconds())
+            );
         }
 
         int size = timeElements.size();
@@ -164,13 +180,13 @@ public class DateRangeHelper {
         } else if (size == 1) {
             return timeElements.get(0);
         } else if (size == 2) {
-            return String.format(Locale.getDefault(), "%s en %s", timeElements.get(0), timeElements.get(1));
+            return this.context.getString(R.string.list_concat_and, timeElements.get(0), timeElements.get(1));
         } else {
             StringBuilder b = new StringBuilder();
             for (int i = 0; i < size - 2; i++) {
-                b.append(String.format(Locale.getDefault(), "%s, ", timeElements.get(i)));
+                b.append(this.context.getString(R.string.list_concat_seperator, timeElements.get(i)));
             }
-            b.append(String.format(Locale.getDefault(), "%s en %s", timeElements.get(size - 2), timeElements.get(size - 1)));
+            b.append(this.context.getString(R.string.list_concat_and, timeElements.get(size - 2), timeElements.get(size - 1)));
             return b.toString();
         }
     }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Intentional redundancy!. In Dutch "1 jaar" or "13 jaar" both use singular, while in English
+    and other languages, "1 year" and "13 years" use different forms, so different resources are
+    required to generalize -->
+    <string name="timestrings_x_year">%d jaar</string>
+    <string name="timestring_x_years">%d jaar</string>
+    <string name="timestrings_x_month">%d maand</string>
+    <string name="timestring_x_months">%d maanden</string>
+    <string name="timestrings_x_day">%d dag</string>
+    <string name="timestring_x_days">%d dagen</string>
+    <string name="timestrings_x_hour">%d uur</string>
+    <string name="timestring_x_hours">%d uur</string>
+    <string name="timestrings_x_minute">%d minuut</string>
+    <string name="timestring_x_minutes">%d minuten</string>
+    <string name="timestrings_x_second">%d seconde</string>
+    <string name="timestring_x_seconds">%d seconden</string>
+</resources>

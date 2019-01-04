@@ -231,7 +231,7 @@ public class SmoboPersonFragment extends Fragment {
     }
 
     private void createCountdown() {
-        final DateRangeHelper drh = new DateRangeHelper(p.getPerson());
+        final DateRangeHelper drh = new DateRangeHelper(getContext(), p.getPerson());
         if(!drh.isSucces()) {
             datableRangeInfo.setVisibility(View.GONE);
             return;
@@ -246,16 +246,15 @@ public class SmoboPersonFragment extends Fragment {
                     public void run() {
                         String countdownString = drh.getFullCountdownString();
 
-                        // TODO use resource strings
                         String loveStatusString;
                         int heartIcon = R.drawable.ic_outline_broken_heart_24px;
                         if(drh.getLoveStatus().equals(DateRangeHelper.DateRange.IN_RANGE)) {
-                            loveStatusString = String.format(Locale.getDefault(), "Jij en %s mogen daten!", p.getPerson().getFirstname());
+                            loveStatusString = getString(R.string.hyap7_verdict_dating_allowed, p.getPerson().getFirstname());
                             heartIcon = R.drawable.ic_outline_favorite_24px;
                         } else if(drh.getLoveStatus().equals(DateRangeHelper.DateRange.OTHER_TO_YOUNG)) {
-                            loveStatusString = String.format(Locale.getDefault(), "%s is te jong voor jou", p.getPerson().getFirstname());
+                            loveStatusString = getString(R.string.hyap7_verdict_dating_other_too_young, p.getPerson().getFirstname());
                         } else {
-                            loveStatusString = String.format(Locale.getDefault(), "Jij bent te jong voor %s", p.getPerson().getFirstname());
+                            loveStatusString = getString(R.string.hyap7_verdict_dating_me_too_young, p.getPerson().getFirstname());
                         }
 
                         SmoboPersonFragment.this.datableRangeIcon.setImageResource(heartIcon);
