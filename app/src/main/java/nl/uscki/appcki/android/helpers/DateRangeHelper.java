@@ -83,10 +83,10 @@ public class DateRangeHelper {
 
         if (meOldEnoughForThem.isAfter(themOldEnoughForMe)) {
             this.countdownDate = meOldEnoughForThem;
-            loveStatus = DateRange.OTHER_TO_YOUNG;
+            loveStatus = DateRange.ME_TO_YOUNG;
         } else {
             this.countdownDate = themOldEnoughForMe;
-            this.loveStatus = DateRange.ME_TO_YOUNG;
+            this.loveStatus = DateRange.OTHER_TO_YOUNG;
         }
 
         if (countdownDate.isBeforeNow()) {
