@@ -37,9 +37,6 @@ import retrofit2.Response;
  */
 
 public abstract class BasicActivity extends AppCompatActivity {
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if(savedInstanceState != null) {

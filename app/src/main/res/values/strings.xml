@@ -31,6 +31,8 @@
 
     <string name="agenda_inschrijven">Inschrijven</string>
     <string name="agenda_uitschrijven">Uitschrijven</string>
+    <string name="tab_agenda_details">Details</string>
+    <string name="tab_agenda_participants">Deelnemers</string>
 
     <string name="title_activity_main">MainActivity</string>
 

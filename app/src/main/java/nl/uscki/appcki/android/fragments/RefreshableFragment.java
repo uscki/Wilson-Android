@@ -30,12 +30,12 @@ public abstract class RefreshableFragment extends Fragment {
     }
 
     protected void setupRecyclerView(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setAdapter(adapter);
     }
 
     protected void setupSwipeContainer(View view) {
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.refreshContainer);
+        swipeContainer = view.findViewById(R.id.refreshContainer);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

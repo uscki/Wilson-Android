@@ -20,6 +20,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
@@ -70,9 +73,17 @@ public class MainActivity extends BasicActivity
 
     private static boolean homeScreenExists = false;
 
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.nav_view)
     NavigationView navigationView;
+
+    @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
+
+    @BindView(R.id.menu_logout)
+    TextView logout;
 
     LoginFragment loginFragment = new LoginFragment();
 
@@ -101,17 +112,17 @@ public class MainActivity extends BasicActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        toolbar = findViewById(R.id.toolbar);
+
+        ButterKnife.bind(this);
+
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
 
-        drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         if (!UserHelper.getInstance().isLoggedIn()) {
@@ -119,6 +130,16 @@ public class MainActivity extends BasicActivity
         } else {
             initLoggedInUI();
 
+            logout.setClickable(true);
+            logout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UserHelper.getInstance().logout();
+                    initLoggedOutUI();
+                    currentScreen = Screen.LOGIN;
+                }
+            });
+            
             try {
                 UserHelper.getInstance().getFullPersonInfo(MainActivity.this);
             } catch(NullPointerException e) {
@@ -305,15 +326,6 @@ public class MainActivity extends BasicActivity
             } else if (id == R.id.nav_search) {
                 openFragment(new SmoboSearch(), null);
                 currentScreen = Screen.SMOBO_SEARCH;
-            } else if (id == R.id.nav_logout) {
-                UserHelper.getInstance().logout();
-                initLoggedOutUI();
-                currentScreen = Screen.LOGIN;
-            }
-        } else {
-            if (id == R.id.nav_login) {
-                openFragment(loginFragment, null);
-                currentScreen = Screen.LOGIN;
             }
         }
 
@@ -390,8 +402,7 @@ public class MainActivity extends BasicActivity
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         hideKeyboard(findViewById(R.id.drawer_layout));
 
-        navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
-        navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
+        logout.setVisibility(View.VISIBLE);
 
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText(UserHelper.getInstance().getPerson().getPostalname());
@@ -422,8 +433,7 @@ public class MainActivity extends BasicActivity
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         openFragment(new LoginFragment(), null);
         currentScreen = Screen.LOGIN;
-        navigationView.getMenu().findItem(R.id.nav_login).setVisible(true);
-        navigationView.getMenu().findItem(R.id.nav_logout).setVisible(false);
+        logout.setVisibility(View.GONE);
 
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText("");
