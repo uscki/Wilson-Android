@@ -53,7 +53,7 @@ public class PollVotesGraphView extends VotesGraphView<PollOption> {
         try {
             barPaint.setColor(Color.parseColor(item.getColor().toLowerCase()));
         } catch(Exception e) {
-            getDefaultPaint();
+            barPaint.setColor(getDefaultPaint().getColor());
         }
 
         textPaint = new TextPaint();
