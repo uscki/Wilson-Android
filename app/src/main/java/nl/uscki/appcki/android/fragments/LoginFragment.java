@@ -18,11 +18,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.google.gson.Gson;
-
 import java.io.UnsupportedEncodingException;
-
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.BuildConfig;
 import nl.uscki.appcki.android.R;
