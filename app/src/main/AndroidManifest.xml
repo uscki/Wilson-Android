@@ -71,7 +71,9 @@
             </intent-filter>
         </service>
 
-        <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
+        <meta-data
+            android:name="google_analytics_adid_collection_enabled"
+            android:value="false" />
 
         <activity
             android:name=".activities.NewsActivity"
@@ -92,6 +94,11 @@
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
+        <service
+            android:name=".services.LoadFullUserInfoService"
+            android:exported="false"
+            />
+
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
@@ -101,7 +108,7 @@
             android:exported="false" />
         <service
             android:name=".services.AgendaSubscriberIntentService"
-            android:exported="false"/>
+            android:exported="false" />
 
         <!-- [START fcm_disable_auto_init] -->
         <meta-data
@@ -117,6 +124,9 @@
             android:name="google_analytics_adid_collection_enabled"
             android:value="false" />
         <!-- [END fcm_disable_auto_init] -->
+        <service
+            android:name=".services.LoadFullUserInfoService"
+            android:exported="false"></service>
     </application>
 
 </manifest>
