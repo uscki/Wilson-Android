@@ -1,7 +1,9 @@
 package nl.uscki.appcki.android.helpers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 import com.google.gson.Gson;
@@ -16,7 +18,10 @@ import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.generated.meeting.Preference;
+import nl.uscki.appcki.android.generated.organisation.Person;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.services.LoadFullUserInfoService;
 import nl.uscki.appcki.android.services.NotificationReceiver;
 import nl.uscki.appcki.android.generated.shop.Product;
 
@@ -27,6 +32,7 @@ public class UserHelper {
     private static UserHelper singleton;
     private String TOKEN;
     private PersonSimple person;
+    private Person fullPersonInfo;
     private boolean loggedIn;
     private SharedPreferences preferences;
     private Map<Integer, Integer> preferedProducts = new HashMap<>();
@@ -34,6 +40,8 @@ public class UserHelper {
     public String getToken() {
         return this.TOKEN;
     }
+
+    private static final String FULL_USER_INFO_PREFERENCE_KEY = "nl.uscki.appcki.android.preference.FULL_USER_INFO";
 
     private UserHelper() {
         this.TOKEN = null;
@@ -84,6 +92,25 @@ public class UserHelper {
 
     public void setPerson(PersonSimple person) {
         this.person = person;
+    }
+
+    public Person getFullPersonInfo(Context context) throws NullPointerException {
+        if(fullPersonInfo == null) {
+            String personJson = PreferenceManager.getDefaultSharedPreferences(context).getString(FULL_USER_INFO_PREFERENCE_KEY, null);
+            if(personJson == null) throw new NullPointerException("Full person not yet loaded");
+            Gson gson = new Gson();
+            fullPersonInfo = gson.fromJson(personJson, Person.class);
+        }
+
+        return fullPersonInfo;
+    }
+
+    public void setFullPerson(Context context, Person person) {
+        this.fullPersonInfo = person;
+        Gson gson = new Gson();
+        SharedPreferences.Editor e = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        e.putString(FULL_USER_INFO_PREFERENCE_KEY, gson.toJson(person));
+        e.apply();
     }
 
     public void login(String token, PersonSimple person) {
