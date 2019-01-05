@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
@@ -46,6 +47,9 @@ public class AgendaActivity extends BasicActivity {
     protected AgendaItem item;
     private int agendaId = -1;
     AgendaDetailAdapter fragmentAdapter;
+
+    @BindView(R.id.agenda_collapsing_toolbar)
+    CollapsingToolbarLayout toolbarLayout;
 
     @BindView(R.id.tabLayout)
     TabLayout tabLayout;
@@ -117,13 +121,8 @@ public class AgendaActivity extends BasicActivity {
             poster.setImageURI(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.NORMAL));
         }
 
-        // TODO neither of this works?
-        if(getSupportActionBar() != null) {
-            Log.e(getClass().getSimpleName(), "Setting title in support action bar to " + item.getTitle());
-            getSupportActionBar().setTitle(item.getTitle());
-        } else if (toolbar != null) {
-            Log.e(getClass().getSimpleName(), "Setting title the toolbar to " + item.getTitle());
-            toolbar.setTitle(item.getTitle());
+        if(toolbarLayout != null) {
+            this.toolbarLayout.setTitle(this.item.getTitle());
         }
 
         foundUser = false;
