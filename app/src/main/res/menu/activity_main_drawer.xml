@@ -36,17 +36,4 @@
             android:title="Zoeken" />
     </group>
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_login"
-            android:icon="@drawable/lock_open"
-            android:title="@string/login" />
-
-        <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/lock"
-            android:title="@string/logout"
-            android:visible="false"/>
-    </group>
-
 </menu>

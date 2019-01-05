@@ -1,54 +1,77 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="3dp"
-    android:id="@+id/container">
+    android:id="@+id/container"
+    android:background="@color/colorWhite">
 
     <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/person_list_item_profile"
         android:layout_width="65dp"
         android:layout_height="65dp"
-        android:id="@+id/person_list_item_profile"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
         android:transitionName="profile"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginRight="6dp"
-        android:layout_marginEnd="6dp"
-        fresco:roundAsCircle="true"
+        fresco:layout_constraintBottom_toBottomOf="parent"
+        fresco:layout_constraintStart_toStartOf="parent"
+        fresco:layout_constraintTop_toTopOf="parent"
         fresco:placeholderImage="@drawable/account"
-        fresco:placeholderImageScaleType="fitCenter" />
+        fresco:placeholderImageScaleType="fitCenter"
+        fresco:roundAsCircle="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/person_list_item_name"
-        android:text="Menno Veen"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/person_list_item_profile"
-        android:layout_toEndOf="@+id/person_list_item_profile"
-        style="@style/AppTheme.TextSubHeader" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        fresco:layout_constraintBottom_toTopOf="@+id/imageView2"
+        fresco:layout_constraintEnd_toEndOf="parent"
+        fresco:layout_constraintStart_toEndOf="@+id/person_list_item_profile"
+        fresco:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/person_list_item_note"
-        android:visibility="gone"
-        android:text="Menno houd van Bram de Beer"
-        android:layout_below="@+id/person_list_item_name"
-        android:layout_toRightOf="@+id/person_list_item_profile"
-        android:layout_toEndOf="@+id/person_list_item_profile"
-        android:layout_marginBottom="16dp"
-        style="@style/AppTheme.Text"/>
+        <TextView
+            android:id="@+id/person_list_item_name"
+            style="@style/AppTheme.TextSubHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Menno Veen"
+            fresco:layout_constraintEnd_toEndOf="parent"
+            fresco:layout_constraintStart_toStartOf="parent"
+            fresco:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/person_list_item_note"
+            style="@style/AppTheme.Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:text="Menno houd van Bram de Beer"
+            android:visibility="visible"
+            fresco:layout_constraintBottom_toBottomOf="parent"
+            fresco:layout_constraintEnd_toEndOf="parent"
+            fresco:layout_constraintStart_toStartOf="parent"
+            fresco:layout_constraintTop_toBottomOf="@+id/person_list_item_name" />
+    </android.support.constraint.ConstraintLayout>
 
     <ImageView
+        android:id="@+id/imageView2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginLeft="65dp"
-        android:layout_marginStart="65dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/list_divider"/>
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/list_divider"
+        android:visibility="gone"
+        fresco:layout_constraintBottom_toBottomOf="parent"
+        fresco:layout_constraintEnd_toEndOf="parent"
+        fresco:layout_constraintStart_toStartOf="parent"
+        fresco:layout_constraintTop_toBottomOf="@id/person_list_item_profile" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
