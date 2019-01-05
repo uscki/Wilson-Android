@@ -31,6 +31,9 @@ public class ConfirmOrderDialog extends DialogFragment {
     @BindView(R.id.shop_confirm_product_name)
     TextView productName;
 
+    @BindView(R.id.shop_item_price)
+    TextView itemPrice;
+
     @BindView(R.id.shop_confirm_product_image)
     SimpleDraweeView productImage;
 
@@ -45,6 +48,9 @@ public class ConfirmOrderDialog extends DialogFragment {
 
     @BindView(R.id.shop_confirm_button_cancel)
     Button cancelButton;
+
+    @BindView(R.id.shop_confirm_total_price)
+    TextView totalPrice;
 
     Store store;
     Product product;
@@ -87,6 +93,16 @@ public class ConfirmOrderDialog extends DialogFragment {
             productImage.setVisibility(View.VISIBLE);
         }
         productName.setText(product.title);
+        itemPrice.setText(getResources().getString(R.string.shop_price_format_simple, product.price));
+
+        totalPrice.setText(getResources().getString(R.string.shop_price_format_simple, amountPicker.getValue() * product.price));
+
+        amountPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+                totalPrice.setText(getResources().getString(R.string.shop_price_format_simple, i1 * product.price));
+            }
+        });
 
         return view;
     }
