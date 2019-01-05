@@ -369,4 +369,15 @@
     <string name="shop_price_format">€%.2f p.st.</string>
     <string name="shop_price_format_simple">€%.2f</string>
 
+    <!-- Datable range (half-your-age-plus-seven) -->
+    <string name="smobo_half_your_age_plus_seven">Half-your-age-plus-seven</string>
+    <string name="hyap7_time_since_in_range">Jullie zijn al %s oud genoeg voor elkaar.</string>
+    <string name="hyap7_time_until_in_range">Jullie moeten nog %s wachten.</string>
+    <string name="hyap7_verdict_dating_allowed">Jij en %s mogen daten!</string>
+    <string name="hyap7_verdict_dating_other_too_young">%s is nog te jong voor jou.</string>
+    <string name="hyap7_verdict_dating_me_too_young">Jij bent nog te jong voor %s</string>
+
+    <!-- General stuff -->
+    <string name="list_concat_seperator">%s,&#160;</string>
+    <string name="list_concat_and">%s en %s</string>
 </resources>

@@ -101,13 +101,74 @@
                     android:layout_below="@id/smobo_mobile_info"
                     android:paddingLeft="@dimen/text_margin"/>
 
+                <RelativeLayout
+                    android:id="@+id/datable_range_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/text_margin"
+                    android:paddingEnd="0dp"
+                    android:layout_below="@id/smobo_birthday_info"
+                    android:visibility="gone"
+                    >
+                    <ImageView
+                        android:id="@+id/datable_range_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/datable_range_icon"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginEnd="@dimen/text_margin"
+                        >
+                        <TextView
+                            android:id="@+id/datable_range_love_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/datable_range_countdown"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="14sp"
+                            android:layout_below="@id/datable_range_love_status"
+                            />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/datable_range_countdown"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="@string/smobo_half_your_age_plus_seven"
+                            android:textSize="14sp" />
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/list_divider"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="40dp"/>
+                </RelativeLayout>
+
                 <FrameLayout
                     android:id="@+id/smobo_homepage_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/smobo_birthday_info"
+                    android:layout_below="@id/datable_range_info"
                     android:paddingLeft="@dimen/text_margin"
                     />
+
             </RelativeLayout>
 
         </android.support.v7.widget.CardView>
