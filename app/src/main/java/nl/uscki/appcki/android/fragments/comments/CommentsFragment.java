@@ -20,7 +20,6 @@ import nl.uscki.appcki.android.fragments.adapters.CommentsAdapter;
 import nl.uscki.appcki.android.generated.comments.Comment;
 import nl.uscki.appcki.android.generated.comments.CommentPage;
 import nl.uscki.appcki.android.helpers.WrongTextfieldHelper;
-import nl.uscki.appcki.android.views.NewSimplePageableItem;
 import retrofit2.Call;
 import retrofit2.Response;
 
