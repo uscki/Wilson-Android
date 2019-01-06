@@ -328,6 +328,11 @@ public class AgendaActivity extends BasicActivity {
 
         if (this.item.getMaxregistrations() != null && this.item.getMaxregistrations() == 0) {
             prepareSubscribeButtonsForNoRegistration(subscribe, unsubscribe);
+        } else if (this.item.getHasUnregisterDeadline() &&
+                new DateTime(this.item.getUnregisterDeadline()).isBeforeNow()) {
+            unsubscribe.setVisible(false);
+        } else if (this.item.getStart().isAfterNow()) {
+            unsubscribe.setVisible(false);
         } else {
             prepareSubscribeButtonsForRegistration(subscribe, unsubscribe);
         }
