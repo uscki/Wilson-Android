@@ -11,8 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.google.gson.Gson;
-
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
@@ -83,13 +81,8 @@ public class MeetingActivity extends BasicActivity {
         loadingIndicator.setVisibility(View.VISIBLE);
         loadingIndicator.setIndeterminate(true);
 
-        if (getIntent().getBundleExtra("item") != null) {
-            // this happens when this activity is launched from the overview
-            Gson gson = new Gson();
-            item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), MeetingItem.class);
-            Services.getInstance().meetingService.get(item.getMeeting().getId()).enqueue(meetingCallback);
-        } else if (getIntent().getIntExtra(PARAM_MEETING_ID, -1) != -1) {
-            // this happens on receiving a notification from the server
+        if (getIntent().getIntExtra(PARAM_MEETING_ID, -1) != -1) {
+            // this happens on receiving a notification from the server or when opening this activity
             Services.getInstance().meetingService.get(getIntent().getIntExtra(PARAM_MEETING_ID, -1)).enqueue(meetingCallback);
         }
 

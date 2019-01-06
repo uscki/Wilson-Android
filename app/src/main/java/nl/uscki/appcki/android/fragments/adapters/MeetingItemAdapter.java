@@ -7,8 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -20,6 +18,8 @@ import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import nl.uscki.appcki.android.helpers.UserHelper;
+
+import static nl.uscki.appcki.android.activities.MeetingActivity.PARAM_MEETING_ID;
 
 /**
  * Created by peter on 7/3/16.
@@ -38,7 +38,7 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
 
     @Override
     public void onBindCustomViewHolder(final ViewHolder holder, int position) {
-        MeetingItem item = items.get(position);
+        final MeetingItem item = items.get(position);
         holder.mItem = item;
         holder.title.setText(item.getMeeting().getTitle());
 
@@ -61,10 +61,7 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle();
-                Gson gson = new Gson();
-                String json = gson.toJson(holder.mItem, MeetingItem.class);
-                args.putString("item", json);
-                // TODO: 7/3/16 launch vergaderplanner fragment
+                args.putInt(PARAM_MEETING_ID, item.getId());
                 EventBus.getDefault().post(new OpenFragmentEvent(new MeetingDetailTabsFragment(), args));
             }
         });
