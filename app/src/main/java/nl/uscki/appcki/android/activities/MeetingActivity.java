@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
 
@@ -27,11 +29,15 @@ public class MeetingActivity extends BasicActivity {
     TabLayout tabLayout;
     ViewPager viewPager;
     Toolbar toolbar;
+    ProgressBar loadingIndicator;
     private Menu menu;
 
     private Callback<MeetingItem> meetingCallback = new Callback<MeetingItem>() {
         @Override
         public void onSucces(Response<MeetingItem> response) {
+            loadingIndicator.setVisibility(View.GONE);
+            tabLayout.setVisibility(View.VISIBLE);
+
             if(response.body() != null) {
                 item = response.body();
 
@@ -61,16 +67,21 @@ public class MeetingActivity extends BasicActivity {
             startActivity(new Intent(this, MainActivity.class));
         }
 
-        setContentView(R.layout.activity_agenda); // this is actually correct cause it uses the same layout
+        setContentView(R.layout.acitivity_meeting); // this is actually correct cause it uses the same layout
         MainActivity.currentScreen = MainActivity.Screen.MEETING_DETAIL;
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        tabLayout = findViewById(R.id.tabLayout);
+        tabLayout.setVisibility(View.INVISIBLE);
+        viewPager = findViewById(R.id.viewpager);
+
+        loadingIndicator = findViewById(R.id.meeting_loading_indicator);
+        loadingIndicator.setVisibility(View.VISIBLE);
+        loadingIndicator.setIndeterminate(true);
 
         if (getIntent().getBundleExtra("item") != null) {
             // this happens when this activity is launched from the overview
