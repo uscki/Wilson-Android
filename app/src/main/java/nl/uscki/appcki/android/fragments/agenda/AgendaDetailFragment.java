@@ -104,7 +104,7 @@ public class AgendaDetailFragment extends RefreshableFragment {
         } else {
             startTime.setText(item.getStart().toString(format));
         }
-        longText.setText(Parser.parse(item.getDescriptionJSON(), true, longText));
+        longText.setText(Parser.parse(item.getDescription(), true, longText));
 
         setTextView(view, item.getWho(), R.id.agenda_summary_commissie_text);
         setTextView(view, item.getWhat(), R.id.agenda_summary_title_text);

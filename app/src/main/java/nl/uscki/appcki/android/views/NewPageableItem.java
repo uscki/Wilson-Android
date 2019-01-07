@@ -13,13 +13,14 @@ import java.util.List;
 
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.helpers.WrongTextfieldHelper;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public abstract class NewPageableItem<T extends IWilsonBaseItem> extends Fragment {
+public abstract class NewPageableItem<T extends ActionResponse> extends Fragment {
     protected PageableFragment parent;
 
     private boolean focusOnCreateView = false;

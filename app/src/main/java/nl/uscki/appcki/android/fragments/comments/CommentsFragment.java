@@ -15,6 +15,7 @@ import butterknife.BindView;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.CommentsAdapter;
 import nl.uscki.appcki.android.generated.comments.Comment;
@@ -128,7 +129,7 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
      * @param comment               The comment content
      * @return                      Comment object as returned by the server
      */
-    protected abstract Call<Comment> sendCommentToServer(Integer parentId, String comment);
+    protected abstract Call<ActionResponse<Comment>> sendCommentToServer(Integer parentId, String comment);
 
     /**
      * Clear the text of an edit box and remove focus.
@@ -145,11 +146,11 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
      * Callback used for posting a new comment. This callback automatically
      * processes the server reply and adds the result to the comment fragment
      */
-    protected Callback<Comment> commentPostedCallback = new Callback<Comment>() {
+    protected Callback<ActionResponse<Comment>> commentPostedCallback = new Callback<ActionResponse<Comment>>() {
         @Override
-        public void onSucces(Response<Comment> response) {
+        public void onSucces(Response<ActionResponse<Comment>> response) {
             if(response != null && response.body() != null) {
-                Comment c = response.body();
+                Comment c = response.body().payload;
                 if(addNextCallbackToAdapter != null) {
                     addNextCallbackToAdapter.add(c);
                     addNextCallbackToAdapter = null;

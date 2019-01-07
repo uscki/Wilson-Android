@@ -32,7 +32,7 @@ public class HomeAgendaTab extends PageableFragment<Agenda> {
         setHasOptionsMenu(true);
 
         setAdapter(new AgendaItemAdapter(new ArrayList<AgendaItem>()));
-        Services.getInstance().agendaService.newer(page, AGENDA_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().agendaService.agenda(page, AGENDA_PAGE_SIZE).enqueue(callback);
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -55,7 +55,7 @@ public class HomeAgendaTab extends PageableFragment<Agenda> {
         if (item.getItemId() == R.id.action_agenda_archive) {
             showArchive = true;
 
-            page = 0; // reset page in case user has scrolled with newer
+            page = 0; // reset page in case user has scrolled with agenda
             getAdapter().clear();
             scrollLoad = true;
             onScrollRefresh();
@@ -72,15 +72,15 @@ public class HomeAgendaTab extends PageableFragment<Agenda> {
     @Override
     public void onSwipeRefresh() {
         showArchive = false;
-        Services.getInstance().agendaService.newer(page, AGENDA_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().agendaService.agenda(page, AGENDA_PAGE_SIZE).enqueue(callback);
     }
 
     @Override
     public void onScrollRefresh() {
         if (showArchive) {
-            Services.getInstance().agendaService.older(page, AGENDA_PAGE_SIZE).enqueue(callback);
+            Services.getInstance().agendaService.archive(page, AGENDA_PAGE_SIZE).enqueue(callback);
         } else {
-            Services.getInstance().agendaService.newer(page, AGENDA_PAGE_SIZE).enqueue(callback);
+            Services.getInstance().agendaService.agenda(page, AGENDA_PAGE_SIZE).enqueue(callback);
         }
     }
 

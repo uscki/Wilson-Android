@@ -28,21 +28,19 @@ public class AgendaItem implements IWilsonBaseItem{
     @Expose
     private Boolean registrationrequired;
     @Expose
-    private Long deadline;
+    private String deadline;
     @Expose
-    private Long unregisterDeadline;
+    private String unregisterDeadline;
     @Expose
     private String location;
     @Expose
-    private Long start;
+    private String start;
     @Expose
-    private Long end;
+    private String end;
     @Expose
     private String title;
     @Expose
-    private String description;
-    @Expose
-    private List<Object> descriptionJSON;
+    private List<Object> description;
     @Expose
     private String what;
     @Expose
@@ -67,20 +65,12 @@ public class AgendaItem implements IWilsonBaseItem{
         this.participants = participants;
     }
 
-    public String getDescription() {
+    public List<Object> getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(List<Object> description) {
         this.description = description;
-    }
-
-    public List<Object> getDescriptionJSON() {
-        return descriptionJSON;
-    }
-
-    public void setDescriptionJSON(List<Object> descriptionJSON) {
-        this.descriptionJSON = descriptionJSON;
     }
 
     public String getTitle() {
@@ -95,7 +85,7 @@ public class AgendaItem implements IWilsonBaseItem{
         return new DateTime(end);
     }
 
-    public void setEnd(Long end) {
+    public void setEnd(String end) {
         this.end = end;
     }
 
@@ -103,7 +93,7 @@ public class AgendaItem implements IWilsonBaseItem{
         return new DateTime(start);
     }
 
-    public void setStart(Long start) {
+    public void setStart(String start) {
         this.start = start;
     }
 
@@ -111,7 +101,7 @@ public class AgendaItem implements IWilsonBaseItem{
         return new DateTime(deadline);
     }
 
-    public void setDeadline(Long deadline) {
+    public void setDeadline(String deadline) {
         this.deadline = deadline;
     }
 
@@ -187,11 +177,11 @@ public class AgendaItem implements IWilsonBaseItem{
         this.registrationrequired = registrationrequired;
     }
 
-    public Long getUnregisterDeadline() {
-        return unregisterDeadline;
+    public DateTime getUnregisterDeadline() {
+        return new DateTime(unregisterDeadline);
     }
 
-    public void setUnregisterDeadline(Long unregisterDeadline) {
+    public void setUnregisterDeadline(String unregisterDeadline) {
         this.unregisterDeadline = unregisterDeadline;
     }
 
