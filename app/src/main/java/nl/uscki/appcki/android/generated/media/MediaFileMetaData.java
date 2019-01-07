@@ -2,6 +2,8 @@ package nl.uscki.appcki.android.generated.media;
 
 import com.google.gson.annotations.Expose;
 
+import org.joda.time.DateTime;
+
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
 public class MediaFileMetaData implements IWilsonBaseItem {
@@ -10,7 +12,7 @@ public class MediaFileMetaData implements IWilsonBaseItem {
     private Integer id;
 
     @Expose
-    private long added;
+    private String added;
 
     @Expose
     private boolean allPersonsTagged;
@@ -27,11 +29,11 @@ public class MediaFileMetaData implements IWilsonBaseItem {
         this.id = id;
     }
 
-    public long getAdded() {
-        return added;
+    public DateTime getAdded() {
+        return new DateTime(added);
     }
 
-    public void setAdded(long added) {
+    public void setAdded(String added) {
         this.added = added;
     }
 

@@ -102,7 +102,7 @@ public class StoreFragment extends PageableFragment<Pageable<Product>> implement
      * @param amount
      */
     public void orderProduct(final Context context, final Product product, final int amount) {
-        Services.getInstance().shopService.placeOrder(product.id, amount).enqueue(new Callback<Boolean>() {
+        Services.getInstance().shopService.placeOrder(storeId, product.id, amount).enqueue(new Callback<Boolean>() {
             @Override
             public void onSucces(Response<Boolean> response) {
                 if(response.body()) {

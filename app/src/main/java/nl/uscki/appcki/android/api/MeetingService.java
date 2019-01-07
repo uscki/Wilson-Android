@@ -15,19 +15,16 @@ import retrofit2.http.Query;
  * Created by peter on 7/12/16.
  */
 public interface MeetingService {
-    @GET("meetings/older")
-    Call<MeetingOverview> older(@Query("page") Integer page, @Query("size") Integer size);
+    @GET("meetings/")
+    Call<MeetingOverview> getMeetingCollection(@Query("page") Integer page, @Query("size") Integer size);
 
-    @GET("meetings/older")
-    Call<MeetingOverview> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer id);
+    @GET("meetings/")
+    Call<MeetingOverview> getMeetingCollection(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer id);
 
-    @GET("meetings/newer")
-    Call<MeetingOverview> newer(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer id);
-
-    @GET("meetings/get/{id}")
+    @GET("meetings/{id}")
     Call<MeetingItem> get(@Path("id") Integer id);
 
     @FormUrlEncoded
-    @POST("meetings/slots/{id}")
-    Call<Slot> setSlot(@Path("id") Integer id, @Field("notes") String notes, @Field("canAttend") Boolean canAttend);
+    @POST("meetings/{meeting}/slots/{id}")
+    Call<Slot> setSlot(@Path("meeting") Integer meetingId, @Path("id") Integer id, @Field("notes") String notes, @Field("canAttend") Boolean canAttend);
 }

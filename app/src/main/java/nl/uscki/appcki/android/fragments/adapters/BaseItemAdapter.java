@@ -68,6 +68,8 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
     }
 
     public void showLoadingMoreItems(boolean show) {
+        // TODO: this function is called inside the scroll callback. Android is complaining that we can't
+        // TODO: call notifyDataSetChanged inside a scroll callback.
         if(show && loadingMoreIndex < 0) {
             LoadingMoreItem item = new LoadingMoreItem();
             this.loadingMoreIndex = this.items.size();

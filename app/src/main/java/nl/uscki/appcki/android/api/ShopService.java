@@ -13,15 +13,15 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ShopService {
-    @GET("shop/stores/")
+    @GET("shops/")
     Call<List<Store>> getStores();
 
-    @GET("shop/stores/{store}/products")
+    @GET("shops/{store}/products/")
     Call<Pageable<Product>> getProductsForStore(@Path("store") Integer store, @Query("page") Integer page, @Query("size") Integer size);
 
-    @GET("shop/orders/")
+    @GET("shops/orders/")
     Call<Pageable<Order>> getOrders(@Query("page") Integer page, @Query("size") Integer size);
 
-    @POST("shop/orders/new")
-    Call<Boolean> placeOrder(@Query("id") Integer productId, @Query("amount") Integer amount);
+    @POST("shops/{storeId}/products/{productId}/order")
+    Call<Boolean> placeOrder(@Path("storeId") Integer storeId, @Path("productId") Integer productId, @Query("amount") Integer amount);
 }

@@ -18,7 +18,7 @@ public class AgendaParticipant implements IWilsonBaseItem {
     @Expose
     private String note;
     @Expose
-    private Long subscribed;
+    private String subscribed;
     @Expose
     private Boolean backuplist;
     @Expose
@@ -92,7 +92,7 @@ public class AgendaParticipant implements IWilsonBaseItem {
      * @param subscribed
      *     The subscribed
      */
-    public void setSubscribed(Long subscribed) {
+    public void setSubscribed(String subscribed) {
         this.subscribed = subscribed;
     }
 

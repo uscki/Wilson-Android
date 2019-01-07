@@ -38,18 +38,18 @@ public interface AgendaService {
     Call<Object> categories();
 
     @FormUrlEncoded
-    @POST("agenda/subscribe")
-    Call<ActionResponse<AgendaParticipantLists>> subscribe(@Field("id") Integer id, @Field("note") String note);
+    @POST("agenda/{event}/subscribe")
+    Call<ActionResponse<AgendaParticipantLists>> subscribe(@Path("event") Integer id, @Field("note") String note);
 
     @FormUrlEncoded
-    @POST("agenda/subscribe")
-    Call<ActionResponse<AgendaParticipantLists>> subscribe(@Field("id") Integer id, @Field("note") String note, @Field("answer") String answer);
+    @POST("agenda/{event}/subscribe")
+    Call<ActionResponse<AgendaParticipantLists>> subscribe(@Path("event") Integer id, @Field("note") String note, @Field("answer") String answer);
 
     @FormUrlEncoded
-    @POST("agenda/unsubscribe")
-    Call<ActionResponse<AgendaParticipantLists>> unsubscribe(@Field("id") Integer id);
+    @POST("agenda/{id}/unsubscribe")
+    Call<ActionResponse<AgendaParticipantLists>> unsubscribe(@Path("id") Integer id);
 
-    @GET("agenda/{id}/comments")
+    @GET("agenda/{id}/comments/")
     Call<CommentPage> getComments(@Path("id") Integer agendaId, @Query("page") Integer page, @Query("size") Integer size);
 
     @POST("agenda/{id}/comments/add")

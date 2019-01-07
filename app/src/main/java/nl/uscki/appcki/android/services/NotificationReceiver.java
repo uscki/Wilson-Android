@@ -30,6 +30,7 @@ import nl.uscki.appcki.android.activities.MeetingActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
@@ -79,10 +80,10 @@ public class NotificationReceiver extends FirebaseMessagingService {
             // Instance ID token to your app server.
             //sendRegistrationToServer(refreshedToken);
             Services.getInstance().userService.registerDeviceId(refreshedToken)
-                    .enqueue(new Callback<Boolean>() {
+                    .enqueue(new Callback<ActionResponse<Boolean>>() {
                 @Override
-                public void onSucces(Response<Boolean> response) {
-                    if(response.body()) {
+                public void onSucces(Response<ActionResponse<Boolean>> response) {
+                    if(response.body().payload) {
                         Log.d(NotificationReceiver.class.getSimpleName(),
                                 "New firebase token succesfully communicated with server");
                     } else {

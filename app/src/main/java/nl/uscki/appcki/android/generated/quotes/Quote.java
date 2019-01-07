@@ -3,6 +3,8 @@ package nl.uscki.appcki.android.generated.quotes;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
@@ -26,13 +28,10 @@ public class Quote implements IWilsonBaseItem {
     Integer positiveVotes;
     @Expose
     @SerializedName("posted")
-    Long posted;
+    String posted;
     @Expose
     @SerializedName("quote")
-    String quote;
-    @Expose
-    @SerializedName("quoteJSON")
-    List<Object> quoteJSON;
+    List<Object> quote;
     @Expose
     @SerializedName("totalWeight")
     Integer totalWeight;
@@ -72,28 +71,20 @@ public class Quote implements IWilsonBaseItem {
         this.positiveVotes = positiveVotes;
     }
 
-    public Long getPosted() {
-        return posted;
+    public DateTime getPosted() {
+        return new DateTime(posted);
     }
 
-    public void setPosted(Long posted) {
+    public void setPosted(String posted) {
         this.posted = posted;
     }
 
-    public String getQuote() {
+    public List<Object> getQuote() {
         return quote;
     }
 
-    public void setQuote(String quote) {
-        this.quote = quote;
-    }
-
-    public List<Object> getQuoteJSON() {
-        return quoteJSON;
-    }
-
-    public void setQuoteJSON(List<Object> quoteJSON) {
-        this.quoteJSON = quoteJSON;
+    public void setQuote(List<Object> quoteJSON) {
+        this.quote = quoteJSON;
     }
 
     public Integer getTotalWeight() {

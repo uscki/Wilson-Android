@@ -3,7 +3,6 @@ package nl.uscki.appcki.android.fragments.adapters;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,12 +42,12 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
         final NewsItem item = items.get(position);
         holder.mItem = item;
         holder.title.setText(item.getTitle());
-        holder.content.setText(Parser.parse(item.getShorttextJSON(), true, holder.content));
+        holder.content.setText(Parser.parse(item.getShorttext(), true, holder.content));
 
         String iconUrl = "https://www.uscki.nl/modules/News/images/" + item.getType().getIcon();
         //holder.category.setImageUrl(iconUrl);
 
-        holder.metadata.setText("(" + item.getPerson().getPostalname() + " / " + Utils.timestampConversion(item.getTimestamp(), false) + ")");
+        holder.metadata.setText("(" + item.getPerson().getPostalname() + " / " + Utils.timestampConversion(item.getTimestamp().getMillis(), false) + ")");
         holder.metadata.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,7 +58,7 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
             }
         });
 
-        if (item.getLongtextJSON() != null) {
+        if (item.getLongtext() != null) {
             holder.readmore.setVisibility(View.VISIBLE);
             holder.readmore.setOnClickListener(new View.OnClickListener() {
                 @Override

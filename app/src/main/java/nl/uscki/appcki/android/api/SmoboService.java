@@ -14,15 +14,18 @@ import retrofit2.http.Query;
  */
 
 public interface SmoboService {
-    @GET("smobo/get/{id}")
+    @GET("people/{id}")
     Call<SmoboItem> get(@Path("id") Integer id);
 
-    @GET("smobo/get/{id}/photos")
+    @GET("people/")
+    Call<SmoboSearchPage> getPeopleCollection(@Query("page") Integer page, @Query("size") Integer size, @Query("sort") String sort);
+
+    @GET("people/{id}/photos/")
     Call<Pageable<MediaFileMetaData>> photos(@Path("id") Integer id, @Query("page") Integer page, @Query("size") Integer size);
 
-    @GET("smobo/search")
+    @GET("people/search")
     Call<SmoboSearchPage> search (@Query("query") String query, @Query("page") Integer page, @Query("size") Integer size);
 
-    @GET("smobo/search")
+    @GET("people/search")
     Call<SmoboSearchPage> search (@Query("query") String query, @Query("page") Integer page, @Query("size") Integer size, @Query("sort") String sort);
 }

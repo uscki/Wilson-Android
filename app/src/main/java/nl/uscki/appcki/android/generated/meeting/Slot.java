@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class Slot  implements IWilsonBaseItem {
     private Integer id;
     @SerializedName("starttime")
     @Expose
-    private Long starttime;
+    private String starttime;
     @SerializedName("preferences")
     @Expose
     private List<Preference> preferences = new ArrayList<>();
@@ -45,8 +46,8 @@ public class Slot  implements IWilsonBaseItem {
      * @return
      * The starttime
      */
-    public Long getStarttime() {
-        return starttime;
+    public DateTime getStarttime() {
+        return new DateTime(starttime);
     }
 
     /**
@@ -54,7 +55,7 @@ public class Slot  implements IWilsonBaseItem {
      * @param starttime
      * The starttime
      */
-    public void setStarttime(Long starttime) {
+    public void setStarttime(String starttime) {
         this.starttime = starttime;
     }
 

@@ -13,14 +13,11 @@ import retrofit2.http.Query;
  * Created by peter on 7/12/16.
  */
 public interface ShoutboxService {
-    @GET("shoutbox/newer")
-    Call<Roephoek> newer(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer newer);
+    @GET("shouts/")
+    Call<Roephoek> getShoutsCollection(@Query("page") Integer page, @Query("size") Integer size);
 
-    @GET("shoutbox/older")
-    Call<Roephoek> older(@Query("page") Integer page, @Query("size") Integer size);
-
-    @GET("shoutbox/older")
-    Call<Roephoek> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
+    @GET("shouts/")
+    Call<Roephoek> getShoutsCollection(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
 
     @FormUrlEncoded
     @POST("shoutbox/shout")
