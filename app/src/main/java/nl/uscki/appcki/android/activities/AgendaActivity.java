@@ -18,6 +18,10 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import org.joda.time.DateTime;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -128,7 +132,10 @@ public class AgendaActivity extends BasicActivity {
         }
 
         foundUser = false;
-        for (AgendaParticipant part : item.getParticipants()) {
+
+        List<AgendaParticipant> allParticipants = new ArrayList<>(item.getParticipants());
+        allParticipants.addAll(item.getBackupList());
+        for (AgendaParticipant part : allParticipants) {
             if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
                 if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
                     foundUser = true;
@@ -510,9 +517,10 @@ public class AgendaActivity extends BasicActivity {
         }
     }
 
-    // TODO never used, in theory replaced by newer stuff? Can this be made more decent
+    // TODO this event *SHOULD* only be used in this activity. Move it directly to the callback?
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
         item.setParticipants(event.subscribed.getParticipants());
+        item.setBackupList(event.subscribed.getBackupList());
         if(!event.showSubscribe) {
             setAlarmForEvent(item);
             menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
@@ -535,5 +543,6 @@ public class AgendaActivity extends BasicActivity {
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
         }
         setExportButtons();
+        EventBus.getDefault().post(new AgendaItemUpdatedEvent(item));
     }
 }
