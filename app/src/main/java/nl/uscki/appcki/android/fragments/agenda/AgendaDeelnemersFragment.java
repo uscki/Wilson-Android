@@ -20,6 +20,8 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.events.AgendaItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
+import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
+import nl.uscki.appcki.android.generated.DividingListHeader;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
 import retrofit2.Response;
@@ -39,6 +41,11 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
     private void setupParticipantList(AgendaItem item) {
         if (getAdapter() instanceof AgendaDeelnemersAdapter) {
             getAdapter().update(item.getParticipants());
+            if(item.getBackupList().size() > 0) {
+                DividingListHeader seperatingHeader = new DividingListHeader(getString(R.string.agenda_participants_backup_list));
+                getAdapter().add(seperatingHeader);
+                getAdapter().addItems(item.getBackupList());
+            }
         }
         if(emptyText != null && participantList != null) {
             if (item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
@@ -92,20 +99,10 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
     }
 
     // EVENT HANDLING
-
-    public void onEventMainThread(AgendaItemSubscribedEvent event) {
-        swipeContainer.setRefreshing(false);
-        if (getAdapter() instanceof AgendaDeelnemersAdapter) {
-            if(event.subscribed != null) { //TODO because of dirty hackin MainActivity
-                getAdapter().update(event.subscribed.getParticipants());
-            }
-        }
-    }
-
     public void onEventMainThread(AgendaItemUpdatedEvent event) {
         swipeContainer.setRefreshing(false);
         if(getAdapter() instanceof AgendaDeelnemersAdapter) {
-            getAdapter().update(event.getUpdatedItem().getParticipants());
+            setupParticipantList(activity.getAgendaItem());
         }
     }
 
