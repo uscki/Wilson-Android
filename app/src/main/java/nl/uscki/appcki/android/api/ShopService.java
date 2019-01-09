@@ -2,6 +2,7 @@ package nl.uscki.appcki.android.api;
 
 import java.util.List;
 
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.shop.Order;
 import nl.uscki.appcki.android.generated.shop.Product;
@@ -23,5 +24,5 @@ public interface ShopService {
     Call<Pageable<Order>> getOrders(@Query("page") Integer page, @Query("size") Integer size);
 
     @POST("shops/{storeId}/products/{productId}/order")
-    Call<Boolean> placeOrder(@Path("storeId") Integer storeId, @Path("productId") Integer productId, @Query("amount") Integer amount);
+    Call<ActionResponse<Integer>> placeOrder(@Path("storeId") Integer storeId, @Path("productId") Integer productId, @Query("amount") Integer amount);
 }
