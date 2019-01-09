@@ -1,13 +1,14 @@
 package nl.uscki.appcki.android.generated;
 
-public class DividingListHeader implements IWilsonBaseItem {
+public class ListSectionHeader implements IWilsonBaseItem {
 
     private String dividingListHeader;
     private String dividingSubHeader;
     private String messageBody;
+    private String helpText;
     private boolean bottomDividerVisible;
 
-    public DividingListHeader(String header) {
+    public ListSectionHeader(String header) {
         this.dividingListHeader = header;
     }
 
@@ -29,6 +30,14 @@ public class DividingListHeader implements IWilsonBaseItem {
 
     public void setMessageBody(String messageBody) {
         this.messageBody = messageBody;
+    }
+
+    public String getHelpText() {
+        return this.helpText;
+    }
+
+    public void setHelpText(String helpText) {
+        this.helpText = helpText;
     }
 
     public void setBottomDividerVisible(boolean visible) {

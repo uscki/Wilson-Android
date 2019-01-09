@@ -10,14 +10,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.generated.DividingListHeader;
+import nl.uscki.appcki.android.generated.ListSectionHeader;
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.LoadingMoreItem;
 
@@ -111,8 +114,8 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
             return (T) new LoadingMoreViewHolder(view);
         } else if(viewType == 2) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.fragment_list_seperating_header, parent, false);
-            return (T) new ListSeperatingHeader(view);
+                    .inflate(R.layout.fragment_agenda_participant_section_header, parent, false);
+            return (T) new ListSectionHeaderHolder(view);
         } {
             return onCreateCustomViewHolder(parent);
         }
@@ -120,8 +123,8 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
 
     @Override
     public void onBindViewHolder(@NonNull T holder, int position) {
-        if(holder instanceof BaseItemAdapter.ListSeperatingHeader) {
-            bindListDividerViewHolder((BaseItemAdapter.ListSeperatingHeader) holder, (DividingListHeader) items.get(position));
+        if(holder instanceof BaseItemAdapter.ListSectionHeaderHolder) {
+            bindListDividerViewHolder((ListSectionHeaderHolder) holder, (ListSectionHeader) items.get(position));
         } else if(!(holder instanceof BaseItemAdapter.LoadingMoreViewHolder)) {
             onBindCustomViewHolder(holder, position);
         }
@@ -130,22 +133,37 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
     @Override
     public void onBindViewHolder(@NonNull T holder, int position, @NonNull List<Object> payloads) {
         super.onBindViewHolder(holder, position, payloads);
-        if(holder instanceof BaseItemAdapter.ListSeperatingHeader) {
-            bindListDividerViewHolder((BaseItemAdapter.ListSeperatingHeader) holder, (DividingListHeader) items.get(position));
+        if(holder instanceof BaseItemAdapter.ListSectionHeaderHolder) {
+            bindListDividerViewHolder((ListSectionHeaderHolder) holder, (ListSectionHeader) items.get(position));
         } else if(!(holder instanceof BaseItemAdapter.LoadingMoreViewHolder)) {
             onBindCustomViewHolder(holder, position, payloads);
         }
     }
 
-    private void bindListDividerViewHolder(@NonNull BaseItemAdapter.ListSeperatingHeader holder, DividingListHeader headerInfo) {
+    private void bindListDividerViewHolder(@NonNull ListSectionHeaderHolder holder, final ListSectionHeader headerInfo) {
         holder.header.setText(headerInfo.getDividingListHeader());
         if(headerInfo.getDividingSubHeader() != null) {
             holder.subHeader.setText(headerInfo.getDividingSubHeader());
             holder.subHeader.setVisibility(View.VISIBLE);
+        } else {
+            holder.subHeader.setVisibility(View.GONE);
         }
         if(headerInfo.getMessageBody() != null) {
             holder.messageBody.setText(headerInfo.getMessageBody());
             holder.messageBody.setVisibility(View.VISIBLE);
+        } else {
+            holder.messageBody.setVisibility(View.GONE);
+        }
+        if(headerInfo.getHelpText() != null) {
+            holder.helpButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(), headerInfo.getHelpText(), Toast.LENGTH_LONG).show();
+                }
+            });
+            holder.helpButton.setVisibility(View.VISIBLE);
+        } else {
+            holder.helpButton.setVisibility(View.GONE);
         }
         if(headerInfo.isBottomDividerVisible()) {
             holder.listDivider.setVisibility(View.VISIBLE);
@@ -159,7 +177,7 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
         final K item = items.get(position);
         if(item instanceof LoadingMoreItem) {
             return 1;
-        } else if(item instanceof DividingListHeader) {
+        } else if(item instanceof ListSectionHeader) {
             return 2;
         } else {
             return 0;
@@ -172,7 +190,7 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
         @BindView(R.id.loadMoreProgressBar)
         ProgressBar progressBar;
 
-        public LoadingMoreViewHolder(View itemView) {
+        LoadingMoreViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             mView = itemView;
@@ -183,7 +201,7 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
         }
     }
 
-    public class ListSeperatingHeader extends RecyclerView.ViewHolder {
+    public class ListSectionHeaderHolder extends RecyclerView.ViewHolder {
         public final View view;
 
         @BindView(R.id.dividing_list_header)
@@ -195,10 +213,13 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
         @BindView(R.id.dividing_list_message_body)
         TextView messageBody;
 
+        @BindView(R.id.helpButton)
+        Button helpButton;
+
         @BindView(R.id.dividing_list_header_bottom_divider)
         ImageView listDivider;
 
-        public ListSeperatingHeader(View itemView) {
+        ListSectionHeaderHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             this.view = itemView;

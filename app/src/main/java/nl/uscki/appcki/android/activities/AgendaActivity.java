@@ -482,8 +482,14 @@ public class AgendaActivity extends BasicActivity {
                     EventBus.getDefault()
                             .post(new AgendaItemSubscribedEvent(response.body(), true));
                     setExportButtons();
+                    Toast.makeText(AgendaActivity.this, R.string.agenda_unsubscribe_confirmed, Toast.LENGTH_SHORT).show();
                 }
 
+                @Override
+                public void onError(Response<AgendaParticipantLists> response) {
+                    super.onError(response);
+                    Toast.makeText(AgendaActivity.this, R.string.agenda_unsubscribe_failed, Toast.LENGTH_SHORT).show();
+                }
             });
         }
     }
@@ -543,6 +549,39 @@ public class AgendaActivity extends BasicActivity {
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
         }
         setExportButtons();
+        showSubscribeConfirmation(event.subscribed);
         EventBus.getDefault().post(new AgendaItemUpdatedEvent(item));
+    }
+
+    private void showSubscribeConfirmation(AgendaParticipantLists nowSubscribedLists) {
+        if(UserHelper.getInstance().getPerson() != null) {
+            int myId = UserHelper.getInstance().getPerson().getId();
+            boolean found = false;
+            int messageResourceId = -1;
+
+            for(AgendaParticipant p : nowSubscribedLists.getParticipants()) {
+                if (p.getPerson().getId() != null && p.getPerson().getId().equals(myId)) {
+                    found = true;
+                    messageResourceId = R.string.agenda_subscribe_confirmed;
+                    break;
+                }
+            }
+
+            if(!found) {
+                for(AgendaParticipant p : nowSubscribedLists.getBackupList()) {
+                    if(p.getPerson().getId() != null && p.getPerson().getId().equals(myId)) {
+                        found = true;
+                        messageResourceId = R.string.agenda_subscribe_backuplist;
+                        break;
+                    }
+                }
+            }
+
+            if(found) {
+                Toast.makeText(this, messageResourceId, Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e(getClass().getSimpleName(), "User not found on either list. No message shown");
+            }
+        }
     }
 }
