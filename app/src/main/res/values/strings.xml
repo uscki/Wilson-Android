@@ -52,6 +52,11 @@
     <string name="agenda_no_new_agendas">Er zijn geen evenementen meer.</string>
     <string name="agenda_toast_added_to_calendar">Evenement is toegevoegd aan agenda</string>
     <string name="agenda_toast_removed_from_calendar">Evenement is verwijderd uit agenda</string>
+    <string name="agenda_subscribe_confirmed">Je bent ingeschreven voor deze activiteit</string>
+    <string name="agenda_unsubscribe_confirmed">Je bent uitgeschreven voor deze activiteit</string>
+    <string name="agenda_subscribe_failed">Er ging iets fout. Je inschrijving is niet behandelt!</string>
+    <string name="agenda_unsubscribe_failed">Er ging iets fout. Je bent nog steeds ingeschreven!</string>
+    <string name="agenda_subscribe_backuplist">Het maximum aantal inschrijvingen is al behaald. Je bent op de wachtlijst geplaatst. Als er uitschrijvingen zijn heb je kans alsnog ingeschreven te worden.</string>
 
     <string name="agenda_inschrijven_verplicht">Inschrijven verplicht</string>
     <string name="agenda_archive_menu_string">Archief</string>
@@ -59,6 +64,7 @@
     <string name="action_agenda_export">Opslaan</string>
     <string name="action_agenda_remove_from_calendar">Verwijderen uit agenda</string>
     <string name="agenda_participants_backup_list">Wachtlijst</string>
+    <string name="agenda_participants_backup_list_help">Als er een maximum aantal inschrijvingen geldt voor een evenement en dat aantal inschrijvingen is al gehaald, word je op de wachtlijst geplaatst als jij je ook inschrijft. Wanneer bestaande deelnemers zich uitschrijven, heb je kans van de wachtlijst naar de deelnemerslijst te worden geplaatst. Dit gebeurt in volgorde van inschrijving voor alle wachtenden.</string>
 
     <string name="example_text">Example text</string>
 

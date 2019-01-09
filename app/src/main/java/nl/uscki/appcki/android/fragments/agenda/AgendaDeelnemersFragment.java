@@ -3,7 +3,6 @@ package nl.uscki.appcki.android.fragments.agenda;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +15,11 @@ import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
-import nl.uscki.appcki.android.api.Callback;
-import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.events.AgendaItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
-import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
-import nl.uscki.appcki.android.generated.DividingListHeader;
+import nl.uscki.appcki.android.generated.ListSectionHeader;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
-import retrofit2.Response;
 
 /**
  * A fragment representing a list of AgendaParticipants.
@@ -42,7 +37,8 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
         if (getAdapter() instanceof AgendaDeelnemersAdapter) {
             getAdapter().update(item.getParticipants());
             if(item.getBackupList().size() > 0) {
-                DividingListHeader seperatingHeader = new DividingListHeader(getString(R.string.agenda_participants_backup_list));
+                ListSectionHeader seperatingHeader = new ListSectionHeader(getString(R.string.agenda_participants_backup_list));
+                seperatingHeader.setHelpText(getString(R.string.agenda_participants_backup_list_help));
                 getAdapter().add(seperatingHeader);
                 getAdapter().addItems(item.getBackupList());
             }
