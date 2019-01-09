@@ -1,7 +1,21 @@
 package nl.uscki.appcki.android.api;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
@@ -14,6 +28,23 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static org.joda.time.format.ISODateTimeFormat.*;
+
+class DateTimeTypeAdapter implements JsonSerializer<DateTime>,
+        JsonDeserializer<DateTime> {
+    @Override
+    public DateTime deserialize(JsonElement json, Type typeOfT,
+                                JsonDeserializationContext context) throws JsonParseException {
+        return DateTime.parse(json.getAsString());
+    }
+
+    @Override
+    public JsonElement serialize(DateTime src, Type typeOfSrc,
+                                 JsonSerializationContext context) {
+        return new JsonPrimitive(dateTimeNoMillis().print(src));
+    }
+}
+
 /**
  * Created by peter on 7/12/16.
  */
@@ -23,10 +54,14 @@ public class ServiceGenerator {
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
+    private static Gson gson = new GsonBuilder()
+            .registerTypeAdapter(DateTime.class, new DateTimeTypeAdapter())
+            .create();
+
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
                     .baseUrl(API_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create());
+                    .addConverterFactory(GsonConverterFactory.create(gson));
 
     public static OkHttpClient client;
 

@@ -28,7 +28,7 @@ public class Quote implements IWilsonBaseItem {
     Integer positiveVotes;
     @Expose
     @SerializedName("posted")
-    String posted;
+    DateTime posted;
     @Expose
     @SerializedName("quote")
     List<Object> quote;
@@ -72,10 +72,10 @@ public class Quote implements IWilsonBaseItem {
     }
 
     public DateTime getPosted() {
-        return new DateTime(posted);
+        return posted;
     }
 
-    public void setPosted(String posted) {
+    public void setPosted(DateTime posted) {
         this.posted = posted;
     }
 

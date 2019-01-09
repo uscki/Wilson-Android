@@ -17,13 +17,13 @@ public class Committee  implements IWilsonBaseItem {
     private Integer id;
     @Expose
     @SerializedName("start")
-    String start;
+    DateTime start;
     @Expose
     @SerializedName("name")
     String name;
     @Expose
     @SerializedName("end")
-    String end;
+    DateTime end;
 
     public Integer getId() {
         return id;
@@ -34,10 +34,10 @@ public class Committee  implements IWilsonBaseItem {
     }
 
     public DateTime getStart() {
-        return new DateTime(start);
+        return start;
     }
 
-    public void setStart(String start) {
+    public void setStart(DateTime start) {
         this.start = start;
     }
 
@@ -50,10 +50,10 @@ public class Committee  implements IWilsonBaseItem {
     }
 
     public DateTime getEnd() {
-        return new DateTime(end);
+        return end;
     }
 
-    public void setEnd(String end) {
+    public void setEnd(DateTime end) {
         this.end = end;
     }
 }

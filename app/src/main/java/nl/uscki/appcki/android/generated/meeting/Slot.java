@@ -18,7 +18,7 @@ public class Slot  implements IWilsonBaseItem {
     private Integer id;
     @SerializedName("starttime")
     @Expose
-    private String starttime;
+    private DateTime starttime;
     @SerializedName("preferences")
     @Expose
     private List<Preference> preferences = new ArrayList<>();
@@ -47,7 +47,7 @@ public class Slot  implements IWilsonBaseItem {
      * The starttime
      */
     public DateTime getStarttime() {
-        return new DateTime(starttime);
+        return starttime;
     }
 
     /**
@@ -55,7 +55,7 @@ public class Slot  implements IWilsonBaseItem {
      * @param starttime
      * The starttime
      */
-    public void setStarttime(String starttime) {
+    public void setStarttime(DateTime starttime) {
         this.starttime = starttime;
     }
 

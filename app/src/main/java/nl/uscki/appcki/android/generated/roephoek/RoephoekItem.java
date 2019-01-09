@@ -23,7 +23,7 @@ public class RoephoekItem implements IWilsonBaseItem {
     private List<Object> message;
     @SerializedName("timestamp")
     @Expose
-    private String timestamp;
+    private DateTime timestamp;
 
     /**
      *
@@ -85,7 +85,7 @@ public class RoephoekItem implements IWilsonBaseItem {
      * The timestamp
      */
     public DateTime getTimestamp() {
-        return new DateTime(timestamp);
+        return timestamp;
     }
 
     /**
@@ -93,7 +93,7 @@ public class RoephoekItem implements IWilsonBaseItem {
      * @param timestamp
      * The timestamp
      */
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(DateTime timestamp) {
         this.timestamp = timestamp;
     }
 

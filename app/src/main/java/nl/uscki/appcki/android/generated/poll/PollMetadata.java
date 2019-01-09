@@ -25,7 +25,7 @@ public class PollMetadata implements IWilsonBaseItem{
     Boolean active;
     @Expose
     @SerializedName("creation")
-    String creation;
+    DateTime creation;
     @Expose
     @SerializedName("id")
     Integer id;
@@ -45,10 +45,10 @@ public class PollMetadata implements IWilsonBaseItem{
     }
 
     public DateTime getCreation() {
-        return new DateTime(creation);
+        return creation;
     }
 
-    public void setCreation(String creation) {
+    public void setCreation(DateTime creation) {
         this.creation = creation;
     }
 

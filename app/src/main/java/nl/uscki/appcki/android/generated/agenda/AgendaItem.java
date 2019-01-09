@@ -3,6 +3,7 @@ package nl.uscki.appcki.android.generated.agenda;
 import com.google.gson.annotations.Expose;
 import org.joda.time.DateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.SingleValueWilsonItem;
@@ -28,15 +29,15 @@ public class AgendaItem implements IWilsonBaseItem{
     @Expose
     private Boolean registrationrequired;
     @Expose
-    private String deadline;
+    private DateTime deadline;
     @Expose
-    private String unregisterDeadline;
+    private DateTime unregisterDeadline;
     @Expose
     private String location;
     @Expose
-    private String start;
+    private DateTime start;
     @Expose
-    private String end;
+    private DateTime end;
     @Expose
     private String title;
     @Expose
@@ -85,7 +86,7 @@ public class AgendaItem implements IWilsonBaseItem{
         return new DateTime(end);
     }
 
-    public void setEnd(String end) {
+    public void setEnd(DateTime end) {
         this.end = end;
     }
 
@@ -93,7 +94,7 @@ public class AgendaItem implements IWilsonBaseItem{
         return new DateTime(start);
     }
 
-    public void setStart(String start) {
+    public void setStart(DateTime start) {
         this.start = start;
     }
 
@@ -101,7 +102,7 @@ public class AgendaItem implements IWilsonBaseItem{
         return new DateTime(deadline);
     }
 
-    public void setDeadline(String deadline) {
+    public void setDeadline(DateTime deadline) {
         this.deadline = deadline;
     }
 
@@ -181,7 +182,7 @@ public class AgendaItem implements IWilsonBaseItem{
         return new DateTime(unregisterDeadline);
     }
 
-    public void setUnregisterDeadline(String unregisterDeadline) {
+    public void setUnregisterDeadline(DateTime unregisterDeadline) {
         this.unregisterDeadline = unregisterDeadline;
     }
 

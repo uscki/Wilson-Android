@@ -4,12 +4,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.joda.time.DateTime;
 
 public class ServerError {
 
     @SerializedName("timestamp")
     @Expose
-    private Long timestamp;
+    private DateTime timestamp;
     @SerializedName("status")
     @Expose
     private Integer status;
@@ -31,7 +32,7 @@ public class ServerError {
      * @return
      * The timestamp
      */
-    public Long getTimestamp() {
+    public DateTime getTimestamp() {
         return timestamp;
     }
 
@@ -40,7 +41,7 @@ public class ServerError {
      * @param timestamp
      * The timestamp
      */
-    public void setTimestamp(Long timestamp) {
+    public void setTimestamp(DateTime timestamp) {
         this.timestamp = timestamp;
     }
 

@@ -22,7 +22,7 @@ public class NewsItem implements IWilsonBaseItem {
     @Expose
     private String title;
     @Expose
-    private String posteddate;
+    private DateTime posteddate;
     @Expose
     private PersonSimpleName person;
     @Expose
@@ -30,7 +30,7 @@ public class NewsItem implements IWilsonBaseItem {
     @Expose
     private String sticky;
     @Expose
-    private String timestamp;
+    private DateTime timestamp;
     @Expose
     private NewsType type;
 
@@ -111,7 +111,7 @@ public class NewsItem implements IWilsonBaseItem {
      * @return
      *     The posteddate
      */
-    public String getPosteddate() {
+    public DateTime getPosteddate() {
         return posteddate;
     }
 
@@ -120,7 +120,7 @@ public class NewsItem implements IWilsonBaseItem {
      * @param posteddate
      *     The posteddate
      */
-    public void setPosteddate(String posteddate) {
+    public void setPosteddate(DateTime posteddate) {
         this.posteddate = posteddate;
     }
 
@@ -179,10 +179,10 @@ public class NewsItem implements IWilsonBaseItem {
     }
 
     public DateTime getTimestamp() {
-        return new DateTime(timestamp);
+        return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(DateTime timestamp) {
         this.timestamp = timestamp;
     }
 
