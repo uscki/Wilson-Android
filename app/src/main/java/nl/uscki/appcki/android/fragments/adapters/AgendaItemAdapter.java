@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
 
+import java.util.Calendar;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -48,12 +49,21 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         holder.mItem = item;
         holder.mContentView.setText(item.getTitle());
 
+        String when;
         if (item.getEnd() != null) {
-            String when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm") + " - " + item.getEnd().toString("EEEE dd MMMM YYYY HH:mm");
-            holder.itemWhen.setText(when);
+            boolean sameDay = item.getStart().getDayOfYear() == item.getEnd().getDayOfYear() &&
+                    item.getStart().getYear() == item.getEnd().getYear();
+
+            if(sameDay) {
+                when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm" + " - " + item.getEnd().toString("HH:mm"));
+            } else {
+                when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm") + " - " + item.getEnd().toString("EEEE dd MMMM YYYY HH:mm");
+            }
         } else {
-            holder.itemWhen.setText(item.getStart().toString("EEEE dd MMMM YYYY HH:mm"));
+            when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm");
         }
+
+        holder.itemWhen.setText(when);
 
         Context c = holder.mView.getContext();
         String nRegistrationsString;
