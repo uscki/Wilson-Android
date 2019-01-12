@@ -65,7 +65,7 @@ public class MeetingActivity extends BasicActivity {
             startActivity(new Intent(this, MainActivity.class));
         }
 
-        setContentView(R.layout.acitivity_meeting); // this is actually correct cause it uses the same layout
+        setContentView(R.layout.acitivity_meeting);
         MainActivity.currentScreen = MainActivity.Screen.MEETING_DETAIL;
 
         toolbar = findViewById(R.id.toolbar);
