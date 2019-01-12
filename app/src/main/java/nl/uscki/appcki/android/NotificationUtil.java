@@ -183,32 +183,6 @@ public class NotificationUtil extends ContextWrapper {
     }
 
     /**
-     * Three different bugtracker notifications have to go to the bugtracker detail view on the
-     * website. For now, use this method
-     * @param context   Context from which this notification is being built
-     * @param n         Notification builder containing base notification
-     * @param id        ID of the ticket
-     * @return          Updates notification builder
-     */
-    public static NotificationCompat.Builder goToBugTracker(Context context, NotificationCompat.Builder n, int id) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            n.setCategory(Notification.CATEGORY_SOCIAL);
-        }
-        Intent bugtrackerIntent = new Intent(Intent.ACTION_VIEW);
-
-        bugtrackerIntent.setData(Uri.parse(String.format(
-                Locale.ENGLISH,
-                "https://www.uscki.nl/?pagina=Bugtracker/Ticket&id=%d",
-                id)
-                .trim()));
-
-        PendingIntent pIntent =
-                PendingIntent.getActivity(context, 0, bugtrackerIntent, 0);
-        n.setContentIntent(pIntent);
-        return n;
-    }
-
-    /**
      * Create a notification channel for a given notification type
      *
      * @param notificationType      Notification type
@@ -302,64 +276,6 @@ public class NotificationUtil extends ContextWrapper {
             // Since Oreo, these things are handled by notification channels.
             // Continuing will crash the application
             return;
-        }
-
-        // Build a base string for the preferences we want to find
-        String basePreferenceKey = "notifications_";
-        int priority = channelPriorities.get(notificationType);
-        if(priority == 0) {
-            basePreferenceKey += "interactive_";
-        } else if(priority == 1){
-            basePreferenceKey += "general_";
-        } else if (priority == 2) {
-            basePreferenceKey += "personal_";
-        } else {
-            // We don't have settings for this
-            Log.e(getClass().toString(),
-                    "Notification priority " + priority +
-                            " does not exists on the pre-oreo channels!");
-            return;
-        }
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-
-        // Add notification sound effects
-        if(prefs.getBoolean(basePreferenceKey + "new_message", true)) {
-            String ringtoneUri = prefs.getString(basePreferenceKey + "new_message_ringtone",
-                    RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI);
-            notification.setSound(Uri.parse(ringtoneUri));
-        } else {
-            notification.setSound(null);
-        }
-
-        // Add vibration effects
-        if(prefs.getBoolean(basePreferenceKey + "new_message_vibrate", true)) {
-            VibrationPatternPreferenceHelper vibrationHelper =
-                    new VibrationPatternPreferenceHelper();
-
-            int vibrationPatternIndex = vibrationHelper.getIndexOfVibrationPatternPreference(
-                    basePreferenceKey + "vibration_pattern");
-
-            int vibrationPatternResourceId = vibrationHelper
-                    .getVibrationPatternResourceIdAtIndex(vibrationPatternIndex);
-
-            long[] vibrationPattern = vibrationHelper
-                    .getVibrationPattern(vibrationPatternResourceId);
-
-            if(vibrationPattern != null) {
-                notification.setVibrate(vibrationPattern);
-            }
-        }
-
-        // Add notification LED effects
-        if(prefs.getBoolean(basePreferenceKey + "show_light", true)) {
-            if(prefs.getBoolean(basePreferenceKey + "led_mode", true)) {
-                // Show light as just on
-                notification.setLights(Color.RED, 1000, 0);
-            } else {
-                // Blink once per second
-                notification.setLights(Color.RED, 150, 1000);
-            }
         }
     }
 

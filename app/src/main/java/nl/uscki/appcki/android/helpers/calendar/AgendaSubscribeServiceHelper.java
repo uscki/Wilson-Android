@@ -17,6 +17,7 @@ import nl.uscki.appcki.android.generated.ServerError;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import nl.uscki.appcki.android.helpers.notification.agenda.AgendaNewNotification;
 import nl.uscki.appcki.android.services.EventExportJobService;
 import nl.uscki.appcki.android.services.NotificationReceiver;
 import retrofit2.Call;
@@ -153,8 +154,7 @@ public class AgendaSubscribeServiceHelper {
                     .enqueueExportAgendaToCalendarAction(context, agendaId);
         }
 
-        notificationReceiver
-                .buildNewAgendaItemNotificationFromIntent(intent, allowExport, false);
+        new AgendaNewNotification(this.context, intent, false, allowExport).show();
 
         Toast.makeText(
                 context,
@@ -169,8 +169,7 @@ public class AgendaSubscribeServiceHelper {
      * @param error     Error message to show
      */
     private void handleError(Intent intent, String error, boolean allowExport) {
-        NotificationReceiver notificationReceiver = new NotificationReceiver(context);
-        notificationReceiver.buildNewAgendaItemNotificationFromIntent(intent, allowExport, true);
+        new AgendaNewNotification(this.context, intent, true, allowExport);
         Toast.makeText(
                 context,
                 error,
