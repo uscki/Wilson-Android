@@ -331,7 +331,7 @@ public class AgendaActivity extends BasicActivity {
         } else if (this.item.getHasUnregisterDeadline() &&
                 new DateTime(this.item.getUnregisterDeadline()).isBeforeNow()) {
             unsubscribe.setVisible(false);
-        } else if (this.item.getStart().isAfterNow()) {
+        } else if (this.item.getStart().isBeforeNow()) {
             unsubscribe.setVisible(false);
         } else {
             prepareSubscribeButtonsForRegistration(subscribe, unsubscribe);
