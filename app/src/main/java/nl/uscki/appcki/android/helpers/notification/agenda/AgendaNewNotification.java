@@ -5,8 +5,6 @@ import android.content.Intent;
 
 import com.google.firebase.messaging.RemoteMessage;
 
-import nl.uscki.appcki.android.services.NotificationType;
-
 public class AgendaNewNotification extends ReproducibleAgendaActionNotification {
 
     public AgendaNewNotification(Context c, RemoteMessage message) {
@@ -17,8 +15,4 @@ public class AgendaNewNotification extends ReproducibleAgendaActionNotification 
         super(c, intent, allowSubscribe, allowExport);
     }
 
-    @Override
-    protected NotificationType getNotificationType() {
-        return NotificationType.agenda_new;
-    }
 }

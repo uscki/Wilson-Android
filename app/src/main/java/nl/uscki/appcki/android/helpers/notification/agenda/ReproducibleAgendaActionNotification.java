@@ -1,11 +1,8 @@
 package nl.uscki.appcki.android.helpers.notification.agenda;
 
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
 import android.util.Log;
@@ -13,7 +10,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.io.IOException;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
-import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
@@ -31,7 +27,6 @@ public abstract class ReproducibleAgendaActionNotification extends BadWolfNotifi
 
     public ReproducibleAgendaActionNotification(Context c, RemoteMessage message, boolean allowSubscribe, boolean allowExport) {
         super(c, message);
-
         this.allowExport = allowExport;
         this.allowSubscribe = allowSubscribe;
     }
@@ -43,25 +38,15 @@ public abstract class ReproducibleAgendaActionNotification extends BadWolfNotifi
     }
 
     @Override
-    protected Intent getIntent() {
+    protected Intent getNotificationIntent() {
         Intent intent = new Intent(this.context, AgendaActivity.class);
         intent.putExtra(AgendaActivity.PARAM_AGENDA_ID, id);
         return intent;
     }
 
     @Override
-    protected String getBackstackAction() {
-        return MainActivity.ACTION_AGENDA_OVERVIEW;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    protected String getNotificationCategory() {
-        return Notification.CATEGORY_EVENT;
-    }
-
-    @Override
     protected void addActions() {
+        Log.e(getClass().getSimpleName(), String.format("Allow subscribe is %b and allow export is %b", allowSubscribe, allowExport));
         if(this.allowSubscribe && checkAllowSimpleSubscribe()) {
             // No need to check this if subscribing from the notification is already enabled anyway
             addSubscribeAction();
