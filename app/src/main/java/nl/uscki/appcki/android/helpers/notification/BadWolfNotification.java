@@ -15,9 +15,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import com.google.firebase.messaging.RemoteMessage;
-
-import java.lang.reflect.InvocationTargetException;
-
 import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
@@ -34,16 +31,22 @@ public abstract class BadWolfNotification {
     public static final String PARAM_NOTIFICATION_ID = "nl.uscki.appcki.android.services.extra.PARAM_NOTIFICATION_ID";
     public static final String PARAM_VIEW_ITEM_ID = "nl.uscki.appcki.android.services.extra.PARAM_VIEW_ITEM_ID";
 
-    protected NotificationType type;
     protected Context context;
+    protected NotificationType type;
+
+    // Properties sent by server
+    protected int id;
     protected String title;
     protected String content;
-    protected int id;
+
+    // Properties to distinguish this notification from others shown in the system
     protected int notification_id;
     protected int item_id;
     protected String tag;
+
+    // Utility properties
     protected NotificationCompat.Builder notificationBuilder;
-    protected NotificationUtil u;
+    protected NotificationUtil notificationUtil;
     private boolean silent;
 
     /**
@@ -65,14 +68,6 @@ public abstract class BadWolfNotification {
 
         n.build();
 
-        return n;
-    }
-
-    public static BadWolfNotification recreateFromIntent(Context c, Intent intent) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        NotificationType type = NotificationType.valueOf(intent.getStringExtra(PARAM_NOTIFICATION_TYPE));
-        BadWolfNotification n = type.getC().getConstructor(Context.class, Intent.class).newInstance(c, intent);
-        n.type = type;
-        n.build();
         return n;
     }
 
@@ -113,6 +108,24 @@ public abstract class BadWolfNotification {
     }
 
     /**
+     * Before the notification can be shown, it needs to be built. If the constructor, instead
+     * of one of the static create methods, is used, or if some properties on this object are
+     * changed after construction, this method needs to be called explicitly.
+     */
+    public void build() {
+        this.notificationUtil = new NotificationUtil(this.context);
+        buildBaseNotification();
+        addPropertiesAccordingToSettings();
+        addIntention();
+        addActions();
+
+        if(silent) {
+            // Make sure this notification doesn't make a sound or vibrate
+            this.notificationBuilder.setOnlyAlertOnce(true);
+        }
+    }
+
+    /**
      * Show the notification
      */
     public void show() {
@@ -120,26 +133,29 @@ public abstract class BadWolfNotification {
         manager.notify(this.getClass().toString(), this.notification_id, this.notificationBuilder.build());
 
         if(!silent) {
-            u.vibrateIfEnabled(this.type);
+            notificationUtil.vibrateIfEnabled(this.type);
         }
     }
 
     /**
      * Set this notification to show silently, i.e. without making a sound or vibrating
-     * @param silent
+     * @param silent    Boolean indicating whether the system should alert the user to this
+     *                  notification
      */
     public void setSilent(boolean silent) {
         this.silent = silent;
     }
 
     /**
-     * Get the intent for this notification. May be null
-     * @return
+     * Constructs an intent for this notification, dictating the behavior when the notification
+     * is clicked
+     * @return  Intent to be used when this notification is clicked
      */
     protected abstract Intent getNotificationIntent();
 
     /**
-     * Add action buttons to this notification. May be empty method if no actions are present
+     * Add action buttons to this notification, or perform other operations specific to the type
+     * of notification
      */
     protected abstract void addActions();
 
@@ -162,26 +178,10 @@ public abstract class BadWolfNotification {
     }
 
     /**
-     * Build the entire notification
-     */
-    private void build() {
-        this.u = new NotificationUtil(this.context);
-        buildBaseNotification();
-        addPropertiesAccordingToSettings();
-        addIntention();
-        addActions();
-
-        if(silent) {
-            // Make sure this notification doesn't make a sound or vibrate
-            this.notificationBuilder.setOnlyAlertOnce(true);
-        }
-    }
-
-    /**
      * Build the base notification, containing only application identification stuff
      */
     private void buildBaseNotification() {
-        this.notificationBuilder = new NotificationCompat.Builder(this.context, this.u.getChannel(this.type));
+        this.notificationBuilder = new NotificationCompat.Builder(this.context, this.notificationUtil.getChannel(this.type));
         this.notificationBuilder.setContentTitle(this.title);
         this.notificationBuilder.setContentText(this.content);
         this.notificationBuilder.setAutoCancel(true);
@@ -289,10 +289,16 @@ public abstract class BadWolfNotification {
         }
     }
 
+    /**
+     * Try to parse the type of notification from the name encoded as a string. If the name is not
+     * recognized, the type NotificationType.other is always used
+     * @param type  String containing the name of a NotificationType
+     */
     private void parseType(String type) {
         try {
             this.type = NotificationType.valueOf(type);
         } catch(IllegalArgumentException e) {
+            this.type = NotificationType.other;
             Log.e(getClass().getSimpleName(), "Trying to create notification for nonexistent type " + type);
         }
     }
