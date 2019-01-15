@@ -23,12 +23,14 @@ import retrofit2.Response;
 
 public abstract class ReproducibleAgendaActionNotification extends BadWolfNotification {
 
-    private boolean allowSubscribe, allowExport;
+    private boolean allowSubscribe = true, allowExport = true;
 
-    public ReproducibleAgendaActionNotification(Context c, RemoteMessage message, boolean allowSubscribe, boolean allowExport) {
+    public ReproducibleAgendaActionNotification(Context c, RemoteMessage message) {
         super(c, message);
-        this.allowExport = allowExport;
-        this.allowSubscribe = allowSubscribe;
+    }
+
+    public ReproducibleAgendaActionNotification(Context c, Intent intent) {
+        super(c, intent);
     }
 
     public ReproducibleAgendaActionNotification(Context c, Intent intent, boolean allowSubscribe, boolean allowExport) {
@@ -37,16 +39,26 @@ public abstract class ReproducibleAgendaActionNotification extends BadWolfNotifi
         this.allowExport = allowExport;
     }
 
+    /**
+     * Set button behavior
+     * Note: the build() method needs to be called before this change is applied to the notification
+     * @param allowSubscribe    Whether a subscribe button should be shown
+     * @param allowExport       Whether an export button should be shown
+     */
+    public void setAllowed(boolean allowSubscribe, boolean allowExport) {
+        this.allowSubscribe = allowSubscribe;
+        this.allowExport = allowExport;
+    }
+
     @Override
     protected Intent getNotificationIntent() {
         Intent intent = new Intent(this.context, AgendaActivity.class);
-        intent.putExtra(AgendaActivity.PARAM_AGENDA_ID, id);
+        intent.putExtra(AgendaActivity.PARAM_AGENDA_ID, this.id);
         return intent;
     }
 
     @Override
     protected void addActions() {
-        Log.e(getClass().getSimpleName(), String.format("Allow subscribe is %b and allow export is %b", allowSubscribe, allowExport));
         if(this.allowSubscribe && checkAllowSimpleSubscribe()) {
             // No need to check this if subscribing from the notification is already enabled anyway
             addSubscribeAction();
@@ -125,6 +137,8 @@ public abstract class ReproducibleAgendaActionNotification extends BadWolfNotifi
             boolean isPrepublished = item.getMaxregistrations() != null && item.getMaxregistrations() == 0;
             boolean isPassedDeadline = item.getHasDeadline() && item.getDeadline().isBeforeNow();
             boolean isPassedStart = !item.getHasDeadline() && item.getStart().isBeforeNow();
+
+            // TODO at some point, just check here if someone is already subscribed. If so, don't show the button any more either
 
             if(hasQuestion || isPrepublished || isPassedDeadline || isPassedStart) {
                 allowSubscribe = false;
