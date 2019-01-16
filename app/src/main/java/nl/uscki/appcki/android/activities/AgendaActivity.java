@@ -153,7 +153,7 @@ public class AgendaActivity extends BasicActivity {
      * Create one adapter that can be used from now on
      */
     private void createAdapter() {
-        fragmentAdapter = new AgendaDetailAdapter(getSupportFragmentManager());
+        fragmentAdapter = new AgendaDetailAdapter(getSupportFragmentManager(), item.getId());
         viewPager.setAdapter(fragmentAdapter);
 
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.tab_agenda_details)));
@@ -187,8 +187,6 @@ public class AgendaActivity extends BasicActivity {
 
         MainActivity.currentScreen = MainActivity.Screen.AGENDA_DETAIL;
 
-        createAdapter();
-
         // TODO create handleIntent function, so onIntentReceived also works
         if (getIntent().getBundleExtra("item") != null) {
             Gson gson = new Gson();
@@ -213,6 +211,8 @@ public class AgendaActivity extends BasicActivity {
             // TODO: Refactor agenda intentions to only pass ID, never a (serialized) agenda item
             agendaId = item.getId();
         }
+
+        createAdapter();
 
         // Perform an initial load of the data
         refreshAgendaItem();
@@ -335,6 +335,11 @@ public class AgendaActivity extends BasicActivity {
 
         if (this.item.getMaxregistrations() != null && this.item.getMaxregistrations() == 0) {
             prepareSubscribeButtonsForNoRegistration(subscribe, unsubscribe);
+        } else if (this.item.getHasUnregisterDeadline() &&
+                new DateTime(this.item.getUnregisterDeadline()).isBeforeNow()) {
+            unsubscribe.setVisible(false);
+        } else if (this.item.getStart().isBeforeNow()) {
+            unsubscribe.setVisible(false);
         } else {
             prepareSubscribeButtonsForRegistration(subscribe, unsubscribe);
         }

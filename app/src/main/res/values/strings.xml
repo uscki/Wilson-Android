@@ -57,6 +57,9 @@
     <string name="agenda_subscribe_failed">Er ging iets fout. Je inschrijving is niet behandelt!</string>
     <string name="agenda_unsubscribe_failed">Er ging iets fout. Je bent nog steeds ingeschreven!</string>
     <string name="agenda_subscribe_backuplist">Het maximum aantal inschrijvingen is al behaald. Je bent op de wachtlijst geplaatst. Als er uitschrijvingen zijn heb je kans alsnog ingeschreven te worden.</string>
+    <string name="agenda_item_n_registrations">%d</string>
+    <string name="agenda_item_n_registrations_max">%d (max %d)</string>
+    <string name="agenda_item_n_registration_plus_backup">%d + %d (max %d)</string>
 
     <string name="agenda_inschrijven_verplicht">Inschrijven verplicht</string>
     <string name="agenda_archive_menu_string">Archief</string>

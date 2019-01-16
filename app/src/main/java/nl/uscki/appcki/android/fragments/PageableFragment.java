@@ -205,6 +205,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                 android.R.color.holo_red_light);
 
         swipeContainer.setRefreshing(true);
+        swipeContainer.setNestedScrollingEnabled(getUseNestedScrolling());
     }
 
     public void refresh() {
@@ -334,5 +335,14 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * Override this method to return true to enable nested scrolling
+     *
+     * @return Boolean indicating if the SwipeRefreshLayout should use nested scrolling
+     */
+    protected boolean getUseNestedScrolling() {
+        return false;
     }
 }
