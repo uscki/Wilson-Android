@@ -93,9 +93,10 @@
             android:drawablePadding="5dp"
             android:drawableStart="@drawable/emoticon_happy"
             android:gravity="center_vertical"
+            android:textStyle="bold"
             android:text="@string/agenda_inschrijven_verplicht"
             android:textColor="#FFF"
-            android:textStyle="bold" />
+            />
 
         <TextView
             android:id="@+id/inschrijven_verplicht_date"
