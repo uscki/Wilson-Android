@@ -41,7 +41,6 @@ public class SmoboSearch extends PageableFragment<SmoboSearchPage> {
 
         // search doesn't start with a loading view, it has to wait for user input
         swipeContainer.setRefreshing(false);
-        activity.getSupportActionBar().setTitle("");
 
         return view;
     }

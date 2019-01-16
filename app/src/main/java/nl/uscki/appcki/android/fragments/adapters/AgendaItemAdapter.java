@@ -1,5 +1,6 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
 
+import java.util.Calendar;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -47,14 +49,42 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         holder.mItem = item;
         holder.mContentView.setText(item.getTitle());
 
+        String when;
         if (item.getEnd() != null) {
-            String when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm") + " - " + item.getEnd().toString("EEEE dd MMMM YYYY HH:mm");
-            holder.itemWhen.setText(when);
+            boolean sameDay = item.getStart().getDayOfYear() == item.getEnd().getDayOfYear() &&
+                    item.getStart().getYear() == item.getEnd().getYear();
+
+            if(sameDay) {
+                when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm" + " - " + item.getEnd().toString("HH:mm"));
+            } else {
+                when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm") + " - " + item.getEnd().toString("EEEE dd MMMM YYYY HH:mm");
+            }
         } else {
-            holder.itemWhen.setText(item.getStart().toString("EEEE dd MMMM YYYY HH:mm"));
+            when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm");
         }
 
-        holder.itemDeelnemers.setText(item.getParticipants().size() + "");
+        holder.itemWhen.setText(when);
+
+        Context c = holder.mView.getContext();
+        String nRegistrationsString;
+        if(item.getMaxregistrations() == null) {
+            nRegistrationsString = c.getString(R.string.agenda_item_n_registrations, item.getParticipants().size());
+        } else if(item.getMaxregistrations().equals(0)) {
+            nRegistrationsString = c.getString(R.string.agenda_prepublished_event_registration_closed_short_message);
+        } else if(item.getBackupList().size() > 0) {
+            nRegistrationsString = c.getString(
+                    R.string.agenda_item_n_registration_plus_backup,
+                    item.getParticipants().size(),
+                    item.getBackupList().size(),
+                    item.getMaxregistrations());
+        } else {
+            nRegistrationsString = c.getString(
+                    R.string.agenda_item_n_registrations_max,
+                    item.getParticipants().size(),
+                    item.getMaxregistrations()
+            );
+        }
+        holder.itemDeelnemers.setText(nRegistrationsString);
 
         if(item.getLocation() == null || item.getLocation().isEmpty()) {
             holder.itemWhere.setVisibility(View.GONE);
