@@ -26,4 +26,9 @@ public class AgendaCommentsFragment extends CommentsFragment{
     public Call<Comment> sendCommentToServer(Integer replyToComment, String comment) {
         return Services.getInstance().agendaService.replyToComment(commentOnTopicId, replyToComment, comment);
     }
+
+    @Override
+    protected boolean getUseNestedScrolling() {
+        return true;
+    }
 }
