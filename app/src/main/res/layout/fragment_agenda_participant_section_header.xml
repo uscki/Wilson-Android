@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginStart="@dimen/text_margin"
+    android:layout_marginEnd="@dimen/text_margin"
+    android:layout_marginBottom="@dimen/text_margin"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/dividing_list_header"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.TextSubHeader"
+            />
+
+        <Button
+            android:id="@+id/helpButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/rounded_resource_colour"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            android:text="\?"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/dividing_list_subheader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/AppTheme.TextSubSubHeader"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/dividing_list_message_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
+
+    <ImageView
+        android:id="@+id/dividing_list_header_bottom_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/list_divider"
+        android:layout_marginEnd="14dp"
+        android:layout_marginStart="14dp"
+        android:visibility="gone"
+        />
+
+</LinearLayout>

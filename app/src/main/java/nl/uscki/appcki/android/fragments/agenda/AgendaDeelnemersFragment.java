@@ -3,7 +3,6 @@ package nl.uscki.appcki.android.fragments.agenda;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +15,11 @@ import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
-import nl.uscki.appcki.android.api.Callback;
-import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.events.AgendaItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
+import nl.uscki.appcki.android.generated.ListSectionHeader;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
-import retrofit2.Response;
 
 /**
  * A fragment representing a list of AgendaParticipants.
@@ -39,6 +36,12 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
     private void setupParticipantList(AgendaItem item) {
         if (getAdapter() instanceof AgendaDeelnemersAdapter) {
             getAdapter().update(item.getParticipants());
+            if(item.getBackupList().size() > 0) {
+                ListSectionHeader seperatingHeader = new ListSectionHeader(getString(R.string.agenda_participants_backup_list));
+                seperatingHeader.setHelpText(getString(R.string.agenda_participants_backup_list_help));
+                getAdapter().add(seperatingHeader);
+                getAdapter().addItems(item.getBackupList());
+            }
         }
         if(emptyText != null && participantList != null) {
             if (item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
@@ -92,20 +95,10 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
     }
 
     // EVENT HANDLING
-
-    public void onEventMainThread(AgendaItemSubscribedEvent event) {
-        swipeContainer.setRefreshing(false);
-        if (getAdapter() instanceof AgendaDeelnemersAdapter) {
-            if(event.subscribed != null) { //TODO because of dirty hackin MainActivity
-                getAdapter().update(event.subscribed.getParticipants());
-            }
-        }
-    }
-
     public void onEventMainThread(AgendaItemUpdatedEvent event) {
         swipeContainer.setRefreshing(false);
         if(getAdapter() instanceof AgendaDeelnemersAdapter) {
-            getAdapter().update(event.getUpdatedItem().getParticipants());
+            setupParticipantList(activity.getAgendaItem());
         }
     }
 
