@@ -18,6 +18,10 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import org.joda.time.DateTime;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -128,7 +132,10 @@ public class AgendaActivity extends BasicActivity {
         }
 
         foundUser = false;
-        for (AgendaParticipant part : item.getParticipants()) {
+
+        List<AgendaParticipant> allParticipants = new ArrayList<>(item.getParticipants());
+        allParticipants.addAll(item.getBackupList());
+        for (AgendaParticipant part : allParticipants) {
             if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
                 if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
                     foundUser = true;
@@ -480,8 +487,14 @@ public class AgendaActivity extends BasicActivity {
                     EventBus.getDefault()
                             .post(new AgendaItemSubscribedEvent(response.body(), true));
                     setExportButtons();
+                    Toast.makeText(AgendaActivity.this, R.string.agenda_unsubscribe_confirmed, Toast.LENGTH_SHORT).show();
                 }
 
+                @Override
+                public void onError(Response<AgendaParticipantLists> response) {
+                    super.onError(response);
+                    Toast.makeText(AgendaActivity.this, R.string.agenda_unsubscribe_failed, Toast.LENGTH_SHORT).show();
+                }
             });
         }
     }
@@ -515,9 +528,10 @@ public class AgendaActivity extends BasicActivity {
         }
     }
 
-    // TODO never used, in theory replaced by newer stuff? Can this be made more decent
+    // TODO this event *SHOULD* only be used in this activity. Move it directly to the callback?
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
         item.setParticipants(event.subscribed.getParticipants());
+        item.setBackupList(event.subscribed.getBackupList());
         if(!event.showSubscribe) {
             setAlarmForEvent(item);
             menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
@@ -540,5 +554,39 @@ public class AgendaActivity extends BasicActivity {
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
         }
         setExportButtons();
+        showSubscribeConfirmation(event.subscribed);
+        EventBus.getDefault().post(new AgendaItemUpdatedEvent(item));
+    }
+
+    private void showSubscribeConfirmation(AgendaParticipantLists nowSubscribedLists) {
+        if(UserHelper.getInstance().getPerson() != null) {
+            int myId = UserHelper.getInstance().getPerson().getId();
+            boolean found = false;
+            int messageResourceId = -1;
+
+            for(AgendaParticipant p : nowSubscribedLists.getParticipants()) {
+                if (p.getPerson().getId() != null && p.getPerson().getId().equals(myId)) {
+                    found = true;
+                    messageResourceId = R.string.agenda_subscribe_confirmed;
+                    break;
+                }
+            }
+
+            if(!found) {
+                for(AgendaParticipant p : nowSubscribedLists.getBackupList()) {
+                    if(p.getPerson().getId() != null && p.getPerson().getId().equals(myId)) {
+                        found = true;
+                        messageResourceId = R.string.agenda_subscribe_backuplist;
+                        break;
+                    }
+                }
+            }
+
+            if(found) {
+                Toast.makeText(this, messageResourceId, Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e(getClass().getSimpleName(), "User not found on either list. No message shown");
+            }
+        }
     }
 }

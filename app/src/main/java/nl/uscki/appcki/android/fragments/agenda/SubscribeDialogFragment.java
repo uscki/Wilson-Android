@@ -1,7 +1,6 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -57,6 +57,12 @@ public class SubscribeDialogFragment extends DialogFragment {
                                 response.body(),
                                 false
                         ));
+            }
+
+            @Override
+            public void onError(Response<AgendaParticipantLists> response) {
+                super.onError(response);
+                Toast.makeText(getContext(), R.string.agenda_subscribe_failed, Toast.LENGTH_SHORT).show();
             }
         };
 
