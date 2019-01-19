@@ -1,16 +1,6 @@
 package nl.uscki.appcki.android.services;
 
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Build;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.app.RemoteInput;
 import android.util.Log;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -19,24 +9,14 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import java.io.IOException;
-import java.util.Locale;
+
 import nl.uscki.appcki.android.BuildConfig;
 import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.Utils;
-import nl.uscki.appcki.android.activities.AgendaActivity;
-import nl.uscki.appcki.android.activities.MainActivity;
-import nl.uscki.appcki.android.activities.MeetingActivity;
 import nl.uscki.appcki.android.api.Callback;
-import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
-import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
-import nl.uscki.appcki.android.helpers.UserHelper;
-import nl.uscki.appcki.android.helpers.calendar.AgendaSubscribeServiceHelper;
-import nl.uscki.appcki.android.helpers.calendar.CalendarServiceHelper;
-import nl.uscki.appcki.android.helpers.notification.BadWolfNotification;
+import nl.uscki.appcki.android.helpers.notification.AbstractNotification;
 import retrofit2.Response;
 
 /**
@@ -160,7 +140,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom() + "\n");
 
-        BadWolfNotification notification = BadWolfNotification.fromFirebaseMessage(this, remoteMessage);
+        AbstractNotification notification = AbstractNotification.fromFirebaseMessage(this, remoteMessage);
         notification.show();
     }
 

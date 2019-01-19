@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import com.google.firebase.messaging.RemoteMessage;
 import nl.uscki.appcki.android.activities.MainActivity;
-import nl.uscki.appcki.android.helpers.notification.BadWolfNotification;
+import nl.uscki.appcki.android.helpers.notification.AbstractNotification;
 
-public class NewsNotification extends BadWolfNotification {
+public class NewsNotification extends AbstractNotification {
 
     public NewsNotification(Context c, RemoteMessage message) {
         super(c, message);

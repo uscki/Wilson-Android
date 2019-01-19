@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import com.google.firebase.messaging.RemoteMessage;
 import java.util.Locale;
-import nl.uscki.appcki.android.helpers.notification.BadWolfNotification;
+import nl.uscki.appcki.android.helpers.notification.AbstractNotification;
 
-public class ForumNewTopicNotification extends BadWolfNotification {
+public class ForumNewTopicNotification extends AbstractNotification {
 
     public ForumNewTopicNotification(Context c, RemoteMessage message) {
         super(c, message);

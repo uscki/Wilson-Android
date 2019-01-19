@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import com.google.firebase.messaging.RemoteMessage;
 import nl.uscki.appcki.android.activities.MeetingActivity;
-import nl.uscki.appcki.android.helpers.notification.BadWolfNotification;
+import nl.uscki.appcki.android.helpers.notification.AbstractNotification;
 
-public class MeetingFilledInNotification extends BadWolfNotification {
+public class MeetingFilledInNotification extends AbstractNotification {
 
     public MeetingFilledInNotification(Context c, RemoteMessage m) {
         super(c, m);

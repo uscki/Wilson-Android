@@ -5,9 +5,9 @@ import android.content.Intent;
 import com.google.firebase.messaging.RemoteMessage;
 import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
-import nl.uscki.appcki.android.helpers.notification.BadWolfNotification;
+import nl.uscki.appcki.android.helpers.notification.AbstractNotification;
 
-public class AgendaAnnouncementNotification extends BadWolfNotification {
+public class AgendaAnnouncementNotification extends AbstractNotification {
     public AgendaAnnouncementNotification(Context c, RemoteMessage message) {
         super(c, message);
     }

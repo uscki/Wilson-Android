@@ -22,7 +22,7 @@ import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.helpers.VibrationPatternPreferenceHelper;
 import nl.uscki.appcki.android.services.NotificationType;
 
-public abstract class BadWolfNotification {
+public abstract class AbstractNotification {
 
     public static final String PARAM_NOTIFICATION_TITLE = "nl.uscki.appcki.android.services.extra.PARAM_NOTIFICATION_TITLE";
     public static final String PARAM_NOTIFICATION_CONTENT = "nl.uscki.appcki.android.services.extra.PARAM_NOTIFICATION_CONTENT";
@@ -50,13 +50,13 @@ public abstract class BadWolfNotification {
     private boolean silent;
 
     /**
-     * Create a BadWolfNotification from a received Firebase message
+     * Create a AbstractNotification from a received Firebase message
      * @param c           A context
      * @param message     Firebase message
-     * @return            BadWolfNotification
+     * @return            AbstractNotification
      */
-    public static BadWolfNotification fromFirebaseMessage(Context c, RemoteMessage message) {
-        BadWolfNotification n;
+    public static AbstractNotification fromFirebaseMessage(Context c, RemoteMessage message) {
+        AbstractNotification n;
 
         try {
             NotificationType type = NotificationType.valueOf(message.getData().get("type"));
@@ -76,7 +76,7 @@ public abstract class BadWolfNotification {
      * @param c         Context
      * @param message   Message as received from FireBase
      */
-    public BadWolfNotification(Context c, RemoteMessage message) {
+    public AbstractNotification(Context c, RemoteMessage message) {
         this.context = c;
         parseType(message.getData().get("type"));
         this.title = message.getData().get("title");
@@ -94,7 +94,7 @@ public abstract class BadWolfNotification {
      * @param c         Context
      * @param intent    Intent this notification should be built from
      */
-    public BadWolfNotification(Context c, Intent intent) {
+    public AbstractNotification(Context c, Intent intent) {
         // Extract information from existing intent
         this.context = c;
         parseType(intent.getStringExtra(PARAM_NOTIFICATION_TYPE));
