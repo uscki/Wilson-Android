@@ -16,12 +16,12 @@ import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.calendar.AgendaSubscribeServiceHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarServiceHelper;
-import nl.uscki.appcki.android.helpers.notification.BadWolfNotification;
+import nl.uscki.appcki.android.helpers.notification.AbstractNotification;
 import nl.uscki.appcki.android.services.AgendaSubscriberIntentService;
 import nl.uscki.appcki.android.services.EventExportIntentService;
 import retrofit2.Response;
 
-public abstract class ReproducibleAgendaActionNotification extends BadWolfNotification {
+public abstract class ReproducibleAgendaActionNotification extends AbstractNotification {
 
     private boolean allowSubscribe = true, allowExport = true;
 

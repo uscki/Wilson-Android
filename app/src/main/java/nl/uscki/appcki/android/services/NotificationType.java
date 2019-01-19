@@ -11,7 +11,7 @@ package nl.uscki.appcki.android.services;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import nl.uscki.appcki.android.activities.MainActivity;
-import nl.uscki.appcki.android.helpers.notification.BadWolfNotification;
+import nl.uscki.appcki.android.helpers.notification.AbstractNotification;
 import nl.uscki.appcki.android.helpers.notification.EmptyNotification;
 import nl.uscki.appcki.android.helpers.notification.achievement.AchievementNotification;
 import nl.uscki.appcki.android.helpers.notification.agenda.AgendaAnnouncementNotification;
@@ -118,7 +118,7 @@ public enum NotificationType {
             NotificationManagerCompat.IMPORTANCE_DEFAULT,
             NotificationCompat.CATEGORY_SERVICE);
 
-    private Class<? extends BadWolfNotification> c;
+    private Class<? extends AbstractNotification> c;
     private String backstackAction;
     private CompatNotificationChannel channel;
     private int importance;
@@ -129,7 +129,7 @@ public enum NotificationType {
      * one-to-one with the value "type" sent by the Zebra / B.A.D.W.O.L.F. Notification system and
      * every possible notification should be present.
      *
-     * @param c                 The BadWolfNotification subclass to instantiate for this notification
+     * @param c                 The AbstractNotification subclass to instantiate for this notification
      * @param backstackAction   The action from the Main Activity which, when passed to an intent,
      *                          shows a fragment or screen.
      * @param channel           For older versions of android, the channel type to show this type
@@ -142,7 +142,7 @@ public enum NotificationType {
      *                          the options on NotificationCompat.CATEGORY_X
      */
     NotificationType(
-            Class<? extends BadWolfNotification> c,
+            Class<? extends AbstractNotification> c,
             String backstackAction,
             CompatNotificationChannel channel,
             int importance,
@@ -154,7 +154,7 @@ public enum NotificationType {
         this.category = category;
     }
 
-    public Class<? extends BadWolfNotification> getC() {
+    public Class<? extends AbstractNotification> getC() {
         return this.c;
     }
 

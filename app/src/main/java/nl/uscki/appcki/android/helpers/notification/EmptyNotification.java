@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import com.google.firebase.messaging.RemoteMessage;
 
-public class EmptyNotification extends BadWolfNotification {
+public class EmptyNotification extends AbstractNotification {
 
     public EmptyNotification(Context c, RemoteMessage message) {
         super(c, message);

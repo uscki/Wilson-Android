@@ -1,6 +1,5 @@
 package nl.uscki.appcki.android.helpers.notification.meeting;
 
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -9,11 +8,11 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MeetingActivity;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarServiceHelper;
-import nl.uscki.appcki.android.helpers.notification.BadWolfNotification;
+import nl.uscki.appcki.android.helpers.notification.AbstractNotification;
 import nl.uscki.appcki.android.services.EventExportIntentService;
 import nl.uscki.appcki.android.services.EventExportJobService;
 
-public class MeetingPlannedNotification extends BadWolfNotification {
+public class MeetingPlannedNotification extends AbstractNotification {
 
     public MeetingPlannedNotification(Context c, RemoteMessage message) {
         super(c, message);
