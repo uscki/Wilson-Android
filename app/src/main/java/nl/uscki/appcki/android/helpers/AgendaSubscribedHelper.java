@@ -1,7 +1,6 @@
 package nl.uscki.appcki.android.helpers;
 
 import android.content.Context;
-
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
@@ -22,7 +21,7 @@ public class AgendaSubscribedHelper {
         }
 
         for(int i = 0; i < lists.getBackupList().size(); i++) {
-            if(lists.getParticipants().get(i).getPerson().getId().equals(myId)) {
+            if(lists.getBackupList().get(i).getPerson().getId().equals(myId)) {
                 return AGENDA_ON_BACKUP_LIST;
             }
         }
