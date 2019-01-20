@@ -118,7 +118,7 @@ public enum NotificationType {
             NotificationManagerCompat.IMPORTANCE_DEFAULT,
             NotificationCompat.CATEGORY_SERVICE);
 
-    private Class<? extends AbstractNotification> c;
+    private Class<? extends AbstractNotification> clazz;
     private String backstackAction;
     private CompatNotificationChannel channel;
     private int importance;
@@ -129,7 +129,7 @@ public enum NotificationType {
      * one-to-one with the value "type" sent by the Zebra / B.A.D.W.O.L.F. Notification system and
      * every possible notification should be present.
      *
-     * @param c                 The AbstractNotification subclass to instantiate for this notification
+     * @param clazz                 The AbstractNotification subclass to instantiate for this notification
      * @param backstackAction   The action from the Main Activity which, when passed to an intent,
      *                          shows a fragment or screen.
      * @param channel           For older versions of android, the channel type to show this type
@@ -142,20 +142,20 @@ public enum NotificationType {
      *                          the options on NotificationCompat.CATEGORY_X
      */
     NotificationType(
-            Class<? extends AbstractNotification> c,
+            Class<? extends AbstractNotification> clazz,
             String backstackAction,
             CompatNotificationChannel channel,
             int importance,
             String category) {
-        this.c = c;
+        this.clazz = clazz;
         this.backstackAction = backstackAction;
         this.channel = channel;
         this.importance = importance;
         this.category = category;
     }
 
-    public Class<? extends AbstractNotification> getC() {
-        return this.c;
+    public Class<? extends AbstractNotification> getClazz() {
+        return this.clazz;
     }
 
     public String getBackstackAction() {

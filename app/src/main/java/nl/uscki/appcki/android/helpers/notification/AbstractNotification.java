@@ -60,7 +60,7 @@ public abstract class AbstractNotification {
 
         try {
             NotificationType type = NotificationType.valueOf(message.getData().get("type"));
-            n = type.getC().getConstructor(Context.class, RemoteMessage.class).newInstance(c, message);
+            n = type.getClazz().getConstructor(Context.class, RemoteMessage.class).newInstance(c, message);
             n.type = type;
         } catch (Exception e) {
             n = new EmptyNotification(c, message);
@@ -73,11 +73,11 @@ public abstract class AbstractNotification {
 
     /**
      * Create a notification from the remote message body received by FireBase
-     * @param c         Context
+     * @param context   Context
      * @param message   Message as received from FireBase
      */
-    public AbstractNotification(Context c, RemoteMessage message) {
-        this.context = c;
+    public AbstractNotification(Context context, RemoteMessage message) {
+        this.context = context;
         parseType(message.getData().get("type"));
         this.title = message.getData().get("title");
         this.content = message.getData().get("content");
