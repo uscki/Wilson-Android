@@ -88,8 +88,8 @@ public class AgendaActivity extends BasicActivity {
         // This isn't nice, but the callback overrides tab selection, and its only called once
         // so with the current implementation, this is best
         // TODO move this to onIntentReceived
-//        if(getIntent() != null && getIntent().getAction() != null &&
-//                getIntent().getAction().equals(CommentsFragment.ACTION_VIEW_COMMENTS)) {
+//        if(getNotificationIntent() != null && getNotificationIntent().getAction() != null &&
+//                getNotificationIntent().getAction().equals(CommentsFragment.ACTION_VIEW_COMMENTS)) {
 //            viewPager.setCurrentItem(2);
 //            tabLayout.setScrollPosition(2, 0f, false);
 //        }
