@@ -21,6 +21,19 @@ import nl.uscki.appcki.android.services.AgendaSubscriberIntentService;
 import nl.uscki.appcki.android.services.EventExportIntentService;
 import retrofit2.Response;
 
+/**
+ * A reproducible agenda notification is a notification that can be reconstructed from metadata
+ * kept put on the Intent object of this notification.
+ *
+ * This type of notification has the potential to show two buttons, subscribe and export, which
+ * need to be updated after they are pressed (e.g. the subscribe button should be removed after
+ * the subscription was successfully performed).
+ *
+ * Android does not allow updating notifications directly, but instead forces you to create a new
+ * notification, with the exact same ID and tag, which overwrites the existing notification. This
+ * class handles storing relevant metadata on the notification, and creating an identical copy,
+ * save for buttons, to the existing one.
+ */
 public abstract class ReproducibleAgendaActionNotification extends AbstractNotification {
 
     private boolean allowSubscribe = true, allowExport = true;
