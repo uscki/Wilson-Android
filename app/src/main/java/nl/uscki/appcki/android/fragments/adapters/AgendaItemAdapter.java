@@ -22,6 +22,7 @@ import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
+import nl.uscki.appcki.android.helpers.AgendaSubscribedHelper;
 
 /**
  *
@@ -49,42 +50,10 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         holder.mItem = item;
         holder.mContentView.setText(item.getTitle());
 
-        String when;
-        if (item.getEnd() != null) {
-            boolean sameDay = item.getStart().getDayOfYear() == item.getEnd().getDayOfYear() &&
-                    item.getStart().getYear() == item.getEnd().getYear();
-
-            if(sameDay) {
-                when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm" + " - " + item.getEnd().toString("HH:mm"));
-            } else {
-                when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm") + " - " + item.getEnd().toString("EEEE dd MMMM YYYY HH:mm");
-            }
-        } else {
-            when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm");
-        }
-
+        String when = AgendaSubscribedHelper.getWhen(item);
         holder.itemWhen.setText(when);
 
-        Context c = holder.mView.getContext();
-        String nRegistrationsString;
-        if(item.getMaxregistrations() == null) {
-            nRegistrationsString = c.getString(R.string.agenda_item_n_registrations, item.getParticipants().size());
-        } else if(item.getMaxregistrations().equals(0)) {
-            nRegistrationsString = c.getString(R.string.agenda_prepublished_event_registration_closed_short_message);
-        } else if(item.getBackupList().size() > 0) {
-            nRegistrationsString = c.getString(
-                    R.string.agenda_item_n_registration_plus_backup,
-                    item.getParticipants().size(),
-                    item.getBackupList().size(),
-                    item.getMaxregistrations());
-        } else {
-            nRegistrationsString = c.getString(
-                    R.string.agenda_item_n_registrations_max,
-                    item.getParticipants().size(),
-                    item.getMaxregistrations()
-            );
-        }
-        holder.itemDeelnemers.setText(nRegistrationsString);
+        holder.itemDeelnemers.setText(AgendaSubscribedHelper.getParticipantsSummary(holder.mView.getContext(), item));
 
         if(item.getLocation() == null || item.getLocation().isEmpty()) {
             holder.itemWhere.setVisibility(View.GONE);
