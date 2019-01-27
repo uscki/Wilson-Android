@@ -23,6 +23,7 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
 
     public static final int PERSON = 0;
     public static final int WICKI = 1;
+    public static final int MENTOR_TREE = 2;
 
     @BindView(R.id.appbar)
     AppBarLayout appBarLayout;
@@ -65,6 +66,7 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
 
 
             tabLayout.addTab(tabLayout.newTab().setText("WiCKI"), WICKI);
+            tabLayout.addTab(tabLayout.newTab().setText("Mentorboom"), MENTOR_TREE);
             viewPager.setAdapter(new SmoboViewPagerAdapter(getSupportFragmentManager(), id));
 
             viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

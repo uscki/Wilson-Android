@@ -10,6 +10,7 @@ import nl.uscki.appcki.android.fragments.home.HomeAgendaTab;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
 import nl.uscki.appcki.android.fragments.home.HomeRoephoekTab;
+import nl.uscki.appcki.android.fragments.smobo.SmoboMentorTreeFragment;
 import nl.uscki.appcki.android.fragments.smobo.SmoboPersonFragment;
 import nl.uscki.appcki.android.fragments.smobo.SmoboWickiFragment;
 
@@ -38,6 +39,10 @@ public class SmoboViewPagerAdapter extends FragmentStatePagerAdapter {
                 SmoboWickiFragment fragment2 = new SmoboWickiFragment();
                 fragment2.setArguments(bundle);
                 return fragment2;
+            case SmoboActivity.MENTOR_TREE:
+                SmoboMentorTreeFragment fragment3 = new SmoboMentorTreeFragment();
+                fragment3.setArguments(bundle);
+                return fragment3;
         }
 
         return null;
@@ -45,6 +50,6 @@ public class SmoboViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 }
