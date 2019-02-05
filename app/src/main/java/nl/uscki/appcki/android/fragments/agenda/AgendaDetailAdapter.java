@@ -13,6 +13,10 @@ import nl.uscki.appcki.android.generated.agenda.AgendaItem;
  */
 public class AgendaDetailAdapter extends FragmentStatePagerAdapter {
 
+    public static final int AGENDA_DETAILS_TAB_POSITION = 0;
+    public static final int AGENDA_PARTICIPANTS_TAB_POSITION = 1;
+    public static final int AGENDA_COMMENTS_TAB_POSITION = 2;
+
     private AgendaDetailFragment details;
     private AgendaDeelnemersFragment participants;
     private AgendaCommentsFragment comments;
