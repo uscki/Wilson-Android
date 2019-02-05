@@ -47,7 +47,7 @@ public class ShortcutHelper {
         openShopIntent.setAction(MainActivity.ACTION_VIEW_STORE);
         openShopIntent.putExtra(StoreFragment.PARAM_STORE_ID, store.getId());
 
-        new Builder("shop-shortcut-9-" + store.getId(), store.title, openShopIntent)
+        new Builder("shop-shortcut-" + store.getId(), store.title, openShopIntent)
                 .setLongLabel(context.getString(R.string.shop_long_store_name, store.title))
                 .setMediaID(store.image, R.drawable.cash_multiple)
                 .build();

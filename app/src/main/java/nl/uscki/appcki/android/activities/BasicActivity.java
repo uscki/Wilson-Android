@@ -158,26 +158,33 @@ public abstract class BasicActivity extends AppCompatActivity {
 
     public void onEventMainThread(ServerErrorEvent event) {
         Toast toast;
-        switch (event.error.getStatus()) {
-            case 401: // Unauthorized
-                toast = Toast.makeText(getApplicationContext(), getString(R.string.notauthorized), Toast.LENGTH_SHORT);
-                toast.show();
-                break;
-            case 403: // Forbidden
-                toast = Toast.makeText(getApplicationContext(), getString(R.string.notloggedin), Toast.LENGTH_SHORT);
-                toast.show();
-                EventBus.getDefault().post(new UserLoggedInEvent(false)); // initialise logged out ui when in main activity
-                break;
-            case 404: // Not found
-                toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
-                toast.show();
-                break;
-            case 405:
-                break;
-            case 500: // Internal error
-                toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
-                toast.show();
-                Gson gson = new Gson();
+
+        if(event == null || event.error == null) {
+            toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
+            toast.show();
+            Gson gson = new Gson();
+        } else {
+            switch (event.error.getStatus()) {
+                case 401: // Unauthorized
+                    toast = Toast.makeText(getApplicationContext(), getString(R.string.notauthorized), Toast.LENGTH_SHORT);
+                    toast.show();
+                    break;
+                case 403: // Forbidden
+                    toast = Toast.makeText(getApplicationContext(), getString(R.string.notloggedin), Toast.LENGTH_SHORT);
+                    toast.show();
+                    EventBus.getDefault().post(new UserLoggedInEvent(false)); // initialise logged out ui when in main activity
+                    break;
+                case 404: // Not found
+                    toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
+                    toast.show();
+                    break;
+                case 405:
+                    break;
+                case 500: // Internal error
+                    toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
+                    toast.show();
+                    Gson gson = new Gson();
+            }
         }
     }
 

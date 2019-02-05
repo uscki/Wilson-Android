@@ -179,7 +179,7 @@ public class MainActivity extends BasicActivity
                 openFragment(new PollOverviewFragment(), null);
             } else if (ACTION_VIEW_STORE.equals(intent.getAction())) {
                 Bundle args = new Bundle();
-                args.putInt("id", getIntent().getIntExtra(StoreFragment.PARAM_STORE_ID, -1));
+                args.putInt("id", intent.getIntExtra(StoreFragment.PARAM_STORE_ID, -1));
                 openFragment(new StoreFragment(), args);
             } else {
                 openTab(HomeFragment.NEWS);
