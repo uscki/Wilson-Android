@@ -20,13 +20,14 @@ import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
+import nl.uscki.appcki.android.generated.agenda.SimpleAgendaItem;
 
 /**
  *
  */
-public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHolder, AgendaItem> {
+public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHolder, SimpleAgendaItem> {
 
-    public AgendaItemAdapter(List<AgendaItem> items) {
+    public AgendaItemAdapter(List<SimpleAgendaItem> items) {
         super(items);
     }
 
@@ -43,7 +44,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         resetViews(holder, items.get(position));
     }
 
-    private void resetViews(final ViewHolder holder, AgendaItem item) {
+    private void resetViews(final ViewHolder holder, SimpleAgendaItem item) {
         holder.mItem = item;
         holder.mContentView.setText(item.getTitle());
 
@@ -54,7 +55,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             holder.itemWhen.setText(item.getStart().toString("EEEE dd MMMM YYYY HH:mm"));
         }
 
-        holder.itemDeelnemers.setText(item.getParticipants().size() + "");
+        holder.itemDeelnemers.setText(item.getTotalParticipants());
 
         if(item.getLocation() == null || item.getLocation().isEmpty()) {
             holder.itemWhere.setVisibility(View.GONE);
@@ -78,6 +79,11 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             holder.prepublishedNotice.setVisibility(View.VISIBLE);
             holder.inschrijvenVerplicht.setVisibility(View.VISIBLE);
             holder.itemDeadline.setVisibility(View.GONE);
+        }
+
+        if(item.getTotalComments() > 0) {
+            holder.nComments.setText(holder.mView.getContext().getString(R.string.agenda_n_comments, item.getTotalComments()));
+            holder.nComments.setVisibility(View.VISIBLE);
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +110,8 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         holder.inschrijvenVerplicht.setVisibility(View.VISIBLE);
         holder.itemWhere.setVisibility(View.VISIBLE);
         holder.prepublishedNotice.setVisibility(View.GONE);
+        holder.nComments.setText("");
+        holder.nComments.setVisibility(View.GONE);
     }
 
     @Override
@@ -116,12 +124,13 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         public final TextView mContentView;
         public final TextView itemWhen;
         public final TextView itemWhere;
+        public final TextView nComments;
         public final TextView itemDeelnemers;
         public final SimpleDraweeView itemPoster;
         public final TextView itemDeadline;
         public final View inschrijvenVerplicht;
         public final TextView prepublishedNotice;
-        public AgendaItem mItem;
+        public SimpleAgendaItem mItem;
 
         public ViewHolder(View view) {
             super(view);
@@ -134,6 +143,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             itemDeadline = (TextView) view.findViewById(R.id.inschrijven_verplicht_date);
             inschrijvenVerplicht = view.findViewById(R.id.agenda_inschrijven_verplicht);
             prepublishedNotice = view.findViewById(R.id.prepublished_event_text);
+            nComments = (TextView) view.findViewById(R.id.agenda_item_comment_number);
         }
 
         @Override

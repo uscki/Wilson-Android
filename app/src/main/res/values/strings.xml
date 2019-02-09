@@ -58,6 +58,7 @@
     <string name="vote_imperative">Stemmen</string>
     <string name="action_agenda_export">Opslaan</string>
     <string name="action_agenda_remove_from_calendar">Verwijderen uit agenda</string>
+    <string name="agenda_n_comments">%d reacties</string>
 
     <string name="example_text">Example text</string>
 
