@@ -67,11 +67,6 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, view);
-
-        if(activity != null) {
-            setupParticipantList(activity.getAgendaItem());
-        }
-
         return view;
     }
 

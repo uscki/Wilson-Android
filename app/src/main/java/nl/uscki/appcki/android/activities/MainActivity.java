@@ -467,7 +467,7 @@ public class MainActivity extends BasicActivity
         //TODO refactor this
         if(event.screen instanceof AgendaDetailTabsFragment) {
             Intent agenda = new Intent(this, AgendaActivity.class);
-            agenda.putExtra("item", event.arguments);
+            agenda.putExtras(event.arguments);
             startActivity(agenda);
             return;
         } else if(event.screen instanceof MeetingDetailTabsFragment) {

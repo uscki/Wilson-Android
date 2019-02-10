@@ -6,20 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.gson.Gson;
-
 import org.joda.time.DateTime;
-
 import java.util.List;
-
+import java.util.Locale;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
-import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.SimpleAgendaItem;
 
 /**
@@ -55,7 +51,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             holder.itemWhen.setText(item.getStart().toString("EEEE dd MMMM YYYY HH:mm"));
         }
 
-        holder.itemDeelnemers.setText(item.getTotalParticipants());
+        holder.itemDeelnemers.setText(String.format(Locale.getDefault(), "%d", item.getTotalParticipants()));
 
         if(item.getLocation() == null || item.getLocation().isEmpty()) {
             holder.itemWhere.setVisibility(View.GONE);
@@ -90,9 +86,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle();
-                Gson gson = new Gson();
-                String json = gson.toJson(holder.mItem, AgendaItem.class);
-                args.putString("item", json);
+                args.putInt(AgendaActivity.PARAM_AGENDA_ID, holder.mItem.getId());
                 EventBus.getDefault().post(new OpenFragmentEvent(new AgendaDetailTabsFragment(), args));
             }
         });

@@ -16,6 +16,7 @@ import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.AgendaItemAdapter;
 import nl.uscki.appcki.android.generated.agenda.Agenda;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
+import nl.uscki.appcki.android.generated.agenda.SimpleAgendaItem;
 
 /**
  * Created by peter on 11/23/16.
@@ -31,7 +32,7 @@ public class HomeAgendaTab extends PageableFragment<Agenda> {
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
-        setAdapter(new AgendaItemAdapter(new ArrayList<AgendaItem>()));
+        setAdapter(new AgendaItemAdapter(new ArrayList<SimpleAgendaItem>()));
         Services.getInstance().agendaService.agenda(page, AGENDA_PAGE_SIZE).enqueue(callback);
 
         return super.onCreateView(inflater, container, savedInstanceState);
