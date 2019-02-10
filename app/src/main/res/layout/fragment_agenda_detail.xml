@@ -23,16 +23,19 @@
             android:layout_alignParentTop="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/agenda_detail_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
-                android:drawableStart="@drawable/clock"
-                android:drawablePadding="@dimen/text_margin"
-                android:textColor="@color/colorBlack"
-                android:lines="2"
-                android:textAlignment="viewStart" />
+                <TextView
+                    android:id="@+id/agenda_detail_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:drawableStart="@drawable/calendar_clock"
+                    android:drawablePadding="@dimen/text_margin"
+                    android:textColor="@color/colorBlack"
+                    android:lines="2"
+                    android:textAlignment="gravity"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical"
+                    />
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
@@ -40,58 +43,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/agenda_detail_when"
-            android:layout_marginTop="1dp"
-            card_view:cardCornerRadius="0dp">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/text_margin"
-                android:layout_marginEnd="@dimen/text_margin"
-                android:layout_marginTop="@dimen/cards_margin_top"
-                android:layout_marginBottom="@dimen/cards_margin_top">
-                <TextView
-                    android:id="@+id/agenda_detail_beschrijving"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Beschrijving"
-                    android:textAppearance="@style/AppTheme.Text"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="16sp"/>
+            card_view:cardCornerRadius="0dp"
+            android:layout_marginTop="@dimen/cards_margin_top"
+            >
+
                 <nl.uscki.appcki.android.views.BBTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/agenda_detail_longtext"
-                    android:layout_below="@id/agenda_detail_beschrijving"
+                    android:layout_marginStart="@dimen/text_margin"
+                    android:layout_marginEnd="@dimen/text_margin"
+                    android:layout_marginBottom="@dimen/cards_margin_top"
                     style="@style/AppTheme.Text"/>
-            </RelativeLayout>
+
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/agenda_detail_longtext_card"
-            android:layout_marginTop="1dp"
-            card_view:cardCornerRadius="0dp">
+            android:layout_marginTop="@dimen/cards_margin_top"
+            card_view:cardCornerRadius="0dp"
+            >
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/text_margin"
-                android:layout_marginEnd="@dimen/text_margin"
-                android:layout_marginTop="@dimen/cards_margin_top"
                 android:layout_marginBottom="@dimen/cards_margin_top">
-                <TextView
-                    android:id="@+id/agenda_detail_summary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/text_margin"
-                    android:text="Samenvatting"
-                    android:textAppearance="@style/AppTheme.Text"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="16sp" />
                 <RelativeLayout
-                    android:layout_below="@id/agenda_detail_summary"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:id="@+id/agenda_detail_summary"
+                    android:layout_marginStart="@dimen/text_margin"
+                    android:layout_marginEnd="@dimen/text_margin"
+                    >
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -154,6 +139,69 @@
                         style="@style/AppTheme.Text"
                         android:gravity="center_vertical" />
                 </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/registration_required"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/agenda_detail_summary"
+                    android:orientation="horizontal"
+                    android:background="@drawable/agenda_inschrijven_verplicht_background"
+                    android:layout_marginTop="@dimen/text_margin"
+                    android:paddingStart="@dimen/text_margin"
+                    android:paddingEnd="@dimen/text_margin"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:visibility="gone"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        card_view:srcCompat="@drawable/emoticon_happy"
+                        android:layout_gravity="center_vertical"
+                        />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/text_margin"
+                        android:paddingEnd="@dimen/text_margin"
+                        >
+                        <TextView
+                            android:id="@+id/registration_required_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/agenda_inschrijven_verplicht"
+                            android:textColor="@color/colorWhite"
+                            android:gravity="end"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            />
+
+                        <TextView
+                            android:id="@+id/registration_required_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#fefefe"
+                            android:layout_below="@id/registration_required_text"
+                            android:gravity="end"
+                            />
+
+                        <TextView
+                            android:id="@+id/registration_opens_later"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:text="@string/agenda_prepublished_event_registration_closed_short_message"
+                            android:layout_below="@id/registration_required_date"
+                            android:textColor="@color/colorWhite"
+                            android:gravity="end"
+                            />
+
+                    </RelativeLayout>
+                </LinearLayout>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 

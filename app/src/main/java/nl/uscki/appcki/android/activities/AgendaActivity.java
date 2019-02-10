@@ -18,6 +18,8 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import org.joda.time.DateTime;
+import java.util.ArrayList;
+import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -33,6 +35,7 @@ import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailAdapter;
 import nl.uscki.appcki.android.fragments.agenda.SubscribeDialogFragment;
+import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
@@ -44,6 +47,9 @@ import retrofit2.Response;
 
 public class AgendaActivity extends BasicActivity {
     public static final String PARAM_AGENDA_ID = "nl.uscki.appcki.android.activities.param.AGENDA_ID";
+
+    public static final String ACTION_AGENDA_MAIN = "nl.uscki.appcki.android.activities.agenda.action.MAIN";
+    public static final String ACTION_AGENDA_PARTICIPANTS = "nl.uscki.appcki.android.activities.agenda.action.PARTICIPANT_LIST";
 
     protected AgendaItem item;
     private int agendaId = -1;
@@ -81,15 +87,6 @@ public class AgendaActivity extends BasicActivity {
         item = response.body();
 
         setupItem();
-
-        // This isn't nice, but the callback overrides tab selection, and its only called once
-        // so with the current implementation, this is best
-        // TODO move this to onIntentReceived
-//        if(getIntent() != null && getIntent().getAction() != null &&
-//                getIntent().getAction().equals(CommentsFragment.ACTION_VIEW_COMMENTS)) {
-//            viewPager.setCurrentItem(2);
-//            tabLayout.setScrollPosition(2, 0f, false);
-//        }
         }
     };
 
@@ -129,7 +126,10 @@ public class AgendaActivity extends BasicActivity {
         }
 
         foundUser = false;
-        for (AgendaParticipant part : item.getParticipants()) {
+
+        List<AgendaParticipant> allParticipants = new ArrayList<>(item.getParticipants());
+        allParticipants.addAll(item.getBackupList());
+        for (AgendaParticipant part : allParticipants) {
             if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
                 if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
                     foundUser = true;
@@ -147,7 +147,7 @@ public class AgendaActivity extends BasicActivity {
      * Create one adapter that can be used from now on
      */
     private void createAdapter() {
-        fragmentAdapter = new AgendaDetailAdapter(getSupportFragmentManager());
+        fragmentAdapter = new AgendaDetailAdapter(getSupportFragmentManager(), this.agendaId);
         viewPager.setAdapter(fragmentAdapter);
 
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.tab_agenda_details)));
@@ -167,6 +167,33 @@ public class AgendaActivity extends BasicActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) { }
         });
+
+        setTabByIntent();
+    }
+
+    private void setTabByIntent() {
+        Intent intent = getIntent();
+
+        if(intent != null && intent.getAction() != null) {
+            // Tab defaults to details
+            int tab;
+            switch (intent.getAction()) {
+                case ACTION_AGENDA_MAIN:
+                    // Intentional carry-over
+                default:
+                    tab = AgendaDetailAdapter.AGENDA_DETAILS_TAB_POSITION;
+                    break;
+                case ACTION_AGENDA_PARTICIPANTS:
+                    tab = AgendaDetailAdapter.AGENDA_PARTICIPANTS_TAB_POSITION;
+                    break;
+                case CommentsFragment.ACTION_VIEW_COMMENTS:
+                    tab = AgendaDetailAdapter.AGENDA_COMMENTS_TAB_POSITION;
+                    break;
+            }
+
+            viewPager.setCurrentItem(tab);
+            tabLayout.setScrollPosition(tab, 0f, false);
+        }
     }
 
     @Override
@@ -181,9 +208,6 @@ public class AgendaActivity extends BasicActivity {
 
         MainActivity.currentScreen = MainActivity.Screen.AGENDA_DETAIL;
 
-        createAdapter();
-
-        // TODO create handleIntent function, so onIntentReceived also works
         if (getIntent().getBundleExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), AgendaItem.class);
@@ -198,6 +222,8 @@ public class AgendaActivity extends BasicActivity {
             finish();
         }
 
+
+
         if (UserHelper.getInstance().getPerson() == null) {
             finish();
         }
@@ -207,6 +233,8 @@ public class AgendaActivity extends BasicActivity {
             // TODO: Refactor agenda intentions to only pass ID, never a (serialized) agenda item
             agendaId = item.getId();
         }
+
+        createAdapter();
 
         // Perform an initial load of the data
         refreshAgendaItem();
@@ -329,6 +357,11 @@ public class AgendaActivity extends BasicActivity {
 
         if (this.item.getMaxregistrations() != null && this.item.getMaxregistrations() == 0) {
             prepareSubscribeButtonsForNoRegistration(subscribe, unsubscribe);
+        } else if (this.item.getHasUnregisterDeadline() &&
+                new DateTime(this.item.getUnregisterDeadline()).isBeforeNow()) {
+            unsubscribe.setVisible(false);
+        } else if (this.item.getStart().isBeforeNow()) {
+            unsubscribe.setVisible(false);
         } else {
             prepareSubscribeButtonsForRegistration(subscribe, unsubscribe);
         }
@@ -476,8 +509,14 @@ public class AgendaActivity extends BasicActivity {
                     EventBus.getDefault()
                             .post(new AgendaItemSubscribedEvent(response.body().payload, true));
                     setExportButtons();
+                    Toast.makeText(AgendaActivity.this, R.string.agenda_unsubscribe_confirmed, Toast.LENGTH_SHORT).show();
                 }
 
+                @Override
+                public void onError(Response<ActionResponse<AgendaParticipantLists>> response) {
+                    super.onError(response);
+                    Toast.makeText(AgendaActivity.this, R.string.agenda_unsubscribe_failed, Toast.LENGTH_SHORT).show();
+                }
             });
         }
     }
@@ -511,9 +550,10 @@ public class AgendaActivity extends BasicActivity {
         }
     }
 
-    // TODO never used, in theory replaced by newer stuff? Can this be made more decent
+    // TODO this event *SHOULD* only be used in this activity. Move it directly to the callback?
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
         item.setParticipants(event.subscribed.getParticipants());
+        item.setBackupList(event.subscribed.getBackupList());
         if(!event.showSubscribe) {
             setAlarmForEvent(item);
             menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
@@ -536,5 +576,39 @@ public class AgendaActivity extends BasicActivity {
             menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
         }
         setExportButtons();
+        showSubscribeConfirmation(event.subscribed);
+        EventBus.getDefault().post(new AgendaItemUpdatedEvent(item));
+    }
+
+    private void showSubscribeConfirmation(AgendaParticipantLists nowSubscribedLists) {
+        if(UserHelper.getInstance().getPerson() != null) {
+            int myId = UserHelper.getInstance().getPerson().getId();
+            boolean found = false;
+            int messageResourceId = -1;
+
+            for(AgendaParticipant p : nowSubscribedLists.getParticipants()) {
+                if (p.getPerson().getId() != null && p.getPerson().getId().equals(myId)) {
+                    found = true;
+                    messageResourceId = R.string.agenda_subscribe_confirmed;
+                    break;
+                }
+            }
+
+            if(!found) {
+                for(AgendaParticipant p : nowSubscribedLists.getBackupList()) {
+                    if(p.getPerson().getId() != null && p.getPerson().getId().equals(myId)) {
+                        found = true;
+                        messageResourceId = R.string.agenda_subscribe_backuplist;
+                        break;
+                    }
+                }
+            }
+
+            if(found) {
+                Toast.makeText(this, messageResourceId, Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e(getClass().getSimpleName(), "User not found on either list. No message shown");
+            }
+        }
     }
 }

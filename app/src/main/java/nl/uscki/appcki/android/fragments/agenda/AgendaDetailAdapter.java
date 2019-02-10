@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 
 /**
@@ -12,37 +13,35 @@ import nl.uscki.appcki.android.generated.agenda.AgendaItem;
  */
 public class AgendaDetailAdapter extends FragmentStatePagerAdapter {
 
+    public static final int AGENDA_DETAILS_TAB_POSITION = 0;
+    public static final int AGENDA_PARTICIPANTS_TAB_POSITION = 1;
+    public static final int AGENDA_COMMENTS_TAB_POSITION = 2;
+
     private AgendaDetailFragment details;
     private AgendaDeelnemersFragment participants;
     private AgendaCommentsFragment comments;
 
-    public AgendaDetailAdapter(FragmentManager fm) {
+    public AgendaDetailAdapter(FragmentManager fm, int agendaID) {
         super(fm);
+
         details = new AgendaDetailFragment();
         participants = new AgendaDeelnemersFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(CommentsFragment.ARGUMENT_COMMENTS_TOPIC_ID, agendaID);
         comments = new AgendaCommentsFragment();
+        comments.setArguments(bundle);
     }
 
     @Override
     public Fragment getItem(int position) {
         // TODO probably do some state check with resumed and stuff
-//        Bundle bundle = new Bundle();
-//        bundle.putInt("id", item.getId());
         switch (position) {
             case AgendaDetailTabsFragment.AGENDA:
-//                AgendaDetailFragment fragment = new AgendaDetailFragment();
-//                fragment.setArguments(bundle);
-//                return fragment;
                 return details;
             case AgendaDetailTabsFragment.DEELNEMERS:
-//                AgendaDeelnemersFragment fragment1 = new AgendaDeelnemersFragment();
-//                fragment1.setArguments(bundle);
-//                return fragment1;
                 return participants;
             case AgendaDetailTabsFragment.COMMENTS:
-//                AgendaCommentsFragment fragment2 = new AgendaCommentsFragment();
-//                fragment2.setArguments(bundle);
-//                return fragment2;
                 return comments;
         }
 

@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -42,6 +44,12 @@ public class AgendaDetailFragment extends RefreshableFragment {
     TextView summaryCost;
     @BindView(R.id.agenda_detail_root)
     View root;
+    @BindView(R.id.registration_required)
+    LinearLayout registrationRequiredLayout;
+    @BindView(R.id.registration_required_date)
+    TextView registrationRequiredDate;
+    @BindView(R.id.registration_opens_later)
+    TextView registrationLaterText;
 
     private AgendaActivity activity;
 
@@ -93,10 +101,11 @@ public class AgendaDetailFragment extends RefreshableFragment {
 
     private void setupViews(View view, AgendaItem item) {
 
+        // TODO somehow use string resources
         String format = "EEEE, dd MMMM, HH:mm";
         if (item.getEnd() != null) {
             if (item.getEnd().toLocalDate().equals(item.getStart().toLocalDate())) {
-                format = "EEEE, dd MMMM \n HH:mm - ";
+                format = "EEEE, dd MMMM HH:mm - ";
                 startTime.setText(item.getStart().toString(format) + item.getEnd().toString("HH:mm"));
             } else {
                 startTime.setText(item.getStart().toString(format) + "\n" + item.getEnd().toString(format));
@@ -104,7 +113,19 @@ public class AgendaDetailFragment extends RefreshableFragment {
         } else {
             startTime.setText(item.getStart().toString(format));
         }
+
         longText.setText(Parser.parse(item.getDescription(), true, longText));
+
+        if(item.getRegistrationrequired()) {
+            registrationRequiredLayout.setVisibility(View.VISIBLE);
+            if(item.getDeadline() != null) {
+                // TODO somehow use string resources
+                registrationRequiredDate.setText(item.getDeadline().toString("EEEE, dd MMM, HH:mm"));
+            }
+            if(item.getMaxregistrations() <= 0) {
+                registrationLaterText.setVisibility(View.VISIBLE);
+            }
+        }
 
         setTextView(view, item.getWho(), R.id.agenda_summary_commissie_text);
         setTextView(view, item.getWhat(), R.id.agenda_summary_title_text);

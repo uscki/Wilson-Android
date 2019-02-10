@@ -21,13 +21,13 @@ import nl.uscki.appcki.android.fragments.adapters.CommentsAdapter;
 import nl.uscki.appcki.android.generated.comments.Comment;
 import nl.uscki.appcki.android.generated.comments.CommentPage;
 import nl.uscki.appcki.android.helpers.WrongTextfieldHelper;
-import nl.uscki.appcki.android.views.NewSimplePageableItem;
 import retrofit2.Call;
 import retrofit2.Response;
 
 public abstract class CommentsFragment extends PageableFragment<CommentPage> {
 
     public static final String ACTION_VIEW_COMMENTS = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_COMMENTS";
+    public static final String ARGUMENT_COMMENTS_TOPIC_ID = "nl.uscki.appcki.android.comments.TOPIC_ID";
 
     private static final int COMMENTS_PAGE_SIZE = 10;
 
@@ -48,7 +48,7 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null) {
-            commentOnTopicId = getArguments().getInt("id");
+            commentOnTopicId = getArguments().getInt(ARGUMENT_COMMENTS_TOPIC_ID);
         }
     }
 

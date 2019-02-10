@@ -66,7 +66,6 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
                     "Could not obtain AgendaActivity from viewholder view. " +
                             "Can't register onClick listener for smobo picture");
         }
-
     }
 
     private void unsetViews(ViewHolder vh) {
