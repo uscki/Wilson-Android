@@ -20,6 +20,6 @@ public interface ShoutboxService {
     Call<Roephoek> getShoutsCollection(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
 
     @FormUrlEncoded
-    @POST("shoutbox/shout")
+    @POST("shouts/shout")
     Call<RoephoekItem> shout(@Field("nickname") String name, @Field("message") String message);
 }
