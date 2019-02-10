@@ -45,16 +45,15 @@ public interface AgendaService {
     @POST("agenda/{event}/subscribe")
     Call<ActionResponse<AgendaParticipantLists>> subscribe(@Path("event") Integer id, @Field("note") String note, @Field("answer") String answer);
 
-    @FormUrlEncoded
-    @POST("agenda/{id}/unsubscribe")
-    Call<ActionResponse<AgendaParticipantLists>> unsubscribe(@Path("id") Integer id);
+    @POST("agenda/{event}/unsubscribe")
+    Call<ActionResponse<AgendaParticipantLists>> unsubscribe(@Path("event") Integer id);
 
-    @GET("agenda/{id}/comments/")
-    Call<CommentPage> getComments(@Path("id") Integer agendaId, @Query("page") Integer page, @Query("size") Integer size);
+    @GET("agenda/{event}/comments/")
+    Call<CommentPage> getComments(@Path("event") Integer agendaId, @Query("page") Integer page, @Query("size") Integer size);
 
-    @POST("agenda/{id}/comments/add")
-    Call<ActionResponse<Comment>> replyToComment(@Path("id") Integer agendaId, @Query("parentId") Integer parentId, @Query("comment") String comment);
+    @POST("agenda/{event}/comments/add")
+    Call<ActionResponse<Comment>> replyToComment(@Path("event") Integer agendaId, @Query("parentId") Integer parentId, @Query("comment") String comment);
 
-    @DELETE("agenda/{id}/comments/{comment}")
-    Call<Boolean> deleteComment(@Path("id") Integer agendaId, @Path("comment") Integer commentId);
+    @DELETE("agenda/{event}/comments/{comment}")
+    Call<Boolean> deleteComment(@Path("event") Integer agendaId, @Path("comment") Integer commentId);
 }
