@@ -66,7 +66,8 @@
     <string name="vote_imperative">Stemmen</string>
     <string name="action_agenda_export">Opslaan</string>
     <string name="action_agenda_remove_from_calendar">Verwijderen uit agenda</string>
-    <string name="agenda_n_comments">%d reacties</string>
+    <string name="agenda_n_comments_singular">%d reactie</string>
+    <string name="agenda_n_comments_plural">%d reacties</string>
     <string name="agenda_participants_backup_list">Wachtlijst</string>
     <string name="agenda_participants_backup_list_help">Als er een maximum aantal inschrijvingen geldt voor een evenement en dat aantal inschrijvingen is al gehaald, word je op de wachtlijst geplaatst als jij je ook inschrijft. Wanneer bestaande deelnemers zich uitschrijven, heb je kans van de wachtlijst naar de deelnemerslijst te worden geplaatst. Dit gebeurt in volgorde van inschrijving voor alle wachtenden.</string>
 

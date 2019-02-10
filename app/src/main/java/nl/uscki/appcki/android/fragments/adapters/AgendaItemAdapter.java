@@ -108,7 +108,9 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         }
 
         if(item.getTotalComments() > 0) {
-            holder.nComments.setText(holder.mView.getContext().getString(R.string.agenda_n_comments, item.getTotalComments()));
+            holder.nComments.setText(holder.mView.getContext().getString(
+                    item.getTotalComments() == 1 ? R.string.agenda_n_comments_singular : R.string.agenda_n_comments_plural,
+                    item.getTotalComments()));
             holder.nComments.setVisibility(View.VISIBLE);
         }
 
