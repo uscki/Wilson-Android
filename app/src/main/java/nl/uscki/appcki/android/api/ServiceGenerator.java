@@ -52,6 +52,8 @@ public class ServiceGenerator {
 
     public static final String API_BASE_URL = App.getContext().getString(R.string.apiurl);
 
+    public static final String AUTH_HEADER = "Authorization";
+
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
     private static Gson gson = new GsonBuilder()
@@ -84,7 +86,7 @@ public class ServiceGenerator {
                     return chain.proceed(original);
 
                 Request.Builder requestBuilder = original.newBuilder()
-                        .header("X-AUTH-TOKEN", UserHelper.getInstance().getToken())
+                        .header(AUTH_HEADER, UserHelper.getInstance().getToken())
                         .method(original.method(), original.body());
 
                 return chain.proceed(requestBuilder.build());
