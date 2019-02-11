@@ -20,7 +20,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.firebase.iid.FirebaseInstanceId;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -48,7 +47,6 @@ import nl.uscki.appcki.android.fragments.shop.StoreSelectionFragment;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
-import nl.uscki.appcki.android.services.LoadFullUserInfoService;
 import retrofit2.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -139,14 +137,9 @@ public class MainActivity extends BasicActivity
                     currentScreen = Screen.LOGIN;
                 }
             });
-            
-            try {
-                UserHelper.getInstance().getFullPersonInfo(MainActivity.this);
-            } catch(NullPointerException e) {
-                Intent intent = new Intent(this, LoadFullUserInfoService.class);
-                intent.setAction(LoadFullUserInfoService.ACTION_LOAD_USER);
-                startService(intent);
-            }
+
+            // Ensure a full user info object is loaded
+            UserHelper.getInstance().getFullPersonInfo(MainActivity.this);
 
             // Get the intent, verify the action and get the query
             handleIntention(getIntent());
