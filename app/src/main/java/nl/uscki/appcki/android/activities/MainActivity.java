@@ -67,6 +67,8 @@ public class MainActivity extends BasicActivity
 
     public static final String PARAM_NEWS_ID
             = "nl.uscki.appcki.android.activities.param.PARAM_NEWS_ID";
+    public static final String PARAM_POLL_ID
+            = "nl.uscki.appcki.android.activities.param.PARAM_POLL_ID";
 
     private int focusNewsId = -1;
     private int focusTriesSoFar = 0;
