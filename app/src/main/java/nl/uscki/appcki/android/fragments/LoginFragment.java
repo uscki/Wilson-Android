@@ -44,6 +44,8 @@ public class LoginFragment extends Fragment {
     ImageView logoTop;
     ObjectAnimator animation;
 
+    public static final String AUTH_HEADER = "Authorization";
+
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -142,7 +144,7 @@ public class LoginFragment extends Fragment {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if(response.isSuccessful()) {
                         Headers headers = response.headers();
-                        String token = headers.get("X-AUTH-TOKEN");
+                        String token = headers.get(AUTH_HEADER);
 
                         Gson gson = new Gson();
 
