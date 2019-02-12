@@ -24,7 +24,7 @@
     <string name="login">Login</string>
 
     <string name="notloggedin">Je bent niet ingelogd.</string>
-    <string name="notauthorized">Je hebt geen toegang tot deze content.</string>
+    <string name="noaccess">Je hebt geen toegang tot deze content.</string>
     <string name="agenda_subscribe_bad_request_error">Er is iets fout gegaan met je inschrijving. Open dit evenement in de app, en probeer het vanuit daar nogmaals.</string>
     <string name="content_loading_error">Er ging iets fout bij het laden van de content.</string>
     <string name="unknown_server_error">Er is een onbekende fout opgetreden op de server. Probeer het later nog eens.</string>

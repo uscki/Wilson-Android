@@ -146,7 +146,7 @@ public class CalendarServiceHelper {
     public void handleStatusCode(int statusCode) {
         int resourceId = R.string.connection_error;
         if(statusCode == 401) {
-            resourceId = R.string.notauthorized;
+            resourceId = R.string.noaccess;
         } else if(statusCode == 403) {
             resourceId = R.string.notloggedin;
         } else if(statusCode == 404) {
