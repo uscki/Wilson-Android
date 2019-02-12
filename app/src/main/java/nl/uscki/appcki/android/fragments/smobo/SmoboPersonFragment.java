@@ -110,7 +110,6 @@ public class SmoboPersonFragment extends Fragment {
         public void onSucces(Response<SmoboItem> response) {
             p = response.body();
             swipeContainer.setRefreshing(false);
-            //scrollView.setVisibility(View.VISIBLE);
 
             createAddressInfoWidget(p);
             createEmailInfoWidget(p);
@@ -130,34 +129,48 @@ public class SmoboPersonFragment extends Fragment {
         }
     };
 
-    private void createAddressInfoWidget(SmoboItem p) {
-        Bundle bundle = new Bundle();
-        bundle.putString("maintext", p.getPerson().getAddress1() + "\n" + p.getPerson().getZipcode() + ", " + p.getPerson().getCity());
-        bundle.putString("subtext", "Home");
-        bundle.putInt("infotype", SmoboInfoWidget.InfoType.ADRESS.ordinal());
+    private boolean stringVisible(String s) {
+        return s != null && s.trim().length() > 0;
+    }
 
-        SmoboInfoWidget widget = new SmoboInfoWidget();
-        widget.setArguments(bundle);
-        context.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.smobo_address_info, widget)
-                .commitAllowingStateLoss();
+    private void createAddressInfoWidget(SmoboItem p) {
+        String address = p.getPerson().getFullAddres(true);
+
+        if(stringVisible(address)) {
+            Bundle bundle = new Bundle();
+            bundle.putString("maintext", address);
+            bundle.putString("subtext", "Home");
+            bundle.putInt("infotype", SmoboInfoWidget.InfoType.ADRESS.ordinal());
+
+            SmoboInfoWidget widget = new SmoboInfoWidget();
+            widget.setArguments(bundle);
+            context.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.smobo_address_info, widget)
+                    .commitAllowingStateLoss();
+        } else {
+            addressInfo.setPadding(0,0,0,0);
+        }
     }
 
     private void createEmailInfoWidget(SmoboItem p) {
-        Bundle bundle = new Bundle();
-        bundle.putString("maintext", p.getPerson().getEmailaddress());
-        bundle.putString("subtext", "Home");
-        bundle.putInt("infotype", SmoboInfoWidget.InfoType.EMAIL.ordinal());
+        if(stringVisible(p.getPerson().getEmailaddress())) {
+            Bundle bundle = new Bundle();
+            bundle.putString("maintext", p.getPerson().getEmailaddress());
+            bundle.putString("subtext", "Home");
+            bundle.putInt("infotype", SmoboInfoWidget.InfoType.EMAIL.ordinal());
 
-        SmoboInfoWidget widget = new SmoboInfoWidget();
-        widget.setArguments(bundle);
-        context.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.smobo_email_info, widget)
-                .commitAllowingStateLoss();
+            SmoboInfoWidget widget = new SmoboInfoWidget();
+            widget.setArguments(bundle);
+            context.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.smobo_email_info, widget)
+                    .commitAllowingStateLoss();
+        } else {
+            emailInfo.setPadding(0,0,0,0);
+        }
     }
 
     private void createPhoneInfoWidget(SmoboItem p) {
-        if(p.getPerson().getPhonenumber() != null) {
+        if(stringVisible(p.getPerson().getPhonenumber())) {
             Bundle bundle = new Bundle();
             bundle.putString("maintext", p.getPerson().getPhonenumber());
             bundle.putString("subtext", "Home");
@@ -174,7 +187,7 @@ public class SmoboPersonFragment extends Fragment {
     }
 
     private void createMobileInfoWidget(SmoboItem p) {
-        if (p.getPerson().getMobilenumber() != null) {
+        if (stringVisible(p.getPerson().getMobilenumber())) {
             Bundle bundle = new Bundle();
             bundle.putString("maintext", p.getPerson().getMobilenumber());
             bundle.putString("subtext", "Mobile");
@@ -210,7 +223,7 @@ public class SmoboPersonFragment extends Fragment {
     }
 
     private void createWebsiteInfoWidget(SmoboItem p) {
-        if(p.getPerson().getHomepage() != null) {
+        if(stringVisible(p.getPerson().getHomepage())) {
             Bundle bundle = new Bundle();
             String homepage = p.getPerson().getHomepage();
             bundle.putString("maintext", homepage);

@@ -38,7 +38,7 @@ public class SmoboCommissieAdapter extends BaseItemAdapter<SmoboCommissieAdapter
         Committee item = items.get(position);
 
         String duration;
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("dd MMM yy");
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("dd MMM yyyy");
         if (items.get(position).getEnd().isBeforeNow()) {
             duration = item.getStart().toString(fmt) + " - " + item.getEnd().toString(fmt);
             holder.duration.setText(duration);
