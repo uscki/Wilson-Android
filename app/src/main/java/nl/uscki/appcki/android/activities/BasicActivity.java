@@ -152,7 +152,7 @@ public abstract class BasicActivity extends AppCompatActivity {
     public void onEventMainThread(ServerErrorEvent event) {
         Toast toast;
 
-        if(event == null || event.error == null) {
+        if(event == null || event.error == null || event.error.getStatus() == null) {
             toast = Toast.makeText(getApplicationContext(), getString(R.string.content_loading_error), Toast.LENGTH_SHORT);
             toast.show();
             Gson gson = new Gson();
