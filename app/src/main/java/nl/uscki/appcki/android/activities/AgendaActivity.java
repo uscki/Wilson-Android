@@ -38,6 +38,7 @@ import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
+import nl.uscki.appcki.android.helpers.AgendaSubscribedHelper;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
@@ -124,19 +125,7 @@ public class AgendaActivity extends BasicActivity {
             this.toolbarLayout.setTitle(this.item.getTitle());
         }
 
-        foundUser = false;
-
-        List<AgendaParticipant> allParticipants = new ArrayList<>(item.getParticipants());
-        allParticipants.addAll(item.getBackupList());
-        for (AgendaParticipant part : allParticipants) {
-            if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
-                if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
-                    foundUser = true;
-                }
-            } else {
-                finish();
-            }
-        }
+        foundUser = AgendaSubscribedHelper.isSubscribed(item) > AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED;
 
         setSubscribeButtons();
         setExportButtons();
@@ -581,29 +570,16 @@ public class AgendaActivity extends BasicActivity {
 
     private void showSubscribeConfirmation(AgendaParticipantLists nowSubscribedLists) {
         if(UserHelper.getInstance().getPerson() != null) {
-            int myId = UserHelper.getInstance().getPerson().getId();
-            boolean found = false;
             int messageResourceId = -1;
 
-            for(AgendaParticipant p : nowSubscribedLists.getParticipants()) {
-                if (p.getPerson().getId() != null && p.getPerson().getId().equals(myId)) {
-                    found = true;
-                    messageResourceId = R.string.agenda_subscribe_confirmed;
-                    break;
-                }
+            int status = AgendaSubscribedHelper.isSubscribed(nowSubscribedLists);
+            if(status == AgendaSubscribedHelper.AGENDA_SUBSCRIBED) {
+                messageResourceId = R.string.agenda_subscribe_confirmed;
+            } else if(status == AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST) {
+                messageResourceId = R.string.agenda_subscribe_backuplist;
             }
 
-            if(!found) {
-                for(AgendaParticipant p : nowSubscribedLists.getBackupList()) {
-                    if(p.getPerson().getId() != null && p.getPerson().getId().equals(myId)) {
-                        found = true;
-                        messageResourceId = R.string.agenda_subscribe_backuplist;
-                        break;
-                    }
-                }
-            }
-
-            if(found) {
+            if(status > AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED) {
                 Toast.makeText(this, messageResourceId, Toast.LENGTH_SHORT).show();
             } else {
                 Log.e(getClass().getSimpleName(), "User not found on either list. No message shown");
