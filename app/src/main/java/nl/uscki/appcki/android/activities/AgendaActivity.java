@@ -126,6 +126,7 @@ public class AgendaActivity extends BasicActivity {
             this.toolbarLayout.setTitle(this.item.getTitle());
         }
 
+        // TODO use user participation on agenda item
         foundUser = AgendaSubscribedHelper.isSubscribed(item) > AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED;
 
         setSubscribeButtons();
@@ -200,9 +201,11 @@ public class AgendaActivity extends BasicActivity {
         if (getIntent().getBundleExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), AgendaItem.class);
+            Log.e(getClass().getSimpleName(), "WARNIGN! Used Bundle JSON to pass agenda item! Use ID instead!");
         } else if (getIntent().getStringExtra("item") != null) {
             Gson gson = new Gson();
             item = gson.fromJson(getIntent().getStringExtra("item"), AgendaItem.class);
+            Log.e(getClass().getSimpleName(), "WARNIGN! Used StringExtra JSON to pass agenda item! Use ID instead!");
         } else if (getIntent().getIntExtra(PARAM_AGENDA_ID, -1) >= 0) {
             agendaId = getIntent().getIntExtra(PARAM_AGENDA_ID, -1);
         } else {
@@ -349,7 +352,7 @@ public class AgendaActivity extends BasicActivity {
         } else if (this.item.getHasUnregisterDeadline() &&
                 new DateTime(this.item.getUnregisterDeadline()).isBeforeNow()) {
             unsubscribe.setVisible(false);
-        } else if (this.item.getStart().isBeforeNow()) {
+        } else if (this.item.getStart().isBeforeNow() && foundUser) {
             unsubscribe.setVisible(false);
         } else {
             prepareSubscribeButtonsForRegistration(subscribe, unsubscribe);
