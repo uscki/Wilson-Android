@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.joda.time.DateTime;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
@@ -17,7 +18,7 @@ public class MyPreference  implements IWilsonBaseItem {
     private Integer slotId;
     @SerializedName("starttime")
     @Expose
-    private String starttime;
+    private DateTime starttime;
     @SerializedName("notes")
     @Expose
     private String notes;
@@ -66,7 +67,7 @@ public class MyPreference  implements IWilsonBaseItem {
      * @return
      * The starttime
      */
-    public String getStarttime() {
+    public DateTime getStarttime() {
         return starttime;
     }
 
@@ -75,7 +76,7 @@ public class MyPreference  implements IWilsonBaseItem {
      * @param starttime
      * The starttime
      */
-    public void setStarttime(String starttime) {
+    public void setStarttime(DateTime starttime) {
         this.starttime = starttime;
     }
 

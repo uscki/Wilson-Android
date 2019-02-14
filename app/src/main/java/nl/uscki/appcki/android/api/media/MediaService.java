@@ -14,6 +14,6 @@ public interface MediaService {
     @GET("media/get")
     Call<MediaFile> get(@Query("id") Integer id);
 
-    @GET("media/{id}/{size}")
+    @GET("media/file/{id}/{size}")
     Call<ResponseBody> file(@Path("id") Integer id, @Path("size") String size);
 }

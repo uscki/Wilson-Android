@@ -27,6 +27,7 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.error.Error;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.events.AgendaItemUpdatedEvent;
@@ -490,18 +491,18 @@ public class AgendaActivity extends BasicActivity {
             Log.d("MainActivity", "unsubscribing for:" + item.getId());
 
             Services.getInstance().agendaService.unsubscribe(item.getId())
-                    .enqueue(new nl.uscki.appcki.android.api.Callback<AgendaParticipantLists>() {
+                    .enqueue(new nl.uscki.appcki.android.api.Callback<ActionResponse<AgendaParticipantLists>>() {
 
                 @Override
-                public void onSucces(Response<AgendaParticipantLists> response) {
+                public void onSucces(Response<ActionResponse<AgendaParticipantLists>> response) {
                     EventBus.getDefault()
-                            .post(new AgendaItemSubscribedEvent(response.body(), true));
+                            .post(new AgendaItemSubscribedEvent(response.body().payload, true));
                     setExportButtons();
                     Toast.makeText(AgendaActivity.this, R.string.agenda_unsubscribe_confirmed, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
-                public void onError(Response<AgendaParticipantLists> response) {
+                public void onError(Response<ActionResponse<AgendaParticipantLists>> response) {
                     super.onError(response);
                     Toast.makeText(AgendaActivity.this, R.string.agenda_unsubscribe_failed, Toast.LENGTH_SHORT).show();
                 }

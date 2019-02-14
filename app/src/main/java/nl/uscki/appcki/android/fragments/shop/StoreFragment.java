@@ -17,6 +17,7 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.generated.common.Pageable;
@@ -127,11 +128,12 @@ public class StoreFragment extends PageableFragment<Pageable<Product>> implement
      * @param amount
      */
     public void orderProduct(final Context context, final Product product, final int amount) {
-        Services.getInstance().shopService.placeOrder(product.id, amount).enqueue(new Callback<Boolean>() {
+        Services.getInstance().shopService.placeOrder(storeId, product.id, amount).enqueue(new Callback<ActionResponse<Integer>>() {
+
             @Override
-            public void onSucces(Response<Boolean> response) {
-                if(response.body()) {
-                    product.stock -= amount; // TODO use API callback when available
+            public void onSucces(Response<ActionResponse<Integer>> response) {
+                if(response.body() != null && response.body().payload != null) {
+                    product.stock -= response.body().payload;
                     ((ProductAdapter) getAdapter()).updateProduct(product);
                     Toast.makeText(
                             context,

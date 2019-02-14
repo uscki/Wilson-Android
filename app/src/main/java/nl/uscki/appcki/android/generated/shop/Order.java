@@ -3,6 +3,8 @@ package nl.uscki.appcki.android.generated.shop;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.joda.time.DateTime;
+
 public class Order {
     @Expose
     @SerializedName("id")
@@ -15,5 +17,5 @@ public class Order {
     String product;
     @Expose
     @SerializedName("date")
-    Long date;
+    DateTime date;
 }

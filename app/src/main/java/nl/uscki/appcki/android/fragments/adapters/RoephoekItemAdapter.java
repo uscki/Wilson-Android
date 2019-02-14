@@ -41,11 +41,11 @@ public class RoephoekItemAdapter extends BaseItemAdapter<RoephoekItemAdapter.Vie
     public void onBindCustomViewHolder(ViewHolder holder, int position) {
         RoephoekItem item = items.get(position);
         //Log.d("RoephoekAdapter", item.getMessageJSON().toString());
-        SpannableStringBuilder text = Parser.parse(item.getMessageJSON(), true, holder.message);
+        SpannableStringBuilder text = Parser.parse(item.getMessage(), true, holder.message);
         holder.nickname.setText(item.getNickname());
         //holder.message.setText(item.getMessage());
         holder.message.setText(trim(text));
-        holder.time.setText(Utils.timestampConversion(item.getTimestamp()));
+        holder.time.setText(Utils.timestampConversion(item.getTimestamp().getMillis()));
     }
 
     private SpannableStringBuilder trim(SpannableStringBuilder str) {

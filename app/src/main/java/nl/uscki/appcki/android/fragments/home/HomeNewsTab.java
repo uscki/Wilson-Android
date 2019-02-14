@@ -1,7 +1,6 @@
 package nl.uscki.appcki.android.fragments.home;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,7 +32,7 @@ public class HomeNewsTab extends PageableFragment<NewsOverview> {
         setHasOptionsMenu(true);
 
         setAdapter(new NewsItemAdapter(new ArrayList<NewsItem>()));
-        Services.getInstance().newsService.older(page, NEWS_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().newsService.getNewsCollection(page, NEWS_PAGE_SIZE).enqueue(callback);
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -52,11 +51,11 @@ public class HomeNewsTab extends PageableFragment<NewsOverview> {
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().newsService.older(page, NEWS_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().newsService.getNewsCollection(page, NEWS_PAGE_SIZE).enqueue(callback);
     }
 
     public void onScrollRefresh() {
-        Services.getInstance().newsService.older(page, NEWS_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().newsService.getNewsCollection(page, NEWS_PAGE_SIZE).enqueue(callback);
     }
 
     @Override

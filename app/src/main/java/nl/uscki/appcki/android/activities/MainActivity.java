@@ -66,6 +66,8 @@ public class MainActivity extends BasicActivity
 
     public static final String PARAM_NEWS_ID
             = "nl.uscki.appcki.android.activities.param.PARAM_NEWS_ID";
+    public static final String PARAM_POLL_ID
+            = "nl.uscki.appcki.android.activities.param.PARAM_POLL_ID";
 
     private int focusNewsId = -1;
     private int focusTriesSoFar = 0;
@@ -465,7 +467,7 @@ public class MainActivity extends BasicActivity
         //TODO refactor this
         if(event.screen instanceof AgendaDetailTabsFragment) {
             Intent agenda = new Intent(this, AgendaActivity.class);
-            agenda.putExtra("item", event.arguments);
+            agenda.putExtras(event.arguments);
             startActivity(agenda);
             return;
         } else if(event.screen instanceof MeetingDetailTabsFragment) {

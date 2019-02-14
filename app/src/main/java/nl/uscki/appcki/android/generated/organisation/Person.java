@@ -18,7 +18,7 @@ public class Person extends PersonSimple implements IWilsonBaseItem {
     private String address2;
 
     @Expose
-    private Long birthdate;
+    private String birthdate;
 
     @Expose
     private String city;
@@ -85,7 +85,7 @@ public class Person extends PersonSimple implements IWilsonBaseItem {
         return new DateTime(birthdate);
     }
 
-    public void setBirthdate(Long birthdate) {
+    public void setBirthdate(String birthdate) {
         this.birthdate = birthdate;
     }
 

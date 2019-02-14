@@ -14,6 +14,7 @@ import java.util.Locale;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.generated.quotes.Quote;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
@@ -61,7 +62,7 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
     public void onBindCustomViewHolder(final ViewHolder holder, int position) {
         holder.mItem = this.items.get(position);
 
-        SpannableStringBuilder text = Parser.parse(items.get(position).getQuoteJSON(), true, holder.quote);
+        SpannableStringBuilder text = Parser.parse(items.get(position).getQuote(), true, holder.quote);
         holder.quote.setText(text);
         double toonkans = ((double)holder.mItem.getWeight()/(double)holder.mItem.getTotalWeight()) * 100;
         holder.toonkans.setText(roundOffTo2DecPlaces(toonkans));
@@ -79,10 +80,10 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
             holder.plus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Services.getInstance().quoteService.vote(holder.mItem.getId(), true).enqueue(new Callback<Quote>() {
+                    Services.getInstance().quoteService.vote(holder.mItem.getId(), true).enqueue(new Callback<ActionResponse<Quote>>() {
                         @Override
-                        public void onSucces(Response<Quote> response) {
-                            notifyItemChanged(holder.getAdapterPosition(), response.body());
+                        public void onSucces(Response<ActionResponse<Quote>> response) {
+                            notifyItemChanged(holder.getAdapterPosition(), response.body().payload);
                         }
                     });
                 }
@@ -91,10 +92,10 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
             holder.minus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Services.getInstance().quoteService.vote(holder.mItem.getId(), false).enqueue(new Callback<Quote>() {
+                    Services.getInstance().quoteService.vote(holder.mItem.getId(), false).enqueue(new Callback<ActionResponse<Quote>>() {
                         @Override
-                        public void onSucces(Response<Quote> response) {
-                            notifyItemChanged(holder.getAdapterPosition(), response.body());
+                        public void onSucces(Response<ActionResponse<Quote>> response) {
+                            notifyItemChanged(holder.getAdapterPosition(), response.body().payload);
                         }
                     });
                 }

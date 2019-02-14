@@ -4,6 +4,7 @@ import android.content.Context;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
+import nl.uscki.appcki.android.generated.agenda.SimpleAgendaItem;
 
 public class AgendaSubscribedHelper {
 
@@ -37,7 +38,7 @@ public class AgendaSubscribedHelper {
         return isSubscribed(lists);
     }
 
-    public static String getWhen(AgendaItem item) {
+    public static String getWhen(SimpleAgendaItem item) {
         String when;
         if (item.getEnd() != null) {
             boolean sameDay = item.getStart().getDayOfYear() == item.getEnd().getDayOfYear() &&
@@ -54,22 +55,22 @@ public class AgendaSubscribedHelper {
         return when;
     }
 
-    public static String getParticipantsSummary(Context context, AgendaItem item) {
+    public static String getParticipantsSummary(Context context, SimpleAgendaItem item) {
         String participantsSummary;
         if(item.getMaxregistrations() == null) {
-            participantsSummary = context.getString(R.string.agenda_item_n_registrations, item.getParticipants().size());
+            participantsSummary = context.getString(R.string.agenda_item_n_registrations, item.getTotalParticipants());
         } else if(item.getMaxregistrations().equals(0)) {
             participantsSummary = context.getString(R.string.agenda_prepublished_event_registration_closed_short_message);
-        } else if(item.getBackupList().size() > 0) {
+        } else if(item.getTotalBackuplist() > 0) {
             participantsSummary = context.getString(
                     R.string.agenda_item_n_registration_plus_backup,
-                    item.getParticipants().size(),
-                    item.getBackupList().size(),
+                    item.getTotalParticipants(),
+                    item.getTotalBackuplist(),
                     item.getMaxregistrations());
         } else {
             participantsSummary = context.getString(
                     R.string.agenda_item_n_registrations_max,
-                    item.getParticipants().size(),
+                    item.getTotalParticipants(),
                     item.getMaxregistrations()
             );
         }

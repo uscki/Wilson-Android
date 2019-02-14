@@ -85,7 +85,7 @@ public class AgendaDetailFragment extends RefreshableFragment {
     }
 
     private void setupViews(View view, AgendaItem item) {
-
+        longText.setText(Parser.parse(item.getDescription(), true, longText));
 
         String when = AgendaSubscribedHelper.getWhen(item);
         this.startTime.setText(when);
@@ -100,8 +100,6 @@ public class AgendaDetailFragment extends RefreshableFragment {
                 registrationLaterText.setVisibility(View.VISIBLE);
             }
         }
-
-        longText.setText(Parser.parse(item.getDescriptionJSON(), true, longText));
 
         setTextView(view, item.getWho(), R.id.agenda_summary_commissie_text);
         setTextView(view, item.getWhat(), R.id.agenda_summary_title_text);
@@ -125,14 +123,6 @@ public class AgendaDetailFragment extends RefreshableFragment {
 
     @Override
     public void onSwipeRefresh() {
-//        Services.getInstance().agendaService.get(item.getId()).enqueue(new Callback<AgendaItem>() {
-//            @Override
-//            public void onSucces(Response<AgendaItem> response) {
-//                item = response.body();
-//                getView().invalidate();
-//                swipeContainer.setRefreshing(false);
-//            }
-//        });
         activity.refreshAgendaItem();
     }
 

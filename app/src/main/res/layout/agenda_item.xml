@@ -70,14 +70,26 @@
         android:drawablePadding="5dp"
         android:gravity="center_vertical" />
 
+    <TextView
+        android:id="@+id/agenda_item_comment_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/agenda_item_waar"
+        android:layout_toEndOf="@id/agenda_item_poster"
+        style="@style/AppTheme.Text"
+        android:drawableStart="@drawable/format_quote_close"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        />
+
     <RelativeLayout
         android:id="@+id/agenda_inschrijven_verplicht"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/agenda_item_waar"
+        android:layout_below="@id/agenda_item_comment_number"
         android:layout_margin="4dp"
         android:layout_toEndOf="@+id/agenda_item_poster"
-        android:layout_toRightOf="@+id/agenda_item_poster"
         android:background="@drawable/agenda_inschrijven_verplicht_background"
         android:visibility="gone">
 

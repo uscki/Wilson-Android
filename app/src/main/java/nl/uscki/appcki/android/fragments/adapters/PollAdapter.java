@@ -16,6 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.poll.PollResultFragment;
 import nl.uscki.appcki.android.generated.poll.PollItem;
@@ -61,8 +62,7 @@ public class PollAdapter extends BaseItemAdapter<PollAdapter.ViewHolder, PollIte
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                String item = new Gson().toJson(holder.mItem);
-                bundle.putString("item", item);
+                bundle.putInt(MainActivity.PARAM_POLL_ID, holder.mItem.getId());
                 EventBus.getDefault().post(new OpenFragmentEvent(new PollResultFragment(), bundle));
             }
         });

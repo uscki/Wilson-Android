@@ -11,7 +11,7 @@ public class NewQuoteWidget extends NewSimplePageableItem {
     protected Call postNewItem() {
         return Services.getInstance()
                 .quoteService
-                .newQuote(getMainTextInput().getText().toString(), false);
+                .newQuote(getMainTextInput().getText().toString());
     }
 
     @Override

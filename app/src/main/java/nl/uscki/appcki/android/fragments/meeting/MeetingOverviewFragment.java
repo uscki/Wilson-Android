@@ -34,7 +34,7 @@ public class MeetingOverviewFragment extends PageableFragment<MeetingOverview> {
         setHasOptionsMenu(true);
 
         setAdapter(new MeetingItemAdapter(new ArrayList<MeetingItem>()));
-        Services.getInstance().meetingService.older(page, MEETING_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().meetingService.getMeetingCollection(page, MEETING_PAGE_SIZE).enqueue(callback);
     }
 
     @Override
@@ -58,12 +58,12 @@ public class MeetingOverviewFragment extends PageableFragment<MeetingOverview> {
 
     @Override
     public void onScrollRefresh() {
-        Services.getInstance().meetingService.older(page, MEETING_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().meetingService.getMeetingCollection(page, MEETING_PAGE_SIZE).enqueue(callback);
     }
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().meetingService.older(page, MEETING_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().meetingService.getMeetingCollection(page, MEETING_PAGE_SIZE).enqueue(callback);
     }
 
     @Override

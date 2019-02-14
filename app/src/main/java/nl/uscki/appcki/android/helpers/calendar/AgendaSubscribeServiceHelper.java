@@ -10,6 +10,7 @@ import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.generated.ServerError;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
@@ -73,15 +74,15 @@ public class AgendaSubscribeServiceHelper {
         UserHelper.getInstance().load();
 
         Services.getInstance().agendaService.subscribe(agendaId, subscribeComment)
-                .enqueue(new retrofit2.Callback<AgendaParticipantLists>() {
+                .enqueue(new retrofit2.Callback<ActionResponse<AgendaParticipantLists>>() {
 
                     @Override
                     public void onResponse(
-                            Call<AgendaParticipantLists> call,
-                            Response<AgendaParticipantLists> response)
+                            Call<ActionResponse<AgendaParticipantLists>> call,
+                            Response<ActionResponse<AgendaParticipantLists>> response)
                     {
                         if(response.isSuccessful()) {
-                            handleSuccess(response, agendaId, intent);
+                            handleSuccess(response.body().payload, agendaId, intent);
                         } else {
                             String errorMsg = context.getString(R.string.connection_error);
                             boolean allowSubscribe = true;
@@ -119,7 +120,7 @@ public class AgendaSubscribeServiceHelper {
                     }
 
                     @Override
-                    public void onFailure(Call<AgendaParticipantLists> call, Throwable t) {
+                    public void onFailure(Call<ActionResponse<AgendaParticipantLists>> call, Throwable t) {
                         Log.e(getClass().toString(), t.getMessage());
                         handleError(intent, context.getString(R.string.unknown_server_error), true);
                     }
@@ -130,17 +131,17 @@ public class AgendaSubscribeServiceHelper {
      * On successful subscribe attempt, update the notification and show a toast notification
      * indicating success
      *
-     * @param response      Server response for subscribe action
+     * @param response      Server response parsed as AgendaParticipantLists for subscribe action
      * @param agendaId      ID of agenda item subscribed to
      * @param intent        Intent with which this service was started
      */
     private void handleSuccess(
-            Response<AgendaParticipantLists> response,
+            AgendaParticipantLists response,
             int agendaId,
             Intent intent
     ) {
         EventBus.getDefault()
-                .post(new AgendaItemSubscribedEvent(response.body(), false));
+                .post(new AgendaItemSubscribedEvent(response, false));
 
         boolean allowExport = true;
 

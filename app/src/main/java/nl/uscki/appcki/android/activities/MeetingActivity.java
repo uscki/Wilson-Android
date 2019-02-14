@@ -23,7 +23,7 @@ import retrofit2.Response;
 public class MeetingActivity extends BasicActivity {
     public static final String PARAM_MEETING_ID = "nl.uscki.appcki.android.activities.param.MEETING_ID";
 
-    MeetingItem item;
+    public MeetingItem item;
     TabLayout tabLayout;
     ViewPager viewPager;
     Toolbar toolbar;
