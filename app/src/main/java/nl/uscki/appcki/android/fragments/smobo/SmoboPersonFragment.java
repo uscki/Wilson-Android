@@ -77,6 +77,7 @@ public class SmoboPersonFragment extends Fragment {
 
     private Timer timer;
     private TimerTask timerTask;
+    private DateRangeHelper dateRangeHelper;
 
     @BindView(R.id.smobo_address_info)
     FrameLayout addressInfo;
@@ -241,8 +242,10 @@ public class SmoboPersonFragment extends Fragment {
     }
 
     private void createCountdown() {
-        final DateRangeHelper drh = new DateRangeHelper(getContext(), p.getPerson());
-        if(!drh.isSuccess()) {
+        if(this.dateRangeHelper == null) {
+            this.dateRangeHelper = new DateRangeHelper(getContext(), p.getPerson());
+        }
+        if(!this.dateRangeHelper.isSuccess()) {
             this.datableRangeInfo.setVisibility(View.GONE);
             return;
         }
@@ -250,21 +253,29 @@ public class SmoboPersonFragment extends Fragment {
         this.timerTask = new TimerTask() {
             @Override
             public void run() {
-
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        String countdownString = drh.getFullCountdownString();
+                        String countdownString = SmoboPersonFragment.this
+                                .dateRangeHelper.getFullCountdownString();
 
                         String loveStatusString;
                         int heartIcon = R.drawable.ic_outline_broken_heart_24px;
-                        if(drh.getLoveStatus().equals(DateRangeHelper.DateRange.IN_RANGE)) {
-                            loveStatusString = getString(R.string.hyap7_verdict_dating_allowed, p.getPerson().getFirstname());
+                        if(SmoboPersonFragment.this.dateRangeHelper.getLoveStatus()
+                                .equals(DateRangeHelper.DateRange.IN_RANGE)) {
+                            loveStatusString = getString(
+                                    R.string.hyap7_verdict_dating_allowed,
+                                    p.getPerson().getFirstname());
                             heartIcon = R.drawable.ic_outline_favorite_24px;
-                        } else if(drh.getLoveStatus().equals(DateRangeHelper.DateRange.OTHER_TOO_YOUNG)) {
-                            loveStatusString = getString(R.string.hyap7_verdict_dating_other_too_young, p.getPerson().getFirstname());
+                        } else if(SmoboPersonFragment.this.dateRangeHelper.getLoveStatus()
+                                .equals(DateRangeHelper.DateRange.OTHER_TOO_YOUNG)) {
+                            loveStatusString = getString(
+                                    R.string.hyap7_verdict_dating_other_too_young,
+                                    p.getPerson().getFirstname());
                         } else {
-                            loveStatusString = getString(R.string.hyap7_verdict_dating_me_too_young, p.getPerson().getFirstname());
+                            loveStatusString = getString(
+                                    R.string.hyap7_verdict_dating_me_too_young,
+                                    p.getPerson().getFirstname());
                         }
 
                         SmoboPersonFragment.this.datableRangeIcon.setImageResource(heartIcon);
@@ -397,9 +408,22 @@ public class SmoboPersonFragment extends Fragment {
             // If using the Support lib.
             // return activity.getSupportFragmentManager();
 
+            if(this.dateRangeHelper != null) {
+                this.dateRangeHelper.setContext(getContext());
+            }
+            if(this.timer != null) {
+                this.timer.schedule(this.timerTask, 0, 1000);
+            }
+
         } catch (ClassCastException e) {
             Log.d(TAG, "Can't get the fragment manager with this");
         }
         super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if(this.timer != null) this.timer.cancel();
     }
 }
