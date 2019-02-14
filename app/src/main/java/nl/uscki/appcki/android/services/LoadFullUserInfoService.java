@@ -33,7 +33,7 @@ public class LoadFullUserInfoService extends IntentService {
         public void onSucces(Response response) {
             SmoboItem mySmobo = (SmoboItem) response.body();
             Person person = mySmobo.getPerson();
-            UserHelper.getInstance().setFullPerson(LoadFullUserInfoService.this, person);
+            UserHelper.getInstance().setFullPerson(person);
         }
     };
 }

@@ -92,7 +92,7 @@ public class AgendaSubscribeServiceHelper {
                                         response.errorBody().string(), ServerError.class);
 
                                 if(error.getStatus() == 401) {
-                                    errorMsg = context.getString(R.string.notauthorized);
+                                    errorMsg = context.getString(R.string.noaccess);
                                     allowSubscribe = false;
                                 }
                                 if(error.getStatus() == 400) {
