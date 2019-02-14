@@ -380,6 +380,8 @@
     <string name="shop_price_total_header">Totaal:</string>
     <string name="shop_price_format">€%.2f p.st.</string>
     <string name="shop_price_format_simple">€%.2f</string>
+    <string name="shop_pin_shortcut">Vastzetten op thuisscherm</string>
+    <string name="shop_long_store_name">Winkel %s</string>
 
     <!-- Datable range (half-your-age-plus-seven) -->
     <string name="smobo_half_your_age_plus_seven">Half-your-age-plus-seven</string>
