@@ -31,17 +31,21 @@ public class DateRangeHelper {
     public DateRangeHelper(Context context, Person compareTo) {
         this.compareTo = compareTo;
         this.context = context;
-        try {
-            this.me = UserHelper.getInstance().getFullPersonInfo(context);
-            getCountdownDate();
-            isSuccess = true;
-        } catch (Exception e) {
-            Log.e(getClass().getSimpleName(), "No full user info loaded");
-        }
+        this.me = UserHelper.getInstance().getFullPersonInfo(context);
+        getCountdownDate();
+        this.isSuccess = this.me != null;
     }
 
+    /**
+     * If the current user cannot be found, success will be false
+     * @return False if no user could be found. DOn't use this class in that case!
+     */
     public boolean isSuccess() {
         return isSuccess;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     /**

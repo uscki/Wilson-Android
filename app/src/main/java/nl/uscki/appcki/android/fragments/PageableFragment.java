@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,6 +43,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     protected RecyclerView recyclerView;
     protected SwipeRefreshLayout swipeContainer;
     protected TextView emptyText;
+    protected NestedScrollView emptyTextScrollview;
 
     // The minimum amount of items to have below your current scroll position
     // before loading more.
@@ -72,11 +74,11 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                 if (response.body() != null) {
                     // empty first page meaning there are no elements at all, also not on other pages
                     if(response.body().getNumberOfElements() == 0 && response.body().getFirst()) {
-                        emptyText.setVisibility(View.VISIBLE);
+                        emptyTextScrollview.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
                         noMoreContent = true;
                     } else {
-                        emptyText.setVisibility(View.GONE);
+                        emptyTextScrollview.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                         noMoreContent = response.body().getNumberOfElements() < getPageSize();
                     }
@@ -130,6 +132,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         setupSwipeContainer(view);
         setupRecyclerView(view);
 
+        emptyTextScrollview = view.findViewById(R.id.empty_text_scrollview);
         emptyText = (TextView) view.findViewById(R.id.empty_text);
         emptyText.setText(getEmptyText());
 
