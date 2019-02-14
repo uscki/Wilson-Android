@@ -19,6 +19,7 @@ import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.events.AgendaItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
+import nl.uscki.appcki.android.helpers.AgendaSubscribedHelper;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
 
@@ -28,6 +29,8 @@ import nl.uscki.appcki.android.views.BBTextView;
 public class AgendaDetailFragment extends RefreshableFragment {
     @BindView(R.id.agenda_detail_time)
     TextView startTime;
+    @BindView(R.id.agenda_detail_participants)
+    TextView participants;
 
     @BindView(R.id.agenda_detail_longtext)
     BBTextView longText;
@@ -65,24 +68,6 @@ public class AgendaDetailFragment extends RefreshableFragment {
         ButterKnife.bind(this, view);
         setupSwipeContainer(view);
 
-//        if (getArguments() != null) {
-//            int id = getArguments().getInt("id");
-//            swipeContainer.setRefreshing(true);
-//            Services.getInstance().agendaService.get(id).enqueue(new Callback<AgendaItem>() {
-//                @Override
-//                public void onSucces(Response<AgendaItem> response) {
-//                    swipeContainer.setRefreshing(false);
-//                    item = response.body();
-//                    root.setVisibility(View.VISIBLE);
-//                    setupViews(view);
-//                }
-//            });
-//        }
-//
-//
-//
-//        root.setVisibility(View.INVISIBLE);
-
         if(activity.getAgendaItem() != null) {
             setupViews(view, activity.getAgendaItem());
         }
@@ -100,20 +85,11 @@ public class AgendaDetailFragment extends RefreshableFragment {
     }
 
     private void setupViews(View view, AgendaItem item) {
+        longText.setText(Parser.parse(item.getDescription(), true, longText));
 
-        // TODO somehow use string resources
-        String format = "EEEE, dd MMMM, HH:mm";
-        if (item.getEnd() != null) {
-            if (item.getEnd().toLocalDate().equals(item.getStart().toLocalDate())) {
-                format = "EEEE, dd MMMM HH:mm - ";
-                startTime.setText(item.getStart().toString(format) + item.getEnd().toString("HH:mm"));
-            } else {
-                startTime.setText(item.getStart().toString(format) + "\n" + item.getEnd().toString(format));
-            }
-        } else {
-            startTime.setText(item.getStart().toString(format));
-        }
-
+        String when = AgendaSubscribedHelper.getWhen(item);
+        this.startTime.setText(when);
+        this.participants.setText(AgendaSubscribedHelper.getParticipantsSummary(getContext(), item));
         if(item.getRegistrationrequired()) {
             registrationRequiredLayout.setVisibility(View.VISIBLE);
             if(item.getDeadline() != null) {
@@ -125,16 +101,14 @@ public class AgendaDetailFragment extends RefreshableFragment {
             }
         }
 
-        longText.setText(Parser.parse(item.getDescriptionJSON(), true, longText));
-
         setTextView(view, item.getWho(), R.id.agenda_summary_commissie_text);
         setTextView(view, item.getWhat(), R.id.agenda_summary_title_text);
         setTextView(view, item.getLocation(), R.id.agenda_summary_waar_text);
 
-        if (item.getEnd() != null) {
+        if (item.getWhen() != null) {
             summaryWhen.setText(item.getWhen());
         } else {
-            summaryWhen.setText(item.getStart().toString(format));
+            summaryWhen.setText(when);
         }
         setTextView(view, item.getCosts(), R.id.agenda_summary_cost_text);
     }
@@ -149,14 +123,6 @@ public class AgendaDetailFragment extends RefreshableFragment {
 
     @Override
     public void onSwipeRefresh() {
-//        Services.getInstance().agendaService.get(item.getId()).enqueue(new Callback<AgendaItem>() {
-//            @Override
-//            public void onSucces(Response<AgendaItem> response) {
-//                item = response.body();
-//                getView().invalidate();
-//                swipeContainer.setRefreshing(false);
-//            }
-//        });
         activity.refreshAgendaItem();
     }
 

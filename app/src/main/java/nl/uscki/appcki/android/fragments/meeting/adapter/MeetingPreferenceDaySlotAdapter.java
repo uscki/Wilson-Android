@@ -24,6 +24,7 @@ import java.util.List;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
+import nl.uscki.appcki.android.activities.MeetingActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.meeting.SlotPreferenceDialog;
@@ -65,6 +66,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        final Integer meetingId = ((MeetingActivity)this.context).item.getId();
         final Slot slot = slots.get(position);
         holder.slot = slot;
         DateTime dateTime = new DateTime(slot.getStarttime());
@@ -76,7 +78,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
         holder.canAttend.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), isChecked).enqueue(new Callback<Slot>() {
+                    Services.getInstance().meetingService.setSlot(meetingId, slot.getId(), holder.note.getText().toString(), isChecked).enqueue(new Callback<Slot>() {
                         @Override
                         public void onSucces(Response<Slot> response) {
                             notifyItemChanged(holder.getAdapterPosition(), response.body());
@@ -90,7 +92,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus) {
                     Boolean checked = holder.canAttend.isChecked();
-                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), checked).enqueue(new Callback<Slot>() {
+                    Services.getInstance().meetingService.setSlot(meetingId, slot.getId(), holder.note.getText().toString(), checked).enqueue(new Callback<Slot>() {
                         @Override
                         public void onSucces(Response<Slot> response) {
                             notifyItemChanged(holder.getAdapterPosition(), response.body());
@@ -106,7 +108,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     Boolean checked = holder.canAttend.isChecked();
                     MainActivity.hideKeyboard(v);
-                    Services.getInstance().meetingService.setSlot(slot.getId(), holder.note.getText().toString(), checked).enqueue(new Callback<Slot>() {
+                    Services.getInstance().meetingService.setSlot(meetingId, slot.getId(), holder.note.getText().toString(), checked).enqueue(new Callback<Slot>() {
                         @Override
                         public void onSucces(Response<Slot> response) {
                             notifyItemChanged(holder.getAdapterPosition(), response.body());

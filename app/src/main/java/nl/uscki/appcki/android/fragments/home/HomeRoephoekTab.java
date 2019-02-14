@@ -34,7 +34,7 @@ public class HomeRoephoekTab extends PageableFragment<Roephoek> {
         setHasOptionsMenu(true);
 
         setAdapter(new RoephoekItemAdapter(new ArrayList<RoephoekItem>()));
-        Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().shoutboxService.getShoutsCollection(page, ROEPHOEK_PAGE_SIZE).enqueue(callback);
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -70,12 +70,12 @@ public class HomeRoephoekTab extends PageableFragment<Roephoek> {
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().shoutboxService.getShoutsCollection(page, ROEPHOEK_PAGE_SIZE).enqueue(callback);
     }
 
     @Override
     public void onScrollRefresh() {
-        Services.getInstance().shoutboxService.older(page, ROEPHOEK_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().shoutboxService.getShoutsCollection(page, ROEPHOEK_PAGE_SIZE).enqueue(callback);
     }
 
     @Override

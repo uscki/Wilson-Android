@@ -4,6 +4,7 @@ package nl.uscki.appcki.android.generated.news;
 import com.google.gson.annotations.Expose;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.joda.time.DateTime;
 
 import java.util.List;
 
@@ -15,17 +16,13 @@ public class NewsItem implements IWilsonBaseItem {
     @Expose
     private Integer id;
     @Expose
-    private String shorttext;
+    private List<Object> shorttext;
     @Expose
-    private List<Object> shorttextJSON;
-    @Expose
-    private String longtext;
-    @Expose
-    private List<Object> longtextJSON;
+    private List<Object> longtext;
     @Expose
     private String title;
     @Expose
-    private String posteddate;
+    private DateTime posteddate;
     @Expose
     private PersonSimpleName person;
     @Expose
@@ -33,7 +30,7 @@ public class NewsItem implements IWilsonBaseItem {
     @Expose
     private String sticky;
     @Expose
-    private Long timestamp;
+    private DateTime timestamp;
     @Expose
     private NewsType type;
 
@@ -60,7 +57,7 @@ public class NewsItem implements IWilsonBaseItem {
      * @return
      *     The shorttext
      */
-    public String getShorttext() {
+    public List<Object> getShorttext() {
         return shorttext;
     }
 
@@ -69,16 +66,8 @@ public class NewsItem implements IWilsonBaseItem {
      * @param shorttext
      *     The shorttext
      */
-    public void setShorttext(String shorttext) {
+    public void setShorttext(List<Object> shorttext) {
         this.shorttext = shorttext;
-    }
-
-    public List<Object> getShorttextJSON() {
-        return shorttextJSON;
-    }
-
-    public void setShorttextJSON(List<Object> shorttextJSON) {
-        this.shorttextJSON = shorttextJSON;
     }
 
     /**
@@ -86,7 +75,7 @@ public class NewsItem implements IWilsonBaseItem {
      * @return
      *     The longtext
      */
-    public String getLongtext() {
+    public List<Object> getLongtext() {
         return longtext;
     }
 
@@ -95,16 +84,8 @@ public class NewsItem implements IWilsonBaseItem {
      * @param longtext
      *     The longtext
      */
-    public void setLongtext(String longtext) {
+    public void setLongtext(List<Object> longtext) {
         this.longtext = longtext;
-    }
-
-    public List<Object> getLongtextJSON() {
-        return longtextJSON;
-    }
-
-    public void setLongtextJSON(List<Object> longtextJSON) {
-        this.longtextJSON = longtextJSON;
     }
 
     /**
@@ -130,7 +111,7 @@ public class NewsItem implements IWilsonBaseItem {
      * @return
      *     The posteddate
      */
-    public String getPosteddate() {
+    public DateTime getPosteddate() {
         return posteddate;
     }
 
@@ -139,7 +120,7 @@ public class NewsItem implements IWilsonBaseItem {
      * @param posteddate
      *     The posteddate
      */
-    public void setPosteddate(String posteddate) {
+    public void setPosteddate(DateTime posteddate) {
         this.posteddate = posteddate;
     }
 
@@ -197,11 +178,11 @@ public class NewsItem implements IWilsonBaseItem {
         this.sticky = sticky;
     }
 
-    public Long getTimestamp() {
+    public DateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Long timestamp) {
+    public void setTimestamp(DateTime timestamp) {
         this.timestamp = timestamp;
     }
 

@@ -1,34 +1,29 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.gson.Gson;
-
 import org.joda.time.DateTime;
-
-import java.util.Calendar;
 import java.util.List;
-
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
-import nl.uscki.appcki.android.generated.agenda.AgendaItem;
+import nl.uscki.appcki.android.generated.agenda.SimpleAgendaItem;
+import nl.uscki.appcki.android.helpers.AgendaSubscribedHelper;
 
 /**
  *
  */
-public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHolder, AgendaItem> {
+public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHolder, SimpleAgendaItem> {
 
-    public AgendaItemAdapter(List<AgendaItem> items) {
+    public AgendaItemAdapter(List<SimpleAgendaItem> items) {
         super(items);
     }
 
@@ -45,46 +40,14 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         resetViews(holder, items.get(position));
     }
 
-    private void resetViews(final ViewHolder holder, AgendaItem item) {
+    private void resetViews(final ViewHolder holder, SimpleAgendaItem item) {
         holder.mItem = item;
         holder.mContentView.setText(item.getTitle());
 
-        String when;
-        if (item.getEnd() != null) {
-            boolean sameDay = item.getStart().getDayOfYear() == item.getEnd().getDayOfYear() &&
-                    item.getStart().getYear() == item.getEnd().getYear();
-
-            if(sameDay) {
-                when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm" + " - " + item.getEnd().toString("HH:mm"));
-            } else {
-                when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm") + " - " + item.getEnd().toString("EEEE dd MMMM YYYY HH:mm");
-            }
-        } else {
-            when = item.getStart().toString("EEEE dd MMMM YYYY HH:mm");
-        }
-
+        String when = AgendaSubscribedHelper.getWhen(item);
         holder.itemWhen.setText(when);
 
-        Context c = holder.mView.getContext();
-        String nRegistrationsString;
-        if(item.getMaxregistrations() == null) {
-            nRegistrationsString = c.getString(R.string.agenda_item_n_registrations, item.getParticipants().size());
-        } else if(item.getMaxregistrations().equals(0)) {
-            nRegistrationsString = c.getString(R.string.agenda_prepublished_event_registration_closed_short_message);
-        } else if(item.getBackupList().size() > 0) {
-            nRegistrationsString = c.getString(
-                    R.string.agenda_item_n_registration_plus_backup,
-                    item.getParticipants().size(),
-                    item.getBackupList().size(),
-                    item.getMaxregistrations());
-        } else {
-            nRegistrationsString = c.getString(
-                    R.string.agenda_item_n_registrations_max,
-                    item.getParticipants().size(),
-                    item.getMaxregistrations()
-            );
-        }
-        holder.itemDeelnemers.setText(nRegistrationsString);
+        holder.itemDeelnemers.setText(AgendaSubscribedHelper.getParticipantsSummary(holder.mView.getContext(), item));
 
         if(item.getLocation() == null || item.getLocation().isEmpty()) {
             holder.itemWhere.setVisibility(View.GONE);
@@ -110,13 +73,18 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             holder.itemDeadline.setVisibility(View.GONE);
         }
 
+        if(item.getTotalComments() > 0) {
+            holder.nComments.setText(holder.mView.getContext().getString(
+                    item.getTotalComments() == 1 ? R.string.agenda_n_comments_singular : R.string.agenda_n_comments_plural,
+                    item.getTotalComments()));
+            holder.nComments.setVisibility(View.VISIBLE);
+        }
+
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle();
-                Gson gson = new Gson();
-                String json = gson.toJson(holder.mItem, AgendaItem.class);
-                args.putString("item", json);
+                args.putInt(AgendaActivity.PARAM_AGENDA_ID, holder.mItem.getId());
                 EventBus.getDefault().post(new OpenFragmentEvent(new AgendaDetailTabsFragment(), args));
             }
         });
@@ -134,6 +102,8 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         holder.inschrijvenVerplicht.setVisibility(View.VISIBLE);
         holder.itemWhere.setVisibility(View.VISIBLE);
         holder.prepublishedNotice.setVisibility(View.GONE);
+        holder.nComments.setText("");
+        holder.nComments.setVisibility(View.GONE);
     }
 
     @Override
@@ -146,12 +116,13 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         public final TextView mContentView;
         public final TextView itemWhen;
         public final TextView itemWhere;
+        public final TextView nComments;
         public final TextView itemDeelnemers;
         public final SimpleDraweeView itemPoster;
         public final TextView itemDeadline;
         public final View inschrijvenVerplicht;
         public final TextView prepublishedNotice;
-        public AgendaItem mItem;
+        public SimpleAgendaItem mItem;
 
         public ViewHolder(View view) {
             super(view);
@@ -164,6 +135,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             itemDeadline = (TextView) view.findViewById(R.id.inschrijven_verplicht_date);
             inschrijvenVerplicht = view.findViewById(R.id.agenda_inschrijven_verplicht);
             prepublishedNotice = view.findViewById(R.id.prepublished_event_text);
+            nComments = (TextView) view.findViewById(R.id.agenda_item_comment_number);
         }
 
         @Override

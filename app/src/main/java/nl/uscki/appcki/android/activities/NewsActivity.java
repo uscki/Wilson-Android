@@ -40,7 +40,7 @@ public class NewsActivity extends BasicActivity {
             initViews();
         }
         if (getIntent().getIntExtra("id", 0) != 0) {
-            Services.getInstance().newsService.get(getIntent().getIntExtra("id", 0)).enqueue(new Callback<NewsItem>() {
+            Services.getInstance().newsService.getNewsResource(getIntent().getIntExtra("id", 0)).enqueue(new Callback<NewsItem>() {
                 @Override
                 public void onSucces(Response<NewsItem> response) {
                     item = response.body();
@@ -51,14 +51,14 @@ public class NewsActivity extends BasicActivity {
     }
 
     private void initViews() {
-        if (item.getLongtextJSON() != null) {
-            newsLong.setText(Parser.parse(item.getLongtextJSON(), true, newsLong));
+        if (item.getLongtext() != null) {
+            newsLong.setText(Parser.parse(item.getLongtext(), true, newsLong));
         } else {
-            newsLong.setText(Parser.parse(item.getShorttextJSON(), true, newsLong));
+            newsLong.setText(Parser.parse(item.getShorttext(), true, newsLong));
         }
 
         title.setText(item.getTitle());
-        metadata.setText("(" + item.getPerson().getPostalname() + " / " + Utils.timestampConversion(item.getTimestamp(), false) + ")");
+        metadata.setText("(" + item.getPerson().getPostalname() + " / " + Utils.timestampConversion(item.getTimestamp().getMillis(), false) + ")");
     }
 
 }

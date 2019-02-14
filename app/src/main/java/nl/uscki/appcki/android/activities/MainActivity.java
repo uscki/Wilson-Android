@@ -20,7 +20,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.firebase.iid.FirebaseInstanceId;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -48,7 +47,6 @@ import nl.uscki.appcki.android.fragments.shop.StoreSelectionFragment;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
-import nl.uscki.appcki.android.services.LoadFullUserInfoService;
 import retrofit2.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -61,12 +59,15 @@ public class MainActivity extends BasicActivity
     public static final String ACTION_SHOUTBOX_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_SHOUTBOX_OVERVIEW";
     public static final String ACTION_MEETING_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_MEETING_OVERVIEW";
     public static final String ACTION_POLL_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_POLL_OVERVIEW";
+    public static final String ACTION_VIEW_STORE = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_STORE";
 
     public static final String ACTION_VIEW_NEWSITEM
             = "nl.uscki.appcki.android.activities.action.ACTION_VIEW_NEWSITEM";
 
     public static final String PARAM_NEWS_ID
             = "nl.uscki.appcki.android.activities.param.PARAM_NEWS_ID";
+    public static final String PARAM_POLL_ID
+            = "nl.uscki.appcki.android.activities.param.PARAM_POLL_ID";
 
     private int focusNewsId = -1;
     private int focusTriesSoFar = 0;
@@ -139,14 +140,9 @@ public class MainActivity extends BasicActivity
                     currentScreen = Screen.LOGIN;
                 }
             });
-            
-            try {
-                UserHelper.getInstance().getFullPersonInfo(MainActivity.this);
-            } catch(NullPointerException e) {
-                Intent intent = new Intent(this, LoadFullUserInfoService.class);
-                intent.setAction(LoadFullUserInfoService.ACTION_LOAD_USER);
-                startService(intent);
-            }
+
+            // Ensure a full user info object is loaded
+            UserHelper.getInstance().getFullPersonInfo(MainActivity.this);
 
             // Get the intent, verify the action and get the query
             handleIntention(getIntent());
@@ -176,6 +172,10 @@ public class MainActivity extends BasicActivity
                 currentScreen = Screen.MEETING_OVERVIEW;
             } else if (ACTION_POLL_OVERVIEW.equals(intent.getAction())) {
                 openFragment(new PollOverviewFragment(), null);
+            } else if (ACTION_VIEW_STORE.equals(intent.getAction())) {
+                Bundle args = new Bundle();
+                args.putInt("id", intent.getIntExtra(StoreFragment.PARAM_STORE_ID, -1));
+                openFragment(new StoreFragment(), args);
             } else {
                 openTab(HomeFragment.NEWS);
             }
@@ -467,7 +467,7 @@ public class MainActivity extends BasicActivity
         //TODO refactor this
         if(event.screen instanceof AgendaDetailTabsFragment) {
             Intent agenda = new Intent(this, AgendaActivity.class);
-            agenda.putExtra("item", event.arguments);
+            agenda.putExtras(event.arguments);
             startActivity(agenda);
             return;
         } else if(event.screen instanceof MeetingDetailTabsFragment) {

@@ -6,12 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
@@ -39,7 +36,7 @@ public class SmoboCommissieAdapter extends BaseItemAdapter<SmoboCommissieAdapter
 
         String duration;
         DateTimeFormatter fmt = DateTimeFormat.forPattern("dd MMM yy");
-        if (items.get(position).getEnd().isBeforeNow()) {
+        if (items.get(position).getEnd() != null && items.get(position).getEnd().isBeforeNow()) {
             duration = item.getStart().toString(fmt) + " - " + item.getEnd().toString(fmt);
             holder.duration.setText(duration);
             holder.name.setText(item.getName());

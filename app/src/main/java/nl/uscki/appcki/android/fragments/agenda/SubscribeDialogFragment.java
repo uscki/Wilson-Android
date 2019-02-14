@@ -20,6 +20,7 @@ import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
@@ -48,19 +49,19 @@ public class SubscribeDialogFragment extends DialogFragment {
 
     private AgendaItem item;
 
-    private Callback<AgendaParticipantLists> agendaSubscribeCallback =
-        new Callback<AgendaParticipantLists>() {
+    private Callback<ActionResponse<AgendaParticipantLists>> agendaSubscribeCallback =
+        new Callback<ActionResponse<AgendaParticipantLists>>() {
             @Override
-            public void onSucces(Response<AgendaParticipantLists> response) {
+            public void onSucces(Response<ActionResponse<AgendaParticipantLists>> response) {
                 EventBus.getDefault()
                         .post(new AgendaItemSubscribedEvent(
-                                response.body(),
+                                response.body().payload,
                                 false
                         ));
             }
 
             @Override
-            public void onError(Response<AgendaParticipantLists> response) {
+            public void onError(Response<ActionResponse<AgendaParticipantLists>> response) {
                 super.onError(response);
                 Toast.makeText(getContext(), R.string.agenda_subscribe_failed, Toast.LENGTH_SHORT).show();
             }
@@ -71,12 +72,13 @@ public class SubscribeDialogFragment extends DialogFragment {
                 @Override
                 public void onShow(DialogInterface dialogInterface) {
                     final AlertDialog dialog = (AlertDialog) dialogInterface;
-                    if(item.getQuestion() != null && !item.getQuestion().isEmpty()) {
+                    if (item.getQuestion() != null && !item.getQuestion().isEmpty()) {
                         positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
                         positiveButton.setEnabled(false);
                         registrationQuestionAnswer.addTextChangedListener(new TextWatcher() {
                             @Override
-                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            }
 
                             @Override
                             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -84,7 +86,8 @@ public class SubscribeDialogFragment extends DialogFragment {
                             }
 
                             @Override
-                            public void afterTextChanged(Editable editable) { }
+                            public void afterTextChanged(Editable editable) {
+                            }
                         });
                     }
                 }
@@ -107,9 +110,9 @@ public class SubscribeDialogFragment extends DialogFragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        if(item.getQuestion() == null || item.getQuestion().isEmpty()) {
+                        if (item.getQuestion() == null || item.getQuestion().isEmpty()) {
                             subscribeWithNote();
-                        } else if(item.getPossibleAnswers() == null || item.getPossibleAnswers().length == 0) {
+                        } else if (item.getPossibleAnswers() == null || item.getPossibleAnswers().length == 0) {
                             subscribeWithOpenQuestion();
                         } else {
                             subscribeWithMultipleChoice();
@@ -123,13 +126,13 @@ public class SubscribeDialogFragment extends DialogFragment {
                     }
                 });
 
-        if(item.getQuestion() != null && item.getQuestion() != "") {
+        if (item.getQuestion() != null && item.getQuestion() != "") {
             registrationQuestion.setText(item.getQuestion());
             registrationQuestion.setVisibility(View.VISIBLE);
             registrationQuestionAnswer.setVisibility(View.VISIBLE);
         }
 
-        if(item.getPossibleAnswers() != null && item.getPossibleAnswers().length > 0) {
+        if (item.getPossibleAnswers() != null && item.getPossibleAnswers().length > 0) {
             registrationQuestionAnswer.setVisibility(View.GONE);
             possibleAnswersView.setVisibility(View.VISIBLE);
             adapter = new PossibleAnswersAdapter(item.getPossibleAnswersAsWilsonItemList());
@@ -137,7 +140,7 @@ public class SubscribeDialogFragment extends DialogFragment {
             possibleAnswersView.setAdapter(adapter);
         }
 
-        AlertDialog dialog =  builder.create();
+        AlertDialog dialog = builder.create();
 
         dialog.setOnShowListener(onDialogShowListener);
 
@@ -145,22 +148,24 @@ public class SubscribeDialogFragment extends DialogFragment {
     }
 
     public void notifySelectionMade() {
-        if(positiveButton != null && adapter.getSelectedValue() != null) {
+        if (positiveButton != null && adapter.getSelectedValue() != null) {
             positiveButton.setEnabled(true);
         }
     }
 
     private void subscribeWithNote() {
-        if(item.getQuestion() == null || item.getQuestion().isEmpty()) {
+        if (item.getQuestion() == null || item.getQuestion().isEmpty()) {
             Services.getInstance().agendaService
-                    .subscribe(item.getId(),
+                    .subscribe(
+                            item.getId(),
                             note.getText().toString().trim()
-                    ).enqueue(agendaSubscribeCallback);
+                    )
+                    .enqueue(agendaSubscribeCallback);
         }
     }
 
     private void subscribeWithOpenQuestion() {
-        if((item.getQuestion() != null || !item.getQuestion().isEmpty()) && !registrationQuestionAnswer.getText().toString().trim().isEmpty()) {
+        if ((item.getQuestion() != null || !item.getQuestion().isEmpty()) && !registrationQuestionAnswer.getText().toString().trim().isEmpty()) {
             Services.getInstance().agendaService
                     .subscribe(item.getId(),
                             note.getText().toString().trim(),
@@ -170,7 +175,7 @@ public class SubscribeDialogFragment extends DialogFragment {
     }
 
     private void subscribeWithMultipleChoice() {
-        if(adapter.getSelectedValue() != null) {
+        if (adapter.getSelectedValue() != null) {
             Services.getInstance().agendaService
                     .subscribe(item.getId(),
                             note.getText().toString().trim(),

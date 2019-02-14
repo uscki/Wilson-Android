@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.joda.time.DateTime;
 
 import java.util.List;
 
@@ -19,13 +20,10 @@ public class RoephoekItem implements IWilsonBaseItem {
     private String nickname;
     @SerializedName("message")
     @Expose
-    private String message;
-    @SerializedName("messageJSON")
-    @Expose
-    private List<Object> messageJSON;
+    private List<Object> message;
     @SerializedName("timestamp")
     @Expose
-    private String timestamp;
+    private DateTime timestamp;
 
     /**
      *
@@ -68,7 +66,7 @@ public class RoephoekItem implements IWilsonBaseItem {
      * @return
      * The message
      */
-    public String getMessage() {
+    public List<Object> getMessage() {
         return message;
     }
 
@@ -77,16 +75,8 @@ public class RoephoekItem implements IWilsonBaseItem {
      * @param message
      * The message
      */
-    public void setMessage(String message) {
+    public void setMessage(List<Object> message) {
         this.message = message;
-    }
-
-    public List<Object> getMessageJSON() {
-        return messageJSON;
-    }
-
-    public void setMessageJSON(List<Object> messageJSON) {
-        this.messageJSON = messageJSON;
     }
 
     /**
@@ -94,7 +84,7 @@ public class RoephoekItem implements IWilsonBaseItem {
      * @return
      * The timestamp
      */
-    public String getTimestamp() {
+    public DateTime getTimestamp() {
         return timestamp;
     }
 
@@ -103,7 +93,7 @@ public class RoephoekItem implements IWilsonBaseItem {
      * @param timestamp
      * The timestamp
      */
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(DateTime timestamp) {
         this.timestamp = timestamp;
     }
 

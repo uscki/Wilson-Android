@@ -24,7 +24,7 @@
     <string name="login">Login</string>
 
     <string name="notloggedin">Je bent niet ingelogd.</string>
-    <string name="notauthorized">Je hebt geen toegang tot deze content.</string>
+    <string name="noaccess">Je hebt geen toegang tot deze content.</string>
     <string name="agenda_subscribe_bad_request_error">Er is iets fout gegaan met je inschrijving. Open dit evenement in de app, en probeer het vanuit daar nogmaals.</string>
     <string name="content_loading_error">Er ging iets fout bij het laden van de content.</string>
     <string name="unknown_server_error">Er is een onbekende fout opgetreden op de server. Probeer het later nog eens.</string>
@@ -66,6 +66,8 @@
     <string name="vote_imperative">Stemmen</string>
     <string name="action_agenda_export">Opslaan</string>
     <string name="action_agenda_remove_from_calendar">Verwijderen uit agenda</string>
+    <string name="agenda_n_comments_singular">%d reactie</string>
+    <string name="agenda_n_comments_plural">%d reacties</string>
     <string name="agenda_participants_backup_list">Wachtlijst</string>
     <string name="agenda_participants_backup_list_help">Als er een maximum aantal inschrijvingen geldt voor een evenement en dat aantal inschrijvingen is al gehaald, word je op de wachtlijst geplaatst als jij je ook inschrijft. Wanneer bestaande deelnemers zich uitschrijven, heb je kans van de wachtlijst naar de deelnemerslijst te worden geplaatst. Dit gebeurt in volgorde van inschrijving voor alle wachtenden.</string>
 
@@ -380,6 +382,8 @@
     <string name="shop_price_total_header">Totaal:</string>
     <string name="shop_price_format">€%.2f p.st.</string>
     <string name="shop_price_format_simple">€%.2f</string>
+    <string name="shop_pin_shortcut">Vastzetten op thuisscherm</string>
+    <string name="shop_long_store_name">Winkel %s</string>
 
     <!-- Datable range (half-your-age-plus-seven) -->
     <string name="smobo_half_your_age_plus_seven">Half-your-age-plus-seven</string>

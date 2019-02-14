@@ -15,9 +15,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
-public abstract class NewSimplePageableItem<T extends IWilsonBaseItem> extends NewPageableItem<T> {
+public abstract class NewSimplePageableItem<T extends ActionResponse> extends NewPageableItem<T> {
     @BindView(R.id.quoteTextInput)
     EditText singleInput;
 

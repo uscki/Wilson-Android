@@ -12,9 +12,9 @@ import java.io.IOException;
 
 import nl.uscki.appcki.android.BuildConfig;
 import nl.uscki.appcki.android.NotificationUtil;
-import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.notification.AbstractNotification;
 import retrofit2.Response;
@@ -54,10 +54,10 @@ public class NotificationReceiver extends FirebaseMessagingService {
             // Instance ID token to your app server.
             //sendRegistrationToServer(refreshedToken);
             Services.getInstance().userService.registerDeviceId(refreshedToken)
-                    .enqueue(new Callback<Boolean>() {
+                    .enqueue(new Callback<ActionResponse<Boolean>>() {
                 @Override
-                public void onSucces(Response<Boolean> response) {
-                    if(response.body()) {
+                public void onSucces(Response<ActionResponse<Boolean>> response) {
+                    if(response.body().payload) {
                         Log.d(NotificationReceiver.class.getSimpleName(),
                                 "New firebase token succesfully communicated with server");
                     } else {

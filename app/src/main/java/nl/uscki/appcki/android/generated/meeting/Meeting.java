@@ -22,7 +22,7 @@ public class Meeting implements IWilsonBaseItem{
     private String duration;
     @SerializedName("actual_time")
     @Expose
-    private Long actualTime;
+    private DateTime actualTime;
     @SerializedName("actual_slot")
     @Expose
     private Slot actual_slot;
@@ -37,10 +37,10 @@ public class Meeting implements IWilsonBaseItem{
     private String title;
     @SerializedName("startdate")
     @Expose
-    private Long startdate;
+    private DateTime startdate;
     @SerializedName("enddate")
     @Expose
-    private Long enddate;
+    private DateTime enddate;
     @SerializedName("agenda")
     @Expose
     private String agenda;
@@ -49,10 +49,10 @@ public class Meeting implements IWilsonBaseItem{
     private String plannotes;
     @SerializedName("endPlanningPeriod")
     @Expose
-    private Long endPlanningPeriod;
+    private DateTime endPlanningPeriod;
     @SerializedName("startPlanningPeriod")
     @Expose
-    private Long startPlanningPeriod;
+    private DateTime startPlanningPeriod;
 
     /**
      *
@@ -113,7 +113,7 @@ public class Meeting implements IWilsonBaseItem{
      * @return
      * The actualTime
      */
-    public Long getActualTime() {
+    public DateTime getActualTime() {
         return actualTime;
     }
 
@@ -122,7 +122,7 @@ public class Meeting implements IWilsonBaseItem{
      * @param actualTime
      * The actual_time
      */
-    public void setActualTime(Long actualTime) {
+    public void setActualTime(DateTime actualTime) {
         this.actualTime = actualTime;
     }
 
@@ -194,10 +194,7 @@ public class Meeting implements IWilsonBaseItem{
      * The startdate
      */
     public DateTime getStartdate() {
-        if(startdate == null) {
-            return null;
-        }
-        return new DateTime(startdate);
+        return startdate;
     }
 
     /**
@@ -205,7 +202,7 @@ public class Meeting implements IWilsonBaseItem{
      * @param startdate
      * The startdate
      */
-    public void setStartdate(Long startdate) {
+    public void setStartdate(DateTime startdate) {
         this.startdate = startdate;
     }
 
@@ -215,10 +212,7 @@ public class Meeting implements IWilsonBaseItem{
      * The enddate
      */
     public DateTime getEnddate() {
-        if(enddate == null) {
-            return null;
-        }
-        return new DateTime(enddate);
+        return enddate;
     }
 
     /**
@@ -226,7 +220,7 @@ public class Meeting implements IWilsonBaseItem{
      * @param enddate
      * The enddate
      */
-    public void setEnddate(Long enddate) {
+    public void setEnddate(DateTime enddate) {
         this.enddate = enddate;
     }
 
@@ -267,10 +261,10 @@ public class Meeting implements IWilsonBaseItem{
     }
 
     public DateTime getEndPlanningPeriod() {
-        return new DateTime(endPlanningPeriod);
+        return endPlanningPeriod;
     }
 
-    public void setEndPlanningPeriod(Long endPlanningPeriod) {
+    public void setEndPlanningPeriod(DateTime endPlanningPeriod) {
         this.endPlanningPeriod = endPlanningPeriod;
     }
 
@@ -278,7 +272,7 @@ public class Meeting implements IWilsonBaseItem{
         return new DateTime(startPlanningPeriod);
     }
 
-    public void setStartPlanningPeriod(Long startPlanningPeriod) {
+    public void setStartPlanningPeriod(DateTime startPlanningPeriod) {
         this.startPlanningPeriod = startPlanningPeriod;
     }
 

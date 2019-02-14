@@ -3,22 +3,17 @@ package nl.uscki.appcki.android.helpers;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.util.Log;
 import com.google.gson.Gson;
+import org.joda.time.DateTime;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
-
 import nl.uscki.appcki.android.App;
-import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.generated.meeting.Preference;
 import nl.uscki.appcki.android.generated.organisation.Person;
 import nl.uscki.appcki.android.generated.organisation.PersonSimple;
 import nl.uscki.appcki.android.services.LoadFullUserInfoService;
@@ -42,6 +37,7 @@ public class UserHelper {
     }
 
     private static final String FULL_USER_INFO_PREFERENCE_KEY = "nl.uscki.appcki.android.preference.FULL_USER_INFO";
+    private static final String FULL_USER_INFO_PREFERENCE_LAST_SAVE_KEY = "nl.uscki.appcki.android.preference.FULL_USER_INFO_LAST_SAVED";
 
     private UserHelper() {
         this.TOKEN = null;
@@ -94,22 +90,41 @@ public class UserHelper {
         this.person = person;
     }
 
-    public Person getFullPersonInfo(Context context) throws NullPointerException {
+    public @Nullable Person getFullPersonInfo(Context context) {
         if(fullPersonInfo == null) {
-            String personJson = PreferenceManager.getDefaultSharedPreferences(context).getString(FULL_USER_INFO_PREFERENCE_KEY, null);
-            if(personJson == null) throw new NullPointerException("Full person not yet loaded");
-            Gson gson = new Gson();
-            fullPersonInfo = gson.fromJson(personJson, Person.class);
+            String personJson = preferences.getString(FULL_USER_INFO_PREFERENCE_KEY, null);
+            String lastSavedString = preferences.getString(FULL_USER_INFO_PREFERENCE_LAST_SAVE_KEY, null);
+            if(personJson != null) {
+                Gson gson = new Gson();
+                fullPersonInfo = gson.fromJson(personJson, Person.class);
+            }
+
+            if(fullPersonInfo == null || lastSavedString == null ||
+                    new DateTime(lastSavedString).isBefore(DateTime.now().minusDays(1))
+            ) {
+                Log.d(getClass().getSimpleName(), "Loading or refreshing full user info");
+                Intent intent = new Intent(context, LoadFullUserInfoService.class);
+                intent.setAction(LoadFullUserInfoService.ACTION_LOAD_USER);
+                context.startService(intent);
+            }
         }
 
         return fullPersonInfo;
     }
 
-    public void setFullPerson(Context context, Person person) {
+    public void setFullPerson(Person person) {
         this.fullPersonInfo = person;
         Gson gson = new Gson();
-        SharedPreferences.Editor e = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        SharedPreferences.Editor e = preferences.edit();
         e.putString(FULL_USER_INFO_PREFERENCE_KEY, gson.toJson(person));
+        e.putString(FULL_USER_INFO_PREFERENCE_LAST_SAVE_KEY, DateTime.now().toString());
+        e.apply();
+    }
+
+    private void removeFullPerson() {
+        SharedPreferences.Editor e = preferences.edit();
+        e.remove(FULL_USER_INFO_PREFERENCE_KEY);
+        e.remove(FULL_USER_INFO_PREFERENCE_LAST_SAVE_KEY);
         e.apply();
     }
 
@@ -133,6 +148,8 @@ public class UserHelper {
             editor.remove("TOKEN");
             editor.apply();
         }
+
+        removeFullPerson();
         this.loggedIn = false;
         this.TOKEN = null;
         this.setPerson(null);

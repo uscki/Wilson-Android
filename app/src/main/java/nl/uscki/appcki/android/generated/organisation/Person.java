@@ -18,7 +18,7 @@ public class Person extends PersonSimple implements IWilsonBaseItem {
     private String address2;
 
     @Expose
-    private Long birthdate;
+    private String birthdate;
 
     @Expose
     private String city;
@@ -85,7 +85,7 @@ public class Person extends PersonSimple implements IWilsonBaseItem {
         return new DateTime(birthdate);
     }
 
-    public void setBirthdate(Long birthdate) {
+    public void setBirthdate(String birthdate) {
         this.birthdate = birthdate;
     }
 
@@ -162,5 +162,43 @@ public class Person extends PersonSimple implements IWilsonBaseItem {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    public String getFullAddres(boolean includeCountry) {
+        StringBuilder b = new StringBuilder();
+
+        boolean addNewline = false;
+
+        if(address1 != null && address1.trim().length() != 0) {
+            b.append(address1);
+            addNewline = true;
+        }
+
+        if(address2 != null && address2.trim().length() != 0) {
+            if(addNewline) b.append("\n");
+            b.append(address2);
+            addNewline = true;
+        }
+
+        if(zipcode != null && zipcode.trim().length() != 0) {
+            if(addNewline) b.append("\n");
+            b.append(zipcode);
+            addNewline = true;
+
+            if(city != null && city.trim().length() != 0) {
+                b.append(", ");
+                b.append(city);
+            }
+        } else if(city != null && city.trim().length() != 0) {
+            b.append(city);
+            addNewline = true;
+        }
+
+        if(includeCountry && country != null && country.trim().length() != 0) {
+            if(addNewline) b.append("\n");
+            b.append(country);
+        }
+
+        return b.toString();
     }
 }

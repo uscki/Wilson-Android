@@ -10,14 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.google.gson.Gson;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
@@ -40,6 +35,16 @@ public class PollResultFragment extends RefreshableFragment {
     PollItem item;
 
     private ItemTouchHelper attachedSwipeCallback;
+
+    private Callback<PollItem> pollItemCallback = new Callback<PollItem>() {
+        @Override
+        public void onSucces(Response<PollItem> response) {
+            if(response != null && response.body() != null) {
+                item = response.body();
+                setupViews();
+            }
+        }
+    };
 
     /**
      * Handle swipe action on poll options
@@ -122,20 +127,16 @@ public class PollResultFragment extends RefreshableFragment {
         setupSwipeContainer(view);
 
         if (getArguments() != null) {
-            MainActivity.currentScreen = MainActivity.Screen.POLL_DETAIL;
-            item = new Gson().fromJson(getArguments().getString("item"), PollItem.class);
-            setupViews();
+            int pollId = getArguments().getInt(MainActivity.PARAM_POLL_ID);
+            if(pollId >= 0) {
+                MainActivity.currentScreen = MainActivity.Screen.POLL_DETAIL;
+                Services.getInstance().pollService.get(pollId).enqueue(pollItemCallback);
+            } else {
+                Log.e(getClass().getSimpleName(), "No poll ID passed to fragment. Not showing anything");
+            }
         } else {
             MainActivity.currentScreen = MainActivity.Screen.POLL_ACTIVE;
-            Services.getInstance().pollService.active().enqueue(new Callback<PollItem>() {
-                @Override
-                public void onSucces(Response<PollItem> response) {
-                    if(response != null && response.body() != null) {
-                        item = response.body();
-                        setupViews();
-                    }
-                }
-            });
+            Services.getInstance().pollService.active().enqueue(pollItemCallback);
         }
 
         return view;

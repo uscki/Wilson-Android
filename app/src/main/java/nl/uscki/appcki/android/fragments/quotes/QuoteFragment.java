@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,7 +11,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
 import java.util.ArrayList;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Services;
@@ -72,7 +73,7 @@ public class QuoteFragment extends PageableFragment<QuotesPage> {
         MainActivity.currentScreen = MainActivity.Screen.QUOTE_OVERVIEW;
 
         setAdapter(new QuoteAdapter(new ArrayList<Quote>()));
-        Services.getInstance().quoteService.older(page, getPageSize()).enqueue(callback);
+        Services.getInstance().quoteService.getQuotesCollection(page, getPageSize()).enqueue(callback);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -119,11 +120,11 @@ public class QuoteFragment extends PageableFragment<QuotesPage> {
 
     @Override
     public void onScrollRefresh() {
-        Services.getInstance().quoteService.older(page, getPageSize(), sort).enqueue(callback);
+        Services.getInstance().quoteService.getQuotesCollection(page, getPageSize(), sort).enqueue(callback);
     }
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().quoteService.older(page, getPageSize(), sort).enqueue(callback);
+        Services.getInstance().quoteService.getQuotesCollection(page, getPageSize(), sort).enqueue(callback);
     }
 }
