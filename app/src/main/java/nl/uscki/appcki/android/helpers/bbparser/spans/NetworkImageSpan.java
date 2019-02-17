@@ -35,7 +35,7 @@ public class NetworkImageSpan extends DynamicDrawableSpan {
         if(source != null) {
             Services.getInstance().imageService.getImage(source).enqueue(new ImageSpanCallback(view, d));
         } else if(mediaId != null) {
-            Services.getInstance().mediaService.file(mediaId, MediaAPI.MediaSize.SMALL.toString()).enqueue(new ImageSpanCallback(view, d));
+            Services.getInstance().mediaService.file(mediaId, MediaAPI.MediaSize.LARGE.toString()).enqueue(new ImageSpanCallback(view, d));
         }
 
         return d;
