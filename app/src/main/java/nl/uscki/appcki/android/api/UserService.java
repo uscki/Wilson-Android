@@ -17,7 +17,7 @@ public interface UserService {
     @POST("login")
     Call<Void> login(@Field("username") String username, @Field("password") String password);
 
-    @GET("user/current")
+    @GET("users/current")
     Call<PersonSimple> currentUser();
 
     @FormUrlEncoded

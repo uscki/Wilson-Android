@@ -1,9 +1,6 @@
 package nl.uscki.appcki.android.generated.organisation;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import butterknife.OnItemClick;
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
 /**
