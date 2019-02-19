@@ -57,7 +57,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
 
         if(item.getHasDeadline()) {
             DateTime dateTime = new DateTime(item.getDeadline());
-            holder.itemDeadline.setText(dateTime.toString("EEEE dd MMMM YYYY HH:mm")); // TODO API: richard gaat hier nog shit aan veranderen
+            holder.itemDeadline.setText(dateTime.toString("EEEE dd MMMM YYYY HH:mm"));
         } else {
             holder.inschrijvenVerplicht.setVisibility(View.GONE);
         }

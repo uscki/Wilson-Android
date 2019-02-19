@@ -2,7 +2,6 @@ package nl.uscki.appcki.android.helpers;
 
 import android.content.Context;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
 import nl.uscki.appcki.android.generated.agenda.SimpleAgendaItem;
 
@@ -28,14 +27,6 @@ public class AgendaSubscribedHelper {
         }
 
         return AGENDA_NOT_SUBSCRIBED;
-
-    }
-
-    public static int isSubscribed(AgendaItem item) {
-        AgendaParticipantLists lists = new AgendaParticipantLists();
-        lists.setParticipants(item.getParticipants());
-        lists.setBackupList(item.getBackupList());
-        return isSubscribed(lists);
     }
 
     public static String getWhen(SimpleAgendaItem item) {
