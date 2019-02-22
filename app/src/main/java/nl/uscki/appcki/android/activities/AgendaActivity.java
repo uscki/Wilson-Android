@@ -18,8 +18,6 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import org.joda.time.DateTime;
-import java.util.ArrayList;
-import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -37,7 +35,6 @@ import nl.uscki.appcki.android.fragments.agenda.AgendaDetailAdapter;
 import nl.uscki.appcki.android.fragments.agenda.SubscribeDialogFragment;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
-import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
 import nl.uscki.appcki.android.helpers.AgendaSubscribedHelper;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
@@ -126,8 +123,8 @@ public class AgendaActivity extends BasicActivity {
             this.toolbarLayout.setTitle(this.item.getTitle());
         }
 
-        // TODO use user participation on agenda item
-        foundUser = AgendaSubscribedHelper.isSubscribed(item) > AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED;
+        foundUser = item.getUserParticipation() != null &&
+                (item.getUserParticipation().isAttends() || item.getUserParticipation().isBackuplist());
 
         setSubscribeButtons();
         setExportButtons();
@@ -576,6 +573,7 @@ public class AgendaActivity extends BasicActivity {
         if(UserHelper.getInstance().getPerson() != null) {
             int messageResourceId = -1;
 
+            // TODO userParticipation is not a response payload to (un)subscribing, so we still need this
             int status = AgendaSubscribedHelper.isSubscribed(nowSubscribedLists);
             if(status == AgendaSubscribedHelper.AGENDA_SUBSCRIBED) {
                 messageResourceId = R.string.agenda_subscribe_confirmed;
