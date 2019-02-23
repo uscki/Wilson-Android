@@ -123,8 +123,8 @@ public class AgendaActivity extends BasicActivity {
             this.toolbarLayout.setTitle(this.item.getTitle());
         }
 
-        // TODO use user participation on agenda item
-        foundUser = AgendaSubscribedHelper.isSubscribed(item) > AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED;
+        foundUser = item.getUserParticipation() != null &&
+                (item.getUserParticipation().isAttends() || item.getUserParticipation().isBackuplist());
 
         setSubscribeButtons();
         setExportButtons();
@@ -570,17 +570,21 @@ public class AgendaActivity extends BasicActivity {
     private void showSubscribeConfirmation(AgendaParticipantLists nowSubscribedLists) {
         int messageResourceId = -1;
 
-        int status = AgendaSubscribedHelper.isSubscribed(nowSubscribedLists);
-        if(status == AgendaSubscribedHelper.AGENDA_SUBSCRIBED) {
-            messageResourceId = R.string.agenda_subscribe_confirmed;
-        } else if(status == AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST) {
-            messageResourceId = R.string.agenda_subscribe_backuplist;
-        }
+        if(UserHelper.getInstance().getCurrentUser() != null) {
 
-        if(status > AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED) {
-            Toast.makeText(this, messageResourceId, Toast.LENGTH_SHORT).show();
-        } else {
-            Log.e(getClass().getSimpleName(), "User not found on either list. No message shown");
+            // TODO userParticipation is not a response payload to (un)subscribing, so we still need this
+            int status = AgendaSubscribedHelper.isSubscribed(nowSubscribedLists);
+            if (status == AgendaSubscribedHelper.AGENDA_SUBSCRIBED) {
+                messageResourceId = R.string.agenda_subscribe_confirmed;
+            } else if (status == AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST) {
+                messageResourceId = R.string.agenda_subscribe_backuplist;
+            }
+
+            if (status > AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED) {
+                Toast.makeText(this, messageResourceId, Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e(getClass().getSimpleName(), "User not found on either list. No message shown");
+            }
         }
     }
 }
