@@ -18,8 +18,6 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import org.joda.time.DateTime;
-import java.util.ArrayList;
-import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -37,7 +35,6 @@ import nl.uscki.appcki.android.fragments.agenda.AgendaDetailAdapter;
 import nl.uscki.appcki.android.fragments.agenda.SubscribeDialogFragment;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
-import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
 import nl.uscki.appcki.android.helpers.AgendaSubscribedHelper;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
@@ -214,9 +211,7 @@ public class AgendaActivity extends BasicActivity {
             finish();
         }
 
-
-
-        if (UserHelper.getInstance().getPerson() == null) {
+        if (UserHelper.getInstance().getCurrentUser() == null) {
             finish();
         }
 
@@ -573,21 +568,19 @@ public class AgendaActivity extends BasicActivity {
     }
 
     private void showSubscribeConfirmation(AgendaParticipantLists nowSubscribedLists) {
-        if(UserHelper.getInstance().getPerson() != null) {
-            int messageResourceId = -1;
+        int messageResourceId = -1;
 
-            int status = AgendaSubscribedHelper.isSubscribed(nowSubscribedLists);
-            if(status == AgendaSubscribedHelper.AGENDA_SUBSCRIBED) {
-                messageResourceId = R.string.agenda_subscribe_confirmed;
-            } else if(status == AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST) {
-                messageResourceId = R.string.agenda_subscribe_backuplist;
-            }
+        int status = AgendaSubscribedHelper.isSubscribed(nowSubscribedLists);
+        if(status == AgendaSubscribedHelper.AGENDA_SUBSCRIBED) {
+            messageResourceId = R.string.agenda_subscribe_confirmed;
+        } else if(status == AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST) {
+            messageResourceId = R.string.agenda_subscribe_backuplist;
+        }
 
-            if(status > AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED) {
-                Toast.makeText(this, messageResourceId, Toast.LENGTH_SHORT).show();
-            } else {
-                Log.e(getClass().getSimpleName(), "User not found on either list. No message shown");
-            }
+        if(status > AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED) {
+            Toast.makeText(this, messageResourceId, Toast.LENGTH_SHORT).show();
+        } else {
+            Log.e(getClass().getSimpleName(), "User not found on either list. No message shown");
         }
     }
 }

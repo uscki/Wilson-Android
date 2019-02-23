@@ -1,29 +1,23 @@
 package nl.uscki.appcki.android.fragments.shoutbox;
 
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.helpers.ResourceHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.views.NewPageableItem;
 import retrofit2.Call;
@@ -54,7 +48,7 @@ public class NewShoutWidget extends NewPageableItem {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        nickname.setText(UserHelper.getInstance().getPerson().getNickname());
+        nickname.setText(UserHelper.getInstance().getCurrentUser().getNickname());
     }
 
     @Override

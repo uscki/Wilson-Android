@@ -44,7 +44,7 @@ import nl.uscki.appcki.android.fragments.quotes.QuoteFragment;
 import nl.uscki.appcki.android.fragments.search.SmoboSearch;
 import nl.uscki.appcki.android.fragments.shop.StoreFragment;
 import nl.uscki.appcki.android.fragments.shop.StoreSelectionFragment;
-import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.generated.organisation.CurrentUser;
 import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Response;
@@ -142,7 +142,7 @@ public class MainActivity extends BasicActivity
             });
 
             // Ensure a full user info object is loaded
-            UserHelper.getInstance().getFullPersonInfo(MainActivity.this);
+            UserHelper.getInstance().getCurrentUser(MainActivity.this);
 
             // Get the intent, verify the action and get the query
             handleIntention(getIntent());
@@ -405,27 +405,20 @@ public class MainActivity extends BasicActivity
         logout.setVisibility(View.VISIBLE);
 
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
-        name.setText(UserHelper.getInstance().getPerson().getPostalname());
+        name.setText(UserHelper.getInstance().getCurrentUser(this).getPostalname());
 
         final SimpleDraweeView profile = navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
 
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openSmoboFor(UserHelper.getInstance().getPerson());
+                openSmoboFor(UserHelper.getInstance().getCurrentUser());
             }
         });
-        // load the users profile picture
-        Services.getInstance().userService.currentUser().enqueue(new Callback<PersonSimple>() {
-            @Override
-            public void onSucces(Response<PersonSimple> response) {
-                Log.e(TAG, response.body().toString());
-                UserHelper.getInstance().setPerson(response.body());
-                if(UserHelper.getInstance().getPerson().getPhotomediaid() != null) {
-                    profile.setImageURI(MediaAPI.getMediaUri(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL));
-                }
-            }
-        });
+
+        if (UserHelper.getInstance().getCurrentUser().getPhotomediaid() != null) {
+            profile.setImageURI(MediaAPI.getMediaUri(UserHelper.getInstance().getCurrentUser().getPhotomediaid(), MediaAPI.MediaSize.SMALL));
+        }
     }
 
     private void initLoggedOutUI() {

@@ -13,12 +13,14 @@ import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.events.CurrentUserUpdateRequiredDirectiveEvent;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.LinkClickedEvent;
 import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.fragments.PrivacyPolicyModalFragment;
-import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
+import nl.uscki.appcki.android.generated.organisation.CurrentUser;
+import nl.uscki.appcki.android.generated.organisation.PersonName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -56,9 +58,8 @@ public abstract class BasicActivity extends AppCompatActivity {
             privacyPolicyModalFragment.show(getFragmentManager(), "privacyPolicyDialog");
         }
 
-        if (!UserHelper.getInstance().isLoggedIn() || UserHelper.getInstance().getPerson() == null) {
+        if (!UserHelper.getInstance().isLoggedIn() || UserHelper.getInstance().getCurrentUser(this) == null) {
             UserHelper.getInstance().load();
-            UserHelper.getInstance().loadCurrentUser();
         }
 
         try {
@@ -73,7 +74,6 @@ public abstract class BasicActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         UserHelper.getInstance().save();
-        UserHelper.getInstance().saveCurrentUser();
         super.onPause();
     }
 
@@ -102,8 +102,8 @@ public abstract class BasicActivity extends AppCompatActivity {
      *
      * @param person    Person object for the person for whom to show the smobo page
      */
-    public void openSmoboFor(final PersonSimpleName person) {
-        if(person.getDisplayonline() || person.getId().equals(UserHelper.getInstance().getPerson().getId())) {
+    public void openSmoboFor(final PersonName person) {
+        if(person.getDisplayonline() || person.getId().equals(UserHelper.getInstance().getCurrentUser().getId())) {
             forceOpenSmobo(person.getId(), person.getPostalname(), person.getPhotomediaid());
         } else {
             Services.getInstance().permissionsService.hasPermission("useradmin", "admin").enqueue(new Callback<Boolean>() {
@@ -147,6 +147,14 @@ public abstract class BasicActivity extends AppCompatActivity {
     public void onEventMainThread(ErrorEvent event) {
         Toast toast = Toast.makeText(getApplicationContext(), event.error.getMessage(), Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    /**
+     * Start a service to update the currentUser object. This requires a context
+     * @param event Directive event dictating current user should be updated
+     */
+    public void onEventMainThread(CurrentUserUpdateRequiredDirectiveEvent event) {
+        UserHelper.getInstance().scheduleCurrentUserUpdate(this);
     }
 
     public void onEventMainThread(ServerErrorEvent event) {
