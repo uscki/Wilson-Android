@@ -9,7 +9,7 @@ import nl.uscki.appcki.android.R;
  * Created by peter on 2/6/16.
  */
 public class MediaAPI {
-    public static String API_URL = App.getContext().getString(R.string.apiurl) + "media/";
+    public static String API_URL = App.getContext().getString(R.string.apiurl) + "media/file/";
 
     public enum MediaSize {
         SMALL,
