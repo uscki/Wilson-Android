@@ -23,15 +23,14 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             >
 
-            <com.facebook.drawee.view.SimpleDraweeView
+            <ImageView
                 android:id="@+id/agenda_poster"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                android:scaleType="centerInside"
                 android:transitionName="poster"
                 app:layout_collapseMode="parallax"
                 />
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
