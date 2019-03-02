@@ -144,8 +144,15 @@ public class AgendaActivity extends BasicActivity {
 
                 int bitmapWidth = Math.round(scale * bitmap.getWidth());
                 int bitmapHeight = Math.round(scale * bitmap.getHeight());
+                int preferredToolbarHeight = toolbarLayout.getHeight();
 
-                toolbarLayout.getLayoutParams().height = bitmapHeight;
+                if(bitmapHeight > preferredToolbarHeight) {
+                    // Don't scale to height, will take too much of vbox
+                    poster.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                } else {
+                    poster.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    toolbarLayout.getLayoutParams().height = bitmapHeight;
+                }
 
                 BitmapDrawable drawable = new BitmapDrawable(AgendaActivity.this.getResources(), bitmap);
                 drawable.setBounds(0, 0, bitmapWidth, bitmapHeight);
