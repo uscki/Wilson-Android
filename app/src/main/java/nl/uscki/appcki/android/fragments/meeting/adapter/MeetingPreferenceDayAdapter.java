@@ -72,7 +72,7 @@ public class MeetingPreferenceDayAdapter extends RecyclerView.Adapter<MeetingPre
             super(view);
             this.mView = view;
             this.date = (TextView) view.findViewById(R.id.meeting_preference_day_text);
-            this.slots = (RecyclerView) view.findViewById(R.id.list);
+            this.slots = (RecyclerView) view.findViewById(R.id.planner_list);
             this.collapse = (ImageView) view.findViewById(R.id.meeting_preference_collapse);
         }
     }

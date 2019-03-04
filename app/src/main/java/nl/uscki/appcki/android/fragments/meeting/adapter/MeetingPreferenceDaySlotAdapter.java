@@ -66,7 +66,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final Integer meetingId = ((MeetingActivity)this.context).item.getId();
+        final Integer meetingId = ((MeetingActivity)this.context).getMeetingItem().getId();
         final Slot slot = slots.get(position);
         holder.slot = slot;
         DateTime dateTime = new DateTime(slot.getStarttime());
