@@ -12,6 +12,7 @@ import android.view.View;
 import com.google.gson.Gson;
 
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingParticipantAdapter;
 import nl.uscki.appcki.android.generated.meeting.Slot;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
@@ -24,7 +25,7 @@ public class SlotPreferenceDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Gson gson = new Gson();
+        Gson gson = ServiceGenerator.getGson();
         Slot slot = gson.fromJson(getArguments().getString("slot"), Slot.class);
 
         // Use the Builder class for convenient dialog construction

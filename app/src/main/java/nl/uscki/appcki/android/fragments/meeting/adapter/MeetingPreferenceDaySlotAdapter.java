@@ -26,6 +26,7 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.activities.MeetingActivity;
 import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.meeting.SlotPreferenceDialog;
 import nl.uscki.appcki.android.generated.meeting.Preference;
@@ -143,7 +144,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
     private void displayPreferences(Slot slot) {
         DialogFragment newFragment = new SlotPreferenceDialog();
         Bundle args = new Bundle();
-        Gson gson = new Gson();
+        Gson gson = ServiceGenerator.getGson();
         String json = gson.toJson(slot);
         args.putString("slot", json);
         newFragment.setArguments(args);
