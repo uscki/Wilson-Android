@@ -30,15 +30,15 @@ public class SlotPreferenceDialog extends DialogFragment {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = getActivity().getLayoutInflater().inflate(R.layout.meeting_slot_preferences_dialog, null);
-        RecyclerView available = (RecyclerView) view.findViewById(R.id.meeting_slot_preferences_available);
-        RecyclerView unavailable = (RecyclerView) view.findViewById(R.id.meeting_slot_preferences_unavailable);
+        RecyclerView available = view.findViewById(R.id.meeting_slot_preferences_available);
+        RecyclerView unavailable = view.findViewById(R.id.meeting_slot_preferences_unavailable);
 
         available.setAdapter(new MeetingParticipantAdapter(PersonWithNote.fromSlotPreferencesAvailable(slot)));
         available.setHasFixedSize(true);
         unavailable.setAdapter(new MeetingParticipantAdapter(PersonWithNote.fromSlotPreferencesUnavailable(slot)));
         unavailable.setHasFixedSize(true);
 
-        builder.setTitle("Voorkeuren").setView(view).setNeutralButton("Sluiten", new DialogInterface.OnClickListener() {
+        builder.setTitle(getText(R.string.action_preferences)).setView(view).setNeutralButton(getText(R.string.action_close), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dismiss();

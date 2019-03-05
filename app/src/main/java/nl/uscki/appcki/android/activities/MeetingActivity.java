@@ -68,14 +68,14 @@ public class MeetingActivity extends BasicActivity {
         tabLayout.removeAllTabs();
         if (this.item.getMeeting().getStartdate() != null) {
             this.currentView = PlannerView.PLANNED;
-            tabLayout.addTab(tabLayout.newTab().setText("Overzicht"));
-            tabLayout.addTab(tabLayout.newTab().setText("Aanwezig"));
-            tabLayout.addTab(tabLayout.newTab().setText("Afwezig"));
+            tabLayout.addTab(tabLayout.newTab().setText(getText(R.string.meeting_header_overview)));
+            tabLayout.addTab(tabLayout.newTab().setText(getText(R.string.meeting_header_present)));
+            tabLayout.addTab(tabLayout.newTab().setText(getText(R.string.meeting_header_absent)));
         } else {
             this.currentView = PlannerView.UNPLANNED;
-            tabLayout.addTab(tabLayout.newTab().setText("Planner"));
-            tabLayout.addTab(tabLayout.newTab().setText("Gereageerd"));
-            tabLayout.addTab(tabLayout.newTab().setText("Niet gereageerd"));
+            tabLayout.addTab(tabLayout.newTab().setText(getText(R.string.meeting_header_planner_view)));
+            tabLayout.addTab(tabLayout.newTab().setText(getText(R.string.meeting_header_responded)));
+            tabLayout.addTab(tabLayout.newTab().setText(getText(R.string.meeting_header_no_response)));
         }
         viewPager.setAdapter(new MeetingDetailAdapter(getSupportFragmentManager(), this.currentView));
     }
