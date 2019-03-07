@@ -404,20 +404,35 @@ public class MainActivity extends BasicActivity
 
         logout.setVisibility(View.VISIBLE);
 
+        CurrentUser user = UserHelper.getInstance().getCurrentUser();
+        if(user != null) {
+            setUserDependentFeatures(user);
+        } else {
+            Services.getInstance().userService.currentUser().enqueue(new Callback<CurrentUser>() {
+                @Override
+                public void onSucces(Response<CurrentUser> response) {
+                    UserHelper.getInstance().setCurrentUser(response.body());
+                    setUserDependentFeatures(response.body());
+                }
+            });
+        }
+    }
+
+    private void setUserDependentFeatures(final CurrentUser user) {
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
-        name.setText(UserHelper.getInstance().getCurrentUser(this).getPostalname());
+        name.setText(user.getPostalname());
 
         final SimpleDraweeView profile = navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
 
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openSmoboFor(UserHelper.getInstance().getCurrentUser());
+                openSmoboFor(user);
             }
         });
 
-        if (UserHelper.getInstance().getCurrentUser().getPhotomediaid() != null) {
-            profile.setImageURI(MediaAPI.getMediaUri(UserHelper.getInstance().getCurrentUser().getPhotomediaid(), MediaAPI.MediaSize.SMALL));
+        if (user.getPhotomediaid() != null) {
+            profile.setImageURI(MediaAPI.getMediaUri(user.getPhotomediaid(), MediaAPI.MediaSize.SMALL));
         }
     }
 
