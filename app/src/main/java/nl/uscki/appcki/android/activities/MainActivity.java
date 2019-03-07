@@ -29,6 +29,7 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.ContentLoadedEvent;
+import nl.uscki.appcki.android.events.CurrentUserUpdateRequiredDirectiveEvent;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
@@ -428,6 +429,7 @@ public class MainActivity extends BasicActivity
             @Override
             public void onClick(View v) {
                 openSmoboFor(user);
+                EventBus.getDefault().post(new CurrentUserUpdateRequiredDirectiveEvent());
             }
         });
 
