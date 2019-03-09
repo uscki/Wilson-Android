@@ -332,10 +332,14 @@ public class AgendaActivity extends BasicActivity {
         }
 
         if(foundUser) {
-            subscribe.setVisible(false);
+            subscribe
+                    .setIcon(R.drawable.ic_outline_edit_24px)
+                    .setVisible(true);
             unsubscribe.setVisible(true);
         } else {
-            subscribe.setVisible(true);
+            subscribe
+                    .setIcon(R.drawable.plus)
+                    .setVisible(true);
             unsubscribe.setVisible(false);
         }
 
@@ -466,9 +470,6 @@ public class AgendaActivity extends BasicActivity {
 
         if (subscribe) {
             DialogFragment newFragment = new SubscribeDialogFragment();
-            Bundle args = new Bundle();
-            args.putSerializable("agenda_item", item);
-            newFragment.setArguments(args);
             newFragment.show(getSupportFragmentManager(), "agenda_subscribe");
         } else {
             if (item.getHasUnregisterDeadline()) {
@@ -561,10 +562,9 @@ public class AgendaActivity extends BasicActivity {
             }
         } else {
             unsetAlarmForEvent(item);
-            menu.findItem(R.id.action_agenda_subscribe).setVisible(true);
-            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
         }
         setExportButtons();
+        setSubscribeButtons();
         showSubscribeConfirmation(event.subscribed);
         EventBus.getDefault().post(new AgendaItemUpdatedEvent(item));
     }
@@ -575,7 +575,11 @@ public class AgendaActivity extends BasicActivity {
 
             // TODO userParticipation is not a response payload to (un)subscribing, so we still need this
             int status = AgendaSubscribedHelper.isSubscribed(nowSubscribedLists);
-            if(status == AgendaSubscribedHelper.AGENDA_SUBSCRIBED) {
+            int previousStatus = AgendaSubscribedHelper.isSubscribed(item);
+
+            if(status == previousStatus) {
+                messageResourceId = R.string.agenda_subscribe_changed;
+            } else if (status == AgendaSubscribedHelper.AGENDA_SUBSCRIBED) {
                 messageResourceId = R.string.agenda_subscribe_confirmed;
             } else if(status == AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST) {
                 messageResourceId = R.string.agenda_subscribe_backuplist;

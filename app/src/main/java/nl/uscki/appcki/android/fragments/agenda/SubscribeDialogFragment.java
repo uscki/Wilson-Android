@@ -14,10 +14,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.api.models.ActionResponse;
@@ -74,7 +76,7 @@ public class SubscribeDialogFragment extends DialogFragment {
                     final AlertDialog dialog = (AlertDialog) dialogInterface;
                     if (item.getQuestion() != null && !item.getQuestion().isEmpty()) {
                         positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                        positiveButton.setEnabled(false);
+                        positiveButton.setEnabled(registrationQuestionAnswer.getText().length() > 0);
                         registrationQuestionAnswer.addTextChangedListener(new TextWatcher() {
                             @Override
                             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -102,7 +104,7 @@ public class SubscribeDialogFragment extends DialogFragment {
         View view = getActivity().getLayoutInflater().inflate(R.layout.agenda_subscribe_dialog, null);
         ButterKnife.bind(this, view);
 
-        item = (AgendaItem) getArguments().getSerializable("agenda_item");
+        item = ((AgendaActivity) getActivity()).getAgendaItem();
 
         builder.setTitle("Inschrijven")
                 .setView(view)
@@ -126,25 +128,44 @@ public class SubscribeDialogFragment extends DialogFragment {
                     }
                 });
 
-        if (item.getQuestion() != null && item.getQuestion() != "") {
+        prepareNote();
+        prepareQuestion();
+        prepareAnsweringMechanism();
+
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(onDialogShowListener);
+
+        return dialog;
+    }
+
+    private void prepareNote() {
+        if(item.getUserParticipation() != null) {
+            note.setText(item.getUserParticipation().getNote());
+        }
+    }
+
+    private void prepareQuestion() {
+        if (item.getQuestion() != null && !item.getQuestion().isEmpty()) {
             registrationQuestion.setText(item.getQuestion());
             registrationQuestion.setVisibility(View.VISIBLE);
             registrationQuestionAnswer.setVisibility(View.VISIBLE);
         }
+    }
 
+    private void prepareAnsweringMechanism() {
         if (item.getPossibleAnswers() != null && item.getPossibleAnswers().length > 0) {
             registrationQuestionAnswer.setVisibility(View.GONE);
             possibleAnswersView.setVisibility(View.VISIBLE);
             adapter = new PossibleAnswersAdapter(item.getPossibleAnswersAsWilsonItemList());
             adapter.setParentElements(possibleAnswersView, this);
+            adapter.setUserParticipation(item.getUserParticipation());
             possibleAnswersView.setAdapter(adapter);
+        } else if (item.getUserParticipation() != null &&
+                item.getUserParticipation().getAnswer() != null &&
+                !item.getUserParticipation().getAnswer().isEmpty())
+        {
+            registrationQuestionAnswer.setText(item.getUserParticipation().getAnswer());
         }
-
-        AlertDialog dialog = builder.create();
-
-        dialog.setOnShowListener(onDialogShowListener);
-
-        return dialog;
     }
 
     public void notifySelectionMade() {
@@ -155,6 +176,7 @@ public class SubscribeDialogFragment extends DialogFragment {
 
     private void subscribeWithNote() {
         if (item.getQuestion() == null || item.getQuestion().isEmpty()) {
+            item.getUserParticipation().setNote(note.getText().toString().trim());
             Services.getInstance().agendaService
                     .subscribe(
                             item.getId(),
@@ -166,6 +188,8 @@ public class SubscribeDialogFragment extends DialogFragment {
 
     private void subscribeWithOpenQuestion() {
         if ((item.getQuestion() != null || !item.getQuestion().isEmpty()) && !registrationQuestionAnswer.getText().toString().trim().isEmpty()) {
+            item.getUserParticipation().setNote(note.getText().toString().trim());
+            item.getUserParticipation().setAnswer(registrationQuestionAnswer.getText().toString().trim());
             Services.getInstance().agendaService
                     .subscribe(item.getId(),
                             note.getText().toString().trim(),
@@ -176,6 +200,8 @@ public class SubscribeDialogFragment extends DialogFragment {
 
     private void subscribeWithMultipleChoice() {
         if (adapter.getSelectedValue() != null) {
+            item.getUserParticipation().setNote(note.getText().toString().trim());
+            item.getUserParticipation().setAnswer(adapter.getSelectedValue());
             Services.getInstance().agendaService
                     .subscribe(item.getId(),
                             note.getText().toString().trim(),

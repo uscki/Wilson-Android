@@ -53,6 +53,7 @@
     <string name="agenda_toast_added_to_calendar">Evenement is toegevoegd aan agenda</string>
     <string name="agenda_toast_removed_from_calendar">Evenement is verwijderd uit agenda</string>
     <string name="agenda_subscribe_confirmed">Je bent ingeschreven voor deze activiteit</string>
+    <string name="agenda_subscribe_changed">Je inschrijving is gewijzigd</string>
     <string name="agenda_unsubscribe_confirmed">Je bent uitgeschreven voor deze activiteit</string>
     <string name="agenda_subscribe_failed">Er ging iets fout. Je inschrijving is niet behandelt!</string>
     <string name="agenda_unsubscribe_failed">Er ging iets fout. Je bent nog steeds ingeschreven!</string>
