@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import org.joda.time.DateTime;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
-import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
+import nl.uscki.appcki.android.generated.organisation.PersonName;
 
 /**
  * Created by peter on 3/7/17.
@@ -31,7 +31,7 @@ public class PollMetadata implements IWilsonBaseItem{
     Integer id;
     @Expose
     @SerializedName("maker")
-    PersonSimpleName maker;
+    PersonName maker;
     @Expose
     @SerializedName("title")
     String title;
@@ -60,11 +60,11 @@ public class PollMetadata implements IWilsonBaseItem{
         this.id = id;
     }
 
-    public PersonSimpleName getMaker() {
+    public PersonName getMaker() {
         return maker;
     }
 
-    public void setMaker(PersonSimpleName maker) {
+    public void setMaker(PersonName maker) {
         this.maker = maker;
     }
 

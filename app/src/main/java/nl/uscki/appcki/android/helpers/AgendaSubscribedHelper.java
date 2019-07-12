@@ -12,7 +12,7 @@ public class AgendaSubscribedHelper {
     public static final int AGENDA_ON_BACKUP_LIST = 2;
 
     public static int isSubscribed(AgendaParticipantLists lists) {
-        int myId = UserHelper.getInstance().getPerson().getId();
+        int myId = UserHelper.getInstance().getCurrentUser().getId();
 
         for(int i = 0; i < lists.getParticipants().size(); i++) {
             if(lists.getParticipants().get(i).getPerson().getId().equals(myId)) {

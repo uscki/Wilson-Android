@@ -6,12 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import org.joda.time.DateTime;
-
 import java.util.List;
 import java.util.Locale;
-
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
@@ -72,7 +69,7 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
             return "Deze vergadering is al gepland";
         } else {
             //noinspection SuspiciousMethodCalls
-            if (!meeting.getEnrolledPersons().contains(UserHelper.getInstance().getPerson())) {
+            if (!meeting.getEnrolledPersons().contains(UserHelper.getInstance().getCurrentUser())) {
                 return "Je hebt nog niet gereageerd.";
             } else {
                 return "Deze vergadering is nog niet gepland";

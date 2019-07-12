@@ -211,9 +211,7 @@ public class AgendaActivity extends BasicActivity {
             finish();
         }
 
-
-
-        if (UserHelper.getInstance().getPerson() == null) {
+        if (UserHelper.getInstance().getCurrentUser() == null) {
             finish();
         }
 
@@ -570,18 +568,19 @@ public class AgendaActivity extends BasicActivity {
     }
 
     private void showSubscribeConfirmation(AgendaParticipantLists nowSubscribedLists) {
-        if(UserHelper.getInstance().getPerson() != null) {
-            int messageResourceId = -1;
+        int messageResourceId = -1;
+
+        if(UserHelper.getInstance().getCurrentUser() != null) {
 
             // TODO userParticipation is not a response payload to (un)subscribing, so we still need this
             int status = AgendaSubscribedHelper.isSubscribed(nowSubscribedLists);
-            if(status == AgendaSubscribedHelper.AGENDA_SUBSCRIBED) {
+            if (status == AgendaSubscribedHelper.AGENDA_SUBSCRIBED) {
                 messageResourceId = R.string.agenda_subscribe_confirmed;
-            } else if(status == AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST) {
+            } else if (status == AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST) {
                 messageResourceId = R.string.agenda_subscribe_backuplist;
             }
 
-            if(status > AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED) {
+            if (status > AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED) {
                 Toast.makeText(this, messageResourceId, Toast.LENGTH_SHORT).show();
             } else {
                 Log.e(getClass().getSimpleName(), "User not found on either list. No message shown");

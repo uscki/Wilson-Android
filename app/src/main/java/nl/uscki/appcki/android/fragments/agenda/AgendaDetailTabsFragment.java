@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -17,15 +16,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.google.gson.Gson;
-
 import org.joda.time.DateTime;
-
 import java.net.ConnectException;
-
 import de.greenrobot.event.EventBus;
-
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.fragments.dialogs.ConfirmationDialog;
 import nl.uscki.appcki.android.services.OnetimeAlarmReceiver;
@@ -103,7 +97,7 @@ public class AgendaDetailTabsFragment extends Fragment implements ConfirmationDi
 //        });
 //
 //        for (AgendaParticipant part : item.getParticipants()) {
-//            if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
+//            if (part.getPerson().getId().equals(UserHelper.getInstance().getCurrentUser().getId())) {
 //                foundUser = true;
 //            }
 //        }
