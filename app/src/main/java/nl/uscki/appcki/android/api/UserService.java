@@ -1,11 +1,13 @@
 package nl.uscki.appcki.android.api;
 
 import nl.uscki.appcki.android.api.models.ActionResponse;
-import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.fragments.LoginFragment;
+import nl.uscki.appcki.android.generated.organisation.CurrentUser;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 
 /**
@@ -18,7 +20,10 @@ public interface UserService {
     Call<Void> login(@Field("username") String username, @Field("password") String password);
 
     @GET("users/current")
-    Call<PersonSimple> currentUser();
+    Call<CurrentUser> currentUser();
+
+    @GET("users/current")
+    Call<CurrentUser> currentUser(@Header(LoginFragment.AUTH_HEADER) String token);
 
     @FormUrlEncoded
     @POST("notifications/android/register")

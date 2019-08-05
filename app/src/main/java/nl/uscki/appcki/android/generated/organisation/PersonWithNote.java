@@ -12,10 +12,10 @@ import nl.uscki.appcki.android.generated.meeting.Slot;
  */
 public class PersonWithNote implements IWilsonBaseItem {
     Integer id;
-    PersonSimpleName person;
+    PersonName person;
     String note;
 
-    public PersonWithNote(PersonSimpleName person, String note) {
+    public PersonWithNote(PersonName person, String note) {
         this.person = person;
         this.note = note;
     }
@@ -25,7 +25,7 @@ public class PersonWithNote implements IWilsonBaseItem {
         return id;
     }
 
-    public PersonSimpleName getPerson() {
+    public PersonName getPerson() {
         return person;
     }
 

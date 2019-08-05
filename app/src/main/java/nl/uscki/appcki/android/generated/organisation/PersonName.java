@@ -7,9 +7,12 @@ import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
 /**
  * Created by peter on 5-12-16.
+ *
+ * This class corresponds to nl.uscki.api.web.rest.beans.organization.PersonNameBean in the
+ * B.A.D.W.O.L.F. API
  */
 
-public class PersonSimpleName implements IWilsonBaseItem {
+public class PersonName implements IWilsonBaseItem {
     @Expose
     @SerializedName("id")
     private Integer id;
@@ -73,8 +76,8 @@ public class PersonSimpleName implements IWilsonBaseItem {
 
     @Override
     public boolean equals(Object o) {
-        if(o instanceof PersonSimpleName) {
-            return ((PersonSimpleName) o).getId().equals(getId());
+        if(o instanceof PersonName) {
+            return ((PersonName) o).getId().equals(getId());
         }
         return false;
     }

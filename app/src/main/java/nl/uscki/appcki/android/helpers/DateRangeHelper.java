@@ -1,7 +1,7 @@
 package nl.uscki.appcki.android.helpers;
 
 import android.content.Context;
-import android.util.Log;
+
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class DateRangeHelper {
     public DateRangeHelper(Context context, Person compareTo) {
         this.compareTo = compareTo;
         this.context = context;
-        this.me = UserHelper.getInstance().getFullPersonInfo(context);
+        this.me = UserHelper.getInstance().getCurrentUser();
         getCountdownDate();
         this.isSuccess = this.me != null;
     }

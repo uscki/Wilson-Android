@@ -20,7 +20,7 @@ import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingParticipantAdapt
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import nl.uscki.appcki.android.generated.meeting.Participation;
 import nl.uscki.appcki.android.generated.meeting.Preference;
-import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
+import nl.uscki.appcki.android.generated.organisation.PersonName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
 import retrofit2.Response;
 
@@ -66,7 +66,7 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
                 personWithNotes.add(new PersonWithNote(p.getPerson(), p.getNotes()));
             }
         } else {
-            for (PersonSimpleName person : item.getEnrolledPersons()) {
+            for (PersonName person : item.getEnrolledPersons()) {
                 personWithNotes.add(new PersonWithNote(person, ""));
             }
         }

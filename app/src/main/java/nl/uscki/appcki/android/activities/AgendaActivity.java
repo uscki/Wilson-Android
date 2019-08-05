@@ -4,6 +4,9 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -14,8 +17,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import org.joda.time.DateTime;
 import butterknife.BindView;
@@ -23,7 +26,6 @@ import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
-import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.error.Error;
@@ -41,6 +43,7 @@ import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 import nl.uscki.appcki.android.services.OnetimeAlarmReceiver;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 public class AgendaActivity extends BasicActivity {
@@ -63,7 +66,7 @@ public class AgendaActivity extends BasicActivity {
     ViewPager viewPager;
 
     @BindView(R.id.agenda_poster)
-    SimpleDraweeView poster;
+    ImageView poster;
 
     @BindView(R.id.appbar)
     AppBarLayout appBarLayout;
@@ -112,9 +115,7 @@ public class AgendaActivity extends BasicActivity {
         EventBus.getDefault().post(new AgendaItemUpdatedEvent(item));
 
         if(item.getPosterid() != null && item.getPosterid() >= 0) {
-            // TODO: Can we scale to width, maintaining aspect ratio, and then readjust the height?
-            // to fit the poster exactly?
-            poster.setImageURI(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.NORMAL));
+            Services.getInstance().mediaService.file(item.getPosterid(), "normal").enqueue(posterLoadedCallback);
         } else {
             this.appBarLayout.setExpanded(false);
         }
@@ -129,6 +130,41 @@ public class AgendaActivity extends BasicActivity {
         setSubscribeButtons();
         setExportButtons();
     }
+
+    Callback<ResponseBody> posterLoadedCallback = new Callback<ResponseBody>() {
+
+        @Override
+        public void onSucces(Response<ResponseBody> response) {
+            if(response == null) {
+                appBarLayout.setExpanded(false);
+            } else {
+                Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
+
+                float scale = toolbarLayout.getWidth() / (float) bitmap.getWidth();
+
+                int bitmapWidth = Math.round(scale * bitmap.getWidth());
+                int bitmapHeight = Math.round(scale * bitmap.getHeight());
+                int preferredToolbarHeight = toolbarLayout.getHeight();
+
+                if(bitmapHeight > preferredToolbarHeight) {
+                    // Don't scale to height, will take too much of vbox
+                    poster.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                } else {
+                    poster.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    toolbarLayout.getLayoutParams().height = bitmapHeight;
+                }
+
+                BitmapDrawable drawable = new BitmapDrawable(AgendaActivity.this.getResources(), bitmap);
+                drawable.setBounds(0, 0, bitmapWidth, bitmapHeight);
+                poster.setImageDrawable(drawable);
+            }
+        }
+
+        @Override
+        public void onError(Response<ResponseBody> response) {
+            appBarLayout.setExpanded(false);
+        }
+    };
 
     /**
      * Create one adapter that can be used from now on
@@ -211,9 +247,7 @@ public class AgendaActivity extends BasicActivity {
             finish();
         }
 
-
-
-        if (UserHelper.getInstance().getPerson() == null) {
+        if (UserHelper.getInstance().getCurrentUser() == null) {
             finish();
         }
 
@@ -570,8 +604,9 @@ public class AgendaActivity extends BasicActivity {
     }
 
     private void showSubscribeConfirmation(AgendaParticipantLists nowSubscribedLists) {
-        if(UserHelper.getInstance().getPerson() != null) {
-            int messageResourceId = -1;
+        int messageResourceId = -1;
+
+        if(UserHelper.getInstance().getCurrentUser() != null) {
 
             // TODO userParticipation is not a response payload to (un)subscribing, so we still need this
             int status = AgendaSubscribedHelper.isSubscribed(nowSubscribedLists);
@@ -580,12 +615,13 @@ public class AgendaActivity extends BasicActivity {
             if(status == previousStatus) {
                 messageResourceId = R.string.agenda_subscribe_changed;
             } else if (status == AgendaSubscribedHelper.AGENDA_SUBSCRIBED) {
+
                 messageResourceId = R.string.agenda_subscribe_confirmed;
-            } else if(status == AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST) {
+            } else if (status == AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST) {
                 messageResourceId = R.string.agenda_subscribe_backuplist;
             }
 
-            if(status > AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED) {
+            if (status > AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED) {
                 Toast.makeText(this, messageResourceId, Toast.LENGTH_SHORT).show();
             } else {
                 Log.e(getClass().getSimpleName(), "User not found on either list. No message shown");
