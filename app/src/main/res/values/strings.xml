@@ -84,9 +84,14 @@
     <!-- error handling -->
     <string name="connection_error">Er ging iets fout tijdens het verbinden met de server!</string>
 
-    <string name="agenda_confirm_unsubscribe_message">Weet je zeker dat je je wil uitschrijven?</string>
+    <string name="agenda_confirm_unsubscribe_header">Uitschrijven bevestigen</string>
+    <string name="agenda_confirm_unsubscribe_message"></string>
+    <string name="agenda_confirm_unsubscribe_backuplist">Weet je zeker dat je je wil uitschrijven? Als je je nu uitschrijft kun je je mogelijk niet langer inschrijven. Er zijn al %d van de maximale %d inschrijvingen</string>
+    <string name="agenda_confirm_unsubscribe_deadline">Weet je zeker dat je je wil uitschrijven? Als je je nu uitschrijft kun je je niet meer inschrijven, omdat de inschrijfdeadline is verlopen</string>
     <string name="agenda_confirm_unsubscribe_positive">Uitschrijven!</string>
-    <string name="agenda_unsubscribe_deadline_past">De deadline om je te kunnen uitschrijven is verstreken</string>
+    <string name="agenda_subscribe_deadline_passed">De inschrijfdeadline is verstreken. Inschrijving kan niet meer worden aangepast</string>
+    <string name="agenda_event_started">Inschrijving mag niet meer worden gewijzigd, omdat dit evenement al gestart is.</string>
+    <string name="agenda_unsubscribe_deadline_passed">De deadline om je te kunnen uitschrijven is verstreken</string>
     <string name="agenda_prepublished_event_registration_closed">De inschrijving voor dit evenement wordt op een later tijdstip geopend</string>
     <string name="agenda_prepublished_event_registration_closed_short_message">Inschrijving opent later</string>
     <string name="agenda_participants_list_empty">Nog geen deelnemers voor dit evenement</string>

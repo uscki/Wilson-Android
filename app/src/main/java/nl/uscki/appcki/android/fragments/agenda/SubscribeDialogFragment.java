@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,7 +50,7 @@ public class SubscribeDialogFragment extends DialogFragment {
 
     private PossibleAnswersAdapter adapter;
 
-    private AgendaItem item;
+    AgendaActivity activity;
 
     private Callback<ActionResponse<AgendaParticipantLists>> agendaSubscribeCallback =
         new Callback<ActionResponse<AgendaParticipantLists>>() {
@@ -74,7 +75,7 @@ public class SubscribeDialogFragment extends DialogFragment {
                 @Override
                 public void onShow(DialogInterface dialogInterface) {
                     final AlertDialog dialog = (AlertDialog) dialogInterface;
-                    if (item.getQuestion() != null && !item.getQuestion().isEmpty()) {
+                    if (activity.getAgendaItem().getQuestion() != null && !activity.getAgendaItem().getQuestion().isEmpty()) {
                         positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
                         positiveButton.setEnabled(registrationQuestionAnswer.getText().length() > 0);
                         registrationQuestionAnswer.addTextChangedListener(new TextWatcher() {
@@ -99,12 +100,18 @@ public class SubscribeDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        this.activity = (AgendaActivity) getActivity();
 
-        View view = getActivity().getLayoutInflater().inflate(R.layout.agenda_subscribe_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
+
+        View view = activity.getLayoutInflater().inflate(R.layout.agenda_subscribe_dialog, null);
         ButterKnife.bind(this, view);
 
-        item = ((AgendaActivity) getActivity()).getAgendaItem();
+        final AgendaItem item = this.activity.getAgendaItem();
+
+        // Issues with restarting when item is not yet loaded on activity.
+        // Worst case, this dialog is not visible after activity, but no crash
+        if(item == null) return builder.create();
 
         builder.setTitle("Inschrijven")
                 .setView(view)
@@ -139,32 +146,33 @@ public class SubscribeDialogFragment extends DialogFragment {
     }
 
     private void prepareNote() {
-        if(item.getUserParticipation() != null) {
-            note.setText(item.getUserParticipation().getNote());
+        if(this.activity.getAgendaItem().getUserParticipation() != null) {
+            note.setText(this.activity.getAgendaItem().getUserParticipation().getNote());
         }
     }
 
     private void prepareQuestion() {
-        if (item.getQuestion() != null && !item.getQuestion().isEmpty()) {
-            registrationQuestion.setText(item.getQuestion());
+        if (this.activity.getAgendaItem().getQuestion() != null && !this.activity.getAgendaItem().getQuestion().isEmpty()) {
+            registrationQuestion.setText(this.activity.getAgendaItem().getQuestion());
             registrationQuestion.setVisibility(View.VISIBLE);
             registrationQuestionAnswer.setVisibility(View.VISIBLE);
         }
     }
 
     private void prepareAnsweringMechanism() {
-        if (item.getPossibleAnswers() != null && item.getPossibleAnswers().length > 0) {
+        if (this.activity.getAgendaItem().getPossibleAnswers() != null && this.activity.getAgendaItem().getPossibleAnswers().length > 0) {
             registrationQuestionAnswer.setVisibility(View.GONE);
             possibleAnswersView.setVisibility(View.VISIBLE);
-            adapter = new PossibleAnswersAdapter(item.getPossibleAnswersAsWilsonItemList());
+            adapter = new PossibleAnswersAdapter(this.activity.getAgendaItem().getPossibleAnswersAsWilsonItemList());
             adapter.setParentElements(possibleAnswersView, this);
-            adapter.setUserParticipation(item.getUserParticipation());
+            adapter.setUserParticipation(this.activity.getAgendaItem().getUserParticipation());
             possibleAnswersView.setAdapter(adapter);
-        } else if (item.getUserParticipation() != null &&
-                item.getUserParticipation().getAnswer() != null &&
-                !item.getUserParticipation().getAnswer().isEmpty())
+            notifySelectionMade();
+        } else if (this.activity.getAgendaItem().getUserParticipation() != null &&
+                this.activity.getAgendaItem().getUserParticipation().getAnswer() != null &&
+                !this.activity.getAgendaItem().getUserParticipation().getAnswer().isEmpty())
         {
-            registrationQuestionAnswer.setText(item.getUserParticipation().getAnswer());
+            registrationQuestionAnswer.setText(this.activity.getAgendaItem().getUserParticipation().getAnswer());
         }
     }
 
@@ -175,11 +183,11 @@ public class SubscribeDialogFragment extends DialogFragment {
     }
 
     private void subscribeWithNote() {
-        if (item.getQuestion() == null || item.getQuestion().isEmpty()) {
-            item.getUserParticipation().setNote(note.getText().toString().trim());
+        if (this.activity.getAgendaItem().getQuestion() == null || this.activity.getAgendaItem().getQuestion().isEmpty()) {
+            this.activity.getAgendaItem().getUserParticipation().setNote(note.getText().toString().trim());
             Services.getInstance().agendaService
                     .subscribe(
-                            item.getId(),
+                            this.activity.getAgendaItem().getId(),
                             note.getText().toString().trim()
                     )
                     .enqueue(agendaSubscribeCallback);
@@ -187,11 +195,11 @@ public class SubscribeDialogFragment extends DialogFragment {
     }
 
     private void subscribeWithOpenQuestion() {
-        if ((item.getQuestion() != null || !item.getQuestion().isEmpty()) && !registrationQuestionAnswer.getText().toString().trim().isEmpty()) {
-            item.getUserParticipation().setNote(note.getText().toString().trim());
-            item.getUserParticipation().setAnswer(registrationQuestionAnswer.getText().toString().trim());
+        if ((this.activity.getAgendaItem().getQuestion() != null || !this.activity.getAgendaItem().getQuestion().isEmpty()) && !registrationQuestionAnswer.getText().toString().trim().isEmpty()) {
+            this.activity.getAgendaItem().getUserParticipation().setNote(note.getText().toString().trim());
+            this.activity.getAgendaItem().getUserParticipation().setAnswer(registrationQuestionAnswer.getText().toString().trim());
             Services.getInstance().agendaService
-                    .subscribe(item.getId(),
+                    .subscribe(this.activity.getAgendaItem().getId(),
                             note.getText().toString().trim(),
                             registrationQuestionAnswer.getText().toString().trim()
                     ).enqueue(agendaSubscribeCallback);
@@ -200,10 +208,10 @@ public class SubscribeDialogFragment extends DialogFragment {
 
     private void subscribeWithMultipleChoice() {
         if (adapter.getSelectedValue() != null) {
-            item.getUserParticipation().setNote(note.getText().toString().trim());
-            item.getUserParticipation().setAnswer(adapter.getSelectedValue());
+            this.activity.getAgendaItem().getUserParticipation().setNote(note.getText().toString().trim());
+            this.activity.getAgendaItem().getUserParticipation().setAnswer(adapter.getSelectedValue());
             Services.getInstance().agendaService
-                    .subscribe(item.getId(),
+                    .subscribe(this.activity.getAgendaItem().getId(),
                             note.getText().toString().trim(),
                             adapter.getSelectedValue()
                     ).enqueue(agendaSubscribeCallback);
