@@ -7,8 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -31,6 +29,8 @@ public class AgendaDetailFragment extends RefreshableFragment {
     TextView startTime;
     @BindView(R.id.agenda_detail_participants)
     TextView participants;
+    @BindView(R.id.agenda_registration_required)
+    TextView registrationRequired;
 
     @BindView(R.id.agenda_detail_longtext)
     BBTextView longText;
@@ -47,12 +47,7 @@ public class AgendaDetailFragment extends RefreshableFragment {
     TextView summaryCost;
     @BindView(R.id.agenda_detail_root)
     View root;
-    @BindView(R.id.registration_required)
-    LinearLayout registrationRequiredLayout;
-    @BindView(R.id.registration_required_date)
-    TextView registrationRequiredDate;
-    @BindView(R.id.registration_opens_later)
-    TextView registrationLaterText;
+
 
     private AgendaActivity activity;
 
@@ -89,15 +84,39 @@ public class AgendaDetailFragment extends RefreshableFragment {
 
         String when = AgendaSubscribedHelper.getWhen(item);
         this.startTime.setText(when);
-        this.participants.setText(AgendaSubscribedHelper.getParticipantsSummary(getContext(), item));
+
+        String participantsText;
+        if(item.getMaxregistrations() == null) {
+            participantsText = getString(R.string.agenda_n_participants, item.getParticipants().size());
+        } else if (item.getMaxregistrations() <= 0) {
+            participantsText = getString(R.string.agenda_prepublished_event_registration_opens_later);
+        } else if (item.getBackupList().isEmpty()) {
+            participantsText = getString(R.string.agenda_n_participants_max,
+                    item.getParticipants().size(), item.getMaxregistrations());
+        } else {
+            participantsText = getString(R.string.agenda_n_participants_backup,
+                    item.getParticipants().size(), item.getMaxregistrations(),
+                    item.getBackupList().size());
+        }
+        this.participants.setText(participantsText);
+
         if(item.getRegistrationrequired()) {
-            registrationRequiredLayout.setVisibility(View.VISIBLE);
-            if(item.getDeadline() != null) {
-                // TODO somehow use string resources
-                registrationRequiredDate.setText(item.getDeadline().toString("EEEE, dd MMM, HH:mm"));
-            }
-            if(item.getMaxregistrations() <= 0) {
-                registrationLaterText.setVisibility(View.VISIBLE);
+            if(item.getHasDeadline()) {
+                // registrationRequired and hasDeadline can be two different things, so technically
+                // the following line should be within the first if-clause, not the second. However,
+                // max n participants (i.e. prepublishing) can only be set when registration is
+                // required, meaning 'registration required' does not mean too much on pre-published
+                // events.
+                registrationRequired.setVisibility(View.VISIBLE);
+                int registrationRequiredText = item.getDeadline().isBeforeNow() ?
+                        R.string.agenda_event_register_deadline_passed_date :
+                        R.string.agenda_registration_required_before;
+
+                registrationRequired.setText(getString(
+                        registrationRequiredText,
+                        item.getDeadline().toString("EEEE, dd MMM YYYY, HH:mm")
+                    )
+                );
             }
         }
 

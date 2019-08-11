@@ -65,6 +65,11 @@
     <string name="agenda_item_n_registration_plus_backup">%d + %d (max %d)</string>
 
     <string name="agenda_inschrijven_verplicht">Inschrijven verplicht</string>
+    <string name="agenda_registration_required_before">Inschrijving verplicht vóór %s</string>
+    <string name="agenda_registration_required_passed">Inschrijfdeadline was %s</string>
+    <string name="agenda_n_participants">%d deelnemers</string>
+    <string name="agenda_n_participants_max">%d van maximaal %d inschrijvingen</string>
+    <string name="agenda_n_participants_backup">%d van maximaal %d inschrijvingen (%d op wachtlijst)</string>
     <string name="agenda_archive_menu_string">Archief</string>
     <string name="vote_imperative">Stemmen</string>
     <string name="action_agenda_export">Opslaan</string>
@@ -92,8 +97,10 @@
     <string name="agenda_subscribe_deadline_passed">De inschrijfdeadline is verstreken. Inschrijving kan niet meer worden aangepast</string>
     <string name="agenda_event_started">Inschrijving mag niet meer worden gewijzigd, omdat dit evenement al gestart is.</string>
     <string name="agenda_unsubscribe_deadline_passed">De deadline om je te kunnen uitschrijven is verstreken</string>
-    <string name="agenda_prepublished_event_registration_closed">De inschrijving voor dit evenement wordt op een later tijdstip geopend</string>
-    <string name="agenda_prepublished_event_registration_closed_short_message">Inschrijving opent later</string>
+    <string name="agenda_prepublished_event_registration_opens_later">De inschrijving voor dit evenement wordt op een later tijdstip geopend</string>
+    <string name="agenda_prepublished_event_registration_opens_later_short_message">Inschrijving opent later</string>
+    <string name="agenda_event_registration_closed">Inschrijven niet meer mogelijk</string>
+    <string name="agenda_event_register_deadline_passed_date">Inschrijven niet meer mogelijk. Deadline was %s</string>
     <string name="agenda_participants_list_empty">Nog geen deelnemers voor dit evenement</string>
 
     <string name="person_not_display_online_msg">Deze persoon kan niet worden opgeslagen vanwege zijn of haar privacy instellingen</string>

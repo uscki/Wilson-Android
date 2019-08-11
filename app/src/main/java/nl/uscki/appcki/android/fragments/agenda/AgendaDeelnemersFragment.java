@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +38,11 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
         if (getAdapter() instanceof AgendaDeelnemersAdapter) {
             getAdapter().update(item.getParticipants());
             if(item.getBackupList().size() > 0) {
-                ListSectionHeader seperatingHeader = new ListSectionHeader(getString(R.string.agenda_participants_backup_list));
+                ListSectionHeader seperatingHeader = new ListSectionHeader(String.format(
+                        Locale.getDefault(),
+                        "%s (%d)",
+                        getString(R.string.agenda_participants_backup_list),
+                        item.getBackupList().size()));
                 seperatingHeader.setHelpText(getString(R.string.agenda_participants_backup_list_help));
                 getAdapter().add(seperatingHeader);
                 getAdapter().addItems(item.getBackupList());
@@ -45,7 +50,7 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
         }
         if(emptyText != null && participantList != null) {
             if (item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
-                emptyText.setText(getString(R.string.agenda_prepublished_event_registration_closed));
+                emptyText.setText(getString(R.string.agenda_prepublished_event_registration_opens_later));
                 emptyText.setVisibility(View.VISIBLE);
                 participantList.setVisibility(View.GONE);
             } else if (item.getParticipants().isEmpty()) {

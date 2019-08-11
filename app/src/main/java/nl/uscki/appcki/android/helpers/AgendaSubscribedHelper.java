@@ -64,7 +64,7 @@ public class AgendaSubscribedHelper {
         if(item.getMaxregistrations() == null) {
             participantsSummary = context.getString(R.string.agenda_item_n_registrations, item.getTotalParticipants());
         } else if(item.getMaxregistrations().equals(0)) {
-            participantsSummary = context.getString(R.string.agenda_prepublished_event_registration_closed_short_message);
+            participantsSummary = context.getString(R.string.agenda_prepublished_event_registration_opens_later_short_message);
         } else if(item.getTotalBackuplist() > 0) {
             participantsSummary = context.getString(
                     R.string.agenda_item_n_registration_plus_backup,

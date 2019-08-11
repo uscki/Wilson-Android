@@ -2,13 +2,18 @@ package nl.uscki.appcki.android.fragments.adapters;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.TooltipCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.facebook.drawee.view.SimpleDraweeView;
-import org.joda.time.DateTime;
+
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
@@ -49,6 +54,8 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
 
         holder.itemDeelnemers.setText(AgendaSubscribedHelper.getParticipantsSummary(holder.mView.getContext(), item));
 
+        // TODO view allows showing registration status, but that information is not available in the simple agenda item
+
         if(item.getLocation() == null || item.getLocation().isEmpty()) {
             holder.itemWhere.setVisibility(View.GONE);
         } else {
@@ -56,10 +63,20 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         }
 
         if(item.getHasDeadline()) {
-            DateTime dateTime = new DateTime(item.getDeadline());
-            holder.itemDeadline.setText(dateTime.toString("EEEE dd MMMM YYYY HH:mm"));
+            holder.registrationCompulsoryText.setVisibility(View.VISIBLE);
+
+            holder.registrationCompulsoryText.setText(
+                    holder.mView.getResources().getString(
+                            R.string.agenda_registration_required_before,
+                            item.getDeadline().toString("EEEE dd MMMM YYYY HH:mm")));
         } else {
-            holder.inschrijvenVerplicht.setVisibility(View.GONE);
+            holder.registrationCompulsoryText.setVisibility(View.GONE);
+            holder.registrationCompulsoryText.setOnLongClickListener(null);
+        }
+
+        if((item.getHasDeadline() && item.getDeadline().isBeforeNow()) || (item.getStart().isBeforeNow() && !item.getHasDeadline())) {
+            holder.registrationCompulsoryText.setVisibility(View.VISIBLE);
+            holder.registrationCompulsoryText.setText(R.string.agenda_event_registration_closed);
         }
 
         if (item.getPosterid() != null) {
@@ -68,9 +85,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         }
 
         if(item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
-            holder.prepublishedNotice.setVisibility(View.VISIBLE);
-            holder.inschrijvenVerplicht.setVisibility(View.VISIBLE);
-            holder.itemDeadline.setVisibility(View.GONE);
+            holder.itemDeelnemers.setText(R.string.agenda_prepublished_event_registration_opens_later_short_message);
         }
 
         if(item.getTotalComments() > 0) {
@@ -94,14 +109,11 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         holder.mItem = null;
         holder.itemPoster.setImageURI("");
         holder.itemWhere.setText("");
-        holder.itemDeadline.setText("");
         holder.itemDeelnemers.setText("");
         holder.itemWhen.setText("");
         holder.mContentView.setText("");
 
-        holder.inschrijvenVerplicht.setVisibility(View.VISIBLE);
         holder.itemWhere.setVisibility(View.VISIBLE);
-        holder.prepublishedNotice.setVisibility(View.GONE);
         holder.nComments.setText("");
         holder.nComments.setVisibility(View.GONE);
     }
@@ -113,29 +125,33 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mContentView;
-        public final TextView itemWhen;
-        public final TextView itemWhere;
-        public final TextView nComments;
-        public final TextView itemDeelnemers;
-        public final SimpleDraweeView itemPoster;
-        public final TextView itemDeadline;
-        public final View inschrijvenVerplicht;
-        public final TextView prepublishedNotice;
         public SimpleAgendaItem mItem;
+
+        @BindView(R.id.agenda_item_title)
+        TextView mContentView;
+
+        @BindView(R.id.agenda_item_when)
+        TextView itemWhen;
+
+        @BindView(R.id.agenda_item_waar)
+        TextView itemWhere;
+
+        @BindView(R.id.agenda_item_comment_number)
+        TextView nComments;
+
+        @BindView(R.id.agenda_item_deelnemers)
+        TextView itemDeelnemers;
+
+        @BindView(R.id.agenda_item_poster)
+        SimpleDraweeView itemPoster;
+
+        @BindView(R.id.registration_compulsory)
+        TextView registrationCompulsoryText;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mContentView = (TextView) view.findViewById(R.id.agenda_item_title);
-            itemWhen = (TextView) view.findViewById(R.id.agenda_item_when);
-            itemWhere = (TextView) view.findViewById(R.id.agenda_item_waar);
-            itemDeelnemers = (TextView) view.findViewById(R.id.agenda_item_deelnemers);
-            itemPoster = (SimpleDraweeView) view.findViewById(R.id.agenda_item_poster);
-            itemDeadline = (TextView) view.findViewById(R.id.inschrijven_verplicht_date);
-            inschrijvenVerplicht = view.findViewById(R.id.agenda_inschrijven_verplicht);
-            prepublishedNotice = view.findViewById(R.id.prepublished_event_text);
-            nComments = (TextView) view.findViewById(R.id.agenda_item_comment_number);
+            ButterKnife.bind(this, mView);
         }
 
         @Override
