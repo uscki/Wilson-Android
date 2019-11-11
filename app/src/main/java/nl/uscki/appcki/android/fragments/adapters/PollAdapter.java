@@ -1,19 +1,15 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
@@ -77,15 +73,15 @@ public class PollAdapter extends BaseItemAdapter<PollAdapter.ViewHolder, PollIte
         public final View mView;
         public PollItem mItem;
 
-        @BindView(R.id.poll_item_question)
         TextView question;
-        @BindView(R.id.poll_item_time)
         TextView time;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            ButterKnife.bind(this, view);
+
+            question = view.findViewById(R.id.poll_item_question);
+            time = view.findViewById(R.id.poll_item_time);
         }
     }
 }

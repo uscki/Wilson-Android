@@ -1,14 +1,13 @@
 package nl.uscki.appcki.android.fragments.smobo;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
@@ -34,15 +33,14 @@ public class SmoboWickiFragment extends Fragment {
         }
     };
 
-    @BindView(R.id.smobo_wicki_text)
     BBTextView wickiText;
-    @BindView(R.id.smobo_wicki_swiperefresh)
     SwipeRefreshLayout swipeContainer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_smobo_wicki, container, false);
-        ButterKnife.bind(this, view);
+        wickiText = view.findViewById(R.id.smobo_wicki_text);
+        swipeContainer = view.findViewById(R.id.smobo_wicki_swiperefresh);
 
         if (getArguments() != null) {
             this.id = getArguments().getInt("id");

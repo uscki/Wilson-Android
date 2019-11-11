@@ -2,15 +2,16 @@ package nl.uscki.appcki.android.fragments.poll;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.poll.PollOption;
@@ -67,25 +68,21 @@ public class PollResultAdapter extends BaseItemAdapter<PollResultAdapter.ViewHol
         private float startingX;
         private boolean hasAnimated = false;
 
-        @BindView(R.id.pollOptionBackground)
         RelativeLayout background;
-
-        @BindView(R.id.pollOptionForeground)
         RelativeLayout foreground;
-
-        @BindView(R.id.poll_result_option_name)
         TextView name;
-
-        @BindView(R.id.poll_result_option_name_centered)
         TextView centeredName;
-
-        @BindView(R.id.poll_result_option_bar)
         PollVotesGraphView bar;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            ButterKnife.bind(this, view);
+
+            background = view.findViewById(R.id.pollOptionBackground);
+            foreground = view.findViewById(R.id.pollOptionForeground);
+            name = view.findViewById(R.id.poll_result_option_name);
+            centeredName = view.findViewById(R.id.poll_result_option_name_centered);
+            bar = view.findViewById(R.id.poll_result_option_bar);
         }
 
         void setCanVote(boolean canVote) {

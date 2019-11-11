@@ -6,9 +6,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,24 +18,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.google.gson.Gson;
 import org.joda.time.DateTime;
-import java.net.ConnectException;
+
 import de.greenrobot.event.EventBus;
-import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.fragments.dialogs.ConfirmationDialog;
 import nl.uscki.appcki.android.services.OnetimeAlarmReceiver;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.error.ConnectionError;
-import nl.uscki.appcki.android.error.Error;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
-import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
-import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
-import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
-import nl.uscki.appcki.android.helpers.UserHelper;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -1,16 +1,15 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
@@ -38,12 +37,12 @@ public class SmoboMediaAdapter extends BaseItemAdapter<SmoboMediaAdapter.ViewHol
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.photo)
         SimpleDraweeView photo;
 
         public ViewHolder(View view) {
             super(view);
-            ButterKnife.bind(this, view);
+
+            photo = view.findViewById(R.id.photo);
         }
     }
 }

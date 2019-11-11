@@ -3,14 +3,6 @@ package nl.uscki.appcki.android.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,9 +11,18 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.facebook.drawee.view.SimpleDraweeView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.google.android.material.navigation.NavigationView;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
@@ -75,16 +76,9 @@ public class MainActivity extends BasicActivity
 
     private static boolean homeScreenExists = false;
 
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
-
-    @BindView(R.id.nav_view)
     NavigationView navigationView;
-
-    @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
-
-    @BindView(R.id.menu_logout)
     TextView logout;
 
     LoginFragment loginFragment = new LoginFragment();
@@ -115,7 +109,10 @@ public class MainActivity extends BasicActivity
 
         setContentView(R.layout.activity_main);
 
-        ButterKnife.bind(this);
+        toolbar = findViewById(R.id.toolbar);
+        navigationView = findViewById(R.id.nav_view);
+        drawer = findViewById(R.id.drawer_layout);
+        logout = findViewById(R.id.menu_logout);
 
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);

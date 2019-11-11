@@ -1,7 +1,7 @@
 package nl.uscki.appcki.android.events;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 /**
  * Created by peter on 2/1/16.

@@ -4,8 +4,6 @@ package nl.uscki.appcki.android.fragments.adapters;
  * Created by peter on 5/16/16.
  */
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +14,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.generated.ListSectionHeader;
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+import nl.uscki.appcki.android.generated.ListSectionHeader;
 import nl.uscki.appcki.android.generated.LoadingMoreItem;
 
 public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K extends IWilsonBaseItem> extends RecyclerView.Adapter<T> {
@@ -189,12 +189,11 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
     public class LoadingMoreViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
 
-        @BindView(R.id.loadMoreProgressBar)
         ProgressBar progressBar;
 
         LoadingMoreViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            progressBar = itemView.findViewById(R.id.loadMoreProgressBar);
             mView = itemView;
         }
 
@@ -206,24 +205,21 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
     public class ListSectionHeaderHolder extends RecyclerView.ViewHolder {
         public final View view;
 
-        @BindView(R.id.dividing_list_header)
         TextView header;
-
-        @BindView(R.id.dividing_list_subheader)
         TextView subHeader;
-
-        @BindView(R.id.dividing_list_message_body)
         TextView messageBody;
-
-        @BindView(R.id.helpButton)
         Button helpButton;
-
-        @BindView(R.id.dividing_list_header_bottom_divider)
         ImageView listDivider;
 
         ListSectionHeaderHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            header = itemView.findViewById(R.id.dividing_list_header);
+            subHeader = itemView.findViewById(R.id.dividing_list_subheader);
+            messageBody = itemView.findViewById(R.id.dividing_list_message_body);
+            helpButton = itemView.findViewById(R.id.helpButton);
+            listDivider = itemView.findViewById(R.id.dividing_list_header_bottom_divider);
+
             this.view = itemView;
         }
     }

@@ -2,7 +2,7 @@ package nl.uscki.appcki.android.fragments.shop;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.content.pm.ShortcutManagerCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;

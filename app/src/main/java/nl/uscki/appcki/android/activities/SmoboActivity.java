@@ -3,17 +3,16 @@ package nl.uscki.appcki.android.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.adapters.SmoboViewPagerAdapter;
@@ -24,19 +23,13 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
     public static final int PERSON = 0;
     public static final int WICKI = 1;
 
-    @BindView(R.id.appbar)
     AppBarLayout appBarLayout;
-    @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.smobo_profile)
     SimpleDraweeView profile;
 
-    @BindView(R.id.tabs)
     TabLayout tabLayout;
-    @BindView(R.id.smobo_viewpager)
     ViewPager viewPager;
 
     boolean collapsed = false;
@@ -46,7 +39,12 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_smobo);
-        ButterKnife.bind(this);
+        appBarLayout = findViewById(R.id.appbar);
+        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
+        toolbar = findViewById(R.id.toolbar);
+        profile = findViewById(R.id.smobo_profile);
+        tabLayout = findViewById(R.id.tabs);
+        viewPager = findViewById(R.id.smobo_viewpager);
 
         toolbar.setTitle(" ");
 

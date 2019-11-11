@@ -1,7 +1,6 @@
 package nl.uscki.appcki.android.fragments.meeting.adapter;
 
-import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +11,10 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.List;
 
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.activities.BasicActivity;
 import nl.uscki.appcki.android.activities.MeetingActivity;
-import nl.uscki.appcki.android.activities.SmoboActivity;
-import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
-import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
-import retrofit2.Response;
 
 /**
  * Created by peter on 7/30/16.
