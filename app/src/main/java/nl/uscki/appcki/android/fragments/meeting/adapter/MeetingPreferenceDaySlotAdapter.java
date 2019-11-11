@@ -1,12 +1,11 @@
 package nl.uscki.appcki.android.fragments.meeting.adapter;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +26,6 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.meeting.SlotPreferenceDialog;
 import nl.uscki.appcki.android.generated.meeting.Preference;
 import nl.uscki.appcki.android.generated.meeting.Slot;
-import nl.uscki.appcki.android.generated.organisation.CurrentUser;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Response;
 

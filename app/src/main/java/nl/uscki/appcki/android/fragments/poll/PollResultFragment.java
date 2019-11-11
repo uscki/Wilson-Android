@@ -3,9 +3,6 @@ package nl.uscki.appcki.android.fragments.poll;
 
 import android.graphics.Canvas;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,8 +10,11 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Callback;
@@ -27,9 +27,7 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class PollResultFragment extends RefreshableFragment {
-    @BindView(R.id.poll_result_question)
     TextView question;
-    @BindView(R.id.poll_result_options)
     RecyclerView options;
 
     PollItem item;
@@ -121,7 +119,10 @@ public class PollResultFragment extends RefreshableFragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_poll_result, container, false);
-        ButterKnife.bind(this, view);
+
+        question = view.findViewById(R.id.poll_result_question);
+        options = view.findViewById(R.id.poll_result_options);
+
         setHasOptionsMenu(true);
 
         setupSwipeContainer(view);

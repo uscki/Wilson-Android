@@ -1,10 +1,6 @@
 package nl.uscki.appcki.android.fragments.shop;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +9,12 @@ import android.widget.CheckBox;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.generated.shop.Product;
@@ -25,31 +23,14 @@ import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 
 public class ConfirmOrderDialog extends DialogFragment {
 
-    @BindView(R.id.shop_confirm_shop_name)
     TextView storeName;
-
-    @BindView(R.id.shop_confirm_product_name)
     TextView productName;
-
-    @BindView(R.id.shop_item_price)
     TextView itemPrice;
-
-    @BindView(R.id.shop_confirm_product_image)
     SimpleDraweeView productImage;
-
-    @BindView(R.id.shop_confirm_amount)
     NumberPicker amountPicker;
-
-    @BindView(R.id.shop_confirm_checkbox_do_not_show_again)
     CheckBox dontShowAgain;
-
-    @BindView(R.id.shop_confirm_button_confirm)
     Button confirmButton;
-
-    @BindView(R.id.shop_confirm_button_cancel)
     Button cancelButton;
-
-    @BindView(R.id.shop_confirm_total_price)
     TextView totalPrice;
 
     Store store;
@@ -73,7 +54,16 @@ public class ConfirmOrderDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_shop_confirm_order_dialog, container);
-        ButterKnife.bind(this, view);
+
+        storeName = view.findViewById(R.id.shop_confirm_shop_name);
+        productName = view.findViewById(R.id.shop_confirm_product_name);
+        itemPrice = view.findViewById(R.id.shop_item_price);
+        productImage = view.findViewById(R.id.shop_confirm_product_image);
+        amountPicker = view.findViewById(R.id.shop_confirm_amount);
+        dontShowAgain = view.findViewById(R.id.shop_confirm_checkbox_do_not_show_again);
+        confirmButton = view.findViewById(R.id.shop_confirm_button_confirm);
+        cancelButton = view.findViewById(R.id.shop_confirm_button_cancel);
+        totalPrice = view.findViewById(R.id.shop_confirm_total_price);
 
         confirmButton.setOnClickListener(confirmOrderListener);
         cancelButton.setOnClickListener(new View.OnClickListener() {

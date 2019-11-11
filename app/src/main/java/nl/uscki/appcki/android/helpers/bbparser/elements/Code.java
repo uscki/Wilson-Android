@@ -1,7 +1,7 @@
 package nl.uscki.appcki.android.helpers.bbparser.elements;
 
 import android.graphics.Typeface;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;

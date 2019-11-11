@@ -2,17 +2,15 @@ package nl.uscki.appcki.android.fragments.agenda;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.fragment.app.Fragment;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
@@ -27,31 +25,11 @@ import nl.uscki.appcki.android.views.BBTextView;
  * A simple {@link Fragment} subclass.
  */
 public class AgendaDetailFragment extends RefreshableFragment {
-    @BindView(R.id.agenda_detail_time)
     TextView startTime;
-    @BindView(R.id.agenda_detail_participants)
     TextView participants;
-
-    @BindView(R.id.agenda_detail_longtext)
     BBTextView longText;
-
-    @BindView(R.id.agenda_summary_commissie_text)
-    TextView summaryCommissie;
-    @BindView(R.id.agenda_summary_title_text)
-    TextView summaryTitle;
-    @BindView(R.id.agenda_summary_waar_text)
-    TextView summaryWaar;
-    @BindView(R.id.agenda_summary_when_text)
-    TextView summaryWhen;
-    @BindView(R.id.agenda_summary_cost_text)
-    TextView summaryCost;
-    @BindView(R.id.agenda_detail_root)
-    View root;
-    @BindView(R.id.registration_required)
     LinearLayout registrationRequiredLayout;
-    @BindView(R.id.registration_required_date)
     TextView registrationRequiredDate;
-    @BindView(R.id.registration_opens_later)
     TextView registrationLaterText;
 
     private AgendaActivity activity;
@@ -65,7 +43,14 @@ public class AgendaDetailFragment extends RefreshableFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_agenda_detail, container, false);
-        ButterKnife.bind(this, view);
+
+        startTime = view.findViewById(R.id.agenda_detail_time);
+        participants = view.findViewById(R.id.agenda_detail_participants);
+        longText = view.findViewById(R.id.agenda_detail_longtext);
+        registrationRequiredLayout = view.findViewById(R.id.registration_required);
+        registrationLaterText = view.findViewById(R.id.registration_required_text);
+        registrationRequiredDate = view.findViewById(R.id.registration_required_date);
+
         setupSwipeContainer(view);
 
         if(activity.getAgendaItem() != null) {
@@ -105,11 +90,11 @@ public class AgendaDetailFragment extends RefreshableFragment {
         setTextView(view, item.getWhat(), R.id.agenda_summary_title_text);
         setTextView(view, item.getLocation(), R.id.agenda_summary_waar_text);
 
-        if (item.getWhen() != null) {
+        /*if (item.getWhen() != null) {
             summaryWhen.setText(item.getWhen());
         } else {
             summaryWhen.setText(when);
-        }
+        }*/
         setTextView(view, item.getCosts(), R.id.agenda_summary_cost_text);
     }
 

@@ -2,19 +2,18 @@ package nl.uscki.appcki.android.fragments.adapters;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.gson.Gson;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.activities.BasicActivity;
@@ -93,21 +92,22 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        @BindView(R.id.news_item_title)
         public TextView title;
-        @BindView(R.id.news_item_content)
         public BBTextView content;
-        @BindView(R.id.news_item_metadata)
         public TextView metadata;
-        @BindView(R.id.news_item_category)
         public ImageView category;
-        @BindView(R.id.news_item_readmore)
         public TextView readmore;
         public NewsItem mItem;
 
         public ViewHolder(View view) {
             super(view);
-            ButterKnife.bind(this, view);
+
+            title = view.findViewById(R.id.news_item_title);
+            content = view.findViewById(R.id.news_item_content);
+            metadata = view.findViewById(R.id.news_item_metadata);
+            category = view.findViewById(R.id.news_item_category);
+            readmore = view.findViewById(R.id.news_item_readmore);
+
             mView = view;
         }
 

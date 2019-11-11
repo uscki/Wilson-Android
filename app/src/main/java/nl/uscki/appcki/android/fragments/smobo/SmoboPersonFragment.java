@@ -2,12 +2,6 @@ package nl.uscki.appcki.android.fragments.smobo;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v17.leanback.widget.HorizontalGridView;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,12 +13,19 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.leanback.widget.HorizontalGridView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
@@ -79,31 +80,18 @@ public class SmoboPersonFragment extends Fragment {
     private TimerTask timerTask;
     private DateRangeHelper dateRangeHelper;
 
-    @BindView(R.id.smobo_address_info)
     FrameLayout addressInfo;
-    @BindView(R.id.smobo_email_info)
     FrameLayout emailInfo;
-    @BindView(R.id.smobo_phone_info)
     FrameLayout phoneInfo;
-    @BindView(R.id.smobo_mobile_info)
     FrameLayout mobileInfo;
-    @BindView(R.id.smobo_birthday_info)
     FrameLayout birthdayInfo;
-    @BindView(R.id.smobo_homepage_info)
     FrameLayout homepageInfo;
-    @BindView(R.id.smobo_groups)
     RecyclerView smoboGroups;
-    @BindView(R.id.smobo_media_gridview)
     HorizontalGridView mediaGrid;
-    @BindView(R.id.smobo_swiperefresh)
     SwipeRefreshLayout swipeContainer;
-    @BindView(R.id.datable_range_info)
     RelativeLayout datableRangeInfo;
-    @BindView(R.id.datable_range_icon)
     ImageView datableRangeIcon;
-    @BindView(R.id.datable_range_love_status)
     TextView loveStatus;
-    @BindView(R.id.datable_range_countdown)
     TextView countdownText;
 
     private final Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
@@ -294,7 +282,20 @@ public class SmoboPersonFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_smobo_person, container, false);
-        ButterKnife.bind(this, view);
+
+        addressInfo = view.findViewById(R.id.smobo_address_info);
+        emailInfo = view.findViewById(R.id.smobo_email_info);
+        phoneInfo = view.findViewById(R.id.smobo_phone_info);
+        mobileInfo = view.findViewById(R.id.smobo_mobile_info);
+        birthdayInfo = view.findViewById(R.id.smobo_birthday_info);
+        homepageInfo = view.findViewById(R.id.smobo_homepage_info);
+        smoboGroups = view.findViewById(R.id.smobo_groups);
+        mediaGrid = view.findViewById(R.id.smobo_media_gridview);
+        swipeContainer = view.findViewById(R.id.smobo_swiperefresh);
+        datableRangeInfo = view.findViewById(R.id.datable_range_info);
+        datableRangeIcon = view.findViewById(R.id.datable_range_icon);
+        loveStatus = view.findViewById(R.id.datable_range_love_status);
+        countdownText = view.findViewById(R.id.datable_range_countdown);
 
         setHasOptionsMenu(true);
 
