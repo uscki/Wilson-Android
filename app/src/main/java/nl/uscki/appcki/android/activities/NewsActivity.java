@@ -1,12 +1,12 @@
 package nl.uscki.appcki.android.activities;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.gson.Gson;
 
-import butterknife.BindView;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.api.Callback;
@@ -19,18 +19,20 @@ import retrofit2.Response;
 public class NewsActivity extends BasicActivity {
     NewsItem item;
 
-    @BindView(R.id.news_item_content)
     BBTextView newsLong;
-    @BindView(R.id.news_item_title)
     TextView title;
-    @BindView(R.id.news_item_metadata)
     TextView metadata;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        newsLong = findViewById(R.id.news_item_content);
+        title = findViewById(R.id.news_item_title);
+        metadata = findViewById(R.id.news_item_metadata);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

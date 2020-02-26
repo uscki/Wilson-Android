@@ -3,9 +3,9 @@ package nl.uscki.appcki.android.fragments.meeting.adapter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,13 +15,9 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
-
 import com.google.gson.Gson;
-
 import org.joda.time.DateTime;
-
 import java.util.List;
-
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.activities.MeetingActivity;
@@ -134,7 +130,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
 
     private String getNoteText(Slot slot) {
         for(Preference p : slot.getPreferences()) {
-            if(p.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
+            if (p.getPerson().getId().equals(UserHelper.getInstance().getCurrentUser().getId())) {
                 return p.getNotes();
             }
         }
@@ -154,7 +150,7 @@ public class MeetingPreferenceDaySlotAdapter extends RecyclerView.Adapter<Meetin
     private boolean getChecked(Slot slot) {
         for(Preference p : slot.getPreferences()) {
             //noinspection EqualsBetweenInconvertibleTypes
-            if (p.getPerson().equals(UserHelper.getInstance().getPerson())) {
+            if (p.getPerson().equals(UserHelper.getInstance().getCurrentUser())) {
                 return p.getCanattend();
             }
         }

@@ -1,6 +1,6 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +13,15 @@ import java.util.List;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.BasicActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
-import nl.uscki.appcki.android.fragments.agenda.AgendaDeelnemersAdapter;
-import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
-import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
+import nl.uscki.appcki.android.generated.organisation.PersonName;
 
 /**
  * Created by peter on 4/20/17.
  */
 
-public class SmoboSearchResultAdapter extends BaseItemAdapter<SmoboSearchResultAdapter.ViewHolder, PersonSimpleName> {
+public class SmoboSearchResultAdapter extends BaseItemAdapter<SmoboSearchResultAdapter.ViewHolder, PersonName> {
 
-    public SmoboSearchResultAdapter(List<PersonSimpleName> items) {
+    public SmoboSearchResultAdapter(List<PersonName> items) {
         super(items);
     }
 
@@ -47,7 +45,7 @@ public class SmoboSearchResultAdapter extends BaseItemAdapter<SmoboSearchResultA
         holder.profile.setImageURI("");
     }
 
-    private void resetViews(ViewHolder holder, final PersonSimpleName person) {
+    private void resetViews(ViewHolder holder, final PersonName person) {
         holder.mItem = person;
         holder.name.setText(person.getPostalname());
         holder.note.setText("");
@@ -70,7 +68,7 @@ public class SmoboSearchResultAdapter extends BaseItemAdapter<SmoboSearchResultA
         public final SimpleDraweeView profile;
         public final TextView name;
         public final TextView note;
-        public PersonSimpleName mItem;
+        public PersonName mItem;
 
         public ViewHolder(View view) {
             super(view);

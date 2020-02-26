@@ -6,9 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
-import nl.uscki.appcki.android.generated.organisation.Person;
-import nl.uscki.appcki.android.generated.organisation.PersonSimple;
-import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
+import nl.uscki.appcki.android.generated.organisation.PersonName;
 
 public class Participation  implements IWilsonBaseItem {
 
@@ -17,7 +15,7 @@ public class Participation  implements IWilsonBaseItem {
     private Integer id;
     @SerializedName("person")
     @Expose
-    private PersonSimpleName person;
+    private PersonName person;
     @SerializedName("preferences")
     @Expose
     private List<Preference> preferences;
@@ -45,7 +43,7 @@ public class Participation  implements IWilsonBaseItem {
      * @return
      * The person
      */
-    public PersonSimpleName getPerson() {
+    public PersonName getPerson() {
         return person;
     }
 
@@ -54,7 +52,7 @@ public class Participation  implements IWilsonBaseItem {
      * @param person
      * The person
      */
-    public void setPerson(PersonSimpleName person) {
+    public void setPerson(PersonName person) {
         this.person = person;
     }
 

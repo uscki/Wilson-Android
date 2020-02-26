@@ -1,6 +1,6 @@
 package nl.uscki.appcki.android.generated.media;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import com.google.gson.annotations.Expose;
 
 import org.joda.time.DateTime;

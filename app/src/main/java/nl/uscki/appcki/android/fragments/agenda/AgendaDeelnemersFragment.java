@@ -2,16 +2,15 @@ package nl.uscki.appcki.android.fragments.agenda;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
@@ -25,10 +24,7 @@ import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
  * A fragment representing a list of AgendaParticipants.
  */
 public class AgendaDeelnemersFragment extends RefreshableFragment {
-    @BindView(R.id.empty_text)
     TextView emptyText;
-
-    @BindView(R.id.recyclerView)
     RecyclerView participantList;
 
     private AgendaActivity activity;
@@ -69,7 +65,9 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
                              Bundle savedInstanceState) {
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, view);
+
+        emptyText = view.findViewById(R.id.empty_text);
+        participantList = view.findViewById(R.id.recyclerView);
 
         return view;
     }

@@ -1,9 +1,9 @@
 package nl.uscki.appcki.android.fragments.quotes;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;

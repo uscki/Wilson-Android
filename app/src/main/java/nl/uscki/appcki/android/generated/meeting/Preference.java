@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
-import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.generated.organisation.PersonName;
 
 public class Preference  implements IWilsonBaseItem {
 
@@ -21,7 +21,7 @@ public class Preference  implements IWilsonBaseItem {
     private Boolean canattend;
     @SerializedName("person")
     @Expose
-    private PersonSimple person;
+    private PersonName person;
 
     /**
      *
@@ -82,7 +82,7 @@ public class Preference  implements IWilsonBaseItem {
      * @return
      * The person
      */
-    public PersonSimple getPerson() {
+    public PersonName getPerson() {
         return person;
     }
 
@@ -91,7 +91,7 @@ public class Preference  implements IWilsonBaseItem {
      * @param person
      * The person
      */
-    public void setPerson(PersonSimple person) {
+    public void setPerson(PersonName person) {
         this.person = person;
     }
 

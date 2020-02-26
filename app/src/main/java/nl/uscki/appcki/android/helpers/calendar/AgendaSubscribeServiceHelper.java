@@ -46,7 +46,7 @@ public class AgendaSubscribeServiceHelper {
      * @return          String containing user entered subscribe text
      */
     public CharSequence getSubscribeText(Intent intent) {
-        Bundle remoteInput = android.support.v4.app.RemoteInput.getResultsFromIntent(intent);
+        Bundle remoteInput = androidx.core.app.RemoteInput.getResultsFromIntent(intent);
 
         if(remoteInput != null) {
             return remoteInput.getCharSequence(PARAM_SUBSCRIBE_COMMENT);

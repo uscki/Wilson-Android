@@ -9,7 +9,20 @@ import org.joda.time.DateTime;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
-public class Person extends PersonSimple implements IWilsonBaseItem {
+/**
+ * This class corresponds to nl.uscki.api.web.rest.beans.organization.PersonSimpleBean in the
+ * B.A.D.W.O.L.F. API
+ */
+public class Person extends PersonName implements IWilsonBaseItem {
+
+    @Expose
+    private String firstname;
+
+    @Expose
+    private String middlename;
+
+    @Expose
+    private String lastname;
 
     @Expose
     private String address1;
@@ -18,7 +31,7 @@ public class Person extends PersonSimple implements IWilsonBaseItem {
     private String address2;
 
     @Expose
-    private String birthdate;
+    private    String zipcode;
 
     @Expose
     private String city;
@@ -26,28 +39,52 @@ public class Person extends PersonSimple implements IWilsonBaseItem {
     @Expose
     private String country;
 
+    @SerializedName("phonenumber")
     @Expose
-    private String emailaddress;
-
-    @Expose
-    private String gender;
-
-    @Expose
-    private String homepage;
+    private   String phonenumber;
 
     @SerializedName("mobilenumber")
     @Expose
     private   String mobilenumber;
 
-    @SerializedName("phonenumber")
     @Expose
-    private   String phonenumber;
+    private String gender;
+
+    @Expose
+    private String emailaddress;
+
+    @Expose
+    private String homepage;
 
     @Expose
     private   String signature;
 
     @Expose
-    private    String zipcode;
+    private String birthdate;
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getMiddlename() {
+        return middlename;
+    }
+
+    public void setMiddlename(String middlename) {
+        this.middlename = middlename;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
 
     public String getAddress2() {
         return address2;

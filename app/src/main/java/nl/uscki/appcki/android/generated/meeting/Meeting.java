@@ -1,16 +1,13 @@
 package nl.uscki.appcki.android.generated.meeting;
 
-import android.support.annotation.Nullable;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
-import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
+import nl.uscki.appcki.android.generated.organisation.PersonName;
 
 public class Meeting implements IWilsonBaseItem{
 
@@ -19,7 +16,7 @@ public class Meeting implements IWilsonBaseItem{
     private Integer id;
     @SerializedName("person")
     @Expose
-    private PersonSimpleName person;
+    private PersonName person;
     @SerializedName("duration")
     @Expose
     private String duration;
@@ -83,7 +80,7 @@ public class Meeting implements IWilsonBaseItem{
      * @return
      * The person
      */
-    public PersonSimpleName getPerson() {
+    public PersonName getPerson() {
         return person;
     }
 
@@ -92,7 +89,7 @@ public class Meeting implements IWilsonBaseItem{
      * @param person
      * The person
      */
-    public void setPerson(PersonSimpleName person) {
+    public void setPerson(PersonName person) {
         this.person = person;
     }
 

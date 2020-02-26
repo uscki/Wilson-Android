@@ -1,16 +1,15 @@
 package nl.uscki.appcki.android.fragments.meeting;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
@@ -25,10 +24,9 @@ import nl.uscki.appcki.android.generated.meeting.MeetingItem;
  */
 public class MeetingPlannerFragment extends Fragment {
 
-    @BindView(R.id.planner_list)
     RecyclerView recyclerView;
 
-    MeetingItem item;
+    private MeetingItem item;
 
     public MeetingPlannerFragment() {
         // Required empty public constructor
@@ -41,7 +39,7 @@ public class MeetingPlannerFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_meeting_planner, container, false);
-        ButterKnife.bind(this, view);
+        this.recyclerView = view.findViewById(R.id.planner_list);
 
         MeetingActivity activity = (MeetingActivity) getActivity();
         if(activity != null && activity.getMeetingItem() != null) {

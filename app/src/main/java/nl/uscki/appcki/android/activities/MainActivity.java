@@ -3,14 +3,6 @@ package nl.uscki.appcki.android.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,9 +11,18 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.facebook.drawee.view.SimpleDraweeView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.google.android.material.navigation.NavigationView;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
@@ -29,6 +30,7 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.ContentLoadedEvent;
+import nl.uscki.appcki.android.events.CurrentUserUpdateRequiredDirectiveEvent;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
@@ -44,7 +46,7 @@ import nl.uscki.appcki.android.fragments.quotes.QuoteFragment;
 import nl.uscki.appcki.android.fragments.search.SmoboSearch;
 import nl.uscki.appcki.android.fragments.shop.StoreFragment;
 import nl.uscki.appcki.android.fragments.shop.StoreSelectionFragment;
-import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.generated.organisation.CurrentUser;
 import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Response;
@@ -74,16 +76,9 @@ public class MainActivity extends BasicActivity
 
     private static boolean homeScreenExists = false;
 
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
-
-    @BindView(R.id.nav_view)
     NavigationView navigationView;
-
-    @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
-
-    @BindView(R.id.menu_logout)
     TextView logout;
 
     LoginFragment loginFragment = new LoginFragment();
@@ -114,7 +109,10 @@ public class MainActivity extends BasicActivity
 
         setContentView(R.layout.activity_main);
 
-        ButterKnife.bind(this);
+        toolbar = findViewById(R.id.toolbar);
+        navigationView = findViewById(R.id.nav_view);
+        drawer = findViewById(R.id.drawer_layout);
+        logout = findViewById(R.id.menu_logout);
 
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
@@ -142,7 +140,7 @@ public class MainActivity extends BasicActivity
             });
 
             // Ensure a full user info object is loaded
-            UserHelper.getInstance().getFullPersonInfo(MainActivity.this);
+            UserHelper.getInstance().getCurrentUser(MainActivity.this);
 
             // Get the intent, verify the action and get the query
             handleIntention(getIntent());
@@ -404,28 +402,37 @@ public class MainActivity extends BasicActivity
 
         logout.setVisibility(View.VISIBLE);
 
+        CurrentUser user = UserHelper.getInstance().getCurrentUser();
+        if(user != null) {
+            setUserDependentFeatures(user);
+        } else {
+            Services.getInstance().userService.currentUser().enqueue(new Callback<CurrentUser>() {
+                @Override
+                public void onSucces(Response<CurrentUser> response) {
+                    UserHelper.getInstance().setCurrentUser(response.body());
+                    setUserDependentFeatures(response.body());
+                }
+            });
+        }
+    }
+
+    private void setUserDependentFeatures(final CurrentUser user) {
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
-        name.setText(UserHelper.getInstance().getPerson().getPostalname());
+        name.setText(user.getPostalname());
 
         final SimpleDraweeView profile = navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
 
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openSmoboFor(UserHelper.getInstance().getPerson());
+                openSmoboFor(user);
+                EventBus.getDefault().post(new CurrentUserUpdateRequiredDirectiveEvent());
             }
         });
-        // load the users profile picture
-        Services.getInstance().userService.currentUser().enqueue(new Callback<PersonSimple>() {
-            @Override
-            public void onSucces(Response<PersonSimple> response) {
-                Log.e(TAG, response.body().toString());
-                UserHelper.getInstance().setPerson(response.body());
-                if(UserHelper.getInstance().getPerson().getPhotomediaid() != null) {
-                    profile.setImageURI(MediaAPI.getMediaUri(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL));
-                }
-            }
-        });
+
+        if (user.getPhotomediaid() != null) {
+            profile.setImageURI(MediaAPI.getMediaUri(user.getPhotomediaid(), MediaAPI.MediaSize.SMALL));
+        }
     }
 
     private void initLoggedOutUI() {

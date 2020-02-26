@@ -1,20 +1,18 @@
 package nl.uscki.appcki.android.fragments.meeting;
 
-
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import org.joda.time.DateTime;
 
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MeetingActivity;
@@ -26,28 +24,15 @@ import nl.uscki.appcki.android.generated.meeting.MeetingItem;
  * A simple {@link Fragment} subclass.
  */
 public class MeetingDetailFragment extends RefreshableFragment {
-    MeetingItem item;
+    private MeetingItem item;
 
-    @BindView(R.id.meeting_detail_title)
-    TextView title;
-
-    @BindView(R.id.meeting_detail_time)
-    TextView plannedDate;
-
-    @BindView(R.id.meeting_detail_where)
-    TextView where;
-
-    @BindView(R.id.meeting_detail_mensen)
-    TextView mensen;
-
-    @BindView(R.id.meeting_detail_notes)
-    TextView notes;
-
-    @BindView(R.id.meeting_detail_plannotes)
-    TextView plannotes;
-
-    @BindView(R.id.meeting_detail_agenda)
-    TextView agenda;
+    private TextView title;
+    private TextView plannedDate;
+    private TextView where;
+    private TextView mensen;
+    private TextView notes;
+    private TextView plannotes;
+    private TextView agenda;
 
     public MeetingDetailFragment() {
         // Required empty public constructor
@@ -58,7 +43,13 @@ public class MeetingDetailFragment extends RefreshableFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_meeting_detail, container, false);
-        ButterKnife.bind(this, view);
+        this.title = view.findViewById(R.id.meeting_detail_title);
+        this.plannedDate = view.findViewById(R.id.meeting_detail_time);
+        this.where = view.findViewById(R.id.meeting_detail_where);
+        this.mensen = view.findViewById(R.id.meeting_detail_mensen);
+        this.notes = view.findViewById(R.id.meeting_detail_notes);
+        this.plannotes = view.findViewById(R.id.meeting_detail_plannotes);
+        this.agenda = view.findViewById(R.id.meeting_detail_agenda);
 
         setupSwipeContainer(view);
 

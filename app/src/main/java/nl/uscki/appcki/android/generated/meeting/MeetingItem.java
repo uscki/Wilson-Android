@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
-import nl.uscki.appcki.android.generated.organisation.PersonSimple;
-import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
+import nl.uscki.appcki.android.generated.organisation.PersonName;
 
 public class MeetingItem implements IWilsonBaseItem {
 
@@ -21,7 +20,7 @@ public class MeetingItem implements IWilsonBaseItem {
     private Meeting meeting;
     @SerializedName("enrolledPersons")
     @Expose
-    private List<PersonSimpleName> enrolledPersons = new ArrayList<>(); // a;le mensen die gereageerd hebben
+    private List<PersonName> enrolledPersons = new ArrayList<>(); // alle mensen die gereageerd hebben
     @SerializedName("participation")
     @Expose
     private List<Participation> participation = new ArrayList<>(); // alle mensen die zijn uitgenodigd
@@ -59,7 +58,7 @@ public class MeetingItem implements IWilsonBaseItem {
      * @return
      * The enrolledPersons
      */
-    public List<PersonSimpleName> getEnrolledPersons() {
+    public List<PersonName> getEnrolledPersons() {
         return enrolledPersons;
     }
 
@@ -68,7 +67,7 @@ public class MeetingItem implements IWilsonBaseItem {
      * @param enrolledPersons
      * The enrolledPersons
      */
-    public void setEnrolledPersons(List<PersonSimpleName> enrolledPersons) {
+    public void setEnrolledPersons(List<PersonName> enrolledPersons) {
         this.enrolledPersons = enrolledPersons;
     }
 

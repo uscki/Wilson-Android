@@ -7,14 +7,14 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
-import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
+import nl.uscki.appcki.android.generated.organisation.PersonName;
 
 public class AgendaParticipant implements IWilsonBaseItem {
 
     @Expose
     private Integer id;
     @Expose
-    private PersonSimpleName person;
+    private PersonName person;
     @Expose
     private String note;
     @Expose
@@ -47,7 +47,7 @@ public class AgendaParticipant implements IWilsonBaseItem {
      * @return
      *     The person
      */
-    public PersonSimpleName getPerson() {
+    public PersonName getPerson() {
         return person;
     }
 
@@ -56,7 +56,7 @@ public class AgendaParticipant implements IWilsonBaseItem {
      * @param person
      *     The person
      */
-    public void setPerson(PersonSimpleName person) {
+    public void setPerson(PersonName person) {
         this.person = person;
     }
 

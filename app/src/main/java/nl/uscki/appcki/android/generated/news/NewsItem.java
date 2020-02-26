@@ -9,7 +9,7 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
-import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
+import nl.uscki.appcki.android.generated.organisation.PersonName;
 
 public class NewsItem implements IWilsonBaseItem {
 
@@ -24,7 +24,7 @@ public class NewsItem implements IWilsonBaseItem {
     @Expose
     private DateTime posteddate;
     @Expose
-    private PersonSimpleName person;
+    private PersonName person;
     @Expose
     private String link;
     @Expose
@@ -129,7 +129,7 @@ public class NewsItem implements IWilsonBaseItem {
      * @return
      *     The person
      */
-    public PersonSimpleName getPerson() {
+    public PersonName getPerson() {
         return person;
     }
 
@@ -138,7 +138,7 @@ public class NewsItem implements IWilsonBaseItem {
      * @param person
      *     The person
      */
-    public void setPerson(PersonSimpleName person) {
+    public void setPerson(PersonName person) {
         this.person = person;
     }
 
