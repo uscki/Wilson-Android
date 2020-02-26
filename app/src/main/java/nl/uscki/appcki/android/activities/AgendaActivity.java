@@ -10,26 +10,25 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
 
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
@@ -65,22 +64,11 @@ public class AgendaActivity extends BasicActivity {
     private int agendaId = -1;
     AgendaDetailAdapter fragmentAdapter;
 
-    @BindView(R.id.agenda_collapsing_toolbar)
     CollapsingToolbarLayout toolbarLayout;
-
-    @BindView(R.id.tabLayout)
     TabLayout tabLayout;
-
-    @BindView(R.id.viewpager)
     ViewPager viewPager;
-
-    @BindView(R.id.agenda_poster)
     ImageView poster;
-
-    @BindView(R.id.appbar)
     AppBarLayout appBarLayout;
-
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     boolean foundUser = false;
@@ -254,7 +242,13 @@ public class AgendaActivity extends BasicActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_agenda);
-        ButterKnife.bind(this);
+
+        toolbarLayout = findViewById(R.id.agenda_collapsing_toolbar);
+        tabLayout = findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.viewpager);
+        poster = findViewById(R.id.agenda_poster);
+        appBarLayout = findViewById(R.id.appbar);
+        toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -440,7 +434,7 @@ public class AgendaActivity extends BasicActivity {
             registerIcon = R.drawable.ic_outline_edit_24px;
         }
 
-        if(this.item.getMaxregistrations() == 0) {
+        if(this.item.getMaxregistrations() != null && this.item.getMaxregistrations() == 0) {
             registerIcon = registered ? R.drawable.ic_outline_edit_disabled_24px : R.drawable.plus_disabled;
             onclickText = R.string.agenda_prepublished_event_registration_opens_later;
             subscribeEnabled = false;

@@ -8,8 +8,8 @@ package nl.uscki.appcki.android.services;
  *
  */
 
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.helpers.notification.AbstractNotification;
 import nl.uscki.appcki.android.helpers.notification.EmptyNotification;

@@ -1,17 +1,14 @@
 package nl.uscki.appcki.android.views;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatTextView;
-import android.text.SpannableString;
+import androidx.appcompat.widget.AppCompatTextView;
+
 import android.text.method.LinkMovementMethod;
-import android.text.style.URLSpan;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import java.util.List;
 
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
-import nl.uscki.appcki.android.helpers.bbparser.spans.DefensiveURLSpan;
 
 /**
  * Created by peter on 2/7/16.

@@ -2,7 +2,7 @@ package nl.uscki.appcki.android.fragments.search;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
+import androidx.appcompat.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;

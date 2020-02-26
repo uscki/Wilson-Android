@@ -3,24 +3,12 @@ package nl.uscki.appcki.android.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.JobIntentService;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.JobIntentService;
 import android.util.Log;
-import android.widget.Toast;
-import com.google.gson.Gson;
-import de.greenrobot.event.EventBus;
-import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.api.ServiceGenerator;
-import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
-import nl.uscki.appcki.android.generated.ServerError;
-import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
-import nl.uscki.appcki.android.helpers.PermissionHelper;
-import nl.uscki.appcki.android.helpers.UserHelper;
+
 import nl.uscki.appcki.android.helpers.calendar.AgendaSubscribeServiceHelper;
-import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * An {@link IntentService} subclass for subscribing users to an agenda event

@@ -1,19 +1,17 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.TooltipCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
@@ -127,31 +125,24 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         public final View mView;
         public SimpleAgendaItem mItem;
 
-        @BindView(R.id.agenda_item_title)
         TextView mContentView;
-
-        @BindView(R.id.agenda_item_when)
         TextView itemWhen;
-
-        @BindView(R.id.agenda_item_waar)
         TextView itemWhere;
-
-        @BindView(R.id.agenda_item_comment_number)
         TextView nComments;
-
-        @BindView(R.id.agenda_item_deelnemers)
         TextView itemDeelnemers;
-
-        @BindView(R.id.agenda_item_poster)
         SimpleDraweeView itemPoster;
-
-        @BindView(R.id.registration_compulsory)
         TextView registrationCompulsoryText;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            ButterKnife.bind(this, mView);
+            this.mContentView = view.findViewById(R.id.agenda_item_title);
+            this.itemWhen = view.findViewById(R.id.agenda_item_when);
+            this.itemWhere = view.findViewById(R.id.agenda_item_waar);
+            this.nComments = view.findViewById(R.id.agenda_item_comment_number);
+            this.itemDeelnemers = view.findViewById(R.id.agenda_item_deelnemers);
+            this.itemPoster = view.findViewById(R.id.agenda_item_poster);
+            this.registrationCompulsoryText = view.findViewById(R.id.registration_compulsory);
         }
 
         @Override

@@ -2,11 +2,8 @@ package nl.uscki.appcki.android.views;
 
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,21 +11,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.fragment.app.Fragment;
+
 import nl.uscki.appcki.android.R;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SmoboInfoWidget extends Fragment {
-    @BindView(R.id.smobo_info_icon)
     ImageView infoIcon;
-    @BindView(R.id.smobo_info_main_text)
     TextView mainText;
-    @BindView(R.id.smobo_info_sub_text)
     TextView subText;
-    @BindView(R.id.smobo_info_context_button)
     ImageButton contextButton;
     OnContextButtonClickListener onContextButtonClickListener;
     InfoType type;
@@ -50,7 +43,11 @@ public class SmoboInfoWidget extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_smobo_info_widget, container, false);
-        ButterKnife.bind(this, view);
+
+        infoIcon = view.findViewById(R.id.smobo_info_icon);
+        mainText = view.findViewById(R.id.smobo_info_main_text);
+        subText = view.findViewById(R.id.smobo_info_sub_text);
+        contextButton = view.findViewById(R.id.smobo_info_context_button);
 
         init(getArguments().getString("maintext"), getArguments().getString("subtext"), InfoType.values()[getArguments().getInt("infotype")]);
 

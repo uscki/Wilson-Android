@@ -2,15 +2,14 @@ package nl.uscki.appcki.android.fragments.agenda;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.fragment.app.Fragment;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
@@ -25,29 +24,16 @@ import nl.uscki.appcki.android.views.BBTextView;
  * A simple {@link Fragment} subclass.
  */
 public class AgendaDetailFragment extends RefreshableFragment {
-    @BindView(R.id.agenda_detail_time)
-    TextView startTime;
-    @BindView(R.id.agenda_detail_participants)
-    TextView participants;
-    @BindView(R.id.agenda_registration_required)
-    TextView registrationRequired;
-
-    @BindView(R.id.agenda_detail_longtext)
-    BBTextView longText;
-
-    @BindView(R.id.agenda_summary_commissie_text)
-    TextView summaryCommissie;
-    @BindView(R.id.agenda_summary_title_text)
-    TextView summaryTitle;
-    @BindView(R.id.agenda_summary_waar_text)
-    TextView summaryWaar;
-    @BindView(R.id.agenda_summary_when_text)
-    TextView summaryWhen;
-    @BindView(R.id.agenda_summary_cost_text)
-    TextView summaryCost;
-    @BindView(R.id.agenda_detail_root)
-    View root;
-
+    private TextView startTime;
+    private TextView participants;
+    private TextView registrationRequired;
+    private BBTextView longText;
+    private TextView summaryCommissie;
+    private TextView summaryTitle;
+    private TextView summaryWaar;
+    private TextView summaryWhen;
+    private TextView summaryCost;
+    private View root;
 
     private AgendaActivity activity;
 
@@ -60,7 +46,17 @@ public class AgendaDetailFragment extends RefreshableFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_agenda_detail, container, false);
-        ButterKnife.bind(this, view);
+
+        this.startTime = view.findViewById(R.id.agenda_detail_time);
+        this.participants = view.findViewById(R.id.agenda_detail_participants);
+        this.registrationRequired = view.findViewById(R.id.agenda_registration_required);
+        this.longText = view.findViewById(R.id.agenda_detail_longtext);
+        this.summaryCommissie = view.findViewById(R.id.agenda_summary_commissie_text);
+        this.summaryTitle = view.findViewById(R.id.agenda_summary_title_text);
+        this.summaryWaar = view.findViewById(R.id.agenda_summary_waar_text);
+        this.summaryWhen = view.findViewById(R.id.agenda_summary_when_text);
+        this.summaryCost = view.findViewById(R.id.agenda_summary_cost_text);
+        this.root = view.findViewById(R.id.agenda_detail_root);
         setupSwipeContainer(view);
 
         if(activity.getAgendaItem() != null) {
@@ -124,11 +120,11 @@ public class AgendaDetailFragment extends RefreshableFragment {
         setTextView(view, item.getWhat(), R.id.agenda_summary_title_text);
         setTextView(view, item.getLocation(), R.id.agenda_summary_waar_text);
 
-        if (item.getWhen() != null) {
+        /*if (item.getWhen() != null) {
             summaryWhen.setText(item.getWhen());
         } else {
             summaryWhen.setText(when);
-        }
+        }*/
         setTextView(view, item.getCosts(), R.id.agenda_summary_cost_text);
     }
 

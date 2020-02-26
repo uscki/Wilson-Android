@@ -1,19 +1,15 @@
 package nl.uscki.appcki.android.fragments.meeting;
 
 
-import android.Manifest;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.vistrav.ask.Ask;
 
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.R;
@@ -21,7 +17,6 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingDetailAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
-import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 import retrofit2.Response;
 
 /**
