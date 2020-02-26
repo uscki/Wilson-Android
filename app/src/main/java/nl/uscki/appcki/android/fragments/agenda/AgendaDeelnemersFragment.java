@@ -15,7 +15,7 @@ import java.util.Locale;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
-import nl.uscki.appcki.android.events.AgendaItemUpdatedEvent;
+import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.ListSectionHeader;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
@@ -94,7 +94,7 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
     }
 
     // EVENT HANDLING
-    public void onEventMainThread(AgendaItemUpdatedEvent event) {
+    public void onEventMainThread(DetailItemUpdatedEvent<AgendaItem> event) {
         swipeContainer.setRefreshing(false);
         if(getAdapter() instanceof AgendaDeelnemersAdapter) {
             setupParticipantList(activity.getAgendaItem());

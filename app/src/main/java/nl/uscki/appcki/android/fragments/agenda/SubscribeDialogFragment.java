@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,12 +36,9 @@ public class SubscribeDialogFragment extends DialogFragment {
     private EditText registrationQuestionAnswer;
     private TextView registrationQuestion;
     private RecyclerView possibleAnswersView;
-
     private Button positiveButton;
-
     private PossibleAnswersAdapter adapter;
-
-    AgendaActivity activity;
+    private AgendaActivity activity;
 
     private Callback<ActionResponse<AgendaParticipantLists>> agendaSubscribeCallback =
         new Callback<ActionResponse<AgendaParticipantLists>>() {

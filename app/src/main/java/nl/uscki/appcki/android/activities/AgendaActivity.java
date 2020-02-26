@@ -36,7 +36,7 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.error.Error;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
-import nl.uscki.appcki.android.events.AgendaItemUpdatedEvent;
+import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailAdapter;
@@ -129,7 +129,7 @@ public class AgendaActivity extends BasicActivity {
     private void setupItem() {
         if(item == null) return;
 
-        EventBus.getDefault().post(new AgendaItemUpdatedEvent(item));
+        EventBus.getDefault().post(new DetailItemUpdatedEvent<>(item));
 
         if(item.getPosterid() != null && item.getPosterid() >= 0) {
             Services.getInstance().mediaService.file(item.getPosterid(), "normal").enqueue(posterLoadedCallback);
@@ -658,7 +658,7 @@ public class AgendaActivity extends BasicActivity {
         setExportButtons();
         setSubscribeButtons();
         showSubscribeConfirmation(event.subscribed);
-        EventBus.getDefault().post(new AgendaItemUpdatedEvent(item));
+        EventBus.getDefault().post(new DetailItemUpdatedEvent<>(item));
         updateTabTitleCounts();
     }
 

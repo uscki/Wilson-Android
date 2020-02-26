@@ -9,16 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
-        android:layout_marginLeft="25dp"
         android:layout_marginTop="10dp"
         style="@style/AppTheme.TextSubHeader"
-        android:text="Beschikbaar"/>
+        android:text="@string/meeting_slot_preference_dialog_available"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/meeting_slot_preferences_available"
         app:layoutManager="LinearLayoutManager"
         android:layout_marginStart="25dp"
-        android:layout_marginLeft="25dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -28,15 +26,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
-        android:layout_marginLeft="25dp"
         style="@style/AppTheme.TextSubHeader"
-        android:text="Niet beschikbaar"/>
+        android:text="@string/meeting_slot_preference_dialog_unavailable"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/meeting_slot_preferences_unavailable"
         app:layoutManager="LinearLayoutManager"
         android:layout_marginStart="25dp"
-        android:layout_marginLeft="25dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

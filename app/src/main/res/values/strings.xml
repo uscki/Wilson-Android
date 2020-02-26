@@ -5,6 +5,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Instellingen</string>
+    <string name="action_preferences">Voorkeuren</string>
+    <string name="action_close">Sluiten</string>
     <string name="action_roephoek_roep">Roep</string>
     <string name="action_agenda_subscribe">Deelnemen</string>
     <string name="action_agenda_unsubscribe">Uitschrijven</string>
@@ -81,10 +83,19 @@
 
     <string name="example_text">Example text</string>
 
+    <string name="meeting_header_overview">Overzicht</string>
+    <string name="meeting_header_present">Aanwezig</string>
+    <string name="meeting_header_absent">Afwezig</string>
+    <string name="meeting_header_planner_view">Planner</string>
+    <string name="meeting_header_responded">Gerageerd</string>
+    <string name="meeting_header_no_response">Geen reactie</string>
     <string name="meeting_detail_notes">Opmerkingen:</string>
     <string name="meeting_detail_plannotes">Opmerkingen bij het plannen:</string>
     <string name="meeting_detail_agenda">Agenda:</string>
     <string name="meeting_no_new_meetings">Er zijn geen actieve vergaderplanners.</string>
+    <string name="meeting_slot_preference_dialog_header">Voorkeuren</string>
+    <string name="meeting_slot_preference_dialog_available">Beschikbaar</string>
+    <string name="meeting_slot_preference_dialog_unavailable">Niet beschikbaar</string>
 
     <!-- error handling -->
     <string name="connection_error">Er ging iets fout tijdens het verbinden met de server!</string>
