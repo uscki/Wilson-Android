@@ -1,8 +1,10 @@
 package nl.uscki.appcki.android.activities;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -40,6 +42,7 @@ import nl.uscki.appcki.android.fragments.agenda.SubscribeDialogFragment;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
+import nl.uscki.appcki.android.generated.agenda.AgendaUserParticipation;
 import nl.uscki.appcki.android.helpers.AgendaSubscribedHelper;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -350,6 +353,8 @@ public class AgendaActivity extends BasicActivity {
     /**
      * Show or hide subscribe and unsubscribe buttons based on the subscribed status of the current
      * user for this event, and the registration status of the event.
+     *
+     * // TODO obnoxiously long method
      */
     private void setSubscribeButtons() {
         if(menu == null) return;
@@ -357,17 +362,10 @@ public class AgendaActivity extends BasicActivity {
         MenuItem subscribe = menu.findItem(R.id.action_agenda_subscribe);
         MenuItem unsubscribe = menu.findItem(R.id.action_agenda_unsubscribe);
 
+        // Make sure not to break app
         if(subscribe == null || unsubscribe == null) {
             Log.e(getClass().getSimpleName(), "Trying to set button behavior before menu is created");
             return;
-        }
-
-        if(foundUser) {
-            subscribe.setVisible(false);
-            unsubscribe.setVisible(true);
-        } else {
-            subscribe.setVisible(true);
-            unsubscribe.setVisible(false);
         }
 
         if(item == null) {
@@ -375,79 +373,74 @@ public class AgendaActivity extends BasicActivity {
             return;
         }
 
-        if (this.item.getMaxregistrations() != null && this.item.getMaxregistrations() == 0) {
-            prepareSubscribeButtonsForNoRegistration(subscribe, unsubscribe);
-        } else if (this.item.getHasUnregisterDeadline() &&
-                new DateTime(this.item.getUnregisterDeadline()).isBeforeNow()) {
-            unsubscribe.setVisible(false);
-        } else if (this.item.getStart().isBeforeNow() && foundUser) {
-            unsubscribe.setVisible(false);
-        } else {
-            prepareSubscribeButtonsForRegistration(subscribe, unsubscribe);
+        // Initial checks
+        boolean registered = this.item.getUserParticipation() != null &&
+                (this.item.getUserParticipation().isAttends() || this.item.getUserParticipation().isBackuplist());
+        boolean started = this.item.getStart().isBeforeNow();
+        boolean registrationPassed = this.item.getHasDeadline() && this.item.getDeadline().isBeforeNow();
+        boolean unregisterPassed = item.getHasUnregisterDeadline() && this.item.getUnregisterDeadline().isBeforeNow();
+        boolean subscribeEnabled = true, unsubscribeEnabled = true;
+
+        // Aggregation variables
+        int onclickText = -1, registerIcon = R.drawable.plus, unregisterIcon = R.drawable.close;
+
+        // Check if unregistration should be disabled
+        if (unregisterPassed || (started && !this.item.getHasUnregisterDeadline())) {
+            unregisterIcon = R.drawable.close_disabled;
+            unsubscribeEnabled = false;
+            onclickText = unregisterPassed ?
+                    R.string.agenda_unsubscribe_deadline_passed : R.string.agenda_event_started;
         }
+
+        // Check if registration should be disabled
+        if (registrationPassed || (started && !this.item.getHasDeadline())) {
+            registerIcon = R.drawable.plus_disabled;
+            subscribeEnabled = false;
+            onclickText = registrationPassed ?
+                    R.string.agenda_subscribe_deadline_passed : R.string.agenda_event_started;
+        }
+
+        // Check if registration icon should be edit icon
+        if (registered && (registrationPassed || (started && !this.item.getHasDeadline()))
+        ) {
+            registerIcon = R.drawable.ic_outline_edit_disabled_24px;
+            onclickText = registrationPassed ?
+                    R.string.agenda_subscribe_deadline_passed : R.string.agenda_event_started;
+        } else if (registered) {
+            registerIcon = R.drawable.ic_outline_edit_24px;
+        }
+
+        // Mark icons based on calculated configuration
+        subscribe.setIcon(registerIcon).setVisible(true);
+        unsubscribe.setIcon(unregisterIcon).setVisible(registered);
+
+        // Add proper listeners to menu buttons
+        addSubscribeListener(subscribe, true, subscribeEnabled, onclickText);
+        addSubscribeListener(unsubscribe, false, unsubscribeEnabled, onclickText);
     }
 
-    /**
-     * Set the right subscribe/unsubscribe buttons based on the subscribed status of the current
-     * user, in the case that registration is not closed until further notice
-     * @param subscribeButton       Reference to the subscribe button object
-     * @param unsubscribeButton     Reference to the unsubscribe button object
-     */
-    private void prepareSubscribeButtonsForRegistration(MenuItem subscribeButton, MenuItem unsubscribeButton) {
-        subscribeButton
-            .setIcon(R.drawable.plus)
-            .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    subscribeToAgenda(true);
-                    return true;
-                }
-            });
-
-        unsubscribeButton
-            .setIcon(R.drawable.close)
-            .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    subscribeToAgenda(false);
-                    return true;
-                }
-            });
-    }
-
-    /**
-     * Set the right subscribe/unsubscribe buttons in the case that registration of the event
-     * currently on display is closed until further notice
-     * @param subscribeButton       Reference to the subscribe button object
-     * @param unsubscribeButton     Reference to the unsubscribe button object
-     */
-    private void prepareSubscribeButtonsForNoRegistration(MenuItem subscribeButton, MenuItem unsubscribeButton) {
-        subscribeButton
-            .setIcon(R.drawable.plus_disabled)
-            .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+    private void addSubscribeListener(MenuItem menuItem, final boolean subscribe, boolean enabled, final int text) {
+        if(!enabled && text >= 0) {
+            menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem menuItem) {
                     Toast.makeText(
                             AgendaActivity.this,
-                            R.string.agenda_prepublished_event_registration_closed,
+                            text,
                             Toast.LENGTH_LONG).show();
 
                     return true;
                 }
             });
-        unsubscribeButton
-            .setIcon(R.drawable.close_disabled)
-            .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        } else if (enabled) {
+            menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    Toast.makeText(
-                            AgendaActivity.this,
-                            R.string.agenda_prepublished_event_registration_closed,
-                            Toast.LENGTH_LONG).show();
-
+                public boolean onMenuItemClick(MenuItem item) {
+                    subscribeToAgenda(subscribe);
                     return true;
                 }
             });
+        }
     }
 
     /**
@@ -497,9 +490,6 @@ public class AgendaActivity extends BasicActivity {
 
         if (subscribe) {
             DialogFragment newFragment = new SubscribeDialogFragment();
-            Bundle args = new Bundle();
-            args.putSerializable("agenda_item", item);
-            newFragment.setArguments(args);
             newFragment.show(getSupportFragmentManager(), "agenda_subscribe");
         } else {
             if (item.getHasUnregisterDeadline()) {
@@ -509,7 +499,7 @@ public class AgendaActivity extends BasicActivity {
 
                         @Override
                         public String getMessage() {
-                            return getString(R.string.agenda_unsubscribe_deadline_past);
+                            return getString(R.string.agenda_unsubscribe_deadline_passed);
                         }
 
                     }));
@@ -518,18 +508,35 @@ public class AgendaActivity extends BasicActivity {
                 }
             }
 
+            if(item.getHasDeadline() && item.getDeadline().isBeforeNow()) {
+                requestConfirm(getResources().getString(R.string.agenda_confirm_unsubscribe_deadline));
+            } else if (item.getMaxregistrations() != null && item.getMaxregistrations() > 0 && item.getParticipants().size() >= item.getMaxregistrations() - 5) {
+                // Arbitrary border but still nice
+                requestConfirm(getResources().getString(
+                        R.string.agenda_confirm_unsubscribe_backuplist,
+                        this.item.getParticipants().size(),
+                        this.item.getMaxregistrations()));
+            } else {
+                queUnregister();
+            }
+
             // no deadline for unsubscribing
             Log.d("MainActivity", "unsubscribing for:" + item.getId());
+        }
+    }
 
-            Services.getInstance().agendaService.unsubscribe(item.getId())
-                    .enqueue(new nl.uscki.appcki.android.api.Callback<ActionResponse<AgendaParticipantLists>>() {
+    /**
+     * Unregister current user from active event through API
+     * Sends a AgendaItemSubscribedEvent on EventBus
+     */
+    private void queUnregister() {
+        Services.getInstance().agendaService.unsubscribe(item.getId())
+            .enqueue(new nl.uscki.appcki.android.api.Callback<ActionResponse<AgendaParticipantLists>>() {
 
                 @Override
                 public void onSucces(Response<ActionResponse<AgendaParticipantLists>> response) {
                     EventBus.getDefault()
                             .post(new AgendaItemSubscribedEvent(response.body().payload, true));
-                    setExportButtons();
-                    Toast.makeText(AgendaActivity.this, R.string.agenda_unsubscribe_confirmed, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -538,7 +545,24 @@ public class AgendaActivity extends BasicActivity {
                     Toast.makeText(AgendaActivity.this, R.string.agenda_unsubscribe_failed, Toast.LENGTH_SHORT).show();
                 }
             });
-        }
+    }
+
+    /**
+     * Show a confirmation dialog that unsubscribes the user from active event when confirmed
+     * @param message   Message to show in dialog
+     */
+    private void requestConfirm(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.agenda_confirm_unsubscribe_header)
+                .setMessage(message)
+                .setPositiveButton(R.string.agenda_confirm_unsubscribe_positive, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        queUnregister();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
     }
 
     private void exportToCalendar() {
@@ -570,14 +594,15 @@ public class AgendaActivity extends BasicActivity {
         }
     }
 
-    // TODO this event *SHOULD* only be used in this activity. Move it directly to the callback?
+    /**
+     * Triggered by unsubscribing in this activity, and by subscribing in the SubscribeDialogFragment
+     * @param event
+     */
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
-        item.setParticipants(event.subscribed.getParticipants());
-        item.setBackupList(event.subscribed.getBackupList());
+        this.item.setParticipants(event.subscribed.getParticipants());
+        this.item.setBackupList(event.subscribed.getBackupList());
         if(!event.showSubscribe) {
             setAlarmForEvent(item);
-            menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
-            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
 
             int calendarEventItemId;
 
@@ -591,13 +616,42 @@ public class AgendaActivity extends BasicActivity {
                 exportToCalendar();
             }
         } else {
+            Toast.makeText(AgendaActivity.this, R.string.agenda_unsubscribe_confirmed, Toast.LENGTH_SHORT).show();
             unsetAlarmForEvent(item);
-            menu.findItem(R.id.action_agenda_subscribe).setVisible(true);
-            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
+
+            // TODO UserParticipation should be updated by API; not like this
+            this.item.getUserParticipation().setAnswer(null);
+            this.item.getUserParticipation().setNote(null);
+            this.item.getUserParticipation().setSubscribed(null);
         }
+        updateSubscribedStatus(event.subscribed);
         setExportButtons();
+        setSubscribeButtons();
         showSubscribeConfirmation(event.subscribed);
         EventBus.getDefault().post(new AgendaItemUpdatedEvent(item));
+    }
+
+    /**
+     * Update subscribed status of user on current Agenda item, until refresh
+     * @param nowSubscribedLists    List passed by (un)subscribe API call
+     */
+    // TODO this is really ugly, and should just be returned by API
+    private void updateSubscribedStatus(AgendaParticipantLists nowSubscribedLists) {
+        if(UserHelper.getInstance().getCurrentUser() != null) {
+            AgendaUserParticipation participation = this.item.getUserParticipation();
+            int status = AgendaSubscribedHelper.isSubscribed(nowSubscribedLists);
+
+            if(status == AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED) {
+                participation.setBackuplist(false);
+                participation.setAttends(false);
+            } else if (status == AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST) {
+                participation.setBackuplist(true);
+                participation.setAttends(false);
+            } else {
+                participation.setAttends(true);
+                participation.setBackuplist(false);
+            }
+        }
     }
 
     private void showSubscribeConfirmation(AgendaParticipantLists nowSubscribedLists) {
@@ -607,7 +661,12 @@ public class AgendaActivity extends BasicActivity {
 
             // TODO userParticipation is not a response payload to (un)subscribing, so we still need this
             int status = AgendaSubscribedHelper.isSubscribed(nowSubscribedLists);
-            if (status == AgendaSubscribedHelper.AGENDA_SUBSCRIBED) {
+            int previousStatus = AgendaSubscribedHelper.isSubscribed(item);
+
+            if(status == previousStatus) {
+                messageResourceId = R.string.agenda_subscribe_changed;
+            } else if (status == AgendaSubscribedHelper.AGENDA_SUBSCRIBED) {
+
                 messageResourceId = R.string.agenda_subscribe_confirmed;
             } else if (status == AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST) {
                 messageResourceId = R.string.agenda_subscribe_backuplist;

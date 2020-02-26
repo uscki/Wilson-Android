@@ -108,7 +108,9 @@ public class AgendaItem extends SimpleAgendaItem{
     }
 
     public AgendaUserParticipation getUserParticipation() {
-        return userParticipation;
+        // API passes null, which is inconvenient. Make sure an object is always available
+        if(this.userParticipation == null) this.userParticipation = new AgendaUserParticipation();
+        return this.userParticipation;
     }
 
     public void setUserParticipation(AgendaUserParticipation userParticipation) {
