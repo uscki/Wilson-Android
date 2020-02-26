@@ -20,8 +20,6 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
@@ -38,25 +36,12 @@ import nl.uscki.appcki.android.views.BBTextView;
  */
 public class PrivacyPolicyModalFragment extends DialogFragment {
 
-    @BindView(R.id.privacy_policy_updated_notice_text)
     TextView updateNoticeText;
-
-    @BindView(R.id.privacyPolicyMainText)
     BBTextView mainText;
-
-    @BindView(R.id.checkboxPrivacyPolicyGeneral)
     CheckBox agreeGeneralPolicy;
-
-    @BindView(R.id.checkboxPrivacyPolicyAppSpecific)
     CheckBox agreeAppPolicy;
-
-    @BindView(R.id.checkboxPrivacyPolicyNotificationToken)
     CheckBox agreeNotifications;
-
-    @BindView(R.id.privacyPolicyButtonAgree)
     Button agreeButton;
-
-    @BindView(R.id.privacyPolicyRejectButton)
     Button rejectButton;
 
     private SharedPreferences prefs;
@@ -96,7 +81,14 @@ public class PrivacyPolicyModalFragment extends DialogFragment {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_privacy_policy_modal, container, false);
-        ButterKnife.bind(this, view);
+
+        updateNoticeText = view.findViewById(R.id.privacy_policy_updated_notice_text);
+        mainText = view.findViewById(R.id.privacyPolicyMainText);
+        agreeGeneralPolicy = view.findViewById(R.id.checkboxPrivacyPolicyGeneral);
+        agreeAppPolicy = view.findViewById(R.id.checkboxPrivacyPolicyAppSpecific);
+        agreeNotifications = view.findViewById(R.id.checkboxPrivacyPolicyNotificationToken);
+        agreeButton = view.findViewById(R.id.privacyPolicyButtonAgree);
+        rejectButton = view.findViewById(R.id.privacyPolicyRejectButton);
 
         if(hasAgreedToPreviousVersion && !appPolicyAgreed) {
             updateNoticeText.setVisibility(View.VISIBLE);

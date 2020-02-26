@@ -3,21 +3,19 @@ package nl.uscki.appcki.android.fragments.agenda;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.RecyclerView;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
@@ -34,23 +32,13 @@ import retrofit2.Response;
  */
 public class SubscribeDialogFragment extends DialogFragment {
 
-    @BindView(R.id.agenda_dialog_note)
-    EditText note;
-
-    @BindView(R.id.agenda_dialog_registration_question_answer)
-    EditText registrationQuestionAnswer;
-
-    @BindView(R.id.subscribe_agenda_question)
-    TextView registrationQuestion;
-
-    @BindView(R.id.agenda_registration_question_options)
-    RecyclerView possibleAnswersView;
-
+    private EditText note;
+    private EditText registrationQuestionAnswer;
+    private TextView registrationQuestion;
+    private RecyclerView possibleAnswersView;
     private Button positiveButton;
-
     private PossibleAnswersAdapter adapter;
-
-    AgendaActivity activity;
+    private AgendaActivity activity;
 
     private Callback<ActionResponse<AgendaParticipantLists>> agendaSubscribeCallback =
         new Callback<ActionResponse<AgendaParticipantLists>>() {
@@ -104,8 +92,12 @@ public class SubscribeDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
 
-        View view = activity.getLayoutInflater().inflate(R.layout.agenda_subscribe_dialog, null);
-        ButterKnife.bind(this, view);
+        View view = getActivity().getLayoutInflater().inflate(R.layout.agenda_subscribe_dialog, null);
+
+        note = view.findViewById(R.id.agenda_dialog_note);
+        registrationQuestionAnswer = view.findViewById(R.id.agenda_dialog_registration_question_answer);
+        registrationQuestion = view.findViewById(R.id.subscribe_agenda_question);
+        possibleAnswersView = view.findViewById(R.id.agenda_registration_question_options);
 
         final AgendaItem item = this.activity.getAgendaItem();
 

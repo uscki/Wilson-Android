@@ -1,15 +1,15 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.SingleValueWilsonItem;
@@ -79,15 +79,15 @@ public class PossibleAnswersAdapter extends BaseItemAdapter<PossibleAnswersAdapt
         private final View mView;
         private String possibleAnswerValue;
 
-        @BindView(R.id.possible_answer_checkmark)
         ImageView checkmark;
-
-        @BindView(R.id.possible_answer_value)
         TextView possibleAnswerText;
 
         public ViewHolder(View view) {
             super(view);
-            ButterKnife.bind(this, view);
+
+            checkmark = view.findViewById(R.id.possible_answer_checkmark);
+            possibleAnswerText = view.findViewById(R.id.possible_answer_value);
+
             this.mView = view;
         }
 

@@ -1,8 +1,6 @@
 package nl.uscki.appcki.android.fragments.shoutbox;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -11,11 +9,14 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -24,23 +25,21 @@ import retrofit2.Call;
 
 public class NewShoutWidget extends NewPageableItem {
 
-    @BindView(R.id.new_shout_nickname)
     EditText nickname;
-
-    @BindView(R.id.new_shout_content)
     EditText content;
-
-    @BindView(R.id.new_shout_confirm_button)
     ImageButton confirmShout;
-
-    @BindView(R.id.remaining_chars)
     TextView remainingChars;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_roephoek_new_widget, container, false);
-        ButterKnife.bind(this, view);
+
+        nickname = view.findViewById(R.id.new_shout_nickname);
+        content = view.findViewById(R.id.new_shout_content);
+        confirmShout = view.findViewById(R.id.new_shout_confirm_button);
+        remainingChars = view.findViewById(R.id.remaining_chars);
+
         content.addTextChangedListener(contentLengthWatcher);
         return view;
     }

@@ -3,7 +3,6 @@ package nl.uscki.appcki.android.helpers.bbparser.spans;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Build;
-import android.support.v4.content.ContextCompat;
 import android.text.Layout;
 import android.text.style.LeadingMarginSpan;
 import android.text.style.UpdateAppearance;

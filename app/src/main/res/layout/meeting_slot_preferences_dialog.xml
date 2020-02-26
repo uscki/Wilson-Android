@@ -14,7 +14,7 @@
         style="@style/AppTheme.TextSubHeader"
         android:text="Beschikbaar"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/meeting_slot_preferences_available"
         app:layoutManager="LinearLayoutManager"
         android:layout_marginStart="25dp"
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 
     <TextView
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
         style="@style/AppTheme.TextSubHeader"
         android:text="Niet beschikbaar"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/meeting_slot_preferences_unavailable"
         app:layoutManager="LinearLayoutManager"
         android:layout_marginStart="25dp"
@@ -40,5 +40,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 </LinearLayout>
