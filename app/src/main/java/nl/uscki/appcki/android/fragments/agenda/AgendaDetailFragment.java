@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
-import nl.uscki.appcki.android.events.AgendaItemUpdatedEvent;
+import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.helpers.AgendaSubscribedHelper;
@@ -60,7 +60,7 @@ public class AgendaDetailFragment extends RefreshableFragment {
         return view;
     }
 
-    public void onEventMainThread(AgendaItemUpdatedEvent event) {
+    public void onEventMainThread(DetailItemUpdatedEvent<AgendaItem> event) {
         swipeContainer.setRefreshing(false);
         if(getView() != null) {
             setupViews(getView(), event.getUpdatedItem());

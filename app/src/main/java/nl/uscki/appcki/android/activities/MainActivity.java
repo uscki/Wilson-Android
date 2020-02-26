@@ -479,7 +479,7 @@ public class MainActivity extends BasicActivity
             return;
         } else if(event.screen instanceof MeetingDetailTabsFragment) {
             Intent meeting = new Intent(this, MeetingActivity.class);
-            meeting.putExtra("item", event.arguments);
+            meeting.putExtras(event.arguments);
             startActivity(meeting);
             return;
         }
