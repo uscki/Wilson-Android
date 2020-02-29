@@ -25,7 +25,6 @@ public class AgendaDetailAdapter extends FragmentStatePagerAdapter {
 
         details = new AgendaDetailFragment();
         participants = new AgendaDeelnemersFragment();
-
         Bundle bundle = new Bundle();
         bundle.putInt(CommentsFragment.ARGUMENT_COMMENTS_TOPIC_ID, agendaID);
         comments = new AgendaCommentsFragment();

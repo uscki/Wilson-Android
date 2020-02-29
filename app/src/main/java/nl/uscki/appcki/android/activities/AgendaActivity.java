@@ -27,6 +27,8 @@ import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
 
+import java.util.Locale;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
@@ -38,6 +40,7 @@ import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailAdapter;
+import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.agenda.SubscribeDialogFragment;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
@@ -100,6 +103,26 @@ public class AgendaActivity extends BasicActivity {
         return item;
     }
 
+    private void updateTabTitleCounts() {
+        if(this.item != null) {
+            updateTabTitleCount(AgendaDetailTabsFragment.DEELNEMERS, R.string.tab_agenda_participants, this.item.getParticipants().size());
+            updateTabTitleCount(AgendaDetailTabsFragment.COMMENTS, R.string.comments, this.item.getTotalComments());
+        }
+    }
+
+    private void updateTabTitleCount(int tabIndex, int stringResource, int count) {
+        TabLayout.Tab t = tabLayout.getTabAt(tabIndex);
+        if(t != null) {
+            String title = String.format(
+                    Locale.getDefault(),
+                    "%d %s",
+                    count,
+                    getString(stringResource)
+            );
+            t.setText(title);
+        }
+    }
+
     /**
      * Once the item is loaded, populate the view with the agenda information
      */
@@ -123,6 +146,7 @@ public class AgendaActivity extends BasicActivity {
 
         setSubscribeButtons();
         setExportButtons();
+        updateTabTitleCounts();
     }
 
     Callback<ResponseBody> posterLoadedCallback = new Callback<ResponseBody>() {
@@ -410,6 +434,12 @@ public class AgendaActivity extends BasicActivity {
             registerIcon = R.drawable.ic_outline_edit_24px;
         }
 
+        if(this.item.getMaxregistrations() != null && this.item.getMaxregistrations() == 0) {
+            registerIcon = registered ? R.drawable.ic_outline_edit_disabled_24px : R.drawable.plus_disabled;
+            onclickText = R.string.agenda_prepublished_event_registration_opens_later;
+            subscribeEnabled = false;
+        }
+
         // Mark icons based on calculated configuration
         subscribe.setIcon(registerIcon).setVisible(true);
         unsubscribe.setIcon(unregisterIcon).setVisible(registered);
@@ -629,6 +659,7 @@ public class AgendaActivity extends BasicActivity {
         setSubscribeButtons();
         showSubscribeConfirmation(event.subscribed);
         EventBus.getDefault().post(new DetailItemUpdatedEvent<>(item));
+        updateTabTitleCounts();
     }
 
     /**

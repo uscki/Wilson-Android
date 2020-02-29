@@ -1,12 +1,12 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -25,12 +25,16 @@ import nl.uscki.appcki.android.views.BBTextView;
  * A simple {@link Fragment} subclass.
  */
 public class AgendaDetailFragment extends RefreshableFragment {
-    TextView startTime;
-    TextView participants;
-    BBTextView longText;
-    LinearLayout registrationRequiredLayout;
-    TextView registrationRequiredDate;
-    TextView registrationLaterText;
+    private TextView startTime;
+    private TextView participants;
+    private TextView registrationRequired;
+    private BBTextView longText;
+    private TextView summaryCommissie;
+    private TextView summaryTitle;
+    private TextView summaryWaar;
+    private TextView summaryWhen;
+    private TextView summaryCost;
+    private View root;
 
     private AgendaActivity activity;
 
@@ -44,13 +48,16 @@ public class AgendaDetailFragment extends RefreshableFragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_agenda_detail, container, false);
 
-        startTime = view.findViewById(R.id.agenda_detail_time);
-        participants = view.findViewById(R.id.agenda_detail_participants);
-        longText = view.findViewById(R.id.agenda_detail_longtext);
-        registrationRequiredLayout = view.findViewById(R.id.registration_required);
-        registrationLaterText = view.findViewById(R.id.registration_required_text);
-        registrationRequiredDate = view.findViewById(R.id.registration_required_date);
-
+        this.startTime = view.findViewById(R.id.agenda_detail_time);
+        this.participants = view.findViewById(R.id.agenda_detail_participants);
+        this.registrationRequired = view.findViewById(R.id.agenda_registration_required);
+        this.longText = view.findViewById(R.id.agenda_detail_longtext);
+        this.summaryCommissie = view.findViewById(R.id.agenda_summary_commissie_text);
+        this.summaryTitle = view.findViewById(R.id.agenda_summary_title_text);
+        this.summaryWaar = view.findViewById(R.id.agenda_summary_waar_text);
+        this.summaryWhen = view.findViewById(R.id.agenda_summary_when_text);
+        this.summaryCost = view.findViewById(R.id.agenda_summary_cost_text);
+        this.root = view.findViewById(R.id.agenda_detail_root);
         setupSwipeContainer(view);
 
         if(activity.getAgendaItem() != null) {
@@ -74,15 +81,47 @@ public class AgendaDetailFragment extends RefreshableFragment {
 
         String when = AgendaSubscribedHelper.getWhen(item);
         this.startTime.setText(when);
-        this.participants.setText(AgendaSubscribedHelper.getParticipantsSummary(getContext(), item));
+
+        String participantsText;
+        if(item.getMaxregistrations() == null) {
+            participantsText = getString(R.string.agenda_n_participants, item.getParticipants().size());
+        } else if (item.getMaxregistrations() <= 0) {
+            participantsText = getString(R.string.agenda_prepublished_event_registration_opens_later);
+        } else if (item.getBackupList().isEmpty()) {
+            participantsText = getString(R.string.agenda_n_participants_max,
+                    item.getParticipants().size(), item.getMaxregistrations());
+        } else {
+            participantsText = getString(R.string.agenda_n_participants_backup,
+                    item.getParticipants().size(), item.getMaxregistrations(),
+                    item.getBackupList().size());
+        }
+        this.participants.setText(participantsText);
+
+        int participationImg = R.drawable.account_multiple;
+        if(item.getUserParticipation() != null && item.getUserParticipation().isAttends()) {
+            participationImg = R.drawable.account_multiple_subscribed;
+        } else if (item.getUserParticipation() != null && item.getUserParticipation().isBackuplist()) {
+            participationImg = R.drawable.account_multiple_backup;
+        }
+        this.participants.setCompoundDrawablesWithIntrinsicBounds(participationImg, 0, 0, 0);
+
         if(item.getRegistrationrequired()) {
-            registrationRequiredLayout.setVisibility(View.VISIBLE);
-            if(item.getDeadline() != null) {
-                // TODO somehow use string resources
-                registrationRequiredDate.setText(item.getDeadline().toString("EEEE, dd MMM, HH:mm"));
-            }
-            if(item.getMaxregistrations() <= 0) {
-                registrationLaterText.setVisibility(View.VISIBLE);
+            if(item.getHasDeadline()) {
+                // registrationRequired and hasDeadline can be two different things, so technically
+                // the following line should be within the first if-clause, not the second. However,
+                // max n participants (i.e. prepublishing) can only be set when registration is
+                // required, meaning 'registration required' does not mean too much on pre-published
+                // events.
+                registrationRequired.setVisibility(View.VISIBLE);
+                int registrationRequiredText = item.getDeadline().isBeforeNow() ?
+                        R.string.agenda_event_register_deadline_passed_date :
+                        R.string.agenda_registration_required_before;
+
+                registrationRequired.setText(getString(
+                        registrationRequiredText,
+                        item.getDeadline().toString("EEEE, dd MMM YYYY, HH:mm")
+                    )
+                );
             }
         }
 

@@ -1,0 +1,5 @@
+<!-- drawable/account_multiple.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/account_multiple_back"/>
+    <item android:drawable="@drawable/account_multiple_front_subscribed"/>
+</layer-list>

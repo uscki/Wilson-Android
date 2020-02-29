@@ -94,10 +94,10 @@ public class SubscribeDialogFragment extends DialogFragment {
 
         View view = getActivity().getLayoutInflater().inflate(R.layout.agenda_subscribe_dialog, null);
 
-        note = view.findViewById(R.id.agenda_dialog_note);
-        registrationQuestionAnswer = view.findViewById(R.id.agenda_dialog_registration_question_answer);
-        registrationQuestion = view.findViewById(R.id.subscribe_agenda_question);
-        possibleAnswersView = view.findViewById(R.id.agenda_registration_question_options);
+        this.note = view.findViewById(R.id.agenda_dialog_note);
+        this.registrationQuestionAnswer = view.findViewById(R.id.agenda_dialog_registration_question_answer);
+        this.registrationQuestion = view.findViewById(R.id.subscribe_agenda_question);
+        this.possibleAnswersView = view.findViewById(R.id.agenda_registration_question_options);
 
         final AgendaItem item = this.activity.getAgendaItem();
 
