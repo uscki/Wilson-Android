@@ -1,14 +1,18 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
 import android.os.Bundle;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import org.joda.time.DateTime;
+
 import java.util.List;
 import java.util.Locale;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
@@ -44,6 +48,11 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
             holder.plannedDate.setText(dateTime.toString("EEEE dd MMMM YYYY HH:mm"));
         } else {
             holder.plannedDate.setVisibility(View.GONE);
+            if(item.getMyPreferences() != null) {
+                holder.mensen.setCompoundDrawablesWithIntrinsicBounds(R.drawable.account_multiple_subscribed, 0, 0, 0);
+            } else {
+                holder.mensen.setCompoundDrawablesWithIntrinsicBounds(R.drawable.account_multiple_backup, 0,0 ,0);
+            }
         }
 
         if (item.getMeeting().getLocation() == null || item.getMeeting().getLocation().isEmpty()) {
@@ -52,6 +61,7 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
             holder.where.setText(item.getMeeting().getLocation());
         }
         holder.mensen.setText(getMensenString(item));
+
         holder.status.setText(getStatusString(item));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {

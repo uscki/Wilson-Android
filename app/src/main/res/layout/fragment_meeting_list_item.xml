@@ -24,6 +24,7 @@
         android:drawableStart="@drawable/clock"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
+        style="@style/AppTheme.Text"
         android:text="@string/example_text"
         />
 
@@ -35,6 +36,7 @@
         android:drawableStart="@drawable/earth"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
+        style="@style/AppTheme.Text"
         android:text="@string/example_text" />
 
     <TextView
@@ -45,6 +47,7 @@
         android:drawableStart="@drawable/account_multiple"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
+        style="@style/AppTheme.Text"
         android:text="@string/example_text"
         />
 
@@ -56,6 +59,7 @@
         android:drawableStart="@drawable/check"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
+        style="@style/AppTheme.Text"
         android:text="@string/example_text"
         />
 
