@@ -1,0 +1,30 @@
+<!-- drawable/account_multiple.xml -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="24dp"
+    android:width="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:fillColor="@color/colorGreen" android:pathData="
+M8,
+13C5.67,
+13 1,
+14.17 1,
+16.5V19H15V16.5C15,
+14.17 10.33,
+13 8,
+13M8,
+11A3,
+3 0 0,
+0 11,
+8A3,
+3 0 0,
+0 8,
+5A3,
+3 0 0,
+0 5,
+8A3,
+3 0 0,
+0 8,
+11Z
+" />
+</vector>

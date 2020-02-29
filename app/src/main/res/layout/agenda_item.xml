@@ -39,46 +39,24 @@
         android:drawablePadding="5dp"
         android:gravity="center_vertical" />
 
-    <LinearLayout
-        android:id="@+id/agenda_item_participants_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/agenda_item_poster"
-        android:layout_below="@+id/agenda_item_when">
-
-        <TextView
+    <TextView
         android:id="@+id/agenda_item_deelnemers"
-        android:layout_width="0dp"
-            android:layout_weight="1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/agenda_item_poster"
         android:text="Medium Text"
+        android:layout_below="@+id/agenda_item_when"
         style="@style/AppTheme.Text"
         android:drawableStart="@drawable/account_multiple"
         android:drawablePadding="5dp"
         android:gravity="center_vertical" />
 
-        <ImageView
-            android:id="@+id/agenda_item_subscribed_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tint="@color/colorGreen"
-            tools:srcCompat="@drawable/check"
-            android:visibility="gone"/>
-
-        <ImageView
-            android:id="@+id/agenda_item_backuplist_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tint="@color/colorRed"
-            fresco:srcCompat="@drawable/ic_outline_hourglass_empty_24px"
-            android:visibility="gone"/>
-    </LinearLayout>
 
     <TextView
         android:id="@+id/registration_compulsory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/agenda_item_participants_container"
+        android:layout_below="@id/agenda_item_deelnemers"
         android:layout_toEndOf="@id/agenda_item_poster"
         style="@style/AppTheme.Text"
         android:drawableStart="@drawable/ic_outline_whatshot_24px"

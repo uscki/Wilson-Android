@@ -1,5 +1,6 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +54,15 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         holder.itemDeelnemers.setText(AgendaSubscribedHelper.getParticipantsSummary(holder.mView.getContext(), item));
 
         // TODO view allows showing registration status, but that information is not available in the simple agenda item
+        // TODO, below checks should use user subscribe status, not total count. Uncomment until available on model
+/*        Drawable participantIcon = holder.mView.getContext().getResources().getDrawable(R.drawable.account_multiple);
+        if(item.getTotalParticipants() > 0) {
+            participantIcon = holder.mView.getContext().getResources().getDrawable(R.drawable.account_multiple_subscribed);
+        } if (item.getTotalBackuplist() > 0) {
+            participantIcon = holder.mView.getContext().getResources().getDrawable(R.drawable.account_multiple_backup);
+        }
+        holder.itemDeelnemers.setCompoundDrawablesRelativeWithIntrinsicBounds(participantIcon, null, null, null);
+ */
 
         if(item.getLocation() == null || item.getLocation().isEmpty()) {
             holder.itemWhere.setVisibility(View.GONE);

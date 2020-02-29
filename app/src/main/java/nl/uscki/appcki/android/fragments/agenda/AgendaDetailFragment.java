@@ -1,6 +1,7 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -95,6 +96,14 @@ public class AgendaDetailFragment extends RefreshableFragment {
                     item.getBackupList().size());
         }
         this.participants.setText(participantsText);
+
+        int participationImg = R.drawable.account_multiple;
+        if(item.getUserParticipation() != null && item.getUserParticipation().isAttends()) {
+            participationImg = R.drawable.account_multiple_subscribed;
+        } else if (item.getUserParticipation() != null && item.getUserParticipation().isBackuplist()) {
+            participationImg = R.drawable.account_multiple_backup;
+        }
+        this.participants.setCompoundDrawablesWithIntrinsicBounds(participationImg, 0, 0, 0);
 
         if(item.getRegistrationrequired()) {
             if(item.getHasDeadline()) {
