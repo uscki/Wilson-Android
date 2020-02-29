@@ -2,20 +2,24 @@ package nl.uscki.appcki.android.fragments.meeting;
 
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.fragment.app.Fragment;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MeetingActivity;
 import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingParticipantAdapter;
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+import nl.uscki.appcki.android.generated.ListSectionHeader;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import nl.uscki.appcki.android.generated.meeting.Participation;
 import nl.uscki.appcki.android.generated.meeting.Preference;
@@ -83,22 +87,39 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
         return personWithNotes;
     }
 
-    private List<PersonWithNote> findNonAttendingPersons(MeetingItem item) {
-        List<PersonWithNote> personWithNotes = new ArrayList<>();
+    private List<IWilsonBaseItem> findNonAttendingPersons(MeetingItem item) {
+        List<IWilsonBaseItem> personWithNotes = new ArrayList<>();
+        List<IWilsonBaseItem> notResponded = new ArrayList<>();
 
-        for(Participation p : item.getParticipation()) {
-            if(item.getMeeting().getStartdate() != null) {
-                for(Preference pref : item.getMeeting().getActual_slot().getPreferences()) {
-                    if(pref.getPerson().equals(p.getPerson())) {
-
-                    }
-                }
-            } else {
-                //noinspection SuspiciousMethodCalls
-                if(!item.getEnrolledPersons().contains(p.getPerson())) {
+        for(Participation p : item.getParticipation()) {                    // all invited people
+            if(item.getMeeting().getStartdate() == null) {                  // Not yet planned
+                if(!item.getEnrolledPersons().contains(p.getPerson())) {    // filter non-responders
                     personWithNotes.add(new PersonWithNote(p.getPerson(), ""));
                 }
+            } else if (p.getPreferences().size() > 0) {                     // Meeting planned
+                boolean preferenceFound = false;
+                for(Preference pref : item.getMeeting().getActual_slot().getPreferences()) {
+                    if(pref.getPerson().equals(p.getPerson()) && !pref.getCanattend()) {
+                        personWithNotes.add(new PersonWithNote(pref.getPerson(), pref.getNotes()));
+                        preferenceFound = true;
+                        break;
+                    } else if (pref.getCanattend()) {
+                        preferenceFound = true;
+                    }
+                }
+                if(!preferenceFound) {
+                    // Assumption here is that if the participation exists, but not the preference, they didn't respond
+                    notResponded.add(new PersonWithNote(p.getPerson(), ""));
+                }
+            } else {
+                notResponded.add(new PersonWithNote(p.getPerson(), Integer.toString(p.getPreferences().size())));
             }
+        }
+
+        if(notResponded.size() > 0) {
+            ListSectionHeader h = new ListSectionHeader(getResources().getString(R.string.meeting_header_no_response));
+            personWithNotes.add(h);
+            personWithNotes.addAll(notResponded);
         }
 
         return personWithNotes;
