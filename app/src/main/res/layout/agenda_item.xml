@@ -2,21 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="4dp">
-
-    <TextView
-        android:id="@+id/agenda_item_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/example_text"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/agenda_item_poster"
-        android:textStyle="bold"
-        android:layout_marginTop="3dp"
-        style="@style/AppTheme.TextSubHeader" />
+    android:paddingBottom="4dp"
+    android:layout_marginEnd="@dimen/text_margin">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/agenda_item_poster"
@@ -28,8 +17,18 @@
         fresco:actualImageScaleType="fitCenter"/>
 
     <TextView
+        android:id="@+id/agenda_item_title"
+        style="@style/AppTheme.TextSubHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/agenda_item_poster"
+        android:text="@string/example_text" />
+
+    <TextView
         android:id="@+id/agenda_item_when"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Medium Text"
         android:layout_below="@+id/agenda_item_title"
@@ -41,7 +40,7 @@
 
     <TextView
         android:id="@+id/agenda_item_deelnemers"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/agenda_item_poster"
         android:text="Medium Text"
@@ -68,7 +67,7 @@
 
     <TextView
         android:id="@+id/agenda_item_comment_number"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/registration_compulsory"
         android:layout_toEndOf="@id/agenda_item_poster"
@@ -81,7 +80,7 @@
 
     <TextView
         android:id="@+id/agenda_item_waar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Medium Text"
         android:layout_below="@+id/agenda_item_comment_number"
@@ -95,7 +94,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/list_divider"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/agenda_item_waar"
+        android:layout_marginTop="@dimen/text_margin"
         android:layout_marginEnd="14dp"
         android:layout_marginRight="14dp"
         android:layout_marginStart="14dp"
