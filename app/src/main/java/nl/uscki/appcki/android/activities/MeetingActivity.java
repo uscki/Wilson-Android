@@ -2,18 +2,20 @@ package nl.uscki.appcki.android.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingDetailAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -23,12 +25,15 @@ import retrofit2.Response;
 public class MeetingActivity extends BasicActivity {
     public static final String PARAM_MEETING_ID = "nl.uscki.appcki.android.activities.param.MEETING_ID";
 
-    public MeetingItem item;
+    private int itemId;
+    private MeetingItem item;
     TabLayout tabLayout;
     ViewPager viewPager;
     Toolbar toolbar;
     ProgressBar loadingIndicator;
     private Menu menu;
+    private PlannerView currentView = PlannerView.UNINSTANTIATED;
+
 
     private Callback<MeetingItem> meetingCallback = new Callback<MeetingItem>() {
         @Override
@@ -37,24 +42,62 @@ public class MeetingActivity extends BasicActivity {
             tabLayout.setVisibility(View.VISIBLE);
 
             if(response.body() != null) {
-                item = response.body();
-
-                if (item.getMeeting().getStartdate() != null) {
-                    tabLayout.addTab(tabLayout.newTab().setText("Overzicht"));
-                    tabLayout.addTab(tabLayout.newTab().setText("Aanwezig"));
-                    tabLayout.addTab(tabLayout.newTab().setText("Afwezig"));
-                } else {
-                    tabLayout.addTab(tabLayout.newTab().setText("Planner"));
-                    tabLayout.addTab(tabLayout.newTab().setText("Gereageerd"));
-                    tabLayout.addTab(tabLayout.newTab().setText("Niet gereageerd"));
-                }
-
-                viewPager.setAdapter(new MeetingDetailAdapter(getSupportFragmentManager(), item));
+                setMeetingItem(response.body());
+                populateTabLayout();
+                setExportButtons();
             } else {
                 //// TODO: 11/24/16 error handling
             }
         }
     };
+
+    private void populateTabLayout() {
+        if(this.item == null) return;
+
+        boolean noResetRequired = this.getMeetingItem().getMeeting().getStartdate() != null &&
+                this.currentView == PlannerView.PLANNED;
+        noResetRequired |= (this.getMeetingItem().getMeeting().getStartdate() == null &&
+                this.currentView.equals(PlannerView.UNPLANNED));
+
+        if(noResetRequired) {
+            // Correct tabs are already loaded for this view. Resetting adapter would also
+            // unnecessarily reset current tab
+            return;
+        }
+
+        tabLayout.removeAllTabs();
+        if (this.item.getMeeting().getStartdate() != null) {
+            this.currentView = PlannerView.PLANNED;
+            tabLayout.addTab(tabLayout.newTab().setText(getText(R.string.meeting_header_overview)));
+            tabLayout.addTab(tabLayout.newTab().setText(getText(R.string.meeting_header_present)));
+            tabLayout.addTab(tabLayout.newTab().setText(getText(R.string.meeting_header_absent)));
+        } else {
+            this.currentView = PlannerView.UNPLANNED;
+            tabLayout.addTab(tabLayout.newTab().setText(getText(R.string.meeting_header_planner_view)));
+            tabLayout.addTab(tabLayout.newTab().setText(getText(R.string.meeting_header_responded)));
+            tabLayout.addTab(tabLayout.newTab().setText(getText(R.string.meeting_header_no_response)));
+        }
+        viewPager.setAdapter(new MeetingDetailAdapter(getSupportFragmentManager(), this.currentView));
+    }
+
+    public MeetingItem getMeetingItem() {
+        return this.item;
+    }
+
+    public void setMeetingItem(MeetingItem item) {
+        this.item = item;
+        this.itemId = item.getId();
+        EventBus.getDefault().post(new DetailItemUpdatedEvent<>(item));
+    }
+
+    public void refreshMeetingItem() {
+        int id = this.item == null ? this.itemId : this.item.getId();
+        if(id >= 0) {
+            Services.getInstance().meetingService.get(id).enqueue(meetingCallback);
+        } else {
+            Log.e(getClass().getSimpleName(), "Requested meeting item refresh, but ID not present");
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +126,12 @@ public class MeetingActivity extends BasicActivity {
 
         if (getIntent().getIntExtra(PARAM_MEETING_ID, -1) != -1) {
             // this happens on receiving a notification from the server or when opening this activity
-            Services.getInstance().meetingService.get(getIntent().getIntExtra(PARAM_MEETING_ID, -1)).enqueue(meetingCallback);
+            this.itemId = getIntent().getIntExtra(PARAM_MEETING_ID, -1);
+            refreshMeetingItem();
         }
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
@@ -169,5 +213,11 @@ public class MeetingActivity extends BasicActivity {
             menu.findItem(R.id.action_meeting_export).setVisible(true);
             menu.findItem(R.id.action_remove_meeting_from_calendar).setVisible(false);
         }
+    }
+
+    public static enum PlannerView {
+        UNPLANNED,
+        PLANNED,
+        UNINSTANTIATED
     }
 }

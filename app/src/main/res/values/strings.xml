@@ -5,6 +5,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Instellingen</string>
+    <string name="action_preferences">Voorkeuren</string>
+    <string name="action_close">Sluiten</string>
     <string name="action_roephoek_roep">Roep</string>
     <string name="action_agenda_subscribe">Deelnemen</string>
     <string name="action_agenda_unsubscribe">Uitschrijven</string>
@@ -15,19 +17,21 @@
     <string name="prompt_password">Wachtwoord</string>
     <string name="action_sign_in">Inloggen</string>
     <string name="action_sign_in_short">Log in</string>
-    <string name="error_invalid_username">This username address is invalid</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_username">Deze gebruikersnaam is neit geldig</string>
+    <string name="error_incorrect_password">Dit wachtwoord is niet geldig</string>
+    <string name="error_field_required">Dit veld is verplicht</string>
 
     <string name="login_request">nl.uscki.appcki.android.LOGIN_REQUEST</string>
-    <string name="logout">Logout</string>
-    <string name="login">Login</string>
+    <string name="logout">Uitloggen</string>
+    <string name="login">Inloggen</string>
 
     <string name="notloggedin">Je bent niet ingelogd.</string>
     <string name="noaccess">Je hebt geen toegang tot deze content.</string>
     <string name="agenda_subscribe_bad_request_error">Er is iets fout gegaan met je inschrijving. Open dit evenement in de app, en probeer het vanuit daar nogmaals.</string>
     <string name="content_loading_error">Er ging iets fout bij het laden van de content.</string>
     <string name="unknown_server_error">Er is een onbekende fout opgetreden op de server. Probeer het later nog eens.</string>
+    <string name="error_user_not_found">Deze gebruiker kon niet worden gevonden.</string>
+    <string name="error_login_failed">Inloggen mislukt.</string>
 
     <string name="agenda_inschrijven">Inschrijven</string>
     <string name="agenda_uitschrijven">Uitschrijven</string>
@@ -53,6 +57,7 @@
     <string name="agenda_toast_added_to_calendar">Evenement is toegevoegd aan agenda</string>
     <string name="agenda_toast_removed_from_calendar">Evenement is verwijderd uit agenda</string>
     <string name="agenda_subscribe_confirmed">Je bent ingeschreven voor deze activiteit</string>
+    <string name="agenda_subscribe_changed">Je inschrijving is gewijzigd</string>
     <string name="agenda_unsubscribe_confirmed">Je bent uitgeschreven voor deze activiteit</string>
     <string name="agenda_subscribe_failed">Er ging iets fout. Je inschrijving is niet behandelt!</string>
     <string name="agenda_unsubscribe_failed">Er ging iets fout. Je bent nog steeds ingeschreven!</string>
@@ -62,6 +67,11 @@
     <string name="agenda_item_n_registration_plus_backup">%d + %d (max %d)</string>
 
     <string name="agenda_inschrijven_verplicht">Inschrijven verplicht</string>
+    <string name="agenda_registration_required_before">Inschrijving verplicht vóór %s</string>
+    <string name="agenda_registration_required_passed">Inschrijfdeadline was %s</string>
+    <string name="agenda_n_participants">%d deelnemers</string>
+    <string name="agenda_n_participants_max">%d van maximaal %d inschrijvingen</string>
+    <string name="agenda_n_participants_backup">%d van maximaal %d inschrijvingen (%d op wachtlijst)</string>
     <string name="agenda_archive_menu_string">Archief</string>
     <string name="vote_imperative">Stemmen</string>
     <string name="action_agenda_export">Opslaan</string>
@@ -73,19 +83,35 @@
 
     <string name="example_text">Example text</string>
 
+    <string name="meeting_header_overview">Overzicht</string>
+    <string name="meeting_header_present">Aanwezig</string>
+    <string name="meeting_header_absent">Afwezig</string>
+    <string name="meeting_header_planner_view">Planner</string>
+    <string name="meeting_header_responded">Gerageerd</string>
+    <string name="meeting_header_no_response">Geen reactie</string>
     <string name="meeting_detail_notes">Opmerkingen:</string>
     <string name="meeting_detail_plannotes">Opmerkingen bij het plannen:</string>
     <string name="meeting_detail_agenda">Agenda:</string>
     <string name="meeting_no_new_meetings">Er zijn geen actieve vergaderplanners.</string>
+    <string name="meeting_slot_preference_dialog_header">Voorkeuren</string>
+    <string name="meeting_slot_preference_dialog_available">Beschikbaar</string>
+    <string name="meeting_slot_preference_dialog_unavailable">Niet beschikbaar</string>
 
     <!-- error handling -->
     <string name="connection_error">Er ging iets fout tijdens het verbinden met de server!</string>
 
-    <string name="agenda_confirm_unsubscribe_message">Weet je zeker dat je je wil uitschrijven?</string>
+    <string name="agenda_confirm_unsubscribe_header">Uitschrijven bevestigen</string>
+    <string name="agenda_confirm_unsubscribe_message"></string>
+    <string name="agenda_confirm_unsubscribe_backuplist">Weet je zeker dat je je wil uitschrijven? Als je je nu uitschrijft kun je je mogelijk niet langer inschrijven. Er zijn al %d van de maximale %d inschrijvingen</string>
+    <string name="agenda_confirm_unsubscribe_deadline">Weet je zeker dat je je wil uitschrijven? Als je je nu uitschrijft kun je je niet meer inschrijven, omdat de inschrijfdeadline is verlopen</string>
     <string name="agenda_confirm_unsubscribe_positive">Uitschrijven!</string>
-    <string name="agenda_unsubscribe_deadline_past">De deadline om je te kunnen uitschrijven is verstreken</string>
-    <string name="agenda_prepublished_event_registration_closed">De inschrijving voor dit evenement wordt op een later tijdstip geopend</string>
-    <string name="agenda_prepublished_event_registration_closed_short_message">Inschrijving opent later</string>
+    <string name="agenda_subscribe_deadline_passed">De inschrijfdeadline is verstreken. Inschrijving kan niet meer worden aangepast</string>
+    <string name="agenda_event_started">Inschrijving mag niet meer worden gewijzigd, omdat dit evenement al gestart is.</string>
+    <string name="agenda_unsubscribe_deadline_passed">De deadline om je te kunnen uitschrijven is verstreken</string>
+    <string name="agenda_prepublished_event_registration_opens_later">De inschrijving voor dit evenement wordt op een later tijdstip geopend</string>
+    <string name="agenda_prepublished_event_registration_opens_later_short_message">Inschrijving opent later</string>
+    <string name="agenda_event_registration_closed">Inschrijven niet meer mogelijk</string>
+    <string name="agenda_event_register_deadline_passed_date">Inschrijven niet meer mogelijk. Deadline was %s</string>
     <string name="agenda_participants_list_empty">Nog geen deelnemers voor dit evenement</string>
 
     <string name="person_not_display_online_msg">Deze persoon kan niet worden opgeslagen vanwege zijn of haar privacy instellingen</string>

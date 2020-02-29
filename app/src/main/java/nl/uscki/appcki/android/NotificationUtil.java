@@ -13,8 +13,8 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.RequiresApi;
+
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessaging;

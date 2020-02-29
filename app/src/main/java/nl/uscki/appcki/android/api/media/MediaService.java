@@ -12,6 +12,7 @@ import retrofit2.http.Query;
  */
 public interface MediaService {
     @GET("media/get")
+    @Deprecated
     Call<MediaFile> get(@Query("id") Integer id);
 
     @GET("media/file/{id}/{size}")

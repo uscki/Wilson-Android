@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -10,11 +10,11 @@
     tools:context="nl.uscki.appcki.android.activities.SmoboActivity"
     tools:showIn="@layout/activity_smobo">
 
-    <android.support.v7.widget.LinearLayoutCompat
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_view_media"
             android:layout_gravity="top"
@@ -38,7 +38,7 @@
                     android:textSize="16sp" />
 
                 <!-- focusable might break clicking? -->
-                <android.support.v17.leanback.widget.HorizontalGridView
+                <androidx.leanback.widget.HorizontalGridView
                     android:id="@+id/smobo_media_gridview"
                     android:layout_below="@id/smobo_media_text"
                     android:layout_marginStart="@dimen/text_margin"
@@ -48,9 +48,9 @@
                     android:focusable="false"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
             </RelativeLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_view_contact_info"
             android:layout_gravity="center_vertical"
@@ -171,9 +171,9 @@
 
             </RelativeLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_view_groups"
             android:layout_gravity="center_vertical"
@@ -202,7 +202,7 @@
                     android:textColor="@color/colorAccent"
                     android:textSize="16sp" />
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/smobo_groups"
                     android:layout_below="@id/smobo_groups_text"
                     android:layout_marginStart="@dimen/text_margin"
@@ -211,6 +211,6 @@
                     android:layout_height="wrap_content"
                     app:layoutManager="LinearLayoutManager" />
             </RelativeLayout>
-        </android.support.v7.widget.CardView>
-    </android.support.v7.widget.LinearLayoutCompat>
-</android.support.v4.widget.NestedScrollView>
+        </androidx.cardview.widget.CardView>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.core.widget.NestedScrollView>

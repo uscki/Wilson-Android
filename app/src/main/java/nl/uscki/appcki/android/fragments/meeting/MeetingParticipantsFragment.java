@@ -2,27 +2,25 @@ package nl.uscki.appcki.android.fragments.meeting;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.uscki.appcki.android.api.Callback;
-import nl.uscki.appcki.android.api.Services;
+import de.greenrobot.event.EventBus;
+import nl.uscki.appcki.android.activities.MeetingActivity;
+import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingParticipantAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 import nl.uscki.appcki.android.generated.meeting.Participation;
 import nl.uscki.appcki.android.generated.meeting.Preference;
-import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
+import nl.uscki.appcki.android.generated.organisation.PersonName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,16 +36,25 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            Gson gson = new Gson();
-            item = gson.fromJson(getArguments().getString("item"), MeetingItem.class);
-            aanwezig = getArguments().getBoolean("aanwezig");
+        setAdapter(new MeetingParticipantAdapter(new ArrayList<PersonWithNote>()));
+        MeetingActivity meetingActivity = (MeetingActivity) getActivity();
+        if(getArguments() != null) {
+            this.aanwezig = getArguments().getBoolean("aanwezig");
+        }
 
+        if(meetingActivity != null && meetingActivity.getMeetingItem() != null) {
+            updateView(meetingActivity.getMeetingItem());
+        }
+    }
+
+    private void updateView(MeetingItem item) {
+        // Test if present
+
+        if (getAdapter() instanceof MeetingParticipantAdapter) {
             if (aanwezig) {
-                setAdapter(new MeetingParticipantAdapter(findAttendingPersons(item)));
-                Log.d("MeetingParticipants", ""+aanwezig);
+                getAdapter().update(findAttendingPersons(item));
             } else {
-                setAdapter(new MeetingParticipantAdapter(findNonAttendingPersons(item)));
+                getAdapter().update(findNonAttendingPersons(item));
             }
         }
     }
@@ -66,7 +73,7 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
                 personWithNotes.add(new PersonWithNote(p.getPerson(), p.getNotes()));
             }
         } else {
-            for (PersonSimpleName person : item.getEnrolledPersons()) {
+            for (PersonName person : item.getEnrolledPersons()) {
                 personWithNotes.add(new PersonWithNote(person, ""));
             }
         }
@@ -99,19 +106,30 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().meetingService.get(item.getMeeting().getId()).enqueue(new Callback<MeetingItem>() {
-            @Override
-            public void onSucces(Response<MeetingItem> response) {
-                swipeContainer.setRefreshing(false);
-                if (getAdapter() instanceof MeetingParticipantAdapter) {
-                    MeetingItem item = response.body();
-                    if (aanwezig) {
-                        getAdapter().update(findAttendingPersons(item));
-                    } else {
-                        getAdapter().update(findNonAttendingPersons(item));
-                    }
-                }
-            }
-        });
+        MeetingActivity activity = (MeetingActivity) getActivity();
+        if(activity != null) {
+            activity.refreshMeetingItem();
+        } else {
+            Log.e(getClass().getSimpleName(), "Activity refresh could not be performed!");
+            swipeContainer.setRefreshing(false);
+        }
+    }
+
+    public void onEventMainThread(DetailItemUpdatedEvent<MeetingItem> event) {
+        swipeContainer.setRefreshing(false);
+        this.item = event.getUpdatedItem();
+        updateView(event.getUpdatedItem());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
     }
 }

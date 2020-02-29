@@ -1,9 +1,9 @@
 package nl.uscki.appcki.android.fragments.meeting.adapter;
 
 
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +72,7 @@ public class MeetingPreferenceDayAdapter extends RecyclerView.Adapter<MeetingPre
             super(view);
             this.mView = view;
             this.date = (TextView) view.findViewById(R.id.meeting_preference_day_text);
-            this.slots = (RecyclerView) view.findViewById(R.id.list);
+            this.slots = (RecyclerView) view.findViewById(R.id.planner_list);
             this.collapse = (ImageView) view.findViewById(R.id.meeting_preference_collapse);
         }
     }

@@ -2,20 +2,20 @@ package nl.uscki.appcki.android.fragments.agenda;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import androidx.recyclerview.widget.RecyclerView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import java.util.ArrayList;
+import java.util.Locale;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
-import nl.uscki.appcki.android.events.AgendaItemUpdatedEvent;
+import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.ListSectionHeader;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
@@ -25,10 +25,7 @@ import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
  * A fragment representing a list of AgendaParticipants.
  */
 public class AgendaDeelnemersFragment extends RefreshableFragment {
-    @BindView(R.id.empty_text)
     TextView emptyText;
-
-    @BindView(R.id.recyclerView)
     RecyclerView participantList;
 
     private AgendaActivity activity;
@@ -37,7 +34,11 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
         if (getAdapter() instanceof AgendaDeelnemersAdapter) {
             getAdapter().update(item.getParticipants());
             if(item.getBackupList().size() > 0) {
-                ListSectionHeader seperatingHeader = new ListSectionHeader(getString(R.string.agenda_participants_backup_list));
+                ListSectionHeader seperatingHeader = new ListSectionHeader(String.format(
+                        Locale.getDefault(),
+                        "%s (%d)",
+                        getString(R.string.agenda_participants_backup_list),
+                        item.getBackupList().size()));
                 seperatingHeader.setHelpText(getString(R.string.agenda_participants_backup_list_help));
                 getAdapter().add(seperatingHeader);
                 getAdapter().addItems(item.getBackupList());
@@ -45,7 +46,7 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
         }
         if(emptyText != null && participantList != null) {
             if (item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
-                emptyText.setText(getString(R.string.agenda_prepublished_event_registration_closed));
+                emptyText.setText(getString(R.string.agenda_prepublished_event_registration_opens_later));
                 emptyText.setVisibility(View.VISIBLE);
                 participantList.setVisibility(View.GONE);
             } else if (item.getParticipants().isEmpty()) {
@@ -69,7 +70,9 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
                              Bundle savedInstanceState) {
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, view);
+
+        emptyText = view.findViewById(R.id.empty_text);
+        participantList = view.findViewById(R.id.recyclerView);
 
         return view;
     }
@@ -91,7 +94,7 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
     }
 
     // EVENT HANDLING
-    public void onEventMainThread(AgendaItemUpdatedEvent event) {
+    public void onEventMainThread(DetailItemUpdatedEvent<AgendaItem> event) {
         swipeContainer.setRefreshing(false);
         if(getAdapter() instanceof AgendaDeelnemersAdapter) {
             setupParticipantList(activity.getAgendaItem());

@@ -1,8 +1,6 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -14,11 +12,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.facebook.drawee.view.SimpleDraweeView;
+
 import java.util.ArrayList;
 import java.util.List;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.activities.AgendaActivity;
@@ -144,37 +146,30 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
         public Comment comment;
         public CommentsAdapter adapter;
 
-        @BindView(R.id.comment_person_photo)
         public SimpleDraweeView commenterPhoto;
-
-        @BindView(R.id.comment_placer_name)
         public TextView commenterName;
-
-        @BindView(R.id.verified_announcement_view)
         ImageView showIsAnnouncementView;
-
-        @BindView(R.id.comment_reply_button)
         public ImageButton replyButton;
-
-        @BindView(R.id.comment_content)
         BBTextView commentContent;
-
-        @BindView(R.id.comment_replies)
         RecyclerView replies;
-
-        @BindView(R.id.comment_reply_row)
         TableRow replyRow;
-
-        @BindView(R.id.place_comment_button)
         ImageButton postCommentButton;
-
-        @BindView(R.id.comment_edit_text)
         EditText actualCommentText;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
-            ButterKnife.bind(this, itemView);
+
+            actualCommentText = itemView.findViewById(R.id.comment_edit_text);
+            postCommentButton = itemView.findViewById(R.id.place_comment_button);
+            replyRow = itemView.findViewById(R.id.comment_reply_row);
+            replies = itemView.findViewById(R.id.comment_replies);
+            commentContent = itemView.findViewById(R.id.comment_content);
+            replyButton = itemView.findViewById(R.id.comment_reply_button);
+            showIsAnnouncementView = itemView.findViewById(R.id.verified_announcement_view);
+            commenterName = itemView.findViewById(R.id.comment_placer_name);
+            commenterPhoto = itemView.findViewById(R.id.comment_person_photo);
+
             if(adapter != null) {
                 adapter.clear();
             }

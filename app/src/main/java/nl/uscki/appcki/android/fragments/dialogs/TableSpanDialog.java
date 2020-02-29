@@ -1,22 +1,22 @@
 package nl.uscki.appcki.android.fragments.dialogs;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
+import androidx.fragment.app.DialogFragment;
+
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
@@ -27,7 +27,7 @@ import nl.uscki.appcki.android.views.BBTextView;
  * Created by peter on 4/5/17.
  */
 
-public class TableSpanDialog extends android.support.v4.app.DialogFragment {
+public class TableSpanDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

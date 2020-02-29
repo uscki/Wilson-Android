@@ -12,8 +12,20 @@ public class AgendaSubscribedHelper {
     public static final int AGENDA_SUBSCRIBED = 1;
     public static final int AGENDA_ON_BACKUP_LIST = 2;
 
+    public static int isSubscribed(AgendaItem item) {
+        int status = AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED;
+        if(item.getUserParticipation() != null) {
+            status = item.getUserParticipation().isAttends() ?
+                    AgendaSubscribedHelper.AGENDA_SUBSCRIBED :
+                    item.getUserParticipation().isBackuplist() ?
+                            AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST :
+                            AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED;
+        }
+        return status;
+    }
+
     public static int isSubscribed(AgendaParticipantLists lists) {
-        int myId = UserHelper.getInstance().getPerson().getId();
+        int myId = UserHelper.getInstance().getCurrentUser().getId();
 
         for(int i = 0; i < lists.getParticipants().size(); i++) {
             if(lists.getParticipants().get(i).getPerson().getId().equals(myId)) {
@@ -28,14 +40,6 @@ public class AgendaSubscribedHelper {
         }
 
         return AGENDA_NOT_SUBSCRIBED;
-
-    }
-
-    public static int isSubscribed(AgendaItem item) {
-        AgendaParticipantLists lists = new AgendaParticipantLists();
-        lists.setParticipants(item.getParticipants());
-        lists.setBackupList(item.getBackupList());
-        return isSubscribed(lists);
     }
 
     public static String getWhen(SimpleAgendaItem item) {
@@ -60,7 +64,7 @@ public class AgendaSubscribedHelper {
         if(item.getMaxregistrations() == null) {
             participantsSummary = context.getString(R.string.agenda_item_n_registrations, item.getTotalParticipants());
         } else if(item.getMaxregistrations().equals(0)) {
-            participantsSummary = context.getString(R.string.agenda_prepublished_event_registration_closed_short_message);
+            participantsSummary = context.getString(R.string.agenda_prepublished_event_registration_opens_later_short_message);
         } else if(item.getTotalBackuplist() > 0) {
             participantsSummary = context.getString(
                     R.string.agenda_item_n_registration_plus_backup,

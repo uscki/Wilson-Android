@@ -2,42 +2,22 @@ package nl.uscki.appcki.android.fragments.shop;
 
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.api.Callback;
-import nl.uscki.appcki.android.api.MediaAPI;
-import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
-import nl.uscki.appcki.android.generated.shop.Product;
-import nl.uscki.appcki.android.generated.shop.Store;
-import nl.uscki.appcki.android.helpers.UserHelper;
-import retrofit2.Response;
-
-import android.widget.TextView;
-import com.facebook.drawee.view.SimpleDraweeView;
-import java.util.List;
-import java.util.Locale;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
@@ -132,21 +112,21 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
 
-        @BindView(R.id.product_name)
         TextView name;
-        @BindView(R.id.product_image)
         SimpleDraweeView image;
-        @BindView(R.id.product_stock)
         TextView stock;
-        @BindView(R.id.product_order)
         FloatingActionButton product_order;
-        @BindView(R.id.priceText)
         TextView price;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            ButterKnife.bind(this, view);
+
+            name = view.findViewById(R.id.product_name);
+            image = view.findViewById(R.id.product_image);
+            stock = view.findViewById(R.id.product_stock);
+            product_order = view.findViewById(R.id.product_order);
+            price = view.findViewById(R.id.priceText);
         }
     }
 }

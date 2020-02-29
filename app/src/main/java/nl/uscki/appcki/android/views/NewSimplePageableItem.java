@@ -1,35 +1,33 @@
 package nl.uscki.appcki.android.views;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.models.ActionResponse;
-import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
 public abstract class NewSimplePageableItem<T extends ActionResponse> extends NewPageableItem<T> {
-    @BindView(R.id.quoteTextInput)
     EditText singleInput;
-
-    @BindView(R.id.confirmNewQuoteButton)
     ImageButton confirmPostInput;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_new_pageable_item_single_input, container, false);
-        ButterKnife.bind(this, view);
+
+        singleInput = view.findViewById(R.id.quoteTextInput);
+        confirmPostInput = view.findViewById(R.id.confirmNewQuoteButton);
+
         singleInput.setHint(getHint());
         return view;
     }

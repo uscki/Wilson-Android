@@ -7,14 +7,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
 import android.util.Log;
-
-import java.util.prefs.Preferences;
 
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.generated.meeting.Preference;
 
 public class PermissionHelper {
 
