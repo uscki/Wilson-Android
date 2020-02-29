@@ -21,7 +21,7 @@ public class AgendaDetailAdapter extends FragmentStatePagerAdapter {
     private AgendaCommentsFragment comments;
 
     public AgendaDetailAdapter(FragmentManager fm, int agendaID) {
-        super(fm);
+        super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
         details = new AgendaDetailFragment();
         participants = new AgendaDeelnemersFragment();
@@ -35,11 +35,11 @@ public class AgendaDetailAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         // TODO probably do some state check with resumed and stuff
         switch (position) {
-            case AgendaDetailTabsFragment.AGENDA:
+            case AgendaDetailAdapter.AGENDA_DETAILS_TAB_POSITION:
                 return details;
-            case AgendaDetailTabsFragment.DEELNEMERS:
+            case AgendaDetailAdapter.AGENDA_PARTICIPANTS_TAB_POSITION:
                 return participants;
-            case AgendaDetailTabsFragment.COMMENTS:
+            case AgendaDetailAdapter.AGENDA_COMMENTS_TAB_POSITION:
                 return comments;
         }
 

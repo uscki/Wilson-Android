@@ -6,13 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import androidx.fragment.app.Fragment;
 import android.os.IBinder;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.appcompat.widget.AppCompatDrawableManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.fragment.app.Fragment;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -152,7 +152,6 @@ public class Utils {
             case QUOTE_OVERVIEW:
                 return QuoteFragment.class;
             case POLL_DETAIL:
-                return PollResultFragment.class;
             case POLL_ACTIVE:
                 return PollResultFragment.class;
             case SMOBO_SEARCH:

@@ -40,7 +40,6 @@ import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.ServerErrorEvent;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailAdapter;
-import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.agenda.SubscribeDialogFragment;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
@@ -105,8 +104,8 @@ public class AgendaActivity extends BasicActivity {
 
     private void updateTabTitleCounts() {
         if(this.item != null) {
-            updateTabTitleCount(AgendaDetailTabsFragment.DEELNEMERS, R.string.tab_agenda_participants, this.item.getParticipants().size());
-            updateTabTitleCount(AgendaDetailTabsFragment.COMMENTS, R.string.comments, this.item.getTotalComments());
+            updateTabTitleCount(AgendaDetailAdapter.AGENDA_PARTICIPANTS_TAB_POSITION, R.string.tab_agenda_participants, this.item.getParticipants().size());
+            updateTabTitleCount(AgendaDetailAdapter.AGENDA_COMMENTS_TAB_POSITION, R.string.comments, this.item.getTotalComments());
         }
     }
 

@@ -17,7 +17,6 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <receiver android:name=".helpers.AlarmReceiver" />
         <receiver android:name=".services.OnetimeAlarmReceiver" />
 
         <activity
