@@ -73,8 +73,11 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
     private List<PersonWithNote> findAttendingPersons(MeetingItem item) {
         List<PersonWithNote> personWithNotes = new ArrayList<>();
         if(item.getMeeting().getStartdate() != null) {
+            // Meeting is planned
             for(Preference p : item.getMeeting().getActual_slot().getPreferences()) {
-                personWithNotes.add(new PersonWithNote(p.getPerson(), p.getNotes()));
+                if(p.getCanattend()) {
+                    personWithNotes.add(new PersonWithNote(p.getPerson(), p.getNotes()));
+                }
             }
         } else {
             for (PersonName person : item.getEnrolledPersons()) {
@@ -112,7 +115,7 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
                     notResponded.add(new PersonWithNote(p.getPerson(), ""));
                 }
             } else {
-                notResponded.add(new PersonWithNote(p.getPerson(), Integer.toString(p.getPreferences().size())));
+                notResponded.add(new PersonWithNote(p.getPerson(), ""));
             }
         }
 

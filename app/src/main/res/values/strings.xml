@@ -83,6 +83,9 @@
 
     <string name="example_text">Example text</string>
 
+    <string name="meeting_planned">Vergadering gepland</string>
+    <string name="meeting_response_MISSING">Je hebt nog niet gereageerd</string>
+    <string name="meeting_response_OK">Deze vergadering is nog niet gepland</string>
     <string name="meeting_header_overview">Overzicht</string>
     <string name="meeting_header_present">Aanwezig</string>
     <string name="meeting_header_absent">Afwezig</string>

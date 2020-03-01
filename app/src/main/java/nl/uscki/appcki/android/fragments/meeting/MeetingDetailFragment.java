@@ -82,10 +82,7 @@ public class MeetingDetailFragment extends RefreshableFragment {
             where.setText(item.getMeeting().getLocation());
         }
         mensen.setText(getMensenString(item));
-        if(item.getMyPreferences() != null) {
-            // Yay, active user has responded (awkward detail: Responded is true as soon as opened. This should not happen?)
-            this.mensen.setCompoundDrawablesWithIntrinsicBounds(R.drawable.account_multiple_subscribed, 0, 0, 0);
-        }
+        this.mensen.setCompoundDrawablesWithIntrinsicBounds(item.getResponseStatus().getResponseStatusPeopleIcon(), 0, 0, 0);
 
         if (item.getMeeting().getNotes() != null && !item.getMeeting().getNotes().isEmpty()) {
             notes.setText(item.getMeeting().getNotes().trim());
