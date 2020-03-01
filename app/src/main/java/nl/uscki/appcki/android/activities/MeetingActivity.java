@@ -2,14 +2,16 @@ package nl.uscki.appcki.android.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
@@ -18,6 +20,7 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.meeting.adapter.MeetingDetailAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
+import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 import retrofit2.Response;
@@ -203,12 +206,14 @@ public class MeetingActivity extends BasicActivity {
         try {
             calendarEventItemId = CalendarHelper.getInstance().getEventIdForItemIfExists(item);
         } catch(SecurityException e) {
-            return;
+            calendarEventItemId = -1;
         }
 
         if(calendarEventItemId > 0) {
             menu.findItem(R.id.action_meeting_export).setVisible(false);
-            menu.findItem(R.id.action_remove_meeting_from_calendar).setVisible(true);
+            if(PermissionHelper.canDeleteCalendar()) {
+                menu.findItem(R.id.action_remove_meeting_from_calendar).setVisible(true);
+            }
         } else {
             menu.findItem(R.id.action_meeting_export).setVisible(true);
             menu.findItem(R.id.action_remove_meeting_from_calendar).setVisible(false);

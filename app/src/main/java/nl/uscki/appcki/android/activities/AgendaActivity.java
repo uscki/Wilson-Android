@@ -365,7 +365,6 @@ public class AgendaActivity extends BasicActivity {
             menu.findItem(R.id.action_agenda_export).setVisible(false);
             if (PermissionHelper.canDeleteCalendar()) {
                 menu.findItem(R.id.action_remove_from_calendar).setVisible(true);
-
             }
         } else {
             menu.findItem(R.id.action_remove_from_calendar).setVisible(false);
@@ -599,7 +598,6 @@ public class AgendaActivity extends BasicActivity {
         setExportButtons();
         Toast.makeText(this, R.string.agenda_toast_added_to_calendar ,Toast.LENGTH_SHORT)
                 .show();
-        Toast.makeText(this, R.string.agenda_toast_added_to_calendar, Toast.LENGTH_SHORT).show();
     }
 
     private void removeFromCalendar() {
