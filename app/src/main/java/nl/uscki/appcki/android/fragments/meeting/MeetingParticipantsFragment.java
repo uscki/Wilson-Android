@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
@@ -30,8 +32,9 @@ import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
  * A simple {@link Fragment} subclass.
  */
 public class MeetingParticipantsFragment extends RefreshableFragment {
-    MeetingItem item;
     boolean aanwezig;
+    private TextView emptyText;
+    private NestedScrollView emptyTextScrollView;
 
     public MeetingParticipantsFragment() {
         // Required empty public constructor
@@ -41,13 +44,8 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setAdapter(new MeetingParticipantAdapter(new ArrayList<PersonWithNote>()));
-        MeetingActivity meetingActivity = (MeetingActivity) getActivity();
         if(getArguments() != null) {
             this.aanwezig = getArguments().getBoolean("aanwezig");
-        }
-
-        if(meetingActivity != null && meetingActivity.getMeetingItem() != null) {
-            updateView(meetingActivity.getMeetingItem());
         }
     }
 
@@ -61,13 +59,37 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
                 getAdapter().update(findNonAttendingPersons(item));
             }
         }
+
+        if(getAdapter().getItemCount() == 0) {
+            this.emptyTextScrollView.setVisibility(View.VISIBLE);
+            this.emptyText.setText(getEmptyText(item));
+        } else {
+            this.emptyTextScrollView.setVisibility(View.GONE);
+        }
     }
+
+    private int getEmptyText(MeetingItem item) {
+        if(item.getMeeting().getStartdate() == null) {
+            // Not yet planned
+            return this.aanwezig ? R.string.meeting_participant_empty_responded : R.string.meeting_participant_empty_not_responded;
+        } else {
+            return this.aanwezig ? R.string.meeting_participant_empty_available : R.string.meeting_participant_empty_unavailable;
+        }
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        this.emptyTextScrollView = view.findViewById(R.id.empty_text_scrollview);
+        this.emptyText = view.findViewById(R.id.empty_text);
+        MeetingActivity meetingActivity = (MeetingActivity) getActivity();
+        if(meetingActivity != null && meetingActivity.getMeetingItem() != null) {
+            updateView(meetingActivity.getMeetingItem());
+        }
+        return view;
     }
 
     private List<PersonWithNote> findAttendingPersons(MeetingItem item) {
@@ -141,7 +163,6 @@ public class MeetingParticipantsFragment extends RefreshableFragment {
 
     public void onEventMainThread(DetailItemUpdatedEvent<MeetingItem> event) {
         swipeContainer.setRefreshing(false);
-        this.item = event.getUpdatedItem();
         updateView(event.getUpdatedItem());
     }
 

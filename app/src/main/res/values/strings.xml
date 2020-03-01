@@ -99,6 +99,10 @@
     <string name="meeting_slot_preference_dialog_header">Voorkeuren</string>
     <string name="meeting_slot_preference_dialog_available">Beschikbaar</string>
     <string name="meeting_slot_preference_dialog_unavailable">Niet beschikbaar</string>
+    <string name="meeting_participant_empty_responded">Nog niemand heeft gereagerd</string>
+    <string name="meeting_participant_empty_not_responded">Iedereen heeft gereageerd</string>
+    <string name="meeting_participant_empty_available">Niemand is beschikbaar</string>
+    <string name="meeting_participant_empty_unavailable">Iedereen is beschikbaar</string>
 
     <!-- error handling -->
     <string name="connection_error">Er ging iets fout tijdens het verbinden met de server!</string>
