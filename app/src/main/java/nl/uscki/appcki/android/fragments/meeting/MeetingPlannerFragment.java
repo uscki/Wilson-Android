@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +27,8 @@ import nl.uscki.appcki.android.generated.meeting.MeetingItem;
 public class MeetingPlannerFragment extends Fragment {
 
     RecyclerView recyclerView;
+    CardView notesCard;
+    TextView notesText;
 
     private MeetingItem item;
 
@@ -40,6 +44,8 @@ public class MeetingPlannerFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_meeting_planner, container, false);
         this.recyclerView = view.findViewById(R.id.planner_list);
+        this.notesCard = view.findViewById(R.id.meeting_planner_notes_card);
+        this.notesText = view.findViewById(R.id.meeting_planner_notes);
 
         MeetingActivity activity = (MeetingActivity) getActivity();
         if(activity != null && activity.getMeetingItem() != null) {
@@ -52,6 +58,13 @@ public class MeetingPlannerFragment extends Fragment {
 
     private void populate() {
         if(this.item == null || recyclerView == null) return;
+
+        if(item.getMeeting().getPlannotes() != null && !item.getMeeting().getPlannotes().isEmpty()) {
+            this.notesCard.setVisibility(View.VISIBLE);
+            this.notesText.setText(item.getMeeting().getPlannotes().trim());
+        } else {
+            this.notesCard.setVisibility(View.GONE);
+        }
 
         this.recyclerView.setAdapter(
                 new MeetingPreferenceDayAdapter(

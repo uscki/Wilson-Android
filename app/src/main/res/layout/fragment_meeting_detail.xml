@@ -74,37 +74,6 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/meeting_detail_notes_card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cards_margin_top"
-                card_view:cardCornerRadius="0dp"
-                card_view:cardElevation="@dimen/cardview_default_elevation"
-                android:visibility="gone">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_margin="@dimen/text_margin">
-
-                    <TextView
-                        android:id="@+id/meeting_detail_notes_text"
-                        style="@style/AppTheme.TextSubHeader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/meeting_detail_notes" />
-
-                    <TextView
-                        android:id="@+id/meeting_detail_notes"
-                        style="@style/AppTheme.Text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="-" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
                 android:id="@+id/meeting_detail_plannotes_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -129,6 +98,37 @@
 
                     <TextView
                         android:id="@+id/meeting_detail_plannotes"
+                        style="@style/AppTheme.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/meeting_detail_notes_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cards_margin_top"
+                card_view:cardCornerRadius="0dp"
+                card_view:cardElevation="@dimen/cardview_default_elevation"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="@dimen/text_margin">
+
+                    <TextView
+                        android:id="@+id/meeting_detail_notes_text"
+                        style="@style/AppTheme.TextSubHeader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/meeting_detail_notes" />
+
+                    <TextView
+                        android:id="@+id/meeting_detail_notes"
                         style="@style/AppTheme.Text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
