@@ -220,7 +220,7 @@ public class MeetingActivity extends BasicActivity {
         }
     }
 
-    public static enum PlannerView {
+    public enum PlannerView {
         UNPLANNED,
         PLANNED,
         UNINSTANTIATED
