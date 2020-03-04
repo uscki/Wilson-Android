@@ -11,7 +11,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
+import org.joda.time.DateTimeZone;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,14 +28,14 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static org.joda.time.format.ISODateTimeFormat.*;
+import static org.joda.time.format.ISODateTimeFormat.dateTimeNoMillis;
 
 class DateTimeTypeAdapter implements JsonSerializer<DateTime>,
         JsonDeserializer<DateTime> {
     @Override
     public DateTime deserialize(JsonElement json, Type typeOfT,
                                 JsonDeserializationContext context) throws JsonParseException {
-        return DateTime.parse(json.getAsString());
+        return DateTime.parse(json.getAsString()).withZone(DateTimeZone.getDefault());
     }
 
     @Override

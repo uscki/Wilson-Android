@@ -1,20 +1,23 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
 import android.os.Bundle;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import org.joda.time.DateTime;
+
 import java.util.List;
 import java.util.Locale;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
-import nl.uscki.appcki.android.helpers.UserHelper;
 
 import static nl.uscki.appcki.android.activities.MeetingActivity.PARAM_MEETING_ID;
 
@@ -52,7 +55,11 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
             holder.where.setText(item.getMeeting().getLocation());
         }
         holder.mensen.setText(getMensenString(item));
-        holder.status.setText(getStatusString(item));
+
+        MeetingItem.MeetingResponseStatus status = item.getResponseStatus();
+        holder.status.setText(status.getResponseStatusMessage());
+        holder.status.setCompoundDrawablesWithIntrinsicBounds(status.getResponseStatusIcon(), 0, 0, 0);
+        holder.mensen.setCompoundDrawablesWithIntrinsicBounds(status.getResponseStatusPeopleIcon(), 0, 0, 0);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,19 +69,6 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
                 EventBus.getDefault().post(new OpenFragmentEvent(new MeetingDetailTabsFragment(), args));
             }
         });
-    }
-
-    private String getStatusString(MeetingItem meeting) {
-        if (meeting.getMeeting().getStartdate() != null) {
-            return "Deze vergadering is al gepland";
-        } else {
-            //noinspection SuspiciousMethodCalls
-            if (!meeting.getEnrolledPersons().contains(UserHelper.getInstance().getCurrentUser())) {
-                return "Je hebt nog niet gereageerd.";
-            } else {
-                return "Deze vergadering is nog niet gepland";
-            }
-        }
     }
 
     private String getMensenString(MeetingItem meeting) {

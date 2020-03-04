@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import org.joda.time.DateTime;
@@ -34,6 +35,9 @@ public class MeetingDetailFragment extends RefreshableFragment {
     private TextView plannotes;
     private TextView agenda;
 
+    private CardView notesCard;
+    private CardView planNotesCard;
+
     public MeetingDetailFragment() {
         // Required empty public constructor
     }
@@ -50,6 +54,8 @@ public class MeetingDetailFragment extends RefreshableFragment {
         this.notes = view.findViewById(R.id.meeting_detail_notes);
         this.plannotes = view.findViewById(R.id.meeting_detail_plannotes);
         this.agenda = view.findViewById(R.id.meeting_detail_agenda);
+        this.notesCard = view.findViewById(R.id.meeting_detail_notes_card);
+        this.planNotesCard = view.findViewById(R.id.meeting_detail_plannotes_card);
 
         setupSwipeContainer(view);
 
@@ -76,12 +82,21 @@ public class MeetingDetailFragment extends RefreshableFragment {
             where.setText(item.getMeeting().getLocation());
         }
         mensen.setText(getMensenString(item));
+        this.mensen.setCompoundDrawablesWithIntrinsicBounds(item.getResponseStatus().getResponseStatusPeopleIcon(), 0, 0, 0);
 
         if (item.getMeeting().getNotes() != null && !item.getMeeting().getNotes().isEmpty()) {
             notes.setText(item.getMeeting().getNotes().trim());
+            this.notesCard.setVisibility(View.VISIBLE);
+        } else {
+            this.notesCard.setVisibility(View.GONE);
         }
 
-        plannotes.setText(item.getMeeting().getPlannotes());
+        if(item.getMeeting().getPlannotes() != null && !item.getMeeting().getPlannotes().isEmpty()) {
+            plannotes.setText(item.getMeeting().getPlannotes());
+            this.planNotesCard.setVisibility(View.VISIBLE);
+        } else {
+            this.planNotesCard.setVisibility(View.GONE);
+        }
 
         agenda.setText(item.getMeeting().getAgenda());
     }
@@ -110,14 +125,14 @@ public class MeetingDetailFragment extends RefreshableFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         EventBus.getDefault().register(this);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
         EventBus.getDefault().unregister(this);
     }
 }

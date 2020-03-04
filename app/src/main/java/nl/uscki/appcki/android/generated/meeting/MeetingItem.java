@@ -6,8 +6,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.organisation.PersonName;
+import nl.uscki.appcki.android.helpers.UserHelper;
 
 public class MeetingItem implements IWilsonBaseItem {
 
@@ -123,6 +125,46 @@ public class MeetingItem implements IWilsonBaseItem {
      */
     public void setMyPreferences(List<MyPreference> myPreferences) {
         this.myPreferences = myPreferences;
+    }
+
+    public MeetingResponseStatus getResponseStatus() {
+        if (getMeeting().getStartdate() != null) {
+            return MeetingResponseStatus.MEETING_PLANNED;
+        } else {
+            if (!getEnrolledPersons().contains(UserHelper.getInstance().getCurrentUser())) {
+                return MeetingResponseStatus.MEETING_NO_RESPONSE;
+            } else {
+                return MeetingResponseStatus.MEETING_RESPONSE_OK;
+            }
+        }
+    }
+
+    public enum MeetingResponseStatus {
+        MEETING_PLANNED(R.string.meeting_planned, R.drawable.check, R.drawable.account_multiple),
+        MEETING_NO_RESPONSE(R.string.meeting_response_MISSING, R.drawable.ic_outline_hourglass_empty_24px, R.drawable.account_multiple_backup),
+        MEETING_RESPONSE_OK(R.string.meeting_response_OK, R.drawable.ic_outline_hourglass_empty_24px, R.drawable.account_multiple_subscribed);
+
+        private int responseStatusMessage;
+        private int responseStatusPeopleIcon;
+        private int responseStatusIcon;
+
+        MeetingResponseStatus(int responseStatusMessage, int responseStatusIcon, int responseStatusPeopleIcon) {
+            this.responseStatusMessage = responseStatusMessage;
+            this.responseStatusIcon = responseStatusIcon;
+            this.responseStatusPeopleIcon = responseStatusPeopleIcon;
+        }
+
+        public int getResponseStatusMessage() {
+            return responseStatusMessage;
+        }
+
+        public int getResponseStatusPeopleIcon() {
+            return responseStatusPeopleIcon;
+        }
+
+        public int getResponseStatusIcon() {
+            return responseStatusIcon;
+        }
     }
 
 }

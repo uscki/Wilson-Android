@@ -216,8 +216,7 @@ public class Meeting implements IWilsonBaseItem{
      */
     public DateTime getEnddate() {
         // TODO should return enddate in future (see TODO at member)
-        return DateTime.parse(Long.toString(enddate / 10000));
-//        return enddate;
+        return new DateTime(this.enddate);
     }
 
     /**
