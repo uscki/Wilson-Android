@@ -193,7 +193,9 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
             int toastText = R.string.comment_delete_error;
             if(response != null && response.body() != null && response.body()) {
                 toastText = R.string.comment_delete_success;
-                refresh();
+                swipeContainer.setRefreshing(true);
+                refresh = true;
+                onSwipeRefresh();
             }
             Toast.makeText(getContext(), toastText, Toast.LENGTH_LONG).show();
         }
