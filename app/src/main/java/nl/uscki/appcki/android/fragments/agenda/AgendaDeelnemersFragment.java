@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
 public class AgendaDeelnemersFragment extends RefreshableFragment {
     TextView emptyText;
     RecyclerView participantList;
+    NestedScrollView emptyTextView;
 
     private AgendaActivity activity;
 
@@ -44,17 +46,20 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
                 getAdapter().addItems(item.getBackupList());
             }
         }
-        if(emptyText != null && participantList != null) {
+        if(emptyText != null && emptyTextView != null && participantList != null) {
             if (item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
                 emptyText.setText(getString(R.string.agenda_prepublished_event_registration_opens_later));
                 emptyText.setVisibility(View.VISIBLE);
+                emptyTextView.setVisibility(View.VISIBLE);
                 participantList.setVisibility(View.GONE);
             } else if (item.getParticipants().isEmpty()) {
                 emptyText.setText(getString(R.string.agenda_participants_list_empty));
                 emptyText.setVisibility(View.VISIBLE);
+                emptyTextView.setVisibility(View.VISIBLE);
                 participantList.setVisibility(View.GONE);
             } else {
                 emptyText.setVisibility(View.GONE);
+                emptyTextView.setVisibility(View.GONE);
                 participantList.setVisibility(View.VISIBLE);
             }
         }
@@ -72,6 +77,7 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         emptyText = view.findViewById(R.id.empty_text);
+        this.emptyTextView = view.findViewById(R.id.empty_text_scrollview);
         participantList = view.findViewById(R.id.recyclerView);
 
         return view;

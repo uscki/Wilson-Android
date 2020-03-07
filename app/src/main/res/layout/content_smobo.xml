@@ -15,12 +15,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
         <androidx.cardview.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_view_media"
-            android:layout_gravity="top"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            card_view:cardCornerRadius="0dp">
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            style="@style/CardView.Wilson">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -29,10 +30,9 @@
                     android:id="@+id/smobo_media_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginStart="@dimen/text_margin"
                     android:layout_marginTop="@dimen/cards_margin_top"
-                    android:text="Laatste foto's"
+                    android:text="@string/smobo_photos"
                     android:textAppearance="@style/AppTheme.Text"
                     android:textColor="@color/colorAccent"
                     android:textSize="16sp" />
@@ -41,7 +41,6 @@
                 <androidx.leanback.widget.HorizontalGridView
                     android:id="@+id/smobo_media_gridview"
                     android:layout_below="@id/smobo_media_text"
-                    android:layout_marginStart="@dimen/text_margin"
                     android:layout_marginTop="12dp"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
@@ -51,17 +50,10 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_view_contact_info"
-            android:layout_gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/cards_margin_sides"
-            android:layout_marginStart="@dimen/cards_margin_sides"
-            android:layout_marginRight="@dimen/cards_margin_sides"
-            android:layout_marginEnd="@dimen/cards_margin_sides"
-            android:layout_marginTop="@dimen/cards_margin_top"
-            card_view:cardCornerRadius="4dp">
+            style="@style/CardView.Wilson">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -71,35 +63,35 @@
                     android:id="@+id/smobo_address_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/text_margin"/>
+                    android:layout_marginStart="@dimen/text_margin"/>
 
                 <FrameLayout
                     android:id="@+id/smobo_email_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/smobo_address_info"
-                    android:layout_marginLeft="@dimen/text_margin"/>
+                    android:layout_marginStart="@dimen/text_margin"/>
 
                 <FrameLayout
                     android:id="@+id/smobo_phone_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/smobo_email_info"
-                    android:paddingLeft="@dimen/text_margin"/>
+                    android:layout_marginStart="@dimen/text_margin"/>
 
                 <FrameLayout
                     android:id="@+id/smobo_mobile_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/smobo_phone_info"
-                    android:paddingLeft="@dimen/text_margin"/>
+                    android:layout_marginStart="@dimen/text_margin"/>
 
                 <FrameLayout
                     android:id="@+id/smobo_birthday_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/smobo_mobile_info"
-                    android:paddingLeft="@dimen/text_margin"/>
+                    android:layout_marginStart="@dimen/text_margin"/>
 
                 <RelativeLayout
                     android:id="@+id/datable_range_info"
@@ -174,18 +166,11 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_view_groups"
-            android:layout_gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/cards_margin_sides"
-            android:layout_marginStart="@dimen/cards_margin_sides"
-            android:layout_marginRight="@dimen/cards_margin_sides"
-            android:layout_marginEnd="@dimen/cards_margin_sides"
-            android:layout_marginTop="@dimen/cards_margin_top"
-            android:layout_marginBottom="12dp"
-            card_view:cardCornerRadius="4dp">
+            android:layout_marginBottom="@dimen/cards_margin_top"
+            style="@style/CardView.Wilson">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -194,7 +179,6 @@
                     android:id="@+id/smobo_groups_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginStart="@dimen/text_margin"
                     android:layout_marginTop="@dimen/cards_margin_top"
                     android:text="Commissies"

@@ -81,4 +81,15 @@
         <item name="android:maxLines">2</item>
         <item name="android:singleLine">false</item>
     </style>
+
+    <style name="CardView.Wilson.Base">
+        <item name="android:layout_marginTop">@dimen/cards_margin_top</item>
+        <item name="cardCornerRadius">4dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="CardView.Wilson" parent="CardView.Wilson.Base">
+        <item name="android:layout_marginLeft">@dimen/cards_margin_sides</item>
+        <item name="android:layout_marginRight">@dimen/cards_margin_sides</item>
+    </style>
 </resources>
