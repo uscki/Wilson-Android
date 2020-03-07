@@ -1,5 +1,7 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
@@ -27,6 +29,7 @@ import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.comments.Comment;
+import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
 
@@ -34,8 +37,9 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
     private boolean isNested = false;
     private CommentsFragment commentsFragment;
 
-    public CommentsAdapter(List<Comment> items) {
+    public CommentsAdapter(CommentsFragment commentsFragment, List<Comment> items) {
         super(items);
+        this.commentsFragment = commentsFragment;
     }
 
     @Override
@@ -43,14 +47,6 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_comment_item, parent, false);
         return new ViewHolder(view);
-    }
-
-    /**
-     * Set a reference to the CommentsFragment that uses this adapter, so replies can be posted
-     * @param fragment  CommentsFragment that uses this adapter
-     */
-    public void setCommentsFragment(CommentsFragment fragment) {
-        this.commentsFragment = fragment;
     }
 
     /**
@@ -139,6 +135,20 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
             // again
             holder.showIsAnnouncementView.setVisibility(View.GONE);
         }
+
+        // Set comment delete button behavior
+        if(canCommentDelete(holder.comment)) {
+            holder.comment_delete_view.setVisibility(View.VISIBLE);
+            holder.activateDeleteCommentButton();
+        } else {
+            holder.comment_delete_view.setOnClickListener(null);
+            holder.comment_delete_view.setVisibility(View.GONE);
+        }
+    }
+
+    private boolean canCommentDelete(Comment comment) {
+        return comment.person.equals(UserHelper.getInstance().getCurrentUser()) &&
+                comment.reactions.isEmpty() && commentsFragment.canDelete();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -146,10 +156,11 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
         public Comment comment;
         public CommentsAdapter adapter;
 
-        public SimpleDraweeView commenterPhoto;
-        public TextView commenterName;
+        SimpleDraweeView commenterPhoto;
+        TextView commenterName;
         ImageView showIsAnnouncementView;
-        public ImageButton replyButton;
+        ImageButton comment_delete_view;
+        ImageButton replyButton;
         BBTextView commentContent;
         RecyclerView replies;
         TableRow replyRow;
@@ -167,13 +178,14 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
             commentContent = itemView.findViewById(R.id.comment_content);
             replyButton = itemView.findViewById(R.id.comment_reply_button);
             showIsAnnouncementView = itemView.findViewById(R.id.verified_announcement_view);
+            comment_delete_view = itemView.findViewById(R.id.comment_delete_view);
             commenterName = itemView.findViewById(R.id.comment_placer_name);
             commenterPhoto = itemView.findViewById(R.id.comment_person_photo);
 
             if(adapter != null) {
                 adapter.clear();
             }
-            adapter = new CommentsAdapter(new ArrayList<Comment>());
+            adapter = new CommentsAdapter(CommentsAdapter.this.commentsFragment, new ArrayList<Comment>());
             adapter.isNested = true;
             replies.setAdapter(adapter);
         }
@@ -185,6 +197,26 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
                 public void onClick(View view) {
                     replyRow.setVisibility(View.GONE);
                     commentsFragment.postComment(actualCommentText, ViewHolder.this);
+                }
+            });
+        }
+
+        void activateDeleteCommentButton() {
+            comment_delete_view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new AlertDialog.Builder(mView.getContext())
+                            .setTitle(R.string.comment_delete_header)
+                            .setMessage(R.string.comment_delete_message)
+                            .setIcon(R.drawable.ic_delete_24px)
+                            .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    commentsFragment.deleteComment(comment.id);
+                                }
+                            })
+                            .setNegativeButton(R.string.dialog_no, null)
+                            .show();
                 }
             });
         }

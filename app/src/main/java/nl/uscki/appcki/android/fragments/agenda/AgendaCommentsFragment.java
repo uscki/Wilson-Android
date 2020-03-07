@@ -10,6 +10,7 @@ public class AgendaCommentsFragment extends CommentsFragment{
 
     public AgendaCommentsFragment() {
         // Required empty public constructor
+        super(true);
     }
 
     @Override
@@ -26,6 +27,11 @@ public class AgendaCommentsFragment extends CommentsFragment{
     @Override
     public Call<ActionResponse<Comment>> sendCommentToServer(Integer replyToComment, String comment) {
         return Services.getInstance().agendaService.replyToComment(commentOnTopicId, replyToComment, comment);
+    }
+
+    @Override
+    protected Call<Boolean> deleteCommentFromServer(Integer commentId) {
+        return Services.getInstance().agendaService.deleteComment(commentOnTopicId, commentId);
     }
 
     @Override

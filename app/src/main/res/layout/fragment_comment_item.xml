@@ -59,6 +59,17 @@
                     android:layout_marginStart="2dp"
                     android:visibility="gone"
                     />
+
+                <ImageButton
+                    android:id="@+id/comment_delete_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_toEndOf="@id/verified_announcement_view"
+                    app:srcCompat="@drawable/ic_delete_24px"
+                    android:background="@drawable/lb_selectable_item_rounded_rect"
+                    android:visibility="gone"
+                    />
                 <nl.uscki.appcki.android.views.BBTextView
                     android:id="@+id/comment_content"
                     style="@style/AppTheme.Text"
