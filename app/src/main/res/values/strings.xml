@@ -81,6 +81,13 @@
     <string name="agenda_participants_backup_list">Wachtlijst</string>
     <string name="agenda_participants_backup_list_help">Als er een maximum aantal inschrijvingen geldt voor een evenement en dat aantal inschrijvingen is al gehaald, word je op de wachtlijst geplaatst als jij je ook inschrijft. Wanneer bestaande deelnemers zich uitschrijven, heb je kans van de wachtlijst naar de deelnemerslijst te worden geplaatst. Dit gebeurt in volgorde van inschrijving voor alle wachtenden.</string>
 
+    <string name="dialog_yes">Ja</string>
+    <string name="dialog_no">Nee</string>
+    <string name="comment_delete_header">Reactie verwijderen</string>
+    <string name="comment_delete_message">Weet je zeker dat je je reactie wil verwijderen?</string>
+    <string name="comment_delete_success">Reactie verwijderd</string>
+    <string name="comment_delete_error">Reactie kon niet worden verwijderd</string>
+
     <string name="example_text">Example text</string>
 
     <string name="meeting_planned">Vergadering gepland</string>

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,9 +37,19 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
     private Integer scrollToState;
 
     private CommentsAdapter addNextCallbackToAdapter;
+    private boolean canDelete = false;
 
     // FIXME: this is not set anywhere but it is cleared in onSwipeRefresh
-    EditText commentText;
+    private EditText commentText;
+
+    /**
+     * Construct new comments fragment
+     *
+     * @param canDelete True iff users are allowed to delete their own comments
+     */
+    public CommentsFragment(boolean canDelete) {
+        this.canDelete = canDelete;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,8 +64,7 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
                              Bundle savedInstanceState) {
 
         // Create an adapter for this fragment
-        CommentsAdapter adapter = new CommentsAdapter(new ArrayList<Comment>());
-        adapter.setCommentsFragment(this);
+        CommentsAdapter adapter = new CommentsAdapter(this, new ArrayList<Comment>());
         setAdapter(adapter);
 
         // Load initial data
@@ -107,6 +117,14 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
     }
 
     /**
+     * Delete a user comment
+     * @param commentId     ID of comment to delete
+     */
+    public void deleteComment(Integer commentId) {
+        this.deleteCommentFromServer(commentId).enqueue(commentDeletedCallback);
+    }
+
+    /**
      * Post a new comment, as typed in the given edit box as a reply to another comment
      *
      * @param commentBox            Edit box containing comment text
@@ -118,14 +136,26 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
     }
 
     /**
+     * Used on the offchance that the API will later support comments on activities where they can
+     * no longer be deleted.
+     *
+     * @return True iff users are allowed to delete their own comments
+     */
+    public boolean canDelete() {
+        return this.canDelete;
+    }
+
+    /**
      * This method should return a call that will post a new comment to the server, but not yet
-     * enque it. Use the field `commentOnTopicId` for the first ID required in the call
+     * enqueue it. Use the field `commentOnTopicId` for the first ID required in the call
      *
      * @param parentId              (Optional) the ID of the comment this is a reply to (if any)
      * @param comment               The comment content
      * @return                      Comment object as returned by the server
      */
     protected abstract Call<ActionResponse<Comment>> sendCommentToServer(Integer parentId, String comment);
+
+    protected abstract Call<Boolean> deleteCommentFromServer(Integer commentId);
 
     /**
      * Clear the text of an edit box and remove focus.
@@ -154,6 +184,20 @@ public abstract class CommentsFragment extends PageableFragment<CommentPage> {
                     getAdapter().add(c);
                 }
             }
+        }
+    };
+
+    protected Callback<Boolean> commentDeletedCallback = new Callback<Boolean>() {
+        @Override
+        public void onSucces(Response<Boolean> response) {
+            int toastText = R.string.comment_delete_error;
+            if(response != null && response.body() != null && response.body()) {
+                toastText = R.string.comment_delete_success;
+                swipeContainer.setRefreshing(true);
+                refresh = true;
+                onSwipeRefresh();
+            }
+            Toast.makeText(getContext(), toastText, Toast.LENGTH_LONG).show();
         }
     };
 }
