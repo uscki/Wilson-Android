@@ -24,6 +24,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.material.navigation.NavigationView;
 
 import de.greenrobot.event.EventBus;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.api.Callback;
@@ -50,7 +51,6 @@ import nl.uscki.appcki.android.generated.organisation.CurrentUser;
 import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Response;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends BasicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -504,6 +504,6 @@ public class MainActivity extends BasicActivity
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 }

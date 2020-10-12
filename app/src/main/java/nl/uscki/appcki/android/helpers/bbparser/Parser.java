@@ -7,11 +7,11 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.List;
 
+import io.github.inflationx.calligraphy3.CalligraphyTypefaceSpan;
+import io.github.inflationx.calligraphy3.TypefaceUtils;
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.helpers.bbparser.elements.GenericElement;
 import nl.uscki.appcki.android.views.BBTextView;
-import uk.co.chrisjenx.calligraphy.CalligraphyTypefaceSpan;
-import uk.co.chrisjenx.calligraphy.TypefaceUtils;
 
 /**
  * Created by peter on 12/20/16.
@@ -43,6 +43,7 @@ public class Parser {
 
                     str.replace(start, end, "a");
                     CalligraphyTypefaceSpan typefaceSpan = new CalligraphyTypefaceSpan(TypefaceUtils.load(App.getContext().getAssets(), "fonts/ckilogos.ttf"));
+
                     str.setSpan(typefaceSpan, start, start+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     output.append(str);
                 } else {

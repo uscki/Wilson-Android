@@ -2,14 +2,15 @@ apply plugin: 'com.android.application'
 
 android {
     flavorDimensions "default"
-    compileSdkVersion 29
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 30
+    buildToolsVersion '29.0.2'
     defaultConfig {
         applicationId "nl.uscki.appcki.android"
         minSdkVersion 17
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 12
         versionName "v2.2.2"
+        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -34,6 +35,10 @@ android {
         development {
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     lintOptions {
         lintConfig rootProject.file('gradle/lint.xml')
     }
@@ -43,26 +48,29 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.leanback:leanback:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'de.greenrobot:eventbus:2.4.0'
-    implementation 'commons-lang:commons-lang:2.6'
-    implementation 'commons-io:commons-io:2.4'
+    implementation 'commons-lang:commons-lang:20030203.000129'
+    implementation 'commons-io:commons-io:20030203.000550'
     implementation 'joda-time:joda-time:2.3'
-    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.3.1'
-    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
     implementation 'com.vistrav:ask:2.4'
-    implementation 'uk.co.chrisjenx:calligraphy:2.2.0'
-    implementation 'com.google.firebase:firebase-messaging:20.1.2'
+    implementation 'io.github.inflationx:calligraphy3:3.1.1'
+    implementation 'io.github.inflationx:viewpump:2.0.3'
+    implementation 'com.google.firebase:firebase-messaging:20.3.0'
     implementation 'com.facebook.fresco:fresco:1.1.0'
     implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    // Avoid error `Cannot fit requested classes in a single dex file (# methods: 66229 > 65536)`
+    // See https://developer.android.com/studio/build/multidex#mdex-gradle
+    implementation 'com.android.support:multidex:1.0.3'
+    testImplementation 'junit:junit:4.13.1'
 }
 
 
