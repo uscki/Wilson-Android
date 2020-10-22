@@ -3,8 +3,6 @@ package nl.uscki.appcki.android.fragments.comments;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.models.ActionResponse;
-import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
-import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
 import nl.uscki.appcki.android.generated.comments.Comment;
 import nl.uscki.appcki.android.views.NewSimplePageableItem;
 import retrofit2.Call;
@@ -40,6 +38,6 @@ public class NewCommentWidget extends NewSimplePageableItem<ActionResponse<Comme
 
     @Override
     protected Call<ActionResponse<Comment>> postNewItem() {
-        return commentsFragment.sendCommentToServer(null, getMainTextInput().getText().toString());
+        return commentsFragment.sendCommentToServer(-1, getMainTextInput().getText().toString());
     }
 }
