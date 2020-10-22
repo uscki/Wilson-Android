@@ -1,0 +1,396 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<TableLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/text_margin"
+    tools:context="nl.uscki.appcki.android.fragments.AppInfoFragment"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/text_margin"
+        >
+
+            <ImageView
+                android:id="@+id/app_logo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="@dimen/cards_margin_top"
+                app:srcCompat="@drawable/icon" />
+
+
+                <TextView
+                    android:id="@+id/app_title"
+                    style="@style/AppTheme.TextHeader"
+                    android:layout_toEndOf="@id/app_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name" />
+
+                <TextView
+                    android:layout_below="@id/app_title"
+                    android:layout_alignStart="@id/app_title"
+                    android:id="@+id/app_info_version_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            <ImageView
+                android:layout_toEndOf="@id/app_title"
+                android:id="@+id/cki_logo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="@dimen/cards_margin_top"
+                android:layout_marginEnd="@dimen/cards_margin_top"
+                app:srcCompat="@drawable/ckilogo" />
+
+        <ImageView
+            android:id="@+id/clickable_instagram_button"
+            style="@style/TextAppearance.AppCompat.Button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_instagram_full_color"
+            android:layout_toStartOf="@id/clickable_facebook_button"
+            android:layout_marginEnd="@dimen/text_margin"
+            />
+
+        <ImageView
+            android:layout_alignParentEnd="true"
+            android:id="@+id/clickable_facebook_button"
+            style="@style/TextAppearance.AppCompat.Button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_facebook_full_color"
+            />
+
+    </RelativeLayout>
+
+
+        <nl.uscki.appcki.android.views.BBTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/text_margin"
+            style="@style/AppTheme.Text"
+            android:autoLink="web"
+            android:text="@string/settings_app_info_app_description"
+            />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/text_margin"
+            android:orientation="horizontal"
+            >
+
+                <LinearLayout
+                    android:id="@+id/app-info-address-visiting"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:textAlignment="center"
+                    >
+
+                    <TextView
+                        style="@style/AppTheme.Text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_app_info_visit_address"
+                        android:textAlignment="center"
+                        android:textColor="@color/lb_grey"
+                        />
+
+                    <TextView
+                        android:id="@+id/main_address_visiting"
+                        style="@style/AppTheme.Text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/incognito_address_visiting"
+                        android:textAlignment="center"/>
+
+                </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/app-info-address-postal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:textAlignment="center"
+                >
+                <TextView
+                    style="@style/AppTheme.Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_app_info_postal_address"
+                    android:textAlignment="center"
+                    android:textColor="@color/lb_grey"/>
+
+                <TextView
+                    style="@style/AppTheme.Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/incognito_address_postal"
+                    android:textAlignment="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/app-info-address-uithocki"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                >
+                <TextView
+                    style="@style/AppTheme.Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_app_info_uithocki_address"
+                    android:textAlignment="center"
+                    android:textColor="@color/lb_grey"
+                    />
+
+                <TextView
+                    style="@style/AppTheme.Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/incognito_address_uithocki"
+                    android:textAlignment="center"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+        <nl.uscki.appcki.android.views.BBTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/text_margin"
+            android:linksClickable="true"
+            android:autoLink="email"
+            style="@style/AppTheme.Text"
+            android:text="@string/settings_app_info_appcki_description"
+            />
+
+        <nl.uscki.appcki.android.views.BBTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/text_margin"
+            android:linksClickable="true"
+            android:autoLink="email"
+            style="@style/AppTheme.Text"
+            android:text="@string/settings_app_info_syso_description"
+            />
+
+        <TextView
+            android:drawablePadding="@dimen/text_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:linksClickable="true"
+            android:autoLink="email"
+            android:textIsSelectable="true"
+            android:text="@string/incognito_email_primary_1"
+            app:drawableStartCompat="@drawable/email" />
+        <TextView
+            android:drawablePadding="@dimen/text_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="phone"
+            android:textIsSelectable="true"
+            android:text="@string/incognito_phone_primary_1"
+            app:drawableStartCompat="@drawable/phone" />
+
+        <TextView
+            android:drawablePadding="@dimen/text_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_app_info_iban"
+            app:drawableStartCompat="@drawable/ic_payment_black_24dp" />
+    <TableRow
+        android:layout_marginBottom="@dimen/text_margin"
+        >
+        <Space
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            />
+        <TextView
+        android:text="@string/incognito_iban_number"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+            style="@style/AppTheme.Text"
+        />
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/settings_app_info_payment_made_out_to"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.Text"
+            android:text="@string/incognito_iban_name"/>
+    </TableRow>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.Text"
+            android:layout_marginBottom="@dimen/cards_margin_sides"
+            android:text="@string/settings_app_info_file_bug_report"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_marginBottom="3dp"
+            >
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/gitlab"
+                android:layout_marginEnd="5dp"
+                />
+            <TextView
+                android:id="@+id/app_info_report_bug_gitlab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppTheme"
+                android:focusable="true"
+                android:clickable="true"
+                android:autoLink="all"
+                android:text="@string/company_name_gitlab" />
+
+            <ImageView
+                android:layout_marginStart="3dp"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:textAlignment="center"
+                app:srcCompat="@drawable/ic_newwindow"
+                android:scaleType="fitCenter"/>
+        </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/text_margin"
+        android:layout_marginBottom="@dimen/text_margin"
+        >
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ckilogo"
+            android:layout_marginEnd="5dp"
+            />
+        <TextView
+            android:id="@+id/app_info_report_bug_uscki"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.Text"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/settings_app_info_bug_tracker"/>
+        <ImageView
+            android:layout_marginStart="3dp"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:textAlignment="center"
+            app:srcCompat="@drawable/ic_newwindow"
+            android:scaleType="fitCenter"/>
+    </LinearLayout>
+
+    <nl.uscki.appcki.android.views.BBTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:linksClickable="true"
+        android:autoLink="email"
+        style="@style/AppTheme.Text"
+        android:layout_marginBottom="@dimen/text_margin"
+        android:text="@string/settings_app_info_invite_members"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/text_margin"
+        >
+
+    <RelativeLayout
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:paddingBottom="@dimen/text_margin"
+        >
+        <TextView
+            android:id="@+id/app_info_copyright_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.Text"
+            android:text="@string/settigns_app_info_copyright_base"/>
+        <TextView
+            android:id="@+id/app_info_copyright_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/app_info_copyright_start"
+            style="@style/AppTheme.Text"
+            android:text="2020"
+            />
+
+        <TextView
+            android:id="@+id/app_info_footer_sep1"
+            android:layout_toEndOf="@id/app_info_copyright_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sep"
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_marginEnd="@dimen/text_margin"/>
+
+        <TextView
+            android:id="@+id/app_info_privacy_policy_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.Text"
+            android:autoLink="web"
+            android:linksClickable="true"
+            android:layout_toEndOf="@id/app_info_footer_sep1"
+            android:text="@string/incognito_website_url"/>
+
+        <TextView
+            android:id="@+id/app_info_footer_sep2"
+            android:layout_toEndOf="@id/app_info_privacy_policy_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sep"
+            android:layout_marginStart="@dimen/text_margin"
+            android:layout_marginEnd="@dimen/text_margin"/>
+
+        <TextView
+            android:id="@+id/app_info_data_indexation_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.Text"
+            android:layout_toEndOf="@id/app_info_footer_sep2"
+            android:text="@string/settings_app_info_data_indexation"
+            />
+
+        <ImageView
+            android:layout_marginStart="3dp"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:textAlignment="center"
+            app:srcCompat="@drawable/ic_newwindow"
+            android:layout_toEndOf="@id/app_info_data_indexation_link"
+            android:scaleType="fitCenter"/>
+    </RelativeLayout>
+    </RelativeLayout>
+
+</TableLayout>
+</ScrollView>

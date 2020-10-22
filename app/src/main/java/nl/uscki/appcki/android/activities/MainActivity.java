@@ -35,6 +35,7 @@ import nl.uscki.appcki.android.events.CurrentUserUpdateRequiredDirectiveEvent;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
+import nl.uscki.appcki.android.fragments.AppInfoFragment;
 import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
@@ -286,6 +287,8 @@ public class MainActivity extends BasicActivity
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;
+        } else if (id == R.id.action_about) {
+            openFragment(new AppInfoFragment(), null);
         } else if (id == R.id.action_poll_archive) {
             openFragment(new PollOverviewFragment(), null);
         }

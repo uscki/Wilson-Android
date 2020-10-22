@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Wilson</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -339,6 +339,29 @@
     <string name="vibration_pattern_CKI_morse">CKI (morse)</string>
     <string name="vibration_pattern_default">@string/vibration_pattern_long_twice</string>
 
+    <!-- app info -->
+    <string name="settings_app_info_about_header">Over deze applicatie</string>
+    <string name="settings_app_info_app_description" tools:ignore="TypographyOther">Officiele mobiele applicatie van US\u01de Incognito: De Utrechtse Studievereniging voor Cognitieve Kunstmatige Intelligentie.
+        De studievereniging voor alle studenten (C)KI aan de Universiteit Utrecht.
+        De US\u01de Incognito is een studievereniging voor alle studenten \u01de aan het departement Wijsbegeerte, faculteit Geesteswetenschappen, Universiteit Utrecht.</string>
+    <string name="settings_app_info_visit_address">Bezoekadres:</string>
+    <string name="settings_app_info_postal_address">Postadres:</string>
+    <string name="settings_app_info_uithocki_address">UitHo\u01de:</string>
+    <string name="settings_app_info_iban">IBAN:</string>
+    <string name="settings_app_info_payment_made_out_to">t.n.v.</string>
+    <string name="settings_app_info_file_bug_report">Reporteer een bug op:</string>
+    <string name="company_name_gitlab">Gitlab</string>
+    <string name="settings_app_info_bug_tracker">Bug Tracker (US\u01de)</string>
+    <string name="settings_app_info_data_indexation">Dataverwerking</string>
+    <string name="settigns_app_info_copyright_base">© 2017 -</string>
+
+    <string name="settings_app_info_appcki_description">Deze applicatie wordt onderhouden door de App\u01de (appcki@uscki.nl) in opdracht van het Bestuur van U.S.C.K.I. Incognito.</string>
+    <string name="settings_app_info_syso_description">Deze applicatie maakt gebruik van de officiele API van de U.S.C.K.I. website, onderhouden door Systeembeheer (systeembeheer@uscki.nl) in opdracht van het Bestuur van U.S.C.K.I. Incognito.</string>
+    <string name="settings_app_info_invite_members">Duurt het te lang sinds de vorige update, of denk je dat je het beter kan? Meld je nu aan voor de App\u01de als jij Android echt vet vindt of je creativiteit wil loslaten op de Wilson app.
+        Stuur direct een email naar appcki@uscki.nl. \n\nIs het kleine scherm te min voor jou maar wil je toch werken aan een vet project waar Incognito nog jaren plezier van blijft hebben?
+        Mail dan naar icki@uscki.nl en word een van Incognito\'s web developers. \n\nAllebei teveel gepriegel met frond-end voor je, of gaat jouw hart sneller kloppen van databases, of termen als \"API\",
+        \"persoonsgegevensbescherming\" of \"GDPR\", geef dan Systeembeheer een kans door te e-mailen naar bestuur@uscki.nl</string>
+
     <!-- Comments -->
     <string name="comments_empty_text">Geen reacties</string>
     <string name="comments">Reacties</string>
@@ -437,4 +460,7 @@
     <!-- General stuff -->
     <string name="list_concat_seperator">%s,&#160;</string>
     <string name="list_concat_and">%s en %s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sep">—</string>
 </resources>

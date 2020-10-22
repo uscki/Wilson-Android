@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="incognito_address_visiting">Drift 21 - k. 1.03\n3512 BR Utrecht</string>
+    <string name="incognito_address_postal">Janskerkhof 13a\n3512 BL Utrecht</string>
+    <string name="incognito_address_uithocki">Buys Ballot Gebouw (BBG) - k. 2.61\nPrincetonplein 5\n3584 CC Utrecht</string>
+
+    <string name="incognito_email_primary_1">incognito@uscki.nl</string>
+    <string name="incognito_phone_primary_1">+31 (0)30 2538127</string>
+
+    <string name="incognito_iban_number">NL06 INGB 0000 6902 61</string>
+    <string name="incognito_iban_name">U.S.C.K.I. Incognito</string>
+
+    <string name="incognito_website_url">www.uscki.nl</string>
+
+</resources>

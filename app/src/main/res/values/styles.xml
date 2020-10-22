@@ -54,6 +54,7 @@
 
     <style name="AppTheme.Text" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/colorNormalText</item>
+        <item name="android:textIsSelectable">true</item>
     </style>
 
     <style name="CodeFont" parent="@android:style/TextAppearance.Small">
