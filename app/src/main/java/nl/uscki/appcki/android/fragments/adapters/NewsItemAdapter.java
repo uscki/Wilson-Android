@@ -1,23 +1,25 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
-
 import java.util.List;
+import java.util.Locale;
 
+import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.activities.BasicActivity;
-import nl.uscki.appcki.android.activities.NewsActivity;
 import nl.uscki.appcki.android.generated.news.NewsItem;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
@@ -40,49 +42,63 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
     public void onBindCustomViewHolder(ViewHolder holder, int position) {
         final NewsItem item = items.get(position);
         holder.mItem = item;
-        holder.title.setText(item.getTitle());
+        holder.title.setText(item.getTitle().replaceAll("CKI", App.USCKI_CKI_CHARACTER));
         holder.content.setText(Parser.parse(item.getShorttext(), true, holder.content));
 
-        String iconUrl = "https://www.uscki.nl/modules/News/images/" + item.getType().getIcon();
-        //holder.category.setImageUrl(iconUrl);
-
-        holder.metadata.setText("(" + item.getPerson().getPostalname() + " / " + Utils.timestampConversion(item.getTimestamp().getMillis(), false) + ")");
-        holder.metadata.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getContext() instanceof BasicActivity) {
-                    BasicActivity c = (BasicActivity) v.getContext();
-                    c.openSmoboFor(item.getPerson());
-                }
+        holder.metadata.setText(String.format(Locale.getDefault(), "(%s / %s)", item.getPerson().getPostalname(), Utils.timestampConversion(item.getTimestamp().getMillis(), false)));
+        holder.metadata.setOnClickListener(v -> {
+            if (v.getContext() instanceof BasicActivity) {
+                BasicActivity c = (BasicActivity) v.getContext();
+                c.openSmoboFor(item.getPerson());
             }
         });
 
-        if (item.getLongtext() != null) {
-            holder.readmore.setVisibility(View.VISIBLE);
-            holder.readmore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), NewsActivity.class);
-                    intent.putExtra("item", new Gson().toJson(item));
-                    v.getContext().startActivity(intent);
-                }
+        if (item.getLink() != null) {
+            holder.externalLinkContainer.setVisibility(View.VISIBLE);
+            holder.externalLink.setOnClickListener(v -> {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getLink()));
+                v.getContext().startActivity(intent);
             });
         } else {
-            holder.readmore.setVisibility(View.GONE);
+            holder.externalLinkContainer.setVisibility(View.GONE);
         }
 
-        if (item.getLink() != null) {
+        if (item.getLongtext() != null) {
             holder.readmore.setVisibility(View.VISIBLE);
-            holder.readmore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getLink()));
-                    v.getContext().startActivity(intent);
-                }
+            holder.longtext.setText(Parser.parse(item.getLongtext(), true, holder.longtext));
+            holder.longtext.setLongClickable(true);
+            holder.longtext.setOnLongClickListener(v -> {
+                hideLongtext(holder);
+                return true;
             });
+            hideLongtext(holder);
         } else {
             holder.readmore.setVisibility(View.GONE);
         }
+    }
+
+    private void hideLongtext(ViewHolder holder) {
+        holder.longtext.setVisibility(View.GONE);
+        holder.readmore.setText(R.string.news_read_more);
+        holder.readmore.setOnClickListener(v -> {
+            showLongtext(holder);
+        });
+        setStartDrawableToReadMore(holder, R.drawable.ic_keyboard_arrow_down_black_24dp);
+    }
+
+    private void showLongtext(ViewHolder holder) {
+        holder.longtext.setVisibility(View.VISIBLE);
+        holder.readmore.setText(R.string.news_read_less); // TODO make string resource
+        holder.readmore.setOnClickListener(v -> {
+            hideLongtext(holder);
+        });
+        setStartDrawableToReadMore(holder, R.drawable.ic_keyboard_arrow_up_black_24dp);
+    }
+
+    private void setStartDrawableToReadMore(ViewHolder holder, int drawable) {
+        Resources.Theme appTheme = holder.mView.getContext().getTheme();
+        Drawable drawable1 =  ResourcesCompat.getDrawable(holder.mView.getResources(), drawable, appTheme);
+        holder.readmore.setCompoundDrawablesWithIntrinsicBounds(drawable1, null, null, null);
     }
 
     @Override
@@ -94,19 +110,23 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
         public final View mView;
         public TextView title;
         public BBTextView content;
+        public BBTextView longtext;
         public TextView metadata;
-        public ImageView category;
+        public TextView externalLink;
         public TextView readmore;
         public NewsItem mItem;
+        public LinearLayout externalLinkContainer;
 
         public ViewHolder(View view) {
             super(view);
 
             title = view.findViewById(R.id.news_item_title);
             content = view.findViewById(R.id.news_item_content);
+            longtext = view.findViewById(R.id.news_item_longtext);
             metadata = view.findViewById(R.id.news_item_metadata);
-            category = view.findViewById(R.id.news_item_category);
             readmore = view.findViewById(R.id.news_item_readmore);
+            externalLink = view.findViewById(R.id.news_item_external_link);
+            externalLinkContainer = view.findViewById(R.id.news_item_external_link_container);
 
             mView = view;
         }

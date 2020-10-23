@@ -1,6 +1,5 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +13,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
@@ -46,7 +46,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
 
     private void resetViews(final ViewHolder holder, SimpleAgendaItem item) {
         holder.mItem = item;
-        holder.mContentView.setText(item.getTitle());
+        holder.mContentView.setText(item.getTitle().replaceAll("CKI", App.USCKI_CKI_CHARACTER));
 
         String when = AgendaSubscribedHelper.getWhen(item);
         holder.itemWhen.setText(when);

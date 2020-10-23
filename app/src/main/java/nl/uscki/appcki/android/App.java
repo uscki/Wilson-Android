@@ -20,6 +20,8 @@ public class App extends Application {
     //TODO: LINT: Do not place Android context classes in static fields; this is a memory leak (and also breaks Instant Run)
     private static Context mContext;
 
+    public static final String USCKI_CKI_CHARACTER = "\u01de";
+
     @Override
     public void onCreate() {
         super.onCreate();

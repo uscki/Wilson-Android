@@ -1,72 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
-    <ImageView
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:id="@+id/news_item_category"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_margin="10dp"
-        app:srcCompat="@drawable/account" />
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/text_margin"
+    android:layout_marginEnd="@dimen/text_margin"
+    android:layout_marginTop="@dimen/text_margin"
+    >
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/news_item_title"
-        style="@style/AppTheme.TextSubHeader"
-        android:layout_toRightOf="@+id/news_item_category"
-        android:layout_toEndOf="@+id/news_item_category"
-        android:layout_margin="5dp" />
+        style="@style/AppTheme.TextHeader"
+        />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/news_item_metadata"
-        android:text="Menno houd van Bram de Beer"
-        android:layout_below="@+id/news_item_title"
-        android:layout_toRightOf="@+id/news_item_category"
-        android:layout_toEndOf="@+id/news_item_category"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="5dp"
-        android:textColor="#FF616161"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-3dp"
+        android:layout_marginBottom="5dp"
+        android:text="(poster / x seconds ago)"/>
 
     <nl.uscki.appcki.android.views.BBTextView
-        android:layout_width="wrap_content"
+        android:id="@+id/news_item_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/AppTheme.Text"
-        android:layout_below="@id/news_item_metadata"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:id="@+id/news_item_content"
-        android:layout_marginBottom="10dp"
         android:linksClickable="true" />
+
+    <nl.uscki.appcki.android.views.BBTextView
+        android:id="@+id/news_item_longtext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/AppTheme.Text"
+        android:linksClickable="true"/>
+
+    <LinearLayout
+        android:id="@+id/news_item_external_link_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        >
+        <TextView
+            android:id="@+id/news_item_external_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:text="@string/news_resource_link"
+            android:textSize="16sp"
+            android:focusable="true"
+            app:drawableStartCompat="@drawable/ic_keyboard_arrow_right_black_24dp"
+            />
+        <ImageView
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginStart="3dp"
+            app:srcCompat="@drawable/ic_newwindow"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/news_item_readmore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/news_item_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginStart="10dp"
         android:clickable="true"
-        android:contextClickable="false"
         android:text="@string/news_read_more"
         android:textSize="16sp"
-        android:visibility="gone" />
+        android:focusable="true"
+        app:drawableStartCompat="@drawable/ic_keyboard_arrow_down_black_24dp"
+        />
+
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/list_divider"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="14dp"
-        android:layout_marginRight="14dp"
-        android:layout_marginStart="14dp"
-        android:layout_marginLeft="14dp"/>
-</RelativeLayout>
+        android:layout_marginTop="@dimen/text_margin"
+        />
+</LinearLayout>

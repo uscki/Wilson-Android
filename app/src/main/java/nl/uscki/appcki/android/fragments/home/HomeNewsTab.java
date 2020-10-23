@@ -16,7 +16,6 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.NewsItemAdapter;
-import nl.uscki.appcki.android.generated.news.NewsItem;
 import nl.uscki.appcki.android.generated.news.NewsOverview;
 
 /**
@@ -31,7 +30,7 @@ public class HomeNewsTab extends PageableFragment<NewsOverview> {
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
-        setAdapter(new NewsItemAdapter(new ArrayList<NewsItem>()));
+        setAdapter(new NewsItemAdapter(new ArrayList<>()));
         Services.getInstance().newsService.getNewsCollection(page, NEWS_PAGE_SIZE).enqueue(callback);
 
         return super.onCreateView(inflater, container, savedInstanceState);
