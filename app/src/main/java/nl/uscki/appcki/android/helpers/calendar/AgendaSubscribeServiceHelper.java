@@ -68,7 +68,7 @@ public class AgendaSubscribeServiceHelper {
         }
 
         // Make API available
-        ServiceGenerator.init();
+        ServiceGenerator.init(context);
 
         // Get token active
         UserHelper.getInstance().load();

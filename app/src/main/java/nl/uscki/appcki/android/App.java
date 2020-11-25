@@ -35,7 +35,7 @@ public class App extends Application {
                                 .build()))
                 .build());
 
-        ServiceGenerator.init(); // initialise our OkHttp3 client for Fresco
+        ServiceGenerator.init(this); // initialise our OkHttp3 client for Fresco
 
         ImagePipelineConfig config = OkHttpImagePipelineConfigFactory
                 .newBuilder(this, ServiceGenerator.client)

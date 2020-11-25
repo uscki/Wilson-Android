@@ -327,6 +327,10 @@ public class MainActivity extends BasicActivity
             } else if (id == R.id.nav_search) {
                 openFragment(new SmoboSearch(), null);
                 currentScreen = Screen.SMOBO_SEARCH;
+            } else if (id == R.id.nav_media) {
+//                openFragment(new MediaOverviewFragment(), null);
+//                currentScreen = Screen.MEDIA_COLLECTION_OVERVIEW;
+                startActivity(new Intent(this, MediaActivity.class));
             }
         }
 

@@ -14,15 +14,13 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.AgendaItemAdapter;
-import nl.uscki.appcki.android.generated.agenda.Agenda;
-import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.SimpleAgendaItem;
 
 /**
  * Created by peter on 11/23/16.
  */
 
-public class HomeAgendaTab extends PageableFragment<Agenda> {
+public class HomeAgendaTab extends PageableFragment<AgendaItemAdapter.ViewHolder, SimpleAgendaItem> {
     private final int AGENDA_PAGE_SIZE = 5;
 
     boolean showArchive = false;

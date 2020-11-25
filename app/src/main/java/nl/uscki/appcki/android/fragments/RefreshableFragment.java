@@ -37,17 +37,13 @@ public abstract class RefreshableFragment extends Fragment {
 
     protected void setupSwipeContainer(View view) {
         swipeContainer = view.findViewById(R.id.refreshContainer);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                onSwipeRefresh();
-            }
-        });
+        swipeContainer.setOnRefreshListener(this::onSwipeRefresh);
 
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+
 
         swipeContainer.setRefreshing(false);
     }

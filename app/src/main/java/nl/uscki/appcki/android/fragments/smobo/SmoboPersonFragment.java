@@ -1,6 +1,7 @@
 package nl.uscki.appcki.android.fragments.smobo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,24 +10,31 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.SharedElementCallback;
 import androidx.fragment.app.Fragment;
-import androidx.leanback.widget.HorizontalGridView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.activities.SmoboActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
@@ -34,10 +42,10 @@ import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
-import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.helpers.ContactHelper;
 import nl.uscki.appcki.android.helpers.DateRangeHelper;
+import nl.uscki.appcki.android.helpers.ISharedElementViewContainer;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
 import retrofit2.Response;
 
@@ -45,34 +53,29 @@ import retrofit2.Response;
  * Created by peter on 4/5/17.
  */
 
-public class SmoboPersonFragment extends Fragment {
+public class SmoboPersonFragment extends Fragment implements ISharedElementViewContainer {
     private final String TAG = getClass().getSimpleName();
     AppCompatActivity context;
 
-    // The minimum amount of items to have below your current scroll position
-    // before loading more.
     private Integer id;
-    private int visibleThreshold = 9;
-    private int lastVisibleItem, totalItemCount;
-    protected Integer page = 0;
-    private int pageSize = 20;
-    private boolean scrollLoad;
-    private boolean noMoreContent;
     private SmoboItem p;
+
+    public SmoboItem getP() {
+        return p;
+    }
 
     private Callback<Pageable<MediaFileMetaData>> photosCallback = new Callback<Pageable<MediaFileMetaData>>() {
         @Override
         public void onSucces(Response<Pageable<MediaFileMetaData>> response) {
-            noMoreContent = response.body().getLast();
-            scrollLoad = false;
-            ((BaseItemAdapter) mediaGrid.getAdapter()).addItems(response.body().getContent());
+            if(response.body() != null) {
+                mediaGridAdapter.clear();
+                mediaGridAdapter.addItems(response.body().getContent());
+            }
         }
 
         @Override
         public void onError(Response<Pageable<MediaFileMetaData>> response) {
             super.onError(response);
-            noMoreContent = true;
-            scrollLoad = false;
         }
     };
 
@@ -87,7 +90,9 @@ public class SmoboPersonFragment extends Fragment {
     FrameLayout birthdayInfo;
     FrameLayout homepageInfo;
     RecyclerView smoboGroups;
-    HorizontalGridView mediaGrid;
+    RecyclerView mediaGrid;
+    LinearLayoutManager mediaGridLayoutManager;
+    SmoboMediaAdapter mediaGridAdapter;
     SwipeRefreshLayout swipeContainer;
     RelativeLayout datableRangeInfo;
     ImageView datableRangeIcon;
@@ -107,6 +112,8 @@ public class SmoboPersonFragment extends Fragment {
             createBirthdayInfoWidget(p);
             createWebsiteInfoWidget(p);
             createCountdown();
+
+            Services.getInstance().smoboService.photos(id, 0, p.getNumOfPhotos()).enqueue(photosCallback);
 
             ((BaseItemAdapter) smoboGroups.getAdapter()).update(p.getGroups());
         }
@@ -301,13 +308,11 @@ public class SmoboPersonFragment extends Fragment {
 
             setupMediaGrid();
             setupSwipeContainer();
-            smoboGroups.setAdapter(new SmoboCommissieAdapter(new ArrayList<Committee>()));
+            smoboGroups.setAdapter(new SmoboCommissieAdapter(new ArrayList<>()));
 
             swipeContainer.setRefreshing(true);
             Services.getInstance().smoboService.get(id).enqueue(smoboCallback);
-            Services.getInstance().smoboService.photos(id, page, pageSize).enqueue(photosCallback);
         }
-
         return view;
     }
 
@@ -317,6 +322,30 @@ public class SmoboPersonFragment extends Fragment {
         if(this.timer != null) {
             this.timer.cancel();
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        SmoboActivity smoboActivity = (SmoboActivity)getActivity();
+        if(smoboActivity != null) {
+            boolean registered = smoboActivity.registerSharedElementCallback(this);
+            Log.e(getTag(), "Registered " + getClass() + " for shared element stuff. Result was " + Boolean.toString(registered));
+        } else {
+            Log.e(getTag(), "SmoboActivity was null! Not registering callbacks on " + getClass());
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        SmoboActivity smoboActivity = (SmoboActivity)getActivity();
+        if(smoboActivity != null) {
+            boolean registered = smoboActivity.deregisterSharedElementCallback(this);
+            Log.e(getTag(), "Deregistered " + getClass() + " for shared element stuff. Result was " + Boolean.toString(registered));
+        } else {
+            Log.e(getTag(), "SmoboActivity was null! Not deregistering callbacks on " + getClass());
+        }
+        super.onDestroy();
     }
 
     @Override
@@ -354,12 +383,7 @@ public class SmoboPersonFragment extends Fragment {
     }
 
     protected void setupSwipeContainer() {
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                onSwipeRefresh();
-            }
-        });
+        swipeContainer.setOnRefreshListener(this::onSwipeRefresh);
 
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -370,44 +394,21 @@ public class SmoboPersonFragment extends Fragment {
     }
 
     private void setupMediaGrid() {
-        HorizontalGridView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        mediaGrid.setLayoutManager(layoutManager);
-
-        mediaGrid.setAdapter(new SmoboMediaAdapter(new ArrayList<>()));
-        mediaGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                LinearLayoutManager layoutManager = (LinearLayoutManager) mediaGrid.getLayoutManager();
-                totalItemCount = layoutManager.getItemCount();
-                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-
-                if (!scrollLoad // we are not already loading a new page
-                        && totalItemCount <= (lastVisibleItem + visibleThreshold) // we should be loading a new page
-                        && !noMoreContent) { // there is still content to load
-                    // End has been reached
-                    scrollLoad = true;
-                    Log.e("mediagrid", "Loading page: " + page);
-                    page++; // update pageE
-                    Services.getInstance().smoboService.photos(id, page, pageSize).enqueue(photosCallback);
-                }
-            }
-        });
+        this.mediaGridLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        mediaGrid.setLayoutManager(this.mediaGridLayoutManager);
+        this.mediaGridAdapter = new SmoboMediaAdapter((SmoboActivity)getActivity(), this.id, new ArrayList<>());
+        mediaGrid.setAdapter(this.mediaGridAdapter);
     }
 
     public void onSwipeRefresh() {
         Services.getInstance().smoboService.get(id).enqueue(smoboCallback);
-        Services.getInstance().smoboService.photos(id, page, pageSize).enqueue(photosCallback);
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         try{
-            final AppCompatActivity activity = (AppCompatActivity) context;
-
             // Return the fragment manager
-            this.context = activity;
+            this.context = (AppCompatActivity) context;
 
             // If using the Support lib.
             // return activity.getSupportFragmentManager();
@@ -430,4 +431,66 @@ public class SmoboPersonFragment extends Fragment {
         super.onDetach();
         if(this.timer != null) this.timer.cancel();
     }
+
+    @Override
+    public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+        RecyclerView.LayoutManager layoutManager = this.mediaGrid.getLayoutManager();
+        if(!names.isEmpty() && names.get(0) != null && layoutManager != null && this.mediaGrid.getAdapter() != null) {
+            String transitionName = names.get(0);
+            for(int i = 0; i < this.mediaGrid.getAdapter().getItemCount(); i++) {
+                View view = layoutManager.findViewByPosition(i);
+                if(view != null) {
+                    View imageView = view.findViewById(R.id.photo);
+                    if(imageView != null && transitionName.equals(imageView.getTransitionName())) {
+                        sharedElements.put(transitionName, imageView);
+                        if(getActivity() != null) {
+                            getActivity().startPostponedEnterTransition();
+                        }
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void setExitSharedElementCallback(@Nullable SharedElementCallback callback) {
+        super.setExitSharedElementCallback(callback);
+    }
+
+    private View getViewAt(int position) {
+        RecyclerView.LayoutManager manager = this.mediaGrid.getLayoutManager();
+        View containerView = null;
+        if(manager != null) {
+            containerView = manager.findViewByPosition(position);
+        }
+        if(containerView != null) {
+            return containerView.findViewById(R.id.photo);
+        }
+        return null;
+    }
+
+    @Override
+    public int activityReentering(int code, Intent data) {
+        code--;
+        if(getViewAt(code) == null) {
+            if(getActivity() != null) {
+                getActivity().postponeEnterTransition();
+            }
+            this.mediaGrid.getViewTreeObserver().addOnGlobalLayoutListener(startPostponedIfEverythingElseFails);
+        }
+        ((LinearLayoutManager)this.mediaGrid.getLayoutManager()).scrollToPositionWithOffset(code, 0);
+        return code;
+    }
+
+    private ViewTreeObserver.OnGlobalLayoutListener startPostponedIfEverythingElseFails = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            // Force the layout to continue in the rare case the view was null, but the sharedElementsMap was not updated
+            mediaGrid.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            if(getActivity() != null) {
+                getActivity().startPostponedEnterTransition();
+            }
+        }
+    };
 }

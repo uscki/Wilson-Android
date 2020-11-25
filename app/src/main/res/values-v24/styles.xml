@@ -1,6 +1,0 @@
-<resources>
-    <style name="CardView.Wilson" parent="CardView.Wilson.Base">
-        <item name="android:layout_marginStart">@dimen/cards_margin_sides</item>
-        <item name="android:layout_marginEnd">@dimen/cards_margin_sides</item>
-    </style>
-</resources>

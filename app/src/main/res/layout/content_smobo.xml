@@ -37,15 +37,17 @@
                     android:textColor="@color/colorAccent"
                     android:textSize="16sp" />
 
-                <!-- focusable might break clicking? -->
-                <androidx.leanback.widget.HorizontalGridView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/smobo_media_gridview"
-                    android:layout_below="@id/smobo_media_text"
-                    android:layout_marginTop="12dp"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="110dp"
+                    android:layout_below="@id/smobo_media_text"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/cards_margin_top"
+                    android:layout_marginBottom="@dimen/cards_margin_top"
                     android:focusable="false"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+                    android:scrollbars="none"
+                    />
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 

@@ -1,15 +1,17 @@
 package nl.uscki.appcki.android.fragments.home;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -18,14 +20,13 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.RoephoekItemAdapter;
 import nl.uscki.appcki.android.fragments.shoutbox.NewShoutWidget;
-import nl.uscki.appcki.android.generated.roephoek.Roephoek;
 import nl.uscki.appcki.android.generated.roephoek.RoephoekItem;
 
 /**
  * Created by peter on 11/23/16.
  */
 
-public class HomeRoephoekTab extends PageableFragment<Roephoek> {
+public class HomeRoephoekTab extends PageableFragment<RoephoekItemAdapter.ViewHolder, RoephoekItem> {
     private final int ROEPHOEK_PAGE_SIZE = 10;
 
     @Override
@@ -33,7 +34,7 @@ public class HomeRoephoekTab extends PageableFragment<Roephoek> {
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
-        setAdapter(new RoephoekItemAdapter(new ArrayList<RoephoekItem>()));
+        setAdapter(new RoephoekItemAdapter(new ArrayList<>()));
         Services.getInstance().shoutboxService.getShoutsCollection(page, ROEPHOEK_PAGE_SIZE).enqueue(callback);
 
         return super.onCreateView(inflater, container, savedInstanceState);

@@ -1,7 +1,7 @@
 package nl.uscki.appcki.android.api;
 
+import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.poll.PollItem;
-import nl.uscki.appcki.android.generated.poll.PollPage;
 import retrofit2.Call;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -21,7 +21,7 @@ public interface PollService {
     Call<PollItem> get(@Path("id") Integer id);
 
     @GET("polls/")
-    Call<PollPage> overview(@Query("page") Integer page, @Query("size") Integer size);
+    Call<Pageable<PollItem>> overview(@Query("page") Integer page, @Query("size") Integer size);
 
     @FormUrlEncoded
     @POST("poll/active/options/{id}/vote")

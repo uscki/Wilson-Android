@@ -1,8 +1,8 @@
 package nl.uscki.appcki.android.api;
 
 import nl.uscki.appcki.android.api.models.ActionResponse;
+import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.quotes.Quote;
-import nl.uscki.appcki.android.generated.quotes.QuotesPage;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -20,10 +20,10 @@ public interface QuoteService {
     Call<Quote> get(@Path("id") Integer id);
 
     @GET("quotes/")
-    Call<QuotesPage> getQuotesCollection(@Query("page") Integer page, @Query("size") Integer size);
+    Call<Pageable<Quote>> getQuotesCollection(@Query("page") Integer page, @Query("size") Integer size);
 
     @GET("quotes/")
-    Call<QuotesPage> getQuotesCollection(@Query("page") Integer page, @Query("size") Integer size, @Query("sort") String... sort);
+    Call<Pageable<Quote>> getQuotesCollection(@Query("page") Integer page, @Query("size") Integer size, @Query("sort") String... sort);
 
     @FormUrlEncoded
     @POST("quotes/{id}/vote")

@@ -13,7 +13,7 @@ import retrofit2.Response;
 /**
  * Created by peter on 1/3/17.
  */
-
+@Deprecated
 public class ImageSpanCallback extends Callback<ResponseBody> {
     private BBTextView view;
     private LevelListDrawable mDrawable;

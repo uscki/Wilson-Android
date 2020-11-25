@@ -2,6 +2,10 @@ package nl.uscki.appcki.android.api;
 
 import android.net.Uri;
 
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.load.model.LazyHeaderFactory;
+
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 

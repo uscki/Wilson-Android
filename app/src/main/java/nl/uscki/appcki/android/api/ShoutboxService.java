@@ -1,6 +1,6 @@
 package nl.uscki.appcki.android.api;
 
-import nl.uscki.appcki.android.generated.roephoek.Roephoek;
+import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.roephoek.RoephoekItem;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -14,10 +14,10 @@ import retrofit2.http.Query;
  */
 public interface ShoutboxService {
     @GET("shouts/")
-    Call<Roephoek> getShoutsCollection(@Query("page") Integer page, @Query("size") Integer size);
+    Call<Pageable<RoephoekItem>> getShoutsCollection(@Query("page") Integer page, @Query("size") Integer size);
 
     @GET("shouts/")
-    Call<Roephoek> getShoutsCollection(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
+    Call<Pageable<RoephoekItem>> getShoutsCollection(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
 
     @FormUrlEncoded
     @POST("shouts/shout")

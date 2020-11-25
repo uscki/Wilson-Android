@@ -3,11 +3,15 @@ package nl.uscki.appcki.android.helpers.notification.agenda;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
-import android.util.Log;
+
 import com.google.firebase.messaging.RemoteMessage;
+
 import java.io.IOException;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.api.ServiceGenerator;
@@ -135,7 +139,7 @@ public abstract class ReproducibleAgendaActionNotification extends AbstractNotif
 
         try {
             // Make API available
-            ServiceGenerator.init();
+            ServiceGenerator.init(context);
 
             // Get token active
             UserHelper.getInstance().load();

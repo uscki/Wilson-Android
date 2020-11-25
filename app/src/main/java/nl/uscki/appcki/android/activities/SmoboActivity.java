@@ -1,21 +1,30 @@
 package nl.uscki.appcki.android.activities;
 
+import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.viewpager.widget.ViewPager;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.List;
+import java.util.Map;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.adapters.SmoboViewPagerAdapter;
+import nl.uscki.appcki.android.helpers.ISharedElementViewContainer;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
 
 public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffsetChangedListener, SmoboInfoWidget.OnContextButtonClickListener {
@@ -27,12 +36,27 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
     CollapsingToolbarLayout collapsingToolbarLayout;
     Toolbar toolbar;
 
-    SimpleDraweeView profile;
+    ImageView profile;
+    private String personName;
 
     TabLayout tabLayout;
     ViewPager viewPager;
 
     boolean collapsed = false;
+
+    private ISharedElementViewContainer viewContainer;
+
+    public boolean registerSharedElementCallback(ISharedElementViewContainer viewContainer) {
+        boolean status = this.viewContainer == null;
+        this.viewContainer = viewContainer;
+        return status;
+    }
+
+    public boolean deregisterSharedElementCallback(ISharedElementViewContainer viewContainer) {
+        boolean status = this.viewContainer != null && this.viewContainer.equals(viewContainer);
+        this.viewContainer = null;
+        return status;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +70,7 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
         tabLayout = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.smobo_viewpager);
 
-        toolbar.setTitle(" ");
+        toolbar.setTitle("");
 
         setSupportActionBar(toolbar);
 
@@ -54,13 +78,13 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
 
         if (getIntent().getIntExtra("id", 0) != 0) {
             if(getIntent().getStringExtra("name") != null) {
+                this.personName = getIntent().getStringExtra("name");
                 collapsingToolbarLayout.setTitle(" ");
-                tabLayout.addTab(tabLayout.newTab().setText(getIntent().getStringExtra("name")), PERSON);
+                tabLayout.addTab(tabLayout.newTab().setText(this.personName), PERSON);
                 collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.AppTheme_CollapsingToolbarTitle);
             }
 
             int id = getIntent().getIntExtra("id", 0);
-
 
             tabLayout.addTab(tabLayout.newTab().setText("WiCKI"), WICKI);
             viewPager.setAdapter(new SmoboViewPagerAdapter(getSupportFragmentManager(), id));
@@ -86,10 +110,47 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
         }
 
         if (getIntent().getIntExtra("photo", 0) != 0) {
-            profile.setImageURI(MediaAPI.getMediaUri(getIntent().getIntExtra("photo", 0)));
+            Glide.with(this)
+                    .load(MediaAPI.getMediaUri(getIntent().getIntExtra("photo", 0), MediaAPI.MediaSize.LARGE))
+                    .into(profile);
+            profile.setTransitionName("smobo_profile_photo");
+            profile.setOnClickListener(v -> {
+                Intent intent = new FullScreenMediaActivity
+                        .SingleImageIntentBuilder(personName, "smobo_profile_photo")
+                        .media(getIntent().getIntExtra("photo", 0))
+                        .build(SmoboActivity.this);
+
+                SmoboActivity.this.startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        SmoboActivity.this, profile, profile.getTransitionName()).toBundle());
+            });
         } else {
             appBarLayout.setExpanded(false);
         }
+
+        setExitSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                if(!names.isEmpty() && names.get(0).equals("smobo_profile_photo")) {
+                    sharedElements.put(names.get(0), profile);
+                } else if(viewContainer != null) {
+                    Log.e("SmoboActivity", "Propegating onMapSharedElements to " + viewContainer.getClass());
+                    viewContainer.onMapSharedElements(names, sharedElements);
+                } else {
+                    Log.e("SmoboActivity", "No viewcontainer. Not propegating onMapSharedElements");
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onActivityReenter(int resultCode, Intent data) {
+        if(viewContainer != null) {
+            Log.e("SmoboActivity", "Propegating onActivityReenter to " + this.viewContainer.getClass());
+            resultCode = viewContainer.activityReentering(resultCode, data);
+        } else {
+            Log.e("SmoboActivity", "No viewcontainer. Not propegating onActivityReenter");
+        }
+        super.onActivityReenter(resultCode, data);
     }
 
     @Override

@@ -4,11 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -88,8 +89,13 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         }
 
         if (item.getPosterid() != null) {
-            holder.itemPoster.setImageURI(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.SMALL));
-            //TODO open media browser with normal size poster
+            Glide.with(holder.itemView)
+                    .load(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.NORMAL))
+                    .thumbnail(Glide.with(holder.mView).load(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.SMALL)).fitCenter())
+                    .fitCenter()
+                    .into(holder.itemPoster);
+        } else {
+            Glide.with(holder.itemView).clear(holder.itemPoster);
         }
 
         if(item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
@@ -103,19 +109,15 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
             holder.nComments.setVisibility(View.VISIBLE);
         }
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle args = new Bundle();
-                args.putInt(AgendaActivity.PARAM_AGENDA_ID, holder.mItem.getId());
-                EventBus.getDefault().post(new OpenFragmentEvent(new AgendaDetailTabsFragment(), args));
-            }
+        holder.mView.setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putInt(AgendaActivity.PARAM_AGENDA_ID, holder.mItem.getId());
+            EventBus.getDefault().post(new OpenFragmentEvent(new AgendaDetailTabsFragment(), args));
         });
     }
 
     private void unsetViews(ViewHolder holder) {
         holder.mItem = null;
-        holder.itemPoster.setImageURI("");
         holder.itemWhere.setText("");
         holder.itemDeelnemers.setText("");
         holder.itemWhen.setText("");
@@ -140,7 +142,7 @@ public class AgendaItemAdapter extends BaseItemAdapter<AgendaItemAdapter.ViewHol
         TextView itemWhere;
         TextView nComments;
         TextView itemDeelnemers;
-        SimpleDraweeView itemPoster;
+        ImageView itemPoster;
         TextView registrationCompulsoryText;
 
         public ViewHolder(View view) {
