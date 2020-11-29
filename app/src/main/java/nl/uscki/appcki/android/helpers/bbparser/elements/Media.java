@@ -51,7 +51,7 @@ public class Media extends GenericElement {
             @Override
             public void onClick(View widget) {
                 // Unfortunately, I do not think (Image)Spans support shared element transitions. Still, better than nothing
-                Intent intent = new FullScreenMediaActivity.SingleImageIntentBuilder("", "")
+                Intent intent = new FullScreenMediaActivity.SingleImageIntentBuilder("", null)
                         .media(mediaId)
                         .build(view.getContext());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

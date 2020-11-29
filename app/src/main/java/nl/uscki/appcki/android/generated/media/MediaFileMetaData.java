@@ -104,4 +104,13 @@ public class MediaFileMetaData implements IWilsonBaseItem, Parcelable {
             return new MediaFileMetaData[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "MediaFileMetaData{" +
+                "id=" + id +
+                ", collection=" + collection +
+                ", tags=" + tags.size() +
+                '}';
+    }
 }
