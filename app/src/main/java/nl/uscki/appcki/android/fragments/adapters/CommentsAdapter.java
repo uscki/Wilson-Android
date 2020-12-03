@@ -18,7 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,10 +66,21 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
 
         // Set the photo of the commenter
         Integer profilePictureId = holder.comment.person.getPhotomediaid();
+//        if(profilePictureId != null) {
+//            holder.commenterPhoto.setImageURI(MediaAPI.getMediaUri(profilePictureId, MediaAPI.MediaSize.SMALL));
+//        } else {
+//            holder.commenterPhoto.setImageURI("");
+//        }
         if(profilePictureId != null) {
-            holder.commenterPhoto.setImageURI(MediaAPI.getMediaUri(profilePictureId, MediaAPI.MediaSize.SMALL));
+            Glide.with(holder.mView)
+                    .load(MediaAPI.getMediaUri(profilePictureId, MediaAPI.MediaSize.SMALL))
+                    .fitCenter()
+                    .optionalCircleCrop()
+                    .placeholder(R.drawable.account)
+                    .into(holder.commenterPhoto);
         } else {
-            holder.commenterPhoto.setImageURI("");
+            Glide.with(holder.mView)
+                    .clear(holder.commenterPhoto);
         }
 
         final AgendaActivity act = (AgendaActivity)holder.mView.getContext();
@@ -156,7 +167,7 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
         public Comment comment;
         public CommentsAdapter adapter;
 
-        SimpleDraweeView commenterPhoto;
+        ImageView commenterPhoto;
         TextView commenterName;
         ImageView showIsAnnouncementView;
         ImageButton comment_delete_view;
@@ -192,33 +203,25 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
 
         // Add a listener to the post comment button to process the comment
         void activateReplyCommentButton() {
-            postCommentButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    replyRow.setVisibility(View.GONE);
-                    commentsFragment.postComment(actualCommentText, ViewHolder.this);
-                }
+            postCommentButton.setOnClickListener(view -> {
+                replyRow.setVisibility(View.GONE);
+                commentsFragment.postComment(actualCommentText, ViewHolder.this);
             });
         }
 
         void activateDeleteCommentButton() {
-            comment_delete_view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new AlertDialog.Builder(mView.getContext())
-                            .setTitle(R.string.comment_delete_header)
-                            .setMessage(R.string.comment_delete_message)
-                            .setIcon(R.drawable.ic_delete_24px)
-                            .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    commentsFragment.deleteComment(comment.id);
-                                }
-                            })
-                            .setNegativeButton(R.string.dialog_no, null)
-                            .show();
-                }
-            });
+            comment_delete_view.setOnClickListener(view -> new AlertDialog.Builder(mView.getContext())
+                    .setTitle(R.string.comment_delete_header)
+                    .setMessage(R.string.comment_delete_message)
+                    .setIcon(R.drawable.ic_delete_24px)
+                    .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            commentsFragment.deleteComment(comment.id);
+                        }
+                    })
+                    .setNegativeButton(R.string.dialog_no, null)
+                    .show());
         }
     }
 }

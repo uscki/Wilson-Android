@@ -20,7 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 
 import de.greenrobot.event.EventBus;
@@ -427,18 +427,20 @@ public class MainActivity extends BasicActivity
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText(user.getPostalname());
 
-        final SimpleDraweeView profile = navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
+        final ImageView profile = navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
 
-        profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openSmoboFor(user);
-                EventBus.getDefault().post(new CurrentUserUpdateRequiredDirectiveEvent());
-            }
+        profile.setOnClickListener(v -> {
+            openSmoboFor(user);
+            EventBus.getDefault().post(new CurrentUserUpdateRequiredDirectiveEvent());
         });
 
         if (user.getPhotomediaid() != null) {
-            profile.setImageURI(MediaAPI.getMediaUri(user.getPhotomediaid(), MediaAPI.MediaSize.SMALL));
+            Glide.with(this)
+                    .load(MediaAPI.getMediaUri(user.getPhotomediaid(), MediaAPI.MediaSize.SMALL))
+                    .fitCenter()
+                    .optionalCircleCrop()
+                    .placeholder(R.drawable.account)
+                    .into(profile);
         }
     }
 

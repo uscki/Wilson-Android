@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
@@ -13,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
@@ -26,7 +27,7 @@ public class ConfirmOrderDialog extends DialogFragment {
     TextView storeName;
     TextView productName;
     TextView itemPrice;
-    SimpleDraweeView productImage;
+    ImageView productImage;
     NumberPicker amountPicker;
     CheckBox dontShowAgain;
     Button confirmButton;
@@ -66,12 +67,7 @@ public class ConfirmOrderDialog extends DialogFragment {
         totalPrice = view.findViewById(R.id.shop_confirm_total_price);
 
         confirmButton.setOnClickListener(confirmOrderListener);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ConfirmOrderDialog.this.dismiss();
-            }
-        });
+        cancelButton.setOnClickListener(view1 -> ConfirmOrderDialog.this.dismiss());
 
         amountPicker.setMinValue(1);
         amountPicker.setValue(1);
@@ -79,7 +75,9 @@ public class ConfirmOrderDialog extends DialogFragment {
 
         storeName.setText(store.title);
         if(product.image != null) {
-            productImage.setImageURI(MediaAPI.getMediaUri(product.image));
+            Glide.with(this)
+                    .load(MediaAPI.getMediaUri(product.image))
+                    .into(productImage);
             productImage.setVisibility(View.VISIBLE);
         }
         productName.setText(product.title);

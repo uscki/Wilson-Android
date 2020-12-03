@@ -20,7 +20,7 @@
         android:orientation="horizontal"
         android:layout_margin="@dimen/text_margin"
         >
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageView
             android:id="@+id/shop_confirm_product_image"
             android:layout_width="70dp"
             android:layout_height="70dp"

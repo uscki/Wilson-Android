@@ -64,8 +64,6 @@ dependencies {
     implementation 'io.github.inflationx:calligraphy3:3.1.1'
     implementation 'io.github.inflationx:viewpump:2.0.3'
     implementation 'com.google.firebase:firebase-messaging:21.0.0'
-    implementation 'com.facebook.fresco:fresco:1.1.0' // TODO delete
-    implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.1.0' // TODO delete
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     // Avoid error `Cannot fit requested classes in a single dex file (# methods: 66229 > 65536)`
     // See https://developer.android.com/studio/build/multidex#mdex-gradle
