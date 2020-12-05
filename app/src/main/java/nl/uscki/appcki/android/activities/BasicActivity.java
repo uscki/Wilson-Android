@@ -1,14 +1,19 @@
 package nl.uscki.appcki.android.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import android.widget.Toast;
+
 import com.google.gson.Gson;
+
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.EventBusException;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
@@ -192,5 +197,10 @@ public abstract class BasicActivity extends AppCompatActivity {
         Intent urlIntent = new Intent(Intent.ACTION_VIEW);
         urlIntent.setData(Uri.parse(event.url.replace('\"',' ').trim()));
         startActivity(urlIntent);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 }
