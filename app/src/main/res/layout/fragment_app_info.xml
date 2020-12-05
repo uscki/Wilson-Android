@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/text_margin"
-            style="@style/AppTheme.Text"
+            style="@style/AppTheme.Text.Selectable"
             android:autoLink="web"
             android:text="@string/settings_app_info_app_description"
             />
@@ -98,7 +98,7 @@
                     >
 
                     <TextView
-                        style="@style/AppTheme.Text"
+                        style="@style/AppTheme.Text.Selectable"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/settings_app_info_visit_address"
@@ -108,7 +108,7 @@
 
                     <TextView
                         android:id="@+id/main_address_visiting"
-                        style="@style/AppTheme.Text"
+                        style="@style/AppTheme.Text.Selectable"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/incognito_address_visiting"
@@ -125,7 +125,7 @@
                 android:textAlignment="center"
                 >
                 <TextView
-                    style="@style/AppTheme.Text"
+                    style="@style/AppTheme.Text.Selectable"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/settings_app_info_postal_address"
@@ -133,7 +133,7 @@
                     android:textColor="@color/lb_grey"/>
 
                 <TextView
-                    style="@style/AppTheme.Text"
+                    style="@style/AppTheme.Text.Selectable"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/incognito_address_postal"
@@ -149,7 +149,7 @@
                 android:orientation="vertical"
                 >
                 <TextView
-                    style="@style/AppTheme.Text"
+                    style="@style/AppTheme.Text.Selectable"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/settings_app_info_uithocki_address"
@@ -158,7 +158,7 @@
                     />
 
                 <TextView
-                    style="@style/AppTheme.Text"
+                    style="@style/AppTheme.Text.Selectable"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/incognito_address_uithocki"
@@ -173,7 +173,7 @@
             android:layout_marginBottom="@dimen/text_margin"
             android:linksClickable="true"
             android:autoLink="email"
-            style="@style/AppTheme.Text"
+            style="@style/AppTheme.Text.Selectable"
             android:text="@string/settings_app_info_appcki_description"
             />
 
@@ -183,7 +183,7 @@
             android:layout_marginBottom="@dimen/text_margin"
             android:linksClickable="true"
             android:autoLink="email"
-            style="@style/AppTheme.Text"
+            style="@style/AppTheme.Text.Selectable"
             android:text="@string/settings_app_info_syso_description"
             />
 
@@ -221,7 +221,7 @@
         <TextView
         android:text="@string/incognito_iban_number"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
-            style="@style/AppTheme.Text"
+            style="@style/AppTheme.Text.Selectable"
         />
         <TextView android:layout_height="wrap_content"
             android:layout_width="wrap_content"
@@ -232,14 +232,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/AppTheme.Text"
+            style="@style/AppTheme.Text.Selectable"
             android:text="@string/incognito_iban_name"/>
     </TableRow>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/AppTheme.Text"
+            style="@style/AppTheme.Text.Selectable"
             android:layout_marginBottom="@dimen/cards_margin_sides"
             android:text="@string/settings_app_info_file_bug_report"/>
 
@@ -294,7 +294,7 @@
             android:id="@+id/app_info_report_bug_uscki"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/AppTheme.Text"
+            style="@style/AppTheme.Text.Selectable"
             android:clickable="true"
             android:focusable="true"
             android:text="@string/settings_app_info_bug_tracker"/>
@@ -312,7 +312,7 @@
         android:layout_height="wrap_content"
         android:linksClickable="true"
         android:autoLink="email"
-        style="@style/AppTheme.Text"
+        style="@style/AppTheme.Text.Selectable"
         android:layout_marginBottom="@dimen/text_margin"
         android:text="@string/settings_app_info_invite_members"/>
 
@@ -333,14 +333,14 @@
             android:id="@+id/app_info_copyright_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/AppTheme.Text"
+            style="@style/AppTheme.Text.Selectable"
             android:text="@string/settigns_app_info_copyright_base"/>
         <TextView
             android:id="@+id/app_info_copyright_current"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/app_info_copyright_start"
-            style="@style/AppTheme.Text"
+            style="@style/AppTheme.Text.Selectable"
             android:text="2020"
             />
 
@@ -357,7 +357,7 @@
             android:id="@+id/app_info_privacy_policy_link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/AppTheme.Text"
+            style="@style/AppTheme.Text.Selectable"
             android:autoLink="web"
             android:linksClickable="true"
             android:layout_toEndOf="@id/app_info_footer_sep1"
@@ -376,7 +376,7 @@
             android:id="@+id/app_info_data_indexation_link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/AppTheme.Text"
+            style="@style/AppTheme.Text.Selectable"
             android:layout_toEndOf="@id/app_info_footer_sep2"
             android:text="@string/settings_app_info_data_indexation"
             />

@@ -39,7 +39,7 @@
     <nl.uscki.appcki.android.views.BBTextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        style="@style/AppTheme.Text"
+        style="@style/AppTheme.Text.Selectable"
         android:id="@+id/news_item_content"
         android:linksClickable="true"
         android:layout_marginLeft="8dp"

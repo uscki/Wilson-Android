@@ -9,7 +9,7 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:textAppearance="@style/AppTheme.Text"
+        android:textAppearance="@style/AppTheme.Text.Selectable"
         android:text="test12344"
         android:textStyle="normal" />
     <TextView
@@ -19,5 +19,5 @@
         android:layout_margin="@dimen/text_margin"
         android:layout_toRightOf="@id/smobo_commissie_name"
         android:layout_toEndOf="@id/smobo_commissie_name"
-        android:textAppearance="@style/AppTheme.Text"/>
+        android:textAppearance="@style/AppTheme.Text.Selectable"/>
 </RelativeLayout>
