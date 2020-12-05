@@ -33,7 +33,7 @@
                     android:layout_marginStart="@dimen/text_margin"
                     android:layout_marginTop="@dimen/cards_margin_top"
                     android:text="@string/smobo_photos"
-                    android:textAppearance="@style/AppTheme.Text"
+                    android:textAppearance="@style/AppTheme.Text.Selectable"
                     android:textColor="@color/colorAccent"
                     android:textSize="16sp" />
 
@@ -184,7 +184,7 @@
                     android:layout_marginStart="@dimen/text_margin"
                     android:layout_marginTop="@dimen/cards_margin_top"
                     android:text="Commissies"
-                    android:textAppearance="@style/AppTheme.Text"
+                    android:textAppearance="@style/AppTheme.Text.Selectable"
                     android:textColor="@color/colorAccent"
                     android:textSize="16sp" />
 

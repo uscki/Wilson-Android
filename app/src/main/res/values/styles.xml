@@ -72,6 +72,9 @@
 
     <style name="AppTheme.Text" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/colorNormalText</item>
+    </style>
+
+    <style name="AppTheme.Text.Selectable" parent="AppTheme.Text">
         <item name="android:textIsSelectable">true</item>
     </style>
 

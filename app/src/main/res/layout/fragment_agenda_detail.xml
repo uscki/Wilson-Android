@@ -76,7 +76,7 @@
 
             <nl.uscki.appcki.android.views.BBTextView
                 android:id="@+id/agenda_detail_longtext"
-                style="@style/AppTheme.Text"
+                style="@style/AppTheme.Text.Selectable"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/text_margin"
@@ -102,7 +102,7 @@
 
                 <TextView
                     android:id="@+id/agenda_summary_commissie_text"
-                    style="@style/AppTheme.Text"
+                    style="@style/AppTheme.Text.Selectable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableStart="@drawable/account_multiple"
@@ -112,7 +112,7 @@
 
                 <TextView
                     android:id="@+id/agenda_summary_title_text"
-                    style="@style/AppTheme.Text"
+                    style="@style/AppTheme.Text.Selectable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/agenda_summary_commissie_text"
@@ -124,7 +124,7 @@
 
                 <TextView
                     android:id="@+id/agenda_summary_waar_text"
-                    style="@style/AppTheme.Text"
+                    style="@style/AppTheme.Text.Selectable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/agenda_summary_title_text"
@@ -136,7 +136,7 @@
 
                 <TextView
                     android:id="@+id/agenda_summary_when_text"
-                    style="@style/AppTheme.Text"
+                    style="@style/AppTheme.Text.Selectable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/agenda_summary_waar_text"
@@ -148,7 +148,7 @@
 
                 <TextView
                     android:id="@+id/agenda_summary_cost_text"
-                    style="@style/AppTheme.Text"
+                    style="@style/AppTheme.Text.Selectable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/agenda_summary_when_text"

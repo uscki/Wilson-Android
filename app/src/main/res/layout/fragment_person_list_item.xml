@@ -39,7 +39,7 @@
 
         <TextView
             android:id="@+id/person_list_item_note"
-            style="@style/AppTheme.Text"
+            style="@style/AppTheme.Text.Selectable"
             android:layout_below="@id/person_list_item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -40,7 +40,7 @@
 
                     <TextView
                         android:id="@+id/meeting_detail_time"
-                        style="@style/AppTheme.Text"
+                        style="@style/AppTheme.Text.Selectable"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
@@ -51,7 +51,7 @@
 
                     <TextView
                         android:id="@+id/meeting_detail_where"
-                        style="@style/AppTheme.Text"
+                        style="@style/AppTheme.Text.Selectable"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
@@ -62,7 +62,7 @@
 
                     <TextView
                         android:id="@+id/meeting_detail_mensen"
-                        style="@style/AppTheme.Text"
+                        style="@style/AppTheme.Text.Selectable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
@@ -95,7 +95,7 @@
 
                     <TextView
                         android:id="@+id/meeting_detail_plannotes"
-                        style="@style/AppTheme.Text"
+                        style="@style/AppTheme.Text.Selectable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="-" />
@@ -124,7 +124,7 @@
 
                     <TextView
                         android:id="@+id/meeting_detail_notes"
-                        style="@style/AppTheme.Text"
+                        style="@style/AppTheme.Text.Selectable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="-" />
@@ -152,7 +152,7 @@
 
                     <TextView
                         android:id="@+id/meeting_detail_agenda"
-                        style="@style/AppTheme.Text"
+                        style="@style/AppTheme.Text.Selectable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                          />

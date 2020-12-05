@@ -19,7 +19,7 @@
             android:layout_margin="@dimen/text_margin"
             android:textStyle="bold"
             android:textSize="16sp"
-            style="@style/AppTheme.Text"/>
+            style="@style/AppTheme.Text.Selectable"/>
 
         <ImageView
             android:id="@+id/poll_separator"
