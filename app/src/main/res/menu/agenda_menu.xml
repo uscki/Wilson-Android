@@ -27,6 +27,12 @@
         android:visible="false"
         app:showAsAction="ifRoom" />
 
+    <item android:id="@+id/action_share_agenda_item"
+        android:icon="@drawable/ic_share_white_24dp"
+        android:title="Share (TODO)"
+        android:visible="false"
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/action_agenda_archive"
         android:title="@string/agenda_archive_menu_string"

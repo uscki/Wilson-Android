@@ -136,7 +136,6 @@ public class AgendaActivity extends BasicActivity {
         EventBus.getDefault().post(new DetailItemUpdatedEvent<>(item));
 
         if(item.getPosterid() != null && item.getPosterid() >= 0) {
-//            Services.getInstance().mediaService.file(item.getPosterid(), "normal").enqueue(posterLoadedCallback);
             Glide.with(this)
                     .load(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.LARGE))
                     .thumbnail(Glide.with(this).load(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.SMALL)).fitCenter().listener(posterRequestListener))
@@ -317,7 +316,17 @@ public class AgendaActivity extends BasicActivity {
         setSubscribeButtons();
         setExportButtons();
 
+        this.menu.findItem(R.id.action_share_agenda_item).setOnMenuItemClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_TITLE, item.getTitle()); // TODO
+            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.incognito_website_agenda_event_url, item.getId()));
+            intent.setType("text/*");
+            startActivity(Intent.createChooser(intent, "Send to...")); // TODO
+            return true;
+        });
+
         this.menu.findItem(R.id.action_agenda_archive).setVisible(false);
+        this.menu.findItem(R.id.action_share_agenda_item).setVisible(true);
 
         return super.onCreateOptionsMenu(menu);
     }

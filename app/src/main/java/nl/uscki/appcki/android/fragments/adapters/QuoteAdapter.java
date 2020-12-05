@@ -1,16 +1,20 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
-import androidx.recyclerview.widget.RecyclerView;
+import android.content.Intent;
 import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 import java.util.Locale;
 
+import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
@@ -77,28 +81,36 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
             holder.plus.setVisibility(View.VISIBLE);
             holder.minus.setVisibility(View.VISIBLE);
 
-            holder.plus.setOnClickListener(new View.OnClickListener() {
+            holder.plus.setOnClickListener(v -> Services.getInstance().quoteService.vote(holder.mItem.getId(), true).enqueue(new Callback<ActionResponse<Quote>>() {
                 @Override
-                public void onClick(View v) {
-                    Services.getInstance().quoteService.vote(holder.mItem.getId(), true).enqueue(new Callback<ActionResponse<Quote>>() {
-                        @Override
-                        public void onSucces(Response<ActionResponse<Quote>> response) {
-                            notifyItemChanged(holder.getAdapterPosition(), response.body().payload);
-                        }
-                    });
+                public void onSucces(Response<ActionResponse<Quote>> response) {
+                    notifyItemChanged(holder.getAdapterPosition(), response.body().payload);
                 }
-            });
+            }));
 
-            holder.minus.setOnClickListener(new View.OnClickListener() {
+            holder.minus.setOnClickListener(v -> Services.getInstance().quoteService.vote(holder.mItem.getId(), false).enqueue(new Callback<ActionResponse<Quote>>() {
                 @Override
-                public void onClick(View v) {
-                    Services.getInstance().quoteService.vote(holder.mItem.getId(), false).enqueue(new Callback<ActionResponse<Quote>>() {
-                        @Override
-                        public void onSucces(Response<ActionResponse<Quote>> response) {
-                            notifyItemChanged(holder.getAdapterPosition(), response.body().payload);
-                        }
-                    });
+                public void onSucces(Response<ActionResponse<Quote>> response) {
+                    notifyItemChanged(holder.getAdapterPosition(), response.body().payload);
                 }
+            }));
+
+            holder.mView.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
+                new MenuInflater(v.getContext()).inflate(R.menu.quote_context_menu, menu);
+                menu.findItem(R.id.action_share_quote).setOnMenuItemClickListener(item -> {
+
+                    String quoteText = "Kijk deze quote van www.uscki.nl!\n\n";// TODO string resources
+                    // Undo CKI replacement
+                    quoteText += holder.quote.getText().toString()
+                            .replaceAll(App.USCKI_CKI_CHARACTER, "CKI");
+
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.putExtra(Intent.EXTRA_TITLE, quoteText); // TODO string resources
+                    intent.putExtra(Intent.EXTRA_TEXT, quoteText);
+                    intent.setType("text/*");
+                    holder.mView.getContext().startActivity(Intent.createChooser(intent, "Send to..."));
+                    return false;
+                });
             });
         }
     }

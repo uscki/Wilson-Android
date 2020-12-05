@@ -77,11 +77,11 @@ public class MediaActionHelper {
     }
 
     public static String getImageLink(int collectionId, int mediaFileId) {
-        return String.format(Locale.getDefault(), "https://www.uscki.nl/?pagina=Media/Archive&subcollection=%d&mediafile=%d", collectionId, mediaFileId);
+        return String.format(Locale.getDefault(), "https://www.uscki.nl/?pagina=Media/Archive&subcollection=%d&mediafile=%d", collectionId, mediaFileId); // TODO string resources
     }
 
     public static String getImageLink(int mediaFileId) {
-        return String.format(Locale.getDefault(), "https://www.uscki.nl/?pagina=Media/FileView&id=%d&size=large", mediaFileId);
+        return String.format(Locale.getDefault(), "https://www.uscki.nl/?pagina=Media/FileView&id=%d&size=large", mediaFileId); // TODO string resources
     }
 
     private Intent createBasicMediaShareIntent() {

@@ -12,4 +12,10 @@
 
     <string name="incognito_website_url">www.uscki.nl</string>
 
+
+    <!-- URLs to website -->
+    <string name="incognito_website_image_from_collection_url">https://www.uscki.nl/?pagina=Media/Archive&amp;subcollection=%d&amp;mediafile=%d</string>
+    <string name="incognito_website_image_url">https://www.uscki.nl/?pagina=Media/FileView&amp;id=%d&amp;size=large</string>
+    <string name="incognito_website_agenda_event_url">https://www.uscki.nl/?pagina=Agenda/Item&amp;id=%d</string>
+
 </resources>
