@@ -30,8 +30,10 @@ public class HomeAgendaTab extends PageableFragment<AgendaItemAdapter.ViewHolder
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
-        setAdapter(new AgendaItemAdapter(new ArrayList<SimpleAgendaItem>()));
-        Services.getInstance().agendaService.agenda(page, AGENDA_PAGE_SIZE).enqueue(callback);
+        if(getAdapter() == null) {
+            setAdapter(new AgendaItemAdapter(new ArrayList<>()));
+            Services.getInstance().agendaService.agenda(page, AGENDA_PAGE_SIZE).enqueue(callback);
+        }
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -86,5 +88,12 @@ public class HomeAgendaTab extends PageableFragment<AgendaItemAdapter.ViewHolder
     @Override
     public String getEmptyText() {
         return getString(R.string.agenda_no_new_agendas);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(this.getAdapter().getItemCount() > 0)
+            this.swipeContainer.setRefreshing(false);
     }
 }

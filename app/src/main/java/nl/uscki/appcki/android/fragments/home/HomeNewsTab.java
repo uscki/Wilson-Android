@@ -30,8 +30,10 @@ public class HomeNewsTab extends PageableFragment<NewsItemAdapter.ViewHolder, Ne
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
-        setAdapter(new NewsItemAdapter(new ArrayList<>()));
-        Services.getInstance().newsService.getNewsCollection(page, NEWS_PAGE_SIZE).enqueue(callback);
+        if(getAdapter() == null) {
+            setAdapter(new NewsItemAdapter(new ArrayList<>()));
+            Services.getInstance().newsService.getNewsCollection(page, NEWS_PAGE_SIZE).enqueue(callback);
+        }
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -88,4 +90,10 @@ public class HomeNewsTab extends PageableFragment<NewsItemAdapter.ViewHolder, Ne
         return false;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getAdapter().getItemCount() > 0)
+            this.swipeContainer.setRefreshing(false);
+    }
 }

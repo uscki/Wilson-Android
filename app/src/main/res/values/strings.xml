@@ -2,6 +2,10 @@
     <string name="app_name">Wilson</string>
     <string name="app_external_media_subdir">USCKI media</string>
 
+    <string name="home_fragment_tab_header_news">Nieuws</string>
+    <string name="home_fragment_tab_header_agenda">Agenda</string>
+    <string name="home_fragment_tab_header_shoutbox">Roephoek</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 

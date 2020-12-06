@@ -19,6 +19,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
@@ -39,6 +40,7 @@ import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
+import nl.uscki.appcki.android.fragments.media.MediaOverviewFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
@@ -84,21 +86,32 @@ public class MainActivity extends BasicActivity
     LoginFragment loginFragment = new LoginFragment();
 
     public enum Screen {
-        LOGIN,
-        NEWS,
-        AGENDA,
-        POLL_OVERVIEW,
-        ROEPHOEK,
-        AGENDA_DETAIL,
-        MEETING_OVERVIEW,
-        MEETING_PLANNER,
-        MEETING_DETAIL,
-        QUOTE_OVERVIEW,
-        POLL_DETAIL,
-        POLL_ACTIVE,
-        SMOBO_SEARCH,
-        STORE_SELECTION,
-        STORE_BUY
+        LOGIN(-1),
+        NEWS(R.id.nav_news),
+        AGENDA(R.id.nav_agenda),
+        POLL_OVERVIEW(R.id.nav_poll),
+        ROEPHOEK(R.id.nav_roephoek),
+        AGENDA_DETAIL(R.id.nav_agenda),
+        MEETING_OVERVIEW(R.id.nav_meeting),
+        MEETING_PLANNER(R.id.nav_meeting),
+        MEETING_DETAIL(R.id.nav_meeting),
+        QUOTE_OVERVIEW(R.id.nav_quotes),
+        POLL_DETAIL(R.id.nav_poll),
+        POLL_ACTIVE(R.id.nav_poll),
+        SMOBO_SEARCH(R.id.nav_search),
+        STORE_SELECTION(R.id.nav_shop),
+        STORE_BUY(R.id.nav_shop),
+        MEDIA_COLLECTION_OVERVIEW(R.id.nav_media);
+
+        private int menuItemId;
+
+        Screen(int menuItemId) {
+            this.menuItemId = menuItemId;
+        }
+
+        public int getMenuItemId() {
+            return this.menuItemId;
+        }
     }
 
     public static Screen currentScreen;
@@ -213,12 +226,16 @@ public class MainActivity extends BasicActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            FragmentManager sfm = getSupportFragmentManager();
             if(handleChildFragmentStack()) {
                 // Stop here, as a back action has been performed
-                return;
-            }
-
-            if (currentScreen == Screen.AGENDA_DETAIL) {
+               return;
+            } else if (sfm.getBackStackEntryCount() > 0) {
+                FragmentManager.BackStackEntry entry = sfm.getBackStackEntryAt(sfm.getBackStackEntryCount()-1);
+                String name = entry.getBreadCrumbTitle() == null ? null : entry.getBreadCrumbTitle().toString();
+                getSupportFragmentManager().popBackStack();
+                currentScreen = Screen.valueOf(name);
+            } else if (currentScreen == Screen.AGENDA_DETAIL) {
                 openTab(HomeFragment.AGENDA);
             } else if (currentScreen == Screen.MEETING_PLANNER || currentScreen == Screen.MEETING_DETAIL) {
                 openFragment(new MeetingOverviewFragment(), null);
@@ -237,6 +254,7 @@ public class MainActivity extends BasicActivity
             else {
                 super.onBackPressed();
             }
+            changeDrawerMenuSelection();
         }
     }
 
@@ -264,6 +282,10 @@ public class MainActivity extends BasicActivity
 
     public static void setHomescreenDestroyed() {
         homeScreenExists = false;
+    }
+
+    public static void setHomeScreenExists() {
+        homeScreenExists = true;
     }
 
     @Override
@@ -327,14 +349,14 @@ public class MainActivity extends BasicActivity
                 openFragment(new SmoboSearch(), null);
                 currentScreen = Screen.SMOBO_SEARCH;
             } else if (id == R.id.nav_media) {
-//                openFragment(new MediaOverviewFragment(), null);
-//                currentScreen = Screen.MEDIA_COLLECTION_OVERVIEW;
-                startActivity(new Intent(this, MediaActivity.class));
+                openFragment(new MediaOverviewFragment(), null);
+                currentScreen = Screen.MEDIA_COLLECTION_OVERVIEW;
             }
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 
@@ -364,13 +386,7 @@ public class MainActivity extends BasicActivity
     }
 
     private void setMenuToTab(int homeFragmentTabIndex) {
-        if(homeFragmentTabIndex == HomeFragment.NEWS) {
-            changeDrawerMenuSelection(R.id.nav_news);
-        } else if(homeFragmentTabIndex == HomeFragment.AGENDA) {
-            changeDrawerMenuSelection(R.id.nav_agenda);
-        } else if(homeFragmentTabIndex == HomeFragment.ROEPHOEK) {
-            changeDrawerMenuSelection(R.id.nav_roephoek);
-        }
+        changeDrawerMenuSelection();
     }
 
     public void changeDrawerMenuSelection(int menuItemId) {
@@ -381,6 +397,11 @@ public class MainActivity extends BasicActivity
                 return;
             }
         }
+    }
+
+    public void changeDrawerMenuSelection() {
+        if(currentScreen != null)
+            changeDrawerMenuSelection(currentScreen.getMenuItemId());
     }
 
     private void openFragment(Fragment fragment, Bundle arguments) {
@@ -396,9 +417,17 @@ public class MainActivity extends BasicActivity
             fragment.setArguments(arguments);
         }
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment);
+
+        if(currentScreen != null) {
+            transaction.addToBackStack(null)
+                    .setBreadCrumbTitle(currentScreen.name());
+        }
+
+        transaction.commit();
+
+        changeDrawerMenuSelection();
     }
 
     private void initLoggedInUI() {
