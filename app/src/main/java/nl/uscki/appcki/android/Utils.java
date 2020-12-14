@@ -30,7 +30,7 @@ import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.home.HomeAgendaTab;
 import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
 import nl.uscki.appcki.android.fragments.home.HomeRoephoekTab;
-import nl.uscki.appcki.android.fragments.media.MediaOverviewFragment;
+import nl.uscki.appcki.android.fragments.media.MediaCollectionFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingPlannerFragment;
@@ -158,7 +158,7 @@ public class Utils {
             case SMOBO_SEARCH:
                 return SmoboSearch.class;
             case MEDIA_COLLECTION_OVERVIEW:
-                return MediaOverviewFragment.class;
+                return MediaCollectionFragment.class;
             default:
                 return null;
         }

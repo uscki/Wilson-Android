@@ -43,19 +43,19 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_comment_item, parent, false);
         return new ViewHolder(view);
     }
 
     /**
-     * NOTE: Explicitly set all properties. ViewHolder may be overwritten with a different comment.
+     * NOTE: Explicitly set all properties. MediaCollectionViewHolder may be overwritten with a different comment.
      * Not all viewholders are built from scratch!
      *
      * If properties are not explicitly set, they can take the value of the wrong comment
      * 
-     * @param holder        ViewHolder to populate
+     * @param holder        MediaCollectionViewHolder to populate
      * @param position      Position of the item in the adapter, which contains the data to populate
      *                      the viewholder with
      */

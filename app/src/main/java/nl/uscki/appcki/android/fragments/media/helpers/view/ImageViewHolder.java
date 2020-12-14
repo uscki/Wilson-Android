@@ -105,7 +105,7 @@ public class ImageViewHolder {
 
         if(this.metaData != null) {
             tagView.setAdapter(new ImageTagAdapter(this.mediaView.getActivity(), this.metaData.getTags()));
-            dateAddedTextView.setText("Toegevoegd op " + this.metaData.getCollection().getDate().toString("d MMMM Y")); // TODO string resources
+            dateAddedTextView.setText("Toegevoegd op " + this.metaData.getParentCollection().getDateAdded().toString("d MMMM Y")); // TODO string resources
         } else {
             this.helpersContainer.setVisibility(View.GONE);
         }
@@ -214,7 +214,7 @@ public class ImageViewHolder {
     }
 
     public boolean hasCollection() {
-        return this.metaData != null && this.metaData.getCollection() != null;
+        return this.metaData != null && this.metaData.getParentCollection() != null;
     }
 
     public void setMetadata(MediaFileMetaData metadata) {

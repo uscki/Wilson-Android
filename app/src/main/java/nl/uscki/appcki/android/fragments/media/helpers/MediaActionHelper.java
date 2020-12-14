@@ -104,8 +104,8 @@ public class MediaActionHelper {
     private String getCollectionName() {
         String collectionName = null;
         MediaFileMetaData metaData = mediaView.getCurrentImage().getMetaData();
-        if(metaData != null && metaData.getCollection() != null) {
-            collectionName = metaData.getCollection().name;
+        if(metaData != null && metaData.getParentCollection() != null) {
+            collectionName = metaData.getParentCollection().name;
         }
         return collectionName;
     }

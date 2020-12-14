@@ -27,7 +27,7 @@ public class PollAdapter extends BaseItemAdapter<PollAdapter.ViewHolder, PollIte
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_poll, parent, false);
         return new ViewHolder(view);

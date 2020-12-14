@@ -36,7 +36,7 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_quote, parent, false);
         return new ViewHolder(view);

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import java.util.List;
 
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.fragments.media.MediaCollectionFragment;
 import nl.uscki.appcki.android.fragments.media.helpers.MediaActionHelper;
 import nl.uscki.appcki.android.fragments.media.helpers.view.FullScreenMediaView;
 import nl.uscki.appcki.android.fragments.media.helpers.view.collection.FullScreenPagerCollectionView;
@@ -103,13 +104,13 @@ public class FullScreenMediaActivity extends BasicActivity {
            goToCollection.setVisible(true);
            goToCollection.setOnMenuItemClickListener((v) -> {
                MediaCollection collection = this.mediaView.getCurrentImage().hasCollection() ?
-                       this.mediaView.getCurrentImage().getMetaData().getCollection() : null;
+                       this.mediaView.getCurrentImage().getMetaData().getParentCollection() : null;
                if(collection == null) {
                    Toast.makeText(FullScreenMediaActivity.this, "Geen collectie gevonden voor deze afbeelding", Toast.LENGTH_LONG).show(); // TODO string resource
                    return false;
                }
-               Intent intent = new MediaActivity.IntentBuilder(collection)
-                       .setDirectParent(collection.getParent()) // this is not going to help much, since parent is always null;
+               Intent intent = new MediaCollectionFragment.IntentBuilder(collection)
+                       .setDirectParent(collection.getParentCollection()) // this is not going to help much, since parent is always null;
                        .build(this);
                startActivity(intent);
               return false;

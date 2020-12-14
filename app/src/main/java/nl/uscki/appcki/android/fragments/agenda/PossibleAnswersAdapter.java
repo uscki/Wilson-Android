@@ -38,7 +38,7 @@ public class PossibleAnswersAdapter extends BaseItemAdapter<PossibleAnswersAdapt
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_agenda_possible_answer, parent,false);
         return new ViewHolder(view);

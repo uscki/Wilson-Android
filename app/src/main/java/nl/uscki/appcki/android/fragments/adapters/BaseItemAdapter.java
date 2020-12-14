@@ -94,7 +94,7 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
         }
     }
 
-    public abstract T onCreateCustomViewHolder(ViewGroup parent);
+    public abstract T onCreateCustomViewHolder(ViewGroup parent, int viewType);
     public abstract void onBindCustomViewHolder(T holder, int position);
 
 
@@ -120,7 +120,7 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
                     .inflate(R.layout.fragment_agenda_participant_section_header, parent, false);
             return (T) new ListSectionHeaderHolder(view);
         } {
-            return onCreateCustomViewHolder(parent);
+            return onCreateCustomViewHolder(parent, viewType);
         }
     }
 

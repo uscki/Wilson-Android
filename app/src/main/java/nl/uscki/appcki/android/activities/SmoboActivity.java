@@ -1,10 +1,8 @@
 package nl.uscki.appcki.android.activities;
 
-import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,7 +22,6 @@ import java.util.Map;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.adapters.SmoboViewPagerAdapter;
-import nl.uscki.appcki.android.helpers.ISharedElementViewContainer;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
 
 public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffsetChangedListener, SmoboInfoWidget.OnContextButtonClickListener {
@@ -43,20 +40,6 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
     ViewPager viewPager;
 
     boolean collapsed = false;
-
-    private ISharedElementViewContainer viewContainer;
-
-    public boolean registerSharedElementCallback(ISharedElementViewContainer viewContainer) {
-        boolean status = this.viewContainer == null;
-        this.viewContainer = viewContainer;
-        return status;
-    }
-
-    public boolean deregisterSharedElementCallback(ISharedElementViewContainer viewContainer) {
-        boolean status = this.viewContainer != null && this.viewContainer.equals(viewContainer);
-        this.viewContainer = null;
-        return status;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,31 +109,15 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
         } else {
             appBarLayout.setExpanded(false);
         }
-
-        setExitSharedElementCallback(new SharedElementCallback() {
-            @Override
-            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                if(!names.isEmpty() && names.get(0).equals("smobo_profile_photo")) {
-                    sharedElements.put(names.get(0), profile);
-                } else if(viewContainer != null) {
-                    Log.e("SmoboActivity", "Propegating onMapSharedElements to " + viewContainer.getClass());
-                    viewContainer.onMapSharedElements(names, sharedElements);
-                } else {
-                    Log.e("SmoboActivity", "No viewcontainer. Not propegating onMapSharedElements");
-                }
-            }
-        });
     }
 
     @Override
-    public void onActivityReenter(int resultCode, Intent data) {
-        if(viewContainer != null) {
-            Log.e("SmoboActivity", "Propegating onActivityReenter to " + this.viewContainer.getClass());
-            resultCode = viewContainer.activityReentering(resultCode, data);
+    protected void propegateMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+        if(!names.isEmpty() && names.get(0).equals("smobo_profile_photo")) {
+            sharedElements.put(names.get(0), profile);
         } else {
-            Log.e("SmoboActivity", "No viewcontainer. Not propegating onActivityReenter");
+            super.propegateMapSharedElements(names, sharedElements);
         }
-        super.onActivityReenter(resultCode, data);
     }
 
     @Override

@@ -21,7 +21,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
@@ -39,7 +38,7 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.store_product, parent, false);
         return new ViewHolder(view);

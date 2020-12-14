@@ -33,7 +33,7 @@ public class FullScreenMediaSingleMediaUsckiView extends FullScreenMediaSingleMe
     @Override
     public boolean canNavigateCollection() {
         return getCurrentImage().hasCollection() &&
-                getCurrentImage().getMetaData().getCollection().getId() != null &&
-                getCurrentImage().getMetaData().getCollection().getId() >= 0;
+                getCurrentImage().getMetaData().getParentCollection().getId() != null &&
+                getCurrentImage().getMetaData().getParentCollection().getId() >= 0;
     }
 }

@@ -115,9 +115,9 @@ public class FullScreenMediaItemAdapter extends PagerAdapter {
     private void trySetTitle(ImageViewHolder imageViewHolder) {
         if(collectionView.getToolbar() != null) {
             if(imageViewHolder != null && imageViewHolder.getMetaData() != null &&
-                    imageViewHolder.getMetaData().getCollection() != null
+                    imageViewHolder.getMetaData().getParentCollection() != null
             ) {
-                this.collectionView.getToolbar().setTitle(imageViewHolder.getMetaData().getCollection().getName());
+                this.collectionView.getToolbar().setTitle(imageViewHolder.getMetaData().getParentCollection().getName());
             } else {
                 this.collectionView.getToolbar().setTitle("");
             }

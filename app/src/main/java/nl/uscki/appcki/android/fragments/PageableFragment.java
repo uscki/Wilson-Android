@@ -131,7 +131,7 @@ public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K exte
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_pageable, container, false);
+        View view = inflater.inflate(getLayoutResource(), container, false);
         setupSwipeContainer(view);
         setupRecyclerView(view);
 
@@ -142,6 +142,10 @@ public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K exte
         refresh = true; // always start with a refreshing view
         scrollLoad = false;
         return view;
+    }
+
+    protected int getLayoutResource() {
+        return R.layout.fragment_pageable;
     }
 
     public boolean scrollToItem(int id) {
@@ -167,7 +171,7 @@ public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K exte
     }
 
     protected void setupRecyclerView(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

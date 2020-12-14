@@ -10,25 +10,20 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.uscki.appcki.android.generated.IWilsonBaseItem;
-
-public class MediaFileMetaData implements IWilsonBaseItem, Parcelable {
+public class MediaFileMetaData extends MediaCollectionMember {
 
     public MediaFileMetaData() {
 
     }
 
     public MediaFileMetaData(Parcel in) {
-        this.id = in.readInt();
+        super(in);
         this.added = DateTime.parse(in.readString());
         this.allPersonsTagged = in.readInt() == 1;
         this.tags = new ArrayList<>();
         in.readList(this.tags, MediaTag.class.getClassLoader());
         this.collection = in.readParcelable(MediaCollection.class.getClassLoader());
     }
-
-    @Expose
-    private Integer id;
 
     @Expose
     private DateTime added;
@@ -42,23 +37,6 @@ public class MediaFileMetaData implements IWilsonBaseItem, Parcelable {
     @Expose
     public List<MediaTag> tags;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public DateTime getAdded() {
-        return new DateTime(added);
-    }
-
-    public void setAdded(DateTime added) {
-        this.added = added;
-    }
-
     public boolean isAllPersonsTagged() {
         return allPersonsTagged;
     }
@@ -67,12 +45,14 @@ public class MediaFileMetaData implements IWilsonBaseItem, Parcelable {
         this.allPersonsTagged = allPersonsTagged;
     }
 
-    public MediaCollection getCollection() {
-        return collection;
+    @Override
+    DateTime getDateAdded() {
+        return this.added;
     }
 
-    public void setCollection(MediaCollection collection) {
-        this.collection = collection;
+    @Override
+    public MediaCollection getParentCollection() {
+        return collection;
     }
 
     public List<MediaTag> getTags() {
@@ -86,7 +66,7 @@ public class MediaFileMetaData implements IWilsonBaseItem, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
+        super.writeToParcel(dest, flags);
         dest.writeString(this.added.toString());
         dest.writeInt(this.allPersonsTagged ? 1 : 0);
         dest.writeList(this.tags);

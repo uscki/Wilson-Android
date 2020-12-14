@@ -26,7 +26,7 @@ public class StoreAdapter extends BaseItemAdapter<StoreAdapter.ViewHolder, Store
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.store_item, parent, false);
         return new ViewHolder(view);

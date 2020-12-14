@@ -40,7 +40,7 @@ import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
-import nl.uscki.appcki.android.fragments.media.MediaOverviewFragment;
+import nl.uscki.appcki.android.fragments.media.MediaCollectionFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
@@ -64,6 +64,7 @@ public class MainActivity extends BasicActivity
     public static final String ACTION_MEETING_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_MEETING_OVERVIEW";
     public static final String ACTION_POLL_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_POLL_OVERVIEW";
     public static final String ACTION_VIEW_STORE = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_STORE";
+    public static final String ACTION_VIEW_COLLECTION = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_COLLECTION";
 
     public static final String ACTION_VIEW_NEWSITEM
             = "nl.uscki.appcki.android.activities.action.ACTION_VIEW_NEWSITEM";
@@ -187,6 +188,8 @@ public class MainActivity extends BasicActivity
                 Bundle args = new Bundle();
                 args.putInt("id", intent.getIntExtra(StoreFragment.PARAM_STORE_ID, -1));
                 openFragment(new StoreFragment(), args);
+            } else if (ACTION_VIEW_COLLECTION.equals(intent.getAction())) {
+                openFragment(new MediaCollectionFragment(), intent.getExtras());
             } else {
                 openTab(HomeFragment.NEWS);
             }
@@ -349,7 +352,7 @@ public class MainActivity extends BasicActivity
                 openFragment(new SmoboSearch(), null);
                 currentScreen = Screen.SMOBO_SEARCH;
             } else if (id == R.id.nav_media) {
-                openFragment(new MediaOverviewFragment(), null);
+                openFragment(new MediaCollectionFragment(), null);
                 currentScreen = Screen.MEDIA_COLLECTION_OVERVIEW;
             }
         }
