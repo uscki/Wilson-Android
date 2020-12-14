@@ -180,18 +180,18 @@ public class MainActivity extends BasicActivity
             } else if (ACTION_SHOUTBOX_OVERVIEW.equals(intent.getAction())) {
                 openTab(HomeFragment.ROEPHOEK);
             } else if (ACTION_MEETING_OVERVIEW.equals(intent.getAction())) {
-                openFragment(new MeetingOverviewFragment(), null);
+                openFragment(new MeetingOverviewFragment(), null, false);
                 currentScreen = Screen.MEETING_OVERVIEW;
             } else if (ACTION_POLL_OVERVIEW.equals(intent.getAction())) {
-                openFragment(new PollOverviewFragment(), null);
+                openFragment(new PollOverviewFragment(), null, false);
             } else if (ACTION_VIEW_STORE.equals(intent.getAction())) {
                 Bundle args = new Bundle();
                 args.putInt("id", intent.getIntExtra(StoreFragment.PARAM_STORE_ID, -1));
-                openFragment(new StoreFragment(), args);
+                openFragment(new StoreFragment(), args, false);
             } else if (ACTION_VIEW_COLLECTION.equals(intent.getAction())) {
-                openFragment(new MediaCollectionFragment(), intent.getExtras());
+                openFragment(new MediaCollectionFragment(), intent.getExtras(), false);
             } else {
-                openTab(HomeFragment.NEWS);
+                openTab(HomeFragment.NEWS, false);
             }
         }
     }
@@ -199,13 +199,13 @@ public class MainActivity extends BasicActivity
     private void handleAgendaItemIntent(Intent intent) {
         Bundle args = new Bundle();
         args.putString("item", getIntent().getStringExtra("item"));
-        openFragment(new AgendaDetailTabsFragment(), args);
+        openFragment(new AgendaDetailTabsFragment(), args, false);
     }
 
     private void handleNewsItemIntent(Intent intent) {
         focusNewsId = intent.getIntExtra(PARAM_NEWS_ID, -1);
         focusTriesSoFar = 0;
-        openTab(HomeFragment.NEWS, focusNewsId);
+        openTab(HomeFragment.NEWS, focusNewsId, false);
     }
 
     @Override
@@ -234,27 +234,11 @@ public class MainActivity extends BasicActivity
                 // Stop here, as a back action has been performed
                return;
             } else if (sfm.getBackStackEntryCount() > 0) {
-                FragmentManager.BackStackEntry entry = sfm.getBackStackEntryAt(sfm.getBackStackEntryCount()-1);
+                FragmentManager.BackStackEntry entry = sfm.getBackStackEntryAt(sfm.getBackStackEntryCount() - 1);
                 String name = entry.getBreadCrumbTitle() == null ? null : entry.getBreadCrumbTitle().toString();
                 getSupportFragmentManager().popBackStack();
                 currentScreen = Screen.valueOf(name);
-            } else if (currentScreen == Screen.AGENDA_DETAIL) {
-                openTab(HomeFragment.AGENDA);
-            } else if (currentScreen == Screen.MEETING_PLANNER || currentScreen == Screen.MEETING_DETAIL) {
-                openFragment(new MeetingOverviewFragment(), null);
-                currentScreen = Screen.MEETING_OVERVIEW;
-            } else if(currentScreen == Screen.POLL_ACTIVE) {
-                openTab(HomeFragment.NEWS);
-            } else if (currentScreen == Screen.POLL_DETAIL) {
-                openFragment(new PollOverviewFragment(), null);
-            } else if (currentScreen == Screen.POLL_OVERVIEW) {
-                openFragment(new PollResultFragment(), null);
-            } else if (currentScreen == Screen.STORE_BUY) {
-                openFragment(new StoreSelectionFragment(), null);
-            } else if (currentScreen != Screen.NEWS) {
-                openTab(HomeFragment.NEWS);
-            }
-            else {
+            } else {
                 super.onBackPressed();
             }
             changeDrawerMenuSelection();
@@ -312,9 +296,9 @@ public class MainActivity extends BasicActivity
             startActivity(intent);
             return true;
         } else if (id == R.id.action_about) {
-            openFragment(new AppInfoFragment(), null);
+            openFragment(new AppInfoFragment(), null, true);
         } else if (id == R.id.action_poll_archive) {
-            openFragment(new PollOverviewFragment(), null);
+            openFragment(new PollOverviewFragment(), null, true);
         }
 
         return super.onOptionsItemSelected(item);
@@ -333,26 +317,26 @@ public class MainActivity extends BasicActivity
             } else if (id == R.id.nav_shop) {
                 ShopPreferenceHelper shopPreferenceHelper = new ShopPreferenceHelper(this);
                 if(shopPreferenceHelper.getShop() < 0) {
-                    openFragment(new StoreSelectionFragment(), null);
+                    openFragment(new StoreSelectionFragment(), null, true);
                 } else {
                     Bundle bundle = new Bundle();
                     bundle.putInt("id", shopPreferenceHelper.getShop());
-                    openFragment(new StoreFragment(), bundle);
+                    openFragment(new StoreFragment(), bundle, true);
                 }
             } else if (id == R.id.nav_quotes) {
-                openFragment(new QuoteFragment(), null);
+                openFragment(new QuoteFragment(), null, true);
             } else if (id == R.id.nav_poll) {
-                openFragment(new PollResultFragment(), null);
+                openFragment(new PollResultFragment(), null, true);
             } else if (id == R.id.nav_roephoek) {
                 openTab(HomeFragment.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
-                openFragment(new MeetingOverviewFragment(), null);
+                openFragment(new MeetingOverviewFragment(), null, true);
                 currentScreen = Screen.MEETING_OVERVIEW;
             } else if (id == R.id.nav_search) {
-                openFragment(new SmoboSearch(), null);
+                openFragment(new SmoboSearch(), null, true);
                 currentScreen = Screen.SMOBO_SEARCH;
             } else if (id == R.id.nav_media) {
-                openFragment(new MediaCollectionFragment(), null);
+                openFragment(new MediaCollectionFragment(), null, true);
                 currentScreen = Screen.MEDIA_COLLECTION_OVERVIEW;
             }
         }
@@ -364,10 +348,14 @@ public class MainActivity extends BasicActivity
     }
 
     private void openTab(int index) {
-        openTab(index, -1);
+        openTab(index, -1, true);
     }
 
-    private void openTab(int index, int scrollToId) {
+    private void openTab(int index, boolean addToBackStack) {
+        openTab(index, -1, addToBackStack);
+    }
+
+    private void openTab(int index, int scrollToId, boolean addToBackStack) {
 
         if (
                 homeScreenExists &&
@@ -381,7 +369,7 @@ public class MainActivity extends BasicActivity
         } else {
             Bundle bundle = new Bundle();
             bundle.putInt("index", index);
-            openFragment(new HomeFragment(), bundle);
+            openFragment(new HomeFragment(), bundle, addToBackStack);
             homeScreenExists = true;
         }
 
@@ -407,7 +395,7 @@ public class MainActivity extends BasicActivity
             changeDrawerMenuSelection(currentScreen.getMenuItemId());
     }
 
-    private void openFragment(Fragment fragment, Bundle arguments) {
+    private void openFragment(Fragment fragment, Bundle arguments, boolean addToBackStack) {
         if (fragment instanceof LoginFragment) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         } else {
@@ -423,7 +411,7 @@ public class MainActivity extends BasicActivity
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment);
 
-        if(currentScreen != null) {
+        if(addToBackStack && currentScreen != null) {
             transaction.addToBackStack(null)
                     .setBreadCrumbTitle(currentScreen.name());
         }
@@ -478,7 +466,7 @@ public class MainActivity extends BasicActivity
     private void initLoggedOutUI() {
         toolbar.setVisibility(View.GONE);
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        openFragment(new LoginFragment(), null);
+        openFragment(new LoginFragment(), null, false);
         currentScreen = Screen.LOGIN;
         logout.setVisibility(View.GONE);
 
@@ -523,7 +511,7 @@ public class MainActivity extends BasicActivity
             startActivity(meeting);
             return;
         }
-        openFragment(event.screen, event.arguments);
+        openFragment(event.screen, event.arguments, true);
     }
 
     public void onEventMainThread(ContentLoadedEvent event) {
