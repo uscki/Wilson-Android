@@ -30,6 +30,7 @@ import java.util.Locale;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.FullScreenMediaActivity;
+import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.media.helpers.view.FullScreenMediaView;
 import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
 
@@ -49,7 +50,7 @@ public class MediaActionHelper {
     public void shareMedia() {
         Glide.with(this.activity)
                 .downloadOnly()
-                .load(this.mediaView.getApiUrl())
+                .load(this.mediaView.getApiUrl(MediaAPI.MediaSize.LARGE))
                 .into(shareMediaCallback);
     }
 
@@ -72,7 +73,7 @@ public class MediaActionHelper {
         }
         Glide.with(this.activity)
                 .asBitmap()
-                .load(this.mediaView.getApiUrl())
+                .load(this.mediaView.getApiUrl(MediaAPI.MediaSize.LARGE))
                 .into(storeMediaCallback);
     }
 

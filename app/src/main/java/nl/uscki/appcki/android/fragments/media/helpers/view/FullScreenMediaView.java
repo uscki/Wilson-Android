@@ -1,17 +1,12 @@
 package nl.uscki.appcki.android.fragments.media.helpers.view;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
-
-import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.FullScreenMediaActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
 
@@ -38,35 +33,9 @@ public abstract class FullScreenMediaView {
         initToolbar();
     }
 
-    protected RequestBuilder<Drawable> getRequestBuilder(int position) {
-        RequestBuilder<Drawable> requestBuilder =
-                Glide.with(this.activity)
-                        .load(getApiUrl(position));
-        if(getApiThumbnailUrl() != null) {
-            requestBuilder = requestBuilder.thumbnail(Glide.with(this.activity).load(getApiThumbnailUrl(position)));
-        }
-        return requestBuilder.error(R.drawable.ic_wilson);
-    }
-
     public abstract Toolbar getToolbar();
 
     protected abstract void setupView();
-
-    public String getApiUrl() {
-        return getApiUrl(MediaAPI.MediaSize.LARGE);
-    }
-
-    public String getApiThumbnailUrl() {
-        return getApiUrl(MediaAPI.MediaSize.SMALL);
-    }
-
-    public String getApiUrl(int position) {
-        return getApiUrl(position, MediaAPI.MediaSize.LARGE);
-    }
-
-    public String getApiThumbnailUrl(int position) {
-        return getApiUrl(position, MediaAPI.MediaSize.SMALL);
-    }
 
     public String getApiUrl(MediaAPI.MediaSize size) {
         return getApiUrl(getCurrentAdapterPosition(), size);

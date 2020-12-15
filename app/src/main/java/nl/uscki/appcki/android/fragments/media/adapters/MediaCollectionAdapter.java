@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,7 +183,8 @@ public class MediaCollectionAdapter extends BaseItemAdapter<MediaCollectionAdapt
             Glide.with(itemView.getContext())
                     .load(MediaAPI.getMediaUrl(this.photoData.getId(), MediaAPI.MediaSize.NORMAL))
                     .fitCenter()
-                    .thumbnail(Glide.with(itemView.getContext()).load(MediaAPI.getMediaUri(this.photoData.getId(), MediaAPI.MediaSize.SMALL)))
+                    .thumbnail(Glide.with(itemView.getContext()).load(MediaAPI.getMediaUri(this.photoData.getId(), MediaAPI.MediaSize.SMALL)).diskCacheStrategy(DiskCacheStrategy.ALL))
+                    .apply(new RequestOptions().dontTransform())
                     .placeholder(placeholder)
                     .error(R.drawable.ic_wilson)
                     .into(this.photoView);
