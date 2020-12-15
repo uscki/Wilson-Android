@@ -143,17 +143,20 @@ public class ImageViewHolder {
                                 .load(this.mediaView.getApiUrl(fixedAdapterPosition, MediaAPI.MediaSize.NORMAL))
                                 .apply(new RequestOptions().dontTransform())
                                 .onlyRetrieveFromCache(true)
+                                .error(R.drawable.ic_wilson)
                                 .listener(glideRequestListener)
                                 .thumbnail(
                                         Glide.with(this.mediaView.getActivity())
                                                 .load(this.mediaView.getApiUrl(fixedAdapterPosition, MediaAPI.MediaSize.SMALL))
                                                 .apply(new RequestOptions().dontTransform())
+                                                .error(R.drawable.ic_wilson)
                                                 .listener(glideRequestListener)
                                 )
                 )
                 .apply(new RequestOptions().dontTransform())
                 .fitCenter()
                 .listener(glideRequestListener)
+                .error(R.drawable.ic_wilson)
                 .into(imageView);
     }
 
@@ -181,7 +184,8 @@ public class ImageViewHolder {
     protected RequestListener<Drawable> glideRequestListener = new RequestListener<Drawable>() {
         @Override
         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-            if (!isFirstResource) {
+            if (isFirstResource) {
+                imageView.setTransitionName(transitionName);
                 mediaView.getActivity().startPostponedEnterTransition();
             }
             return false;

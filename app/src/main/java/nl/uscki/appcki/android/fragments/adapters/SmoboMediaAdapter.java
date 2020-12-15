@@ -53,7 +53,7 @@ public class SmoboMediaAdapter extends BaseItemAdapter<SmoboMediaAdapter.ViewHol
         // we can assume that these integers will always be valid media id's
         holder.photo.setTransitionName("smobo_image_" + position);
         Glide.with(holder.itemView.getContext())
-                .load(MediaAPI.getMediaUri(items.get(position).getId(), MediaAPI.MediaSize.NORMAL))
+                .load(MediaAPI.getMediaUri(items.get(position).getId(), MediaAPI.MediaSize.SMALL))
                 .placeholder(this.loadingDrawable)
                 .error(R.drawable.ic_wilson)
                 .into(holder.photo);
