@@ -318,6 +318,7 @@ public class MediaCollectionFragment extends PageableFragment<MediaCollectionAda
 
     @Override
     public int activityReentering(int code, Intent data) {
+        this.adapter.setTransitionFinished();
         code--;
         if(getViewAt(code) == null) {
             if(getActivity() != null) getActivity().postponeEnterTransition();

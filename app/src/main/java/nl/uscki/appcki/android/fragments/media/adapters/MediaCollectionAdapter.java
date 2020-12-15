@@ -45,6 +45,8 @@ public class MediaCollectionAdapter extends BaseItemAdapter<MediaCollectionAdapt
     private List<MediaCollection> childCollections;
     private List<MediaFileMetaData> childMediaFiles = new ArrayList<>();
 
+    private boolean inTransition = false;
+
     private List<MediaCollection> parentCollections;
 
     public MediaCollectionAdapter(Activity activity, MediaCollectionFragment fragment, MediaCollection currentCollection, List<MediaCollection> items, List<MediaCollection> parentCollections) {
@@ -64,6 +66,10 @@ public class MediaCollectionAdapter extends BaseItemAdapter<MediaCollectionAdapt
     public void addMediaFiles(List<MediaFileMetaData> metaDataList) {
         this.childMediaFiles.addAll(metaDataList);
         notifyDataSetChanged();
+    }
+
+    public void setTransitionFinished() {
+        this.inTransition = false;
     }
 
     public List<MediaCollection> getCollections() {
@@ -147,6 +153,7 @@ public class MediaCollectionAdapter extends BaseItemAdapter<MediaCollectionAdapt
         }
     }
 
+
     public class MediaFileMetaDataViewHolder extends MediaCollectionMemberViewHolder implements View.OnClickListener {
 
         MediaFileMetaData photoData;
@@ -159,6 +166,9 @@ public class MediaCollectionAdapter extends BaseItemAdapter<MediaCollectionAdapt
         }
 
         public void onClick(View v) {
+            if(inTransition) return;
+
+            inTransition = true;
             Intent intent = new FullScreenMediaActivity
                     .CollectionIntentBuilder(currentCollection.name, "media_browser_")
                     .collectionID(currentCollection.getId())
