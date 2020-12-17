@@ -1,6 +1,8 @@
 package nl.uscki.appcki.android.fragments.media.helpers.view;
 
 import android.graphics.drawable.Drawable;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -140,10 +142,6 @@ public class ImageViewHolder {
             currentIndexTextView.setText("");
         }
 
-        View helpersContainer = imageContainer.findViewById(R.id.full_screen_image_helpers_container);
-        helpersContainer.setOnClickListener(v ->
-                changeUiVisibility(!helpersVisible));
-
         Glide.with(this.mediaView.getActivity())
                 .load(this.mediaView.getApiUrl(fixedAdapterPosition, MediaAPI.MediaSize.LARGE))
                 .thumbnail(
@@ -222,21 +220,26 @@ public class ImageViewHolder {
         }
     };
 
+    class SingleTapListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            changeUiVisibility(!helpersVisible);
+            return true;
+        }
+    }
+
     private Loupe createLoupe() {
         Loupe loupe = new Loupe(imageView, imageContainer);
+
         loupe.setUseFlingToDismissGesture(this.transitionName == null);
-        loupe.setOnScaleChangedListener((v, v1, v2) -> {
-            changeUiVisibility(v <= 1.4);
-        });
         loupe.setOnViewTranslateListener(new Loupe.OnViewTranslateListener() {
             @Override
             public void onStart(@NotNull ImageView imageView) {
-                changeUiVisibility(false);
+                mediaView.hideToolbar();
             }
 
             @Override
-            public void onViewTranslate(@NotNull ImageView imageView, float v) {
-            }
+            public void onViewTranslate(@NotNull ImageView imageView, float v) {  }
 
             @Override
             public void onDismiss(@NotNull ImageView imageView) {
@@ -245,9 +248,17 @@ public class ImageViewHolder {
 
             @Override
             public void onRestore(@NotNull ImageView imageView) {
-                changeUiVisibility(true);
+                if(helpersVisible) mediaView.showToolbar();
             }
         });
+
+        GestureDetector detector = new GestureDetector(imageContainer.getContext(), new SingleTapListener());
+
+        this.imageContainer.setOnTouchListener((v, event) -> {
+            detector.onTouchEvent(event);
+            return loupe.onTouch(v, event);
+        });
+
         return loupe;
     }
 
