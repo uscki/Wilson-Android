@@ -61,7 +61,17 @@ public class ImageViewHolder {
         this.transitionName = transitionName;
     }
 
-    // Constructor for viewholder with collection of images
+    /**
+     * Constructor for view holder with collection of images
+     *
+     * @param parentMediaView       MediaView this view holder is part of
+     * @param imageContainer        The inflated layout containing the image and helpers
+     * @param transitionName        The transitionName given to this image in the overview
+     * @param itemAdapter           The item adapter for the viewpager
+     * @param fixedAdapterPosition  The fixed position of this image in the given item adapter
+     * @param metaData              If available, the ImageFileMetaData object for this image
+     *                              as given by the API
+     */
     public ImageViewHolder(
             FullScreenMediaView parentMediaView,
             ViewGroup imageContainer,
@@ -77,7 +87,15 @@ public class ImageViewHolder {
         initialize();
     }
 
-    // Constructor for single image view
+    /**
+     * Constructor for single image view
+     *
+     * @param parentMediaView       MediaView this view holder is a part of
+     * @param imageContainer        The inflated layout containing the image and helpers
+     * @param transitionName        The transitionName given to this image outisde the activity
+     * @param metaData              If available, the ImageFileMetaData object for this image
+     *                              as given by the API
+     */
     public ImageViewHolder(
             FullScreenMediaView parentMediaView,
             ViewGroup imageContainer,

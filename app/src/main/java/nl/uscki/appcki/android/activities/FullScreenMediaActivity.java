@@ -76,27 +76,18 @@ public class FullScreenMediaActivity extends BasicActivity {
         menu.clear();
         getMenuInflater().inflate(R.menu.fullscreen_image_menu, menu);
 
-        menu.findItem(R.id.fullscreen_image_menu_download_button).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                actionHelper.writeMediaIfPermitted();
-                return true;
-            }
+        menu.findItem(R.id.fullscreen_image_menu_download_button).setOnMenuItemClickListener(item -> {
+            actionHelper.writeMediaIfPermitted();
+            return true;
         });
-        menu.findItem(R.id.fullscreen_image_menu_share_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                actionHelper.shareMedia();
-                return true;
-            }
+        menu.findItem(R.id.fullscreen_image_menu_share_image).setOnMenuItemClickListener(item -> {
+            actionHelper.shareMedia();
+            return true;
         });
 
-       menu.findItem(R.id.fullscreen_image_menu_share_link).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-           @Override
-           public boolean onMenuItemClick(MenuItem item) {
-                actionHelper.shareUrl();
-               return false;
-           }
+       menu.findItem(R.id.fullscreen_image_menu_share_link).setOnMenuItemClickListener(item -> {
+            actionHelper.shareUrl();
+           return false;
        });
 
        if(this.mediaView.canNavigateCollection()) {

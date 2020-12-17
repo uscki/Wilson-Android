@@ -87,6 +87,10 @@ public class FullScreenMediaItemAdapter extends PagerAdapter {
         }
         container.addView(imageContainer);
 
+        // Not yet attached to view when insets are dispatched, so fitsSystemWindows=true does not do
+        // anything without this call
+        container.requestApplyInsets();
+
         ImageViewHolder imageViewHolder = new ImageViewHolder(this.collectionView, imageContainer, transitionNameTemplate + position, this, position, media[position]);
         imageViews[position] = imageViewHolder;
 
