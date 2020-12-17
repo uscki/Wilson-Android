@@ -46,6 +46,9 @@
         <item name="android:windowIsTranslucent">true</item>
 
         <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <!-- This flag overrides navigation bar (divider) color, but removing it breaks fitsInSystemWindow
+                and hideToolbar() with the custom action bar -->
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">@android:color/transparent</item>

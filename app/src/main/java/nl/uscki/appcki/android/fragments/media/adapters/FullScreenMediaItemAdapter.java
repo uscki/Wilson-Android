@@ -87,10 +87,6 @@ public class FullScreenMediaItemAdapter extends PagerAdapter {
         }
         container.addView(imageContainer);
 
-        // Not yet attached to view when insets are dispatched, so fitsSystemWindows=true does not do
-        // anything without this call
-        container.requestApplyInsets();
-
         ImageViewHolder imageViewHolder = new ImageViewHolder(this.collectionView, imageContainer, transitionNameTemplate + position, this, position, media[position]);
         imageViews[position] = imageViewHolder;
 
@@ -111,7 +107,6 @@ public class FullScreenMediaItemAdapter extends PagerAdapter {
     public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         super.setPrimaryItem(container, position, object);
         this.currentPosition = position;
-        collectionView.showToolbar();
         if(imageViews != null && imageViews[position] != null)
             trySetTitle(imageViews[position]);
     }
@@ -124,6 +119,18 @@ public class FullScreenMediaItemAdapter extends PagerAdapter {
                 this.collectionView.getToolbar().setTitle(imageViewHolder.getMetaData().getParentCollection().getName());
             } else {
                 this.collectionView.getToolbar().setTitle("");
+            }
+        }
+    }
+
+    @Override
+    public void startUpdate(@NonNull ViewGroup container) {
+        super.startUpdate(container);
+        if(imageViews != null) {
+            for (int i = Math.max(getCurrentPosition() - 2, 0); i < Math.min(getCurrentPosition() + 2, imageViews.length - 1); i++) {
+                if (imageViews[i] != null) {
+                    imageViews[i].updateHelperVisibility();
+                }
             }
         }
     }

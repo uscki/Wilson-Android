@@ -18,6 +18,16 @@ public abstract class FullScreenMediaView {
     protected String title;
     protected String transitionNameTemplate;
 
+    private boolean helpersVisible = true;
+
+    public boolean isHelpersVisible() {
+        return helpersVisible;
+    }
+
+    public void setHelpersVisible(boolean helpersVisible) {
+        this.helpersVisible = helpersVisible;
+    }
+
     @Nullable protected int collectionId; // TODO Can be null, should it be here?
 
     protected FullScreenMediaView(FullScreenMediaActivity activity, Intent intent) {

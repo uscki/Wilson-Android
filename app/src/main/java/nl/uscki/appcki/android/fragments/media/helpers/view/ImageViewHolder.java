@@ -1,6 +1,7 @@
 package nl.uscki.appcki.android.fragments.media.helpers.view;
 
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,8 +55,6 @@ public class ImageViewHolder {
     private int fixedAdapterPosition = -1;
 
     private Loupe loupe;
-
-    private boolean helpersVisible = true;
 
     private ImageViewHolder(FullScreenMediaView parentMediaView, ViewGroup imageContainer, String transitionName) {
         this.mediaView = parentMediaView;
@@ -120,6 +119,8 @@ public class ImageViewHolder {
         this.helpersContainer = this.imageContainer.findViewById(R.id.full_screen_image_helpers_container);
         this.dateAddedTextView = this.imageContainer.findViewById(R.id.full_screen_image_date_added);
         this.indexTextView = this.imageContainer.findViewById(R.id.full_screen_image_current_index);
+
+        imageContainer.requestApplyInsets();
     }
 
     private void setupView() {
@@ -135,6 +136,7 @@ public class ImageViewHolder {
             this.helpersContainer.setVisibility(View.GONE);
         }
 
+        updateHelperVisibility();
         TextView currentIndexTextView = imageContainer.findViewById(R.id.full_screen_image_current_index);
         if (adapter != null) {
             currentIndexTextView.setText(String.format(Locale.getDefault(), "%d / %d", this.fixedAdapterPosition + 1, adapter.getCount())); // TODO string resources
@@ -174,27 +176,51 @@ public class ImageViewHolder {
                 .listener(glideRequestListener)
                 .error(R.drawable.ic_wilson)
                 .into(imageView);
+
+        int uiOptions = mediaView.getActivity().getWindow().getDecorView().getSystemUiVisibility();
+        uiOptions |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+        uiOptions |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+        uiOptions |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+        mediaView.getActivity().getWindow().getDecorView().setSystemUiVisibility(uiOptions);
     }
 
-    public void changeUiVisibility(boolean visible) {
+    private void changeUiVisibility(boolean visible) {
+        changeUiVisibility(visible, true);
+    }
+
+    private void changeUiVisibility(boolean visible, boolean animate) {
+        int animationDuration = animate ? 500 : 0;
         if (visible) {
             if (this.indexTextView != null)
-                this.indexTextView.animate().translationX(0).setDuration(500);
+                this.indexTextView.animate().translationX(0).setDuration(animationDuration);
             if (this.tagView != null)
-                this.tagView.animate().translationY(0).setDuration(500);
+                this.tagView.animate().translationY(0).setDuration(animationDuration);
             if (this.dateAddedTextView != null)
-                this.dateAddedTextView.animate().translationX(0).setDuration(500);
+                this.dateAddedTextView.animate().translationX(0).setDuration(animationDuration);
             this.mediaView.showToolbar();
+
+            int uiOptions = mediaView.getActivity().getWindow().getDecorView().getSystemUiVisibility();
+            uiOptions &= ~View.SYSTEM_UI_FLAG_FULLSCREEN;
+            uiOptions &= ~View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+            uiOptions &= ~View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            mediaView.getActivity().getWindow().getDecorView().setSystemUiVisibility(uiOptions);
         } else {
             if (this.indexTextView != null)
-                this.indexTextView.animate().translationX(this.mediaView.getActivity().getWindow().getDecorView().getWidth() - indexTextView.getLeft()).setDuration(500);
+                this.indexTextView.animate().translationX(this.mediaView.getActivity().getWindow().getDecorView().getWidth() - indexTextView.getLeft()).setDuration(animationDuration);
             if (this.tagView != null)
-                this.tagView.animate().translationY(this.mediaView.getActivity().getWindow().getDecorView().getHeight() - tagView.getTop()).setDuration(500);
+                this.tagView.animate().translationY(this.mediaView.getActivity().getWindow().getDecorView().getHeight() - tagView.getTop()).setDuration(animationDuration);
             if (this.dateAddedTextView != null)
-                this.dateAddedTextView.animate().translationX(-1 * dateAddedTextView.getRight()).setDuration(500);
+                this.dateAddedTextView.animate().translationX(-1 * dateAddedTextView.getRight()).setDuration(animationDuration);
             this.mediaView.hideToolbar();
+
+            int uiOptions = mediaView.getActivity().getWindow().getDecorView().getSystemUiVisibility();
+            uiOptions |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+            uiOptions |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+            uiOptions |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            mediaView.getActivity().getWindow().getDecorView().setSystemUiVisibility(uiOptions);
         }
-        this.helpersVisible = visible;
+
+        this.mediaView.setHelpersVisible(visible);
     }
 
     protected RequestListener<Drawable> glideRequestListener = new RequestListener<Drawable>() {
@@ -220,14 +246,6 @@ public class ImageViewHolder {
         }
     };
 
-    class SingleTapListener extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            changeUiVisibility(!helpersVisible);
-            return true;
-        }
-    }
-
     private Loupe createLoupe() {
         Loupe loupe = new Loupe(imageView, imageContainer);
 
@@ -239,7 +257,7 @@ public class ImageViewHolder {
             }
 
             @Override
-            public void onViewTranslate(@NotNull ImageView imageView, float v) {  }
+            public void onViewTranslate(@NotNull ImageView imageView, float v) { }
 
             @Override
             public void onDismiss(@NotNull ImageView imageView) {
@@ -248,7 +266,7 @@ public class ImageViewHolder {
 
             @Override
             public void onRestore(@NotNull ImageView imageView) {
-                if(helpersVisible) mediaView.showToolbar();
+                if(mediaView.isHelpersVisible()) mediaView.showToolbar();
             }
         });
 
@@ -287,4 +305,30 @@ public class ImageViewHolder {
     public void setMetadata(MediaFileMetaData metadata) {
         this.metaData = metadata;
     }
+
+    public void updateHelperVisibility() {
+        changeUiVisibility(this.mediaView.isHelpersVisible(), false);
+    }
+
+    class SingleTapListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            changeUiVisibility(!mediaView.isHelpersVisible());
+
+            // Loupe resets the scale on layout change, which is triggered by removing the
+            // status bar (i.e. going fullscreen mode). Temporarily disabling loupe's layout
+            // listener before hiding the status bar, and adding it after the first pass over the
+            // new layout has finished resolves this issue
+            imageContainer.removeOnLayoutChangeListener(loupe);
+            imageContainer.addOnLayoutChangeListener(tempLayoutChangeListener);
+            return true;
+        }
+    }
+
+    View.OnLayoutChangeListener tempLayoutChangeListener = new View.OnLayoutChangeListener() {
+        @Override
+        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+            imageContainer.addOnLayoutChangeListener(loupe);
+        }
+    };
 }
