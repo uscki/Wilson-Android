@@ -49,15 +49,19 @@
 
         <!-- This flag overrides navigation bar (divider) color, but removing it breaks fitsInSystemWindow
                 and hideToolbar() with the custom action bar -->
-        <item name="android:windowTranslucentNavigation">true</item>
+<!--        <item name="android:windowTranslucentNavigation">true</item>-->
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">@android:color/transparent</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
 
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:fitsSystemWindows">false</item>
 
+        <!-- Without this option, fullscreen mode adds an ugly green/red (because of our app's
+            settings) bar in the place of the status bar on devices with a notch -->
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="p">shortEdges</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

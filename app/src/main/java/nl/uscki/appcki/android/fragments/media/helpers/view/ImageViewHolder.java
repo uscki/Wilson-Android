@@ -1,7 +1,6 @@
 package nl.uscki.appcki.android.fragments.media.helpers.view;
 
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
