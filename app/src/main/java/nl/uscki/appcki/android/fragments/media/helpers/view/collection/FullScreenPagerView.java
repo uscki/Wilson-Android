@@ -3,9 +3,11 @@ package nl.uscki.appcki.android.fragments.media.helpers.view.collection;
 import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.view.View;
+import android.view.WindowInsets;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.List;
 import java.util.Map;
@@ -23,13 +25,15 @@ import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
 
 public abstract class FullScreenPagerView extends FullScreenMediaView {
 
-    private ViewPager viewPager;
+    private ViewPager2 viewPager;
     private FullScreenMediaItemAdapter adapter;
     private Toolbar toolbar;
 
     private MediaFileMetaData initialImage;
     private MediaFileMetaData previousImage;
     private MediaFileMetaData nextImage;
+
+    private WindowInsets lastStableInsets;
 
     private int initialPosition;
     private int size;
@@ -47,10 +51,28 @@ public abstract class FullScreenPagerView extends FullScreenMediaView {
     protected void setupView() {
         this.activity.setContentView(R.layout.full_screen_media_viewpager);
         this.viewPager = this.activity.findViewById(R.id.fullscreen_media_viewpager);
-        this.adapter = new FullScreenMediaItemAdapter(this, this.transitionNameTemplate);
+        this.adapter = new FullScreenMediaItemAdapter(activity.getSupportFragmentManager(), activity.getLifecycle(), this, this.transitionNameTemplate);
         this.viewPager.setAdapter(this.adapter);
-        this.viewPager.setCurrentItem(this.initialPosition);
+        this.viewPager.setCurrentItem(this.initialPosition, false);
         this.toolbar = this.activity.findViewById(R.id.fullscreen_media_toolbar);
+
+        ConstraintLayout viewpagerContainer = this.activity.findViewById(R.id.fullscreen_media_viewpager_container);
+        View toolbarContainer = this.activity.findViewById(R.id.fullscreen_media_viewpager_toolbar_container);
+
+        // Toolbar container receives system insets of 0 on all sides, so we override the insets
+        // passed to it, so they are never applied, and set the padding of the container manually
+        // when the parent view receives new insets.
+        toolbarContainer.setOnApplyWindowInsetsListener((v, insets) -> WindowInsets.CONSUMED);
+        viewpagerContainer.setOnApplyWindowInsetsListener((v, insets) -> {
+            toolbarContainer.setPadding(
+                    insets.getSystemWindowInsetLeft(),
+                    insets.getSystemWindowInsetTop(),
+                    insets.getSystemWindowInsetRight(),
+                    insets.getSystemWindowInsetBottom());
+
+            this.lastStableInsets = insets;
+            return insets;
+        });
     }
 
     @Override
@@ -58,14 +80,18 @@ public abstract class FullScreenPagerView extends FullScreenMediaView {
         return toolbar;
     }
 
+    public WindowInsets getLastStableInsets() {
+        return lastStableInsets;
+    }
+
     @Override
     public String getCurrentImageLink() {
-        return MediaActionHelper.getImageLink(this.collectionId, this.adapter.getImageAt(this.adapter.getCurrentPosition()).getMetaData().getId());
+        return MediaActionHelper.getImageLink(this.collectionId, this.adapter.getImageAt(this.viewPager.getCurrentItem()).getMetaData().getId());
     }
 
     @Override
     public ImageViewHolder getCurrentImage() {
-        return this.adapter.getImageAt(this.adapter.getCurrentPosition());
+        return this.adapter.getImageAt(this.viewPager.getCurrentItem());
     }
 
     @Override
@@ -112,7 +138,7 @@ public abstract class FullScreenPagerView extends FullScreenMediaView {
                     if(viewPager == null || view == null)
                         return;
 
-                    viewPager.setTransitionName(transitionNameTemplate + adapter.getCurrentPosition());
+                    viewPager.setTransitionName(transitionNameTemplate + viewPager.getCurrentItem());
                     if(sharedElements != null) {
                         sharedElements.clear();
                         sharedElements.put(viewPager.getTransitionName(), view);
@@ -135,6 +161,11 @@ public abstract class FullScreenPagerView extends FullScreenMediaView {
 
     @Override
     public int getCurrentAdapterPosition() {
-        return this.adapter.getCurrentPosition();
+        return this.viewPager.getCurrentItem();
+    }
+
+    @Override
+    public void setViewpagerEnabled(boolean enabled) {
+        this.viewPager.setUserInputEnabled(enabled);
     }
 }

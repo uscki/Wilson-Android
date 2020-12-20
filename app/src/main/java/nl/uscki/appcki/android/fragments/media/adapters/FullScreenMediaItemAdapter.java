@@ -1,11 +1,16 @@
 package nl.uscki.appcki.android.fragments.media.adapters;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.viewpager.widget.PagerAdapter;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.List;
 
@@ -17,17 +22,17 @@ import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
 import retrofit2.Response;
 
-public class FullScreenMediaItemAdapter extends PagerAdapter {
+public class FullScreenMediaItemAdapter extends FragmentStateAdapter {
 
     private FullScreenPagerView collectionView;
     private final int size;
     private String transitionNameTemplate;
 
-    private int currentPosition;
     private MediaFileMetaData[] media;
     private ImageViewHolder[] imageViews;
 
-    public FullScreenMediaItemAdapter(FullScreenPagerView collectionView, String transitionNameTemplate) {
+    public FullScreenMediaItemAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, FullScreenPagerView collectionView, String transitionNameTemplate) {
+        super(fragmentManager, lifecycle);
         this.collectionView = collectionView;
         this.size = collectionView.getTotalImages();
         this.transitionNameTemplate = transitionNameTemplate;
@@ -45,6 +50,21 @@ public class FullScreenMediaItemAdapter extends PagerAdapter {
             this.media[collectionView.getInitialPosition() + 1] = collectionView.getNextImage();
         }
 
+        Callback<Pageable<MediaFileMetaData>> fullCollectionCallback = new Callback<Pageable<MediaFileMetaData>>() {
+            @Override
+            public void onSucces(Response<Pageable<MediaFileMetaData>> response) {
+                if (response.body() != null) {
+                    List<MediaFileMetaData> metaDataList = response.body().getContent();
+                    if (metaDataList != null) {
+                        for (int i = 0; i < metaDataList.size(); i++) {
+                            media[i] = metaDataList.get(i);
+                            if (imageViews[i] != null)
+                                imageViews[i].setMetadata(metaDataList.get(i));
+                        }
+                    }
+                }
+            }
+        };
         this.collectionView.callCollectionMetadata(fullCollectionCallback, this.size);
     }
 
@@ -60,55 +80,23 @@ public class FullScreenMediaItemAdapter extends PagerAdapter {
         return null;
     }
 
-    private Callback<Pageable<MediaFileMetaData>> fullCollectionCallback = new Callback<Pageable<MediaFileMetaData>>() {
-        @Override
-        public void onSucces(Response<Pageable<MediaFileMetaData>> response) {
-            if(response.body() != null) {
-                List<MediaFileMetaData> metaDataList = response.body().getContent();
-                if(metaDataList != null) {
-                    for(int i = 0; i < metaDataList.size(); i++) {
-                        media[i] = metaDataList.get(i);
-                        if(imageViews[i] != null)
-                            imageViews[i].setMetadata(metaDataList.get(i));
-                    }
-                }
-            }
-        }
-    };
-
     @NonNull
     @Override
-    public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        ViewGroup imageContainer;
-        if(imageViews[position] != null) {
-            imageContainer = imageViews[position].getImageContainer();
-        } else {
-            imageContainer = (ViewGroup) LayoutInflater.from(collectionView.getActivity()).inflate(R.layout.full_screen_media_view, container, false);
-        }
-        container.addView(imageContainer);
+    public Fragment createFragment(int position) {
+        return new DetailImageViewItemFragment(this, position);
+    }
 
-        ImageViewHolder imageViewHolder = new ImageViewHolder(this.collectionView, imageContainer, transitionNameTemplate + position, this, position, media[position]);
+    ImageViewHolder createViewForFragment(LayoutInflater inflater, ViewGroup container, int position) {
+        if(this.imageViews[position] != null) {
+            container = this.imageViews[position].getImageContainer();
+        } else {
+            container = (ViewGroup) inflater.inflate(R.layout.full_screen_media_view, container, true);
+        }
+
+        ImageViewHolder imageViewHolder = new ImageViewHolder(collectionView, container, transitionNameTemplate + position, FullScreenMediaItemAdapter.this, position, media[position]);
         imageViews[position] = imageViewHolder;
 
-        return imageContainer;
-    }
-
-    @Override
-    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        container.removeView((View)object);
-    }
-
-    @Override
-    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return view == object;
-    }
-
-    @Override
-    public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        super.setPrimaryItem(container, position, object);
-        this.currentPosition = position;
-        if(imageViews != null && imageViews[position] != null)
-            trySetTitle(imageViews[position]);
+        return imageViewHolder;
     }
 
     private void trySetTitle(ImageViewHolder imageViewHolder) {
@@ -124,24 +112,8 @@ public class FullScreenMediaItemAdapter extends PagerAdapter {
     }
 
     @Override
-    public void startUpdate(@NonNull ViewGroup container) {
-        super.startUpdate(container);
-        if(imageViews != null) {
-            for (int i = Math.max(getCurrentPosition() - 2, 0); i < Math.min(getCurrentPosition() + 2, imageViews.length - 1); i++) {
-                if (imageViews[i] != null) {
-                    imageViews[i].updateHelperVisibility();
-                }
-            }
-        }
-    }
-
-    @Override
-    public int getCount() {
+    public int getItemCount() {
         return this.size;
-    }
-
-    public int getCurrentPosition() {
-        return currentPosition;
     }
 
     public void clear() {
@@ -151,5 +123,53 @@ public class FullScreenMediaItemAdapter extends PagerAdapter {
         }
         this.media = null;
         this.imageViews = null;
+    }
+
+    public void updateUIVisbilityForActivateFragments(int currentPosition) {
+        for(int i = 0; i < this.imageViews.length; i++) {
+            if(i != currentPosition && this.imageViews[i] != null) {
+                this.imageViews[i].updateHelperVisibility();
+            }
+        }
+    }
+
+    public static class DetailImageViewItemFragment extends Fragment {
+
+        private int position;
+        private FullScreenMediaItemAdapter adapter;
+        private ImageViewHolder imageViewHolder;
+
+        public DetailImageViewItemFragment(FullScreenMediaItemAdapter adapter, int position) {
+            this.adapter = adapter;
+            this.position = position;
+        }
+
+        @Nullable
+        @Override
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            this.imageViewHolder = adapter.createViewForFragment(inflater, container, position);
+            this.imageViewHolder.getImageContainer().requestApplyInsets();
+            return this.imageViewHolder.getImageContainer();
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            imageViewHolder.updateHelperVisibility();
+            adapter.trySetTitle(imageViewHolder);
+
+            if(adapter.collectionView.getLastStableInsets() != null && getView() != null) {
+                getView().onApplyWindowInsets(adapter.collectionView.getLastStableInsets());
+            }
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            adapter.trySetTitle(imageViewHolder);
+            if(adapter.collectionView.getLastStableInsets() != null && getView() != null) {
+                getView().onApplyWindowInsets(adapter.collectionView.getLastStableInsets());
+            }
+        }
     }
 }

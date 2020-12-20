@@ -118,8 +118,6 @@ public class ImageViewHolder {
         this.helpersContainer = this.imageContainer.findViewById(R.id.full_screen_image_helpers_container);
         this.dateAddedTextView = this.imageContainer.findViewById(R.id.full_screen_image_date_added);
         this.indexTextView = this.imageContainer.findViewById(R.id.full_screen_image_current_index);
-
-        imageContainer.requestApplyInsets();
     }
 
     private void setupView() {
@@ -138,7 +136,7 @@ public class ImageViewHolder {
         updateHelperVisibility();
         TextView currentIndexTextView = imageContainer.findViewById(R.id.full_screen_image_current_index);
         if (adapter != null) {
-            currentIndexTextView.setText(String.format(Locale.getDefault(), "%d / %d", this.fixedAdapterPosition + 1, adapter.getCount())); // TODO string resources
+            currentIndexTextView.setText(String.format(Locale.getDefault(), "%d / %d", this.fixedAdapterPosition + 1, adapter.getItemCount())); // TODO string resources
         } else {
             currentIndexTextView.setText("");
         }
@@ -158,6 +156,7 @@ public class ImageViewHolder {
                         // it will be in cache after the first request.
                         Glide.with(this.mediaView.getActivity())
                                 .load(this.mediaView.getApiUrl(fixedAdapterPosition, MediaAPI.MediaSize.NORMAL))
+                                .fitCenter()
                                 .apply(new RequestOptions().dontTransform())
                                 .onlyRetrieveFromCache(true)
                                 .error(R.drawable.ic_wilson)
@@ -165,6 +164,7 @@ public class ImageViewHolder {
                                 .thumbnail(
                                         Glide.with(this.mediaView.getActivity())
                                                 .load(this.mediaView.getApiUrl(fixedAdapterPosition, MediaAPI.MediaSize.SMALL))
+                                                .fitCenter()
                                                 .apply(new RequestOptions().dontTransform())
                                                 .error(R.drawable.ic_wilson)
                                                 .listener(glideRequestListener)
@@ -208,8 +208,11 @@ public class ImageViewHolder {
                 this.indexTextView.animate().translationX(this.mediaView.getActivity().getWindow().getDecorView().getWidth() - indexTextView.getLeft()).setDuration(animationDuration);
             if (this.tagView != null)
                 this.tagView.animate().translationY(this.mediaView.getActivity().getWindow().getDecorView().getHeight() - tagView.getTop()).setDuration(animationDuration);
-            if (this.dateAddedTextView != null)
-                this.dateAddedTextView.animate().translationX(-1 * dateAddedTextView.getRight()).setDuration(animationDuration);
+            if (this.dateAddedTextView != null) {
+                int moveBy = -1 * dateAddedTextView.getRight();
+                moveBy = moveBy < 0 ? moveBy : -1 * this.mediaView.getActivity().getWindow().getDecorView().getWidth();
+                this.dateAddedTextView.animate().translationX(moveBy).setDuration(animationDuration);
+            }
             this.mediaView.hideToolbar();
 
             int uiOptions = mediaView.getActivity().getWindow().getDecorView().getSystemUiVisibility();
@@ -252,6 +255,7 @@ public class ImageViewHolder {
         loupe.setOnViewTranslateListener(new Loupe.OnViewTranslateListener() {
             @Override
             public void onStart(@NotNull ImageView imageView) {
+                mediaView.setViewpagerEnabled(false);
                 mediaView.hideToolbar();
             }
 
@@ -265,6 +269,7 @@ public class ImageViewHolder {
 
             @Override
             public void onRestore(@NotNull ImageView imageView) {
+                mediaView.setViewpagerEnabled(true);
                 if(mediaView.isHelpersVisible()) mediaView.showToolbar();
             }
         });
@@ -273,6 +278,7 @@ public class ImageViewHolder {
 
         this.imageContainer.setOnTouchListener((v, event) -> {
             detector.onTouchEvent(event);
+            if(MotionEvent.ACTION_UP == event.getAction()) v.performClick();
             return loupe.onTouch(v, event);
         });
 
@@ -314,6 +320,10 @@ public class ImageViewHolder {
         public boolean onSingleTapConfirmed(MotionEvent e) {
             changeUiVisibility(!mediaView.isHelpersVisible());
 
+            if(adapter != null) {
+                adapter.updateUIVisbilityForActivateFragments(fixedAdapterPosition);
+            }
+
             // Loupe resets the scale on layout change, which is triggered by removing the
             // status bar (i.e. going fullscreen mode). Temporarily disabling loupe's layout
             // listener before hiding the status bar, and adding it after the first pass over the
@@ -327,6 +337,7 @@ public class ImageViewHolder {
     View.OnLayoutChangeListener tempLayoutChangeListener = new View.OnLayoutChangeListener() {
         @Override
         public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+            imageContainer.removeOnLayoutChangeListener(this);
             imageContainer.addOnLayoutChangeListener(loupe);
         }
     };

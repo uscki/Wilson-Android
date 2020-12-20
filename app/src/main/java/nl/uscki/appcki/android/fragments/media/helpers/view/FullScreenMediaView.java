@@ -126,4 +126,6 @@ public abstract class FullScreenMediaView {
     public boolean canNavigateCollection() {
         return false;
     }
+
+    public void setViewpagerEnabled(boolean disabled) { }
 }
