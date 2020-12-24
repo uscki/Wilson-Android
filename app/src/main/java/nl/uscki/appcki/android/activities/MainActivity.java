@@ -40,6 +40,7 @@ import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
+import nl.uscki.appcki.android.fragments.media.MediaCaptionContestSharedFragment;
 import nl.uscki.appcki.android.fragments.media.MediaCollectionFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
@@ -102,7 +103,8 @@ public class MainActivity extends BasicActivity
         SMOBO_SEARCH(R.id.nav_search),
         STORE_SELECTION(R.id.nav_shop),
         STORE_BUY(R.id.nav_shop),
-        MEDIA_COLLECTION_OVERVIEW(R.id.nav_media);
+        MEDIA_COLLECTION_OVERVIEW(R.id.nav_media),
+        MEDIA_LANDING_PAGE(R.id.nav_media);
 
         private int menuItemId;
 
@@ -336,8 +338,8 @@ public class MainActivity extends BasicActivity
                 openFragment(new SmoboSearch(), null, true);
                 currentScreen = Screen.SMOBO_SEARCH;
             } else if (id == R.id.nav_media) {
-                openFragment(new MediaCollectionFragment(), null, true);
-                currentScreen = Screen.MEDIA_COLLECTION_OVERVIEW;
+                openFragment(new MediaCaptionContestSharedFragment(), null, true);
+                currentScreen = Screen.MEDIA_LANDING_PAGE;
             }
         }
 
