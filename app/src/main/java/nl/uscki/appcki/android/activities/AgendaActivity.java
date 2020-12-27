@@ -6,9 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,10 +14,17 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.tabs.TabLayout;
@@ -32,6 +37,7 @@ import java.util.Locale;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.error.Error;
@@ -50,7 +56,6 @@ import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
 import nl.uscki.appcki.android.services.OnetimeAlarmReceiver;
-import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 public class AgendaActivity extends BasicActivity {
@@ -131,7 +136,17 @@ public class AgendaActivity extends BasicActivity {
         EventBus.getDefault().post(new DetailItemUpdatedEvent<>(item));
 
         if(item.getPosterid() != null && item.getPosterid() >= 0) {
-            Services.getInstance().mediaService.file(item.getPosterid(), "normal").enqueue(posterLoadedCallback);
+            Glide.with(this)
+                    .load(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.LARGE))
+                    .thumbnail(Glide.with(this).load(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.SMALL)).fitCenter().listener(posterRequestListener))
+                    .listener(posterRequestListener)
+                    .into(poster);
+            poster.setTransitionName("media_poster");
+            poster.setOnClickListener((v) -> {
+                Intent intent = new FullScreenMediaActivity.SingleImageIntentBuilder(item.getTitle(), poster.getTransitionName())
+                        .media(item.getPosterid()).build(this);
+                startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this, poster, poster.getTransitionName()).toBundle());
+            });
         } else {
             this.appBarLayout.setExpanded(false);
         }
@@ -148,38 +163,27 @@ public class AgendaActivity extends BasicActivity {
         updateTabTitleCounts();
     }
 
-    Callback<ResponseBody> posterLoadedCallback = new Callback<ResponseBody>() {
-
+    RequestListener<Drawable> posterRequestListener = new RequestListener<Drawable>() {
         @Override
-        public void onSucces(Response<ResponseBody> response) {
-            if(response == null) {
+        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+            if(!isFirstResource)
                 appBarLayout.setExpanded(false);
-            } else {
-                Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
-
-                float scale = toolbarLayout.getWidth() / (float) bitmap.getWidth();
-
-                int bitmapWidth = Math.round(scale * bitmap.getWidth());
-                int bitmapHeight = Math.round(scale * bitmap.getHeight());
-                int preferredToolbarHeight = toolbarLayout.getHeight();
-
-                if(bitmapHeight > preferredToolbarHeight) {
-                    // Don't scale to height, will take too much of vbox
-                    poster.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                } else {
-                    poster.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                    toolbarLayout.getLayoutParams().height = bitmapHeight;
-                }
-
-                BitmapDrawable drawable = new BitmapDrawable(AgendaActivity.this.getResources(), bitmap);
-                drawable.setBounds(0, 0, bitmapWidth, bitmapHeight);
-                poster.setImageDrawable(drawable);
-            }
+            return false;
         }
 
         @Override
-        public void onError(Response<ResponseBody> response) {
-            appBarLayout.setExpanded(false);
+        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+            float scale = toolbarLayout.getWidth() / (float) resource.getIntrinsicWidth();
+            int height = Math.round(scale * resource.getIntrinsicHeight());
+            int preferredToolbarHeight = toolbarLayout.getHeight();
+
+            if(height > preferredToolbarHeight) {
+                poster.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            } else {
+                poster.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                toolbarLayout.getLayoutParams().height = height;
+            }
+            return false;
         }
     };
 
@@ -312,7 +316,18 @@ public class AgendaActivity extends BasicActivity {
         setSubscribeButtons();
         setExportButtons();
 
+        this.menu.findItem(R.id.action_share_agenda_item).setOnMenuItemClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_TITLE, item.getTitle());
+            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.incognito_website_agenda_event_url, item.getId()));
+            intent.putExtra(Intent.EXTRA_SUBJECT, item.getTitle());
+            intent.setType("text/*");
+            startActivity(Intent.createChooser(intent, getText(R.string.app_general_action_share_intent_text)));
+            return true;
+        });
+
         this.menu.findItem(R.id.action_agenda_archive).setVisible(false);
+        this.menu.findItem(R.id.action_share_agenda_item).setVisible(true);
 
         return super.onCreateOptionsMenu(menu);
     }

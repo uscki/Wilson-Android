@@ -19,12 +19,11 @@ import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.CommentsAdapter;
 import nl.uscki.appcki.android.generated.comments.Comment;
-import nl.uscki.appcki.android.generated.comments.CommentPage;
 import nl.uscki.appcki.android.helpers.WrongTextfieldHelper;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public abstract class CommentsFragment extends PageableFragment<CommentPage> {
+public abstract class CommentsFragment extends PageableFragment<CommentsAdapter.ViewHolder, Comment> {
 
     public static final String ACTION_VIEW_COMMENTS = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_COMMENTS";
     public static final String ARGUMENT_COMMENTS_TOPIC_ID = "nl.uscki.appcki.android.comments.TOPIC_ID";

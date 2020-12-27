@@ -1,12 +1,14 @@
 package nl.uscki.appcki.android.fragments.meeting.adapter;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -25,7 +27,7 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_person_list_item, parent, false);
         return new ViewHolder(view);
@@ -44,17 +46,17 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
         holder.note.setText(item.getNote());
 
         if(item.getPerson().getPhotomediaid() != null && item.getPerson().getPhotomediaid() != 0) {
-            holder.profile.setImageURI(MediaAPI.getMediaUri(item.getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL));
+            Glide.with(holder.mView)
+                    .load(MediaAPI.getMediaUri(item.getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL))
+                    .fitCenter()
+                    .optionalCircleCrop()
+                    .placeholder(R.drawable.account)
+                    .into(holder.profile);
         }
 
         final MeetingActivity meetingActivity = (MeetingActivity)holder.mView.getContext();
         if(meetingActivity != null) {
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    meetingActivity.openSmoboFor(holder.mItem.getPerson());
-                }
-            });
+            holder.mView.setOnClickListener(v -> meetingActivity.openSmoboFor(holder.mItem.getPerson()));
         }
     }
 
@@ -62,7 +64,7 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
         vh.mItem = null;
         vh.name.setText("");
         vh.note.setText("");
-        vh.profile.setImageURI("");
+        Glide.with(vh.mView).clear(vh.profile);
     }
 
     @Override
@@ -72,7 +74,7 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final SimpleDraweeView profile;
+        public final ImageView profile;
         public final TextView name;
         public final TextView note;
         public PersonWithNote mItem;
@@ -80,7 +82,7 @@ public class MeetingParticipantAdapter extends BaseItemAdapter<MeetingParticipan
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            profile = (SimpleDraweeView) view.findViewById(R.id.person_list_item_profile);
+            profile = view.findViewById(R.id.person_list_item_profile);
 
             name = (TextView) view.findViewById(R.id.person_list_item_name);
             note = (TextView) view.findViewById(R.id.person_list_item_note);

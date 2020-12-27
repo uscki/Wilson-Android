@@ -1,5 +1,10 @@
 package nl.uscki.appcki.android.api;
 
+import android.content.Context;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -15,6 +20,7 @@ import org.joda.time.DateTimeZone;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 
 import nl.uscki.appcki.android.App;
@@ -67,7 +73,7 @@ public class ServiceGenerator {
 
     public static OkHttpClient client;
 
-    public static void init() {
+    public static void init(Context context) {
         LoggingInterceptor logging = new LoggingInterceptor();
         // set your desired log level
         logging.setLevel(LoggingInterceptor.Level.BODY);
@@ -96,6 +102,9 @@ public class ServiceGenerator {
         client = httpClient
                 .cache(new Cache(new File(App.getContext().getCacheDir(), "http-cache"), 10 * 1024 * 1024))
                 .build();
+
+        Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(client));
+
     }
 
     public static <S> S createService(Class<S> serviceClass) {
@@ -106,4 +115,12 @@ public class ServiceGenerator {
     public static Gson getGson() {
         return gson;
     }
+
+//    @GlideModule
+//    public final class OkHTTPLibraryGlideModule extends LibraryGlideModule {
+//        @Override
+//        public void registerComponents(@NonNull Context context, @NonNull Glide glide, @NonNull Registry registry) {
+//            registry.replace(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(client));
+//        }
+//    }
 }

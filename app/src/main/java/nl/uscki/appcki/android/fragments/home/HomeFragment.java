@@ -2,17 +2,20 @@ package nl.uscki.appcki.android.fragments.home;
 
 
 import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
+
 import de.greenrobot.event.EventBus;
-import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.fragments.adapters.HomeViewPagerAdapter;
 
@@ -24,7 +27,6 @@ public class HomeFragment extends Fragment {
     public static final int AGENDA = 1;
     public static final int ROEPHOEK = 2;
 
-    TabLayout tabLayout;
     ViewPager viewPager;
 
     public HomeFragment() {
@@ -35,39 +37,36 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_tabs, container, false);
+        viewPager = inflatedView.findViewById(R.id.viewpager);
 
-        tabLayout = (TabLayout) inflatedView.findViewById(R.id.tabLayout);
-        tabLayout.addTab(tabLayout.newTab().setText("Nieuws"));
-        tabLayout.addTab(tabLayout.newTab().setText("Agenda"));
-        tabLayout.addTab(tabLayout.newTab().setText("Roephoek"));
-        viewPager = (ViewPager) inflatedView.findViewById(R.id.viewpager);
+        viewPager.setAdapter(new HomeViewPagerAdapter(getContext(), getChildFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
 
-        viewPager.setAdapter(new HomeViewPagerAdapter(getFragmentManager()));
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        TabLayout tabLayout = inflatedView.findViewById(R.id.tabLayout);
+        tabLayout.setupWithViewPager(viewPager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                setCurrentScreen(tab.getPosition());
-                viewPager.setCurrentItem(tab.getPosition());
-                EventBus.getDefault().post(new SwitchTabEvent(tab.getPosition()));
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
+            public void onPageSelected(int position) {
+                setCurrentScreen(position);
+                EventBus.getDefault().post(new SwitchTabEvent(position));
             }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+            public void onPageScrollStateChanged(int state) {
 
             }
         });
 
-        if (getArguments() != null) {
-            int index = getArguments().getInt("index");
+        int index = -1;
+        if(getArguments() != null) index = getArguments().getInt("index");
+        else if (savedInstanceState != null) index = savedInstanceState.getInt("index");
+
+        if (index > -1) {
             setCurrentScreen(index);
             viewPager.setCurrentItem(index);
-            tabLayout.setScrollPosition(index, 0f, false);
         }
 
         return inflatedView;
@@ -92,12 +91,12 @@ public class HomeFragment extends Fragment {
     public void onEventMainThread(SwitchTabEvent event) {
         setCurrentScreen(event.index);
         viewPager.setCurrentItem(event.index);
-        tabLayout.setScrollPosition(event.index, 0f, false);
     }
 
     @Override
     public void onStart() {
         EventBus.getDefault().register(this);
+        MainActivity.setHomeScreenExists();
         super.onStart();
     }
 
@@ -106,5 +105,11 @@ public class HomeFragment extends Fragment {
         EventBus.getDefault().unregister(this);
         MainActivity.setHomescreenDestroyed();
         super.onStop();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("index", this.viewPager.getCurrentItem());
     }
 }

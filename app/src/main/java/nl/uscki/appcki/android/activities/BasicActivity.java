@@ -1,15 +1,21 @@
 package nl.uscki.appcki.android.activities;
 
+import android.app.SharedElementCallback;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+
+import java.util.List;
+import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.EventBusException;
@@ -26,6 +32,7 @@ import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.fragments.PrivacyPolicyModalFragment;
 import nl.uscki.appcki.android.generated.organisation.PersonName;
 import nl.uscki.appcki.android.generated.organisation.PersonWithNote;
+import nl.uscki.appcki.android.helpers.ISharedElementViewContainer;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.services.NotificationReceiver;
@@ -36,6 +43,9 @@ import retrofit2.Response;
  */
 
 public abstract class BasicActivity extends AppCompatActivity {
+
+    protected ISharedElementViewContainer viewContainer;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if(savedInstanceState != null) {
@@ -49,7 +59,34 @@ public abstract class BasicActivity extends AppCompatActivity {
 
         NotificationReceiver.logToken(this);
 
+        setExitSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                propegateMapSharedElements(names, sharedElements);
+            }
+        });
+
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onActivityReenter(int resultCode, Intent data) {
+        if(viewContainer != null) {
+            Log.v("BasicActivity", "Propegating onActivityReenter to " + this.viewContainer.getClass());
+            resultCode = viewContainer.activityReentering(resultCode, data);
+        } else {
+            Log.v("BasicActivity", "No viewcontainer. Not propegating onActivityReenter");
+        }
+        super.onActivityReenter(resultCode, data);
+    }
+
+    protected void propegateMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+        if(viewContainer != null) {
+            Log.v("BasicActivity", "Propegating onMapSharedElements to " + viewContainer.getClass());
+            viewContainer.onMapSharedElements(names, sharedElements);
+        } else {
+            Log.v("BasicActivity", "No viewcontainer. Not propegating onMapSharedElements");
+        }
     }
 
     @Override
@@ -191,6 +228,19 @@ public abstract class BasicActivity extends AppCompatActivity {
                     Gson gson = new Gson();
             }
         }
+    }
+
+
+    public boolean registerSharedElementCallback(ISharedElementViewContainer viewContainer) {
+        boolean status = this.viewContainer == null;
+        this.viewContainer = viewContainer;
+        return status;
+    }
+
+    public boolean deregisterSharedElementCallback(ISharedElementViewContainer viewContainer) {
+        boolean status = this.viewContainer != null && this.viewContainer.equals(viewContainer);
+        this.viewContainer = null;
+        return status;
     }
 
     public void onEventMainThread(LinkClickedEvent event) {

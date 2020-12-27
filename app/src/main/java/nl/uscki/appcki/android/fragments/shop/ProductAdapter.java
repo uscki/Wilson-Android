@@ -2,17 +2,21 @@ package nl.uscki.appcki.android.fragments.shop;
 
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -34,7 +38,7 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.store_product, parent, false);
         return new ViewHolder(view);
@@ -59,10 +63,18 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
         holder.stock.setText(String.format(Locale.getDefault(), "%d", product.stock));
         holder.price.setText(holder.mView.getResources().getString(R.string.shop_price_format, product.price));
 
-        if (product.image != null)
-            holder.image.setImageURI(MediaAPI.getMediaUri(product.image));
-        else
-            holder.image.setImageURI("http://thecatapi.com/api/images/get?format=src");
+        Drawable placeholder = AppCompatResources.getDrawable(holder.mView.getContext(), R.drawable.animated_uscki_logo_black);
+        if(placeholder instanceof Animatable)
+            ((Animatable) placeholder).start();
+
+        String imageUri = product.image == null ? "" : MediaAPI.getMediaUrl(product.image);
+        Glide.with(holder.mView)
+                .load(imageUri)
+                .placeholder(placeholder)
+                .error(Glide.with(holder.mView)
+                        .load("https://thecatapi.com/api/images/get?format=src&rnd=" + product.getRnd())
+                        .placeholder(placeholder))
+                .into(holder.image);
 
         if(product.stock == null || product.stock < 1) {
             // Disabling FABs is hard
@@ -70,17 +82,13 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
             holder.product_order.setBackgroundTintMode(PorterDuff.Mode.DARKEN);
             holder.product_order.setOnClickListener(null);
         } else {
-            holder.product_order.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-
-                    ShopPreferenceHelper shopPreferenceHelper =
-                            new ShopPreferenceHelper(holder.mView.getContext());
-                    if (shopPreferenceHelper.getShowConfirm()) {
-                        showConfirmDialog(product, holder);
-                    } else {
-                        placeOrder(product, holder);
-                    }
+            holder.product_order.setOnClickListener(v -> {
+                ShopPreferenceHelper shopPreferenceHelper =
+                        new ShopPreferenceHelper(holder.mView.getContext());
+                if (shopPreferenceHelper.getShowConfirm()) {
+                    showConfirmDialog(product, holder);
+                } else {
+                    placeOrder(product, holder);
                 }
             });
         }
@@ -113,7 +121,7 @@ public class ProductAdapter extends BaseItemAdapter<ProductAdapter.ViewHolder, P
         public final View mView;
 
         TextView name;
-        SimpleDraweeView image;
+        ImageView image;
         TextView stock;
         FloatingActionButton product_order;
         TextView price;

@@ -3,10 +3,6 @@ package nl.uscki.appcki.android;
 import android.app.Application;
 import android.content.Context;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory;
-import com.facebook.imagepipeline.core.ImagePipelineConfig;
-
 import io.github.inflationx.calligraphy3.CalligraphyConfig;
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
 import io.github.inflationx.viewpump.ViewPump;
@@ -35,12 +31,8 @@ public class App extends Application {
                                 .build()))
                 .build());
 
-        ServiceGenerator.init(); // initialise our OkHttp3 client for Fresco
-
-        ImagePipelineConfig config = OkHttpImagePipelineConfigFactory
-                .newBuilder(this, ServiceGenerator.client)
-                .build();
-        Fresco.initialize(this, config);
+        // TODO not sure if this now can be deleted, or if a similar way is available for Glide
+        ServiceGenerator.init(this); // initialise our OkHttp3 client for Fresco
     }
 
     public static Context getContext() {

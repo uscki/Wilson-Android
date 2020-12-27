@@ -1,11 +1,11 @@
 package nl.uscki.appcki.android.api;
 
 import nl.uscki.appcki.android.api.models.ActionResponse;
-import nl.uscki.appcki.android.generated.agenda.Agenda;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
+import nl.uscki.appcki.android.generated.agenda.SimpleAgendaItem;
 import nl.uscki.appcki.android.generated.comments.Comment;
-import nl.uscki.appcki.android.generated.comments.CommentPage;
+import nl.uscki.appcki.android.generated.common.Pageable;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
@@ -23,16 +23,16 @@ public interface AgendaService {
     Call<AgendaItem> get(@Path("event") Integer id);
 
     @GET("agenda/")
-    Call<Agenda> agenda(@Query("page") Integer page, @Query("size") Integer size);
+    Call<Pageable<SimpleAgendaItem>> agenda(@Query("page") Integer page, @Query("size") Integer size);
 
     @GET("agenda/")
-    Call<Agenda> agenda(@Query("page") Integer page, @Query("size") Integer size, @Query("sort") Object sort);
+    Call<Pageable<SimpleAgendaItem>> agenda(@Query("page") Integer page, @Query("size") Integer size, @Query("sort") Object sort);
 
     @GET("agenda/archive/")
-    Call<Agenda> archive(@Query("page") Integer page, @Query("size") Integer size);
+    Call<Pageable<SimpleAgendaItem>> archive(@Query("page") Integer page, @Query("size") Integer size);
 
     @GET("agenda/archive/")
-    Call<Agenda> archive(@Query("page") Integer page, @Query("size") Integer size, @Query("sort") Object sort);
+    Call<Pageable<SimpleAgendaItem>> archive(@Query("page") Integer page, @Query("size") Integer size, @Query("sort") Object sort);
 
     @GET("agenda/categories/")
     Call<Object> categories();
@@ -49,7 +49,7 @@ public interface AgendaService {
     Call<ActionResponse<AgendaParticipantLists>> unsubscribe(@Path("event") Integer id);
 
     @GET("agenda/{event}/comments/")
-    Call<CommentPage> getComments(@Path("event") Integer agendaId, @Query("page") Integer page, @Query("size") Integer size);
+    Call<Pageable<Comment>> getComments(@Path("event") Integer agendaId, @Query("page") Integer page, @Query("size") Integer size);
 
     @POST("agenda/{event}/comments/add")
     Call<ActionResponse<Comment>> replyToComment(@Path("event") Integer agendaId, @Query("parentId") Integer parentId, @Query("comment") String comment);

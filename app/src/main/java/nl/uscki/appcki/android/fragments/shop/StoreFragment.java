@@ -2,7 +2,6 @@ package nl.uscki.appcki.android.fragments.shop;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.core.content.pm.ShortcutManagerCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,8 +9,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.core.content.pm.ShortcutManagerCompat;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
@@ -20,14 +23,13 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.PageableFragment;
-import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.shop.Product;
 import nl.uscki.appcki.android.generated.shop.Store;
 import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import nl.uscki.appcki.android.helpers.ShortcutHelper;
 import retrofit2.Response;
 
-public class StoreFragment extends PageableFragment<Pageable<Product>> implements Serializable {
+public class StoreFragment extends PageableFragment<ProductAdapter.ViewHolder, Product> implements Serializable {
 
     public static final String PARAM_STORE_ID
             = "nl.uscki.appcki.android.activities.param.PARAM_STORE_ID";
@@ -58,7 +60,7 @@ public class StoreFragment extends PageableFragment<Pageable<Product>> implement
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Create an adapter for this fragment
-        ProductAdapter adapter = new ProductAdapter(new ArrayList<Product>());
+        ProductAdapter adapter = new ProductAdapter(new ArrayList<>());
         adapter.setStoreInfo(this, this.storeId);
         setAdapter(adapter);
 

@@ -25,6 +25,7 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.events.ContentLoadedEvent;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.views.NewPageableItem;
 import retrofit2.Response;
@@ -33,7 +34,7 @@ import retrofit2.Response;
  * A fragment representing a list of Items.
  * <p>
  */
-public abstract class PageableFragment<T extends Pageable> extends Fragment {
+public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K extends IWilsonBaseItem> extends Fragment {
 
     public static final int NEW_ITEM_EDIT_BOX_POSITION_TOP = R.id.new_item_placeholder_top;
     public static final int NEW_ITEM_EDIT_BOX_POSITION_BOTTOM = R.id.new_item_placeholder_bottom;
@@ -41,7 +42,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     public static final int LAST_ON_TOP = 30;
     public static final int FIRST_ON_TOP = 31;
 
-    private BaseItemAdapter adapter;
+    private BaseItemAdapter<T, K> adapter;
     protected RecyclerView recyclerView;
     protected SwipeRefreshLayout swipeContainer;
     protected TextView emptyText;
@@ -63,9 +64,9 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     private int editBoxPosition = NEW_ITEM_EDIT_BOX_POSITION_DEFAULT;
     private int scrollDirection = LAST_ON_TOP;
 
-    protected Callback<T> callback = new Callback<T>() {
+    protected Callback<Pageable<K>> callback = new Callback<Pageable<K>>() {
         @Override
-        public void onSucces(Response<T> response) {
+        public void onSucces(Response<Pageable<K>> response) {
             if(refresh) {
                 refresh = false;
                 noMoreContent = false; // reset noMoreContent because we are loading the first page
@@ -130,7 +131,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_pageable, container, false);
+        View view = inflater.inflate(getLayoutResource(), container, false);
         setupSwipeContainer(view);
         setupRecyclerView(view);
 
@@ -141,6 +142,10 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         refresh = true; // always start with a refreshing view
         scrollLoad = false;
         return view;
+    }
+
+    protected int getLayoutResource() {
+        return R.layout.fragment_pageable;
     }
 
     public boolean scrollToItem(int id) {
@@ -166,7 +171,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     }
 
     protected void setupRecyclerView(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -234,11 +239,11 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         }
     }
 
-    public BaseItemAdapter getAdapter() {
+    public BaseItemAdapter<T, K> getAdapter() {
         return adapter;
     }
 
-    public void setAdapter(BaseItemAdapter adapter) {
+    public void setAdapter(BaseItemAdapter<T, K> adapter) {
         this.adapter = adapter;
     }
 

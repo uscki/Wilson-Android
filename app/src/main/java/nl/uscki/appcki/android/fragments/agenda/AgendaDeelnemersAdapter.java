@@ -1,13 +1,15 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_person_list_item, parent, false);
         return new ViewHolder(view);
@@ -48,17 +50,17 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
 
         Integer profile = holder.mItem.getPerson().getPhotomediaid();
         if(profile != null) {
-            holder.profile.setImageURI(MediaAPI.getMediaUri(profile, MediaAPI.MediaSize.SMALL));
+            Glide.with(holder.mView)
+                    .load(MediaAPI.getMediaUri(profile, MediaAPI.MediaSize.SMALL))
+                    .fitCenter()
+                    .optionalCircleCrop()
+                    .placeholder(R.drawable.account)
+                    .into(holder.profile);
         }
 
         final AgendaActivity act = (AgendaActivity)holder.mView.getContext();
         if(act != null) {
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    act.openSmoboFor(item.getPerson());
-                }
-            });
+            holder.mView.setOnClickListener(view -> act.openSmoboFor(item.getPerson()));
         } else {
             Log.e(getClass().getSimpleName(),
                     "Could not obtain AgendaActivity from viewholder view. " +
@@ -70,7 +72,7 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
         vh.mItem = null;
         vh.name.setText("");
         vh.note.setText("");
-        vh.profile.setImageURI("");
+        Glide.with(vh.mView).clear(vh.profile);
     }
 
     @Override
@@ -80,7 +82,7 @@ public class AgendaDeelnemersAdapter extends BaseItemAdapter<AgendaDeelnemersAda
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final SimpleDraweeView profile;
+        public final ImageView profile;
         public final TextView name;
         public final TextView note;
         public AgendaParticipant mItem;

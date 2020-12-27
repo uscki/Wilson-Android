@@ -32,7 +32,7 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.news_item, parent, false);
         return new ViewHolder(view);
@@ -88,7 +88,7 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
 
     private void showLongtext(ViewHolder holder) {
         holder.longtext.setVisibility(View.VISIBLE);
-        holder.readmore.setText(R.string.news_read_less); // TODO make string resource
+        holder.readmore.setText(R.string.news_read_less);
         holder.readmore.setOnClickListener(v -> {
             hideLongtext(holder);
         });

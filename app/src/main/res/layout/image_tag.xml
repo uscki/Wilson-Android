@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:layout_margin="3dp"
+    android:background="@drawable/rounded_dark_transparant"
+    android:longClickable="false"
+    >
+    <TextView
+        android:id="@+id/image_tag_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/lb_tv_white"
+        android:textStyle="bold"/>
+</FrameLayout>

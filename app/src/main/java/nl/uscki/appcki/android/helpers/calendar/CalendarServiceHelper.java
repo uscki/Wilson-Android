@@ -42,7 +42,7 @@ public class CalendarServiceHelper {
      * Perform initialization of API, including adding a token to headers
      */
     private void init() {
-        ServiceGenerator.init();
+        ServiceGenerator.init(context);
         UserHelper.getInstance().load();
     }
 

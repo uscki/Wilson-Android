@@ -14,15 +14,13 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.AgendaItemAdapter;
-import nl.uscki.appcki.android.generated.agenda.Agenda;
-import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.SimpleAgendaItem;
 
 /**
  * Created by peter on 11/23/16.
  */
 
-public class HomeAgendaTab extends PageableFragment<Agenda> {
+public class HomeAgendaTab extends PageableFragment<AgendaItemAdapter.ViewHolder, SimpleAgendaItem> {
     private final int AGENDA_PAGE_SIZE = 5;
 
     boolean showArchive = false;
@@ -32,8 +30,10 @@ public class HomeAgendaTab extends PageableFragment<Agenda> {
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
-        setAdapter(new AgendaItemAdapter(new ArrayList<SimpleAgendaItem>()));
-        Services.getInstance().agendaService.agenda(page, AGENDA_PAGE_SIZE).enqueue(callback);
+        if(getAdapter() == null) {
+            setAdapter(new AgendaItemAdapter(new ArrayList<>()));
+            Services.getInstance().agendaService.agenda(page, AGENDA_PAGE_SIZE).enqueue(callback);
+        }
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -88,5 +88,12 @@ public class HomeAgendaTab extends PageableFragment<Agenda> {
     @Override
     public String getEmptyText() {
         return getString(R.string.agenda_no_new_agendas);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(this.getAdapter().getItemCount() > 0)
+            this.swipeContainer.setRefreshing(false);
     }
 }

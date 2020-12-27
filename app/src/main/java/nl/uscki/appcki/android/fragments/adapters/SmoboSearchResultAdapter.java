@@ -1,12 +1,14 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class SmoboSearchResultAdapter extends BaseItemAdapter<SmoboSearchResultA
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_person_list_item, parent, false);
         return new ViewHolder(view);
@@ -42,7 +44,8 @@ public class SmoboSearchResultAdapter extends BaseItemAdapter<SmoboSearchResultA
         holder.mItem = null;
         holder.name.setText("");
         holder.note.setText("");
-        holder.profile.setImageURI("");
+        Glide.with(holder.mView)
+                .clear(holder.profile);
     }
 
     private void resetViews(ViewHolder holder, final PersonName person) {
@@ -50,22 +53,24 @@ public class SmoboSearchResultAdapter extends BaseItemAdapter<SmoboSearchResultA
         holder.name.setText(person.getPostalname());
         holder.note.setText("");
         if(person.getPhotomediaid() != null) {
-            holder.profile.setImageURI(MediaAPI.getMediaUri(person.getPhotomediaid(), MediaAPI.MediaSize.SMALL));
+            Glide.with(holder.mView)
+                    .load(MediaAPI.getMediaUri(person.getPhotomediaid(), MediaAPI.MediaSize.SMALL))
+                    .placeholder(R.drawable.account)
+                    .fitCenter()
+                    .optionalCircleCrop()
+                    .into(holder.profile);
         }
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getContext() instanceof BasicActivity) {
-                    BasicActivity o = (BasicActivity) v.getContext();
-                    o.openSmoboFor(person);
-                }
+        holder.mView.setOnClickListener(v -> {
+            if (v.getContext() instanceof BasicActivity) {
+                BasicActivity o = (BasicActivity) v.getContext();
+                o.openSmoboFor(person);
             }
         });
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final SimpleDraweeView profile;
+        public final ImageView profile;
         public final TextView name;
         public final TextView note;
         public PersonName mItem;
@@ -73,10 +78,10 @@ public class SmoboSearchResultAdapter extends BaseItemAdapter<SmoboSearchResultA
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            profile = (SimpleDraweeView) view.findViewById(R.id.person_list_item_profile);
+            profile = view.findViewById(R.id.person_list_item_profile);
 
-            name = (TextView) view.findViewById(R.id.person_list_item_name);
-            note = (TextView) view.findViewById(R.id.person_list_item_note);
+            name = view.findViewById(R.id.person_list_item_name);
+            note = view.findViewById(R.id.person_list_item_note);
             note.setVisibility(View.VISIBLE);
         }
 

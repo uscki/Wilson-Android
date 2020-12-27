@@ -22,6 +22,9 @@
             android:id="@+id/nav_quotes"
             android:icon="@drawable/format_quote_close"
             android:title="Quotes" />
+        <item android:id="@+id/nav_media"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Media"/>
         <item
             android:id="@+id/nav_shop"
             android:icon="@drawable/cash_multiple"

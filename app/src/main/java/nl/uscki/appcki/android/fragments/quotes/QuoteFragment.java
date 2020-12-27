@@ -1,9 +1,6 @@
 package nl.uscki.appcki.android.fragments.quotes;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,6 +8,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -20,13 +22,12 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.QuoteAdapter;
 import nl.uscki.appcki.android.generated.quotes.Quote;
-import nl.uscki.appcki.android.generated.quotes.QuotesPage;
 
 /**
  * A fragment representing a list of Items.
  * <p/>
  */
-public class QuoteFragment extends PageableFragment<QuotesPage> {
+public class QuoteFragment extends PageableFragment<QuoteAdapter.ViewHolder, Quote> {
     private final int QUOTES_PAGE_SIZE = 5;
     private String[] sort = new String[]{""};
     private Menu menu;

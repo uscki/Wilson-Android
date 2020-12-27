@@ -4,11 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class StoreAdapter extends BaseItemAdapter<StoreAdapter.ViewHolder, Store
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.store_item, parent, false);
         return new ViewHolder(view);
@@ -36,18 +37,19 @@ public class StoreAdapter extends BaseItemAdapter<StoreAdapter.ViewHolder, Store
         final Store store = items.get(position);
 
         holder.name.setText(store.title);
-        holder.image.setImageURI("");
 
         if (store.image != null)
-            holder.image.setImageURI(MediaAPI.getMediaUri(store.image));
+            Glide.with(holder.mView)
+                .load(MediaAPI.getMediaUri(store.image))
+                .centerCrop()
+                .into(holder.image);
+        else
+            Glide.with(holder.mView).clear(holder.image);
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("id", store.id);
-                EventBus.getDefault().post(new OpenFragmentEvent(new StoreFragment(), bundle));
-            }
+        holder.mView.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("id", store.id);
+            EventBus.getDefault().post(new OpenFragmentEvent(new StoreFragment(), bundle));
         });
     }
 
@@ -55,7 +57,7 @@ public class StoreAdapter extends BaseItemAdapter<StoreAdapter.ViewHolder, Store
         public final View mView;
 
         TextView name;
-        SimpleDraweeView image;
+        ImageView image;
 
         public ViewHolder(View view) {
             super(view);

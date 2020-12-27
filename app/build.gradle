@@ -6,7 +6,7 @@ android {
     buildToolsVersion '29.0.2'
     defaultConfig {
         applicationId "nl.uscki.appcki.android"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 12
         versionName "v2.2.2"
@@ -63,13 +63,18 @@ dependencies {
     implementation 'com.vistrav:ask:2.4'
     implementation 'io.github.inflationx:calligraphy3:3.1.1'
     implementation 'io.github.inflationx:viewpump:2.0.3'
-    implementation 'com.google.firebase:firebase-messaging:20.3.0'
-    implementation 'com.facebook.fresco:fresco:1.1.0'
-    implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    implementation 'com.google.firebase:firebase-messaging:21.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     // Avoid error `Cannot fit requested classes in a single dex file (# methods: 66229 > 65536)`
     // See https://developer.android.com/studio/build/multidex#mdex-gradle
     implementation 'com.android.support:multidex:1.0.3'
+    implementation ("com.github.bumptech.glide:glide:4.11.0") {
+        exclude group: "com.android.support"
+    }
+    implementation 'com.github.bumptech.glide:okhttp3-integration:4.11.0'
+    implementation 'com.igreenwood.loupe:loupe:1.2.1'
+    implementation 'com.igreenwood.loupe:extensions:1.0.0'
+    implementation 'com.google.android:flexbox:2.0.1'
     testImplementation 'junit:junit:4.13.1'
 }
 

@@ -4,13 +4,14 @@ package nl.uscki.appcki.android.fragments.adapters;
  * Created by peter on 5/16/16.
  */
 
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,7 +94,7 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
         }
     }
 
-    public abstract T onCreateCustomViewHolder(ViewGroup parent);
+    public abstract T onCreateCustomViewHolder(ViewGroup parent, int viewType);
     public abstract void onBindCustomViewHolder(T holder, int position);
 
 
@@ -119,7 +120,7 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
                     .inflate(R.layout.fragment_agenda_participant_section_header, parent, false);
             return (T) new ListSectionHeaderHolder(view);
         } {
-            return onCreateCustomViewHolder(parent);
+            return onCreateCustomViewHolder(parent, viewType);
         }
     }
 
@@ -189,11 +190,15 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
     public class LoadingMoreViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
 
-        ProgressBar progressBar;
+        ImageView progressBar;
+        Drawable drawable;
 
         LoadingMoreViewHolder(View itemView) {
             super(itemView);
             progressBar = itemView.findViewById(R.id.loadMoreProgressBar);
+            drawable = progressBar.getDrawable();
+            if(drawable instanceof Animatable)
+                ((Animatable)drawable).start();
             mView = itemView;
         }
 
