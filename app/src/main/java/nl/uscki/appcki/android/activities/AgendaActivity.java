@@ -318,10 +318,11 @@ public class AgendaActivity extends BasicActivity {
 
         this.menu.findItem(R.id.action_share_agenda_item).setOnMenuItemClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.putExtra(Intent.EXTRA_TITLE, item.getTitle()); // TODO
+            intent.putExtra(Intent.EXTRA_TITLE, item.getTitle());
             intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.incognito_website_agenda_event_url, item.getId()));
+            intent.putExtra(Intent.EXTRA_SUBJECT, item.getTitle());
             intent.setType("text/*");
-            startActivity(Intent.createChooser(intent, "Send to...")); // TODO
+            startActivity(Intent.createChooser(intent, getText(R.string.app_general_action_share_intent_text)));
             return true;
         });
 

@@ -88,7 +88,7 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
 
     private void showLongtext(ViewHolder holder) {
         holder.longtext.setVisibility(View.VISIBLE);
-        holder.readmore.setText(R.string.news_read_less); // TODO make string resource
+        holder.readmore.setText(R.string.news_read_less);
         holder.readmore.setOnClickListener(v -> {
             hideLongtext(holder);
         });

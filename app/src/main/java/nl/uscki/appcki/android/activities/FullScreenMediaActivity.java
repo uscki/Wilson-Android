@@ -97,7 +97,7 @@ public class FullScreenMediaActivity extends BasicActivity {
                MediaCollection collection = this.mediaView.getCurrentImage().hasCollection() ?
                        this.mediaView.getCurrentImage().getMetaData().getParentCollection() : null;
                if(collection == null) {
-                   Toast.makeText(FullScreenMediaActivity.this, "Geen collectie gevonden voor deze afbeelding", Toast.LENGTH_LONG).show(); // TODO string resource
+                   Toast.makeText(FullScreenMediaActivity.this, getString(R.string.wilson_media_action_media_has_no_collecton_msg), Toast.LENGTH_LONG).show();
                    return false;
                }
                Intent intent = new MediaCollectionFragment.IntentBuilder(collection)
@@ -119,7 +119,7 @@ public class FullScreenMediaActivity extends BasicActivity {
             } else {
                 Toast.makeText(
                         this,
-                        "Afbeelding kan niet worden opgeslagen zonder toestemming voor storage", // TODO make string resource
+                        getString(R.string.wilson_media_action_save_image_requires_storage_permission_error_msg),
                         Toast.LENGTH_LONG
                 ).show();
             }

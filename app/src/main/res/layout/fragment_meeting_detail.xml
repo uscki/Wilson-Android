@@ -98,7 +98,7 @@
                         style="@style/AppTheme.Text.Selectable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="-" />
+                        android:text="@string/sep" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -127,7 +127,7 @@
                         style="@style/AppTheme.Text.Selectable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="-" />
+                        android:text="@string/sep" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

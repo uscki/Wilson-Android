@@ -13,6 +13,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/lb_tv_white"
-        android:text="Niels Plantenga"
         android:textStyle="bold"/>
 </FrameLayout>

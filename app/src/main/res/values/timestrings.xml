@@ -15,4 +15,8 @@
     <string name="timestring_x_minutes">%d minuten</string>
     <string name="timestrings_x_second">%d seconde</string>
     <string name="timestring_x_seconds">%d seconden</string>
+
+    <string name="joda_datetime_format_year_month_day">dd MMMM yyyy</string>
+    <string name="joda_datetime_format_year_month_day_with_day_names">EEEE dd MMMM yyyy</string>
+
 </resources>

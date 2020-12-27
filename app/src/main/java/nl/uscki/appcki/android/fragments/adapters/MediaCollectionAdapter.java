@@ -23,7 +23,6 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
@@ -134,7 +133,7 @@ public class MediaCollectionAdapter extends BaseItemAdapter<MediaCollectionAdapt
         void bind(int position) {
             final MediaCollection collection = childCollections.get(position);
             this.collectionNameTextView.setText(collection.name);
-            this.photoCountTextView.setText(String.format(Locale.getDefault(), "%d photos", collection.getNumOfPhotos())); // TODO use string resources
+            this.photoCountTextView.setText(itemView.getContext().getString(R.string.wilson_media_num_photos, collection.getNumOfPhotos()));
             StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) this.itemView.getLayoutParams();
             layoutParams.setFullSpan(true);
             this.itemView.setLayoutParams(layoutParams);

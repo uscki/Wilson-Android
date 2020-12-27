@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -25,14 +26,15 @@ import com.bumptech.glide.request.transition.Transition;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Locale;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.FullScreenMediaActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.media.helpers.view.FullScreenMediaView;
 import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
+import nl.uscki.appcki.android.helpers.MediaFileProvider;
 
 public class MediaActionHelper {
 
@@ -61,7 +63,7 @@ public class MediaActionHelper {
         Intent shareIntent = createBasicMediaShareIntent();
         shareIntent.putExtra(Intent.EXTRA_TEXT, mediaView.getCurrentImageLink());
         shareIntent.setType("text/*");
-        this.activity.startActivity(Intent.createChooser(shareIntent, "Send to...")); // TODO string resource
+        this.activity.startActivity(Intent.createChooser(shareIntent, activity.getString(R.string.app_general_action_share_intent_text)));
     }
 
     public void writeMediaIfPermitted() {
@@ -72,32 +74,23 @@ public class MediaActionHelper {
             }
         }
         Glide.with(this.activity)
-                .asBitmap()
+                .asFile()
                 .load(this.mediaView.getApiUrl(MediaAPI.MediaSize.LARGE))
                 .into(storeMediaCallback);
-    }
-
-    public static String getImageLink(int collectionId, int mediaFileId) {
-        return String.format(Locale.getDefault(), "https://www.uscki.nl/?pagina=Media/Archive&subcollection=%d&mediafile=%d", collectionId, mediaFileId); // TODO string resources
-    }
-
-    public static String getImageLink(int mediaFileId) {
-        return String.format(Locale.getDefault(), "https://www.uscki.nl/?pagina=Media/FileView&id=%d&size=large", mediaFileId); // TODO string resources
     }
 
     private Intent createBasicMediaShareIntent() {
         Intent intent = new Intent(Intent.ACTION_SEND);
         String collectionName = getCollectionName();
         if(collectionName != null) {
-            intent.putExtra(Intent.EXTRA_TITLE, String.format(
-                    Locale.getDefault(), "Foto uit %s", collectionName // TODO string resource
-            ));
+            intent.putExtra(Intent.EXTRA_TITLE,
+                    activity.getString(R.string.wilson_media_collection_intent_share_text_extra, collectionName));
             intent.putExtra(Intent.EXTRA_SUBJECT, collectionName);
         } else {
-            intent.putExtra(Intent.EXTRA_TITLE, "Foto van uscki.nl"); // TODO
-            intent.putExtra(Intent.EXTRA_SUBJECT, "Foto van uscki.nl"); // TODO
+            intent.putExtra(Intent.EXTRA_TITLE, activity.getString(R.string.wilson_media_collection_intent_share_text_extra));
+            intent.putExtra(Intent.EXTRA_SUBJECT, activity.getString(R.string.wilson_media_collection_intent_share_text_extra));
         }
-        intent.putExtra(Intent.EXTRA_TEXT, this.mediaView.getCurrentImageLink()); // TODO extract from current view helper
+        intent.putExtra(Intent.EXTRA_TEXT, this.mediaView.getCurrentImageLink());
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         return intent;
     }
@@ -111,17 +104,32 @@ public class MediaActionHelper {
         return collectionName;
     }
 
-    CustomTarget<Bitmap> storeMediaCallback = new CustomTarget<Bitmap>() {
+    CustomTarget<File> storeMediaCallback = new CustomTarget<File>() {
         @Override
-        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-            String relativeLocation = Environment.DIRECTORY_PICTURES + File.separator + activity.getString(R.string.app_external_media_subdir); // TODO seperate by collection?
+        public void onResourceReady(@NonNull File file, @Nullable Transition<? super File> transition) {
+            String relativeLocation = Environment.DIRECTORY_PICTURES + File.separator + activity.getString(R.string.app_external_media_subdir);
 
             ContentValues values = new ContentValues();
             String collectionName = getCollectionName();
             if(collectionName != null) {
-                values.put(MediaStore.MediaColumns.DISPLAY_NAME, collectionName.trim().replaceAll(" ", "_") + "_" + System.currentTimeMillis()); // TODO
+                values.put(MediaStore.MediaColumns.DISPLAY_NAME, collectionName.trim().replaceAll(" ", "_") + "_" + System.currentTimeMillis());
             }
-            values.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg"); // TODO make general
+
+            Bitmap bitmap = null;
+            MediaFileProvider.MIME_TYPE mime = null;
+
+            try (
+                    InputStream is1 = mediaView.getActivity().getContentResolver().openInputStream(Uri.fromFile(file));
+                    InputStream is2 = mediaView.getActivity().getContentResolver().openInputStream(Uri.fromFile(file));
+            ) {
+                bitmap = BitmapFactory.decodeStream(is1);
+                mime = MediaFileProvider.findMimeType(is2);
+            } catch (IOException e) {
+                Toast.makeText(activity, activity.getString(R.string.wilson_media_action_save_image_msg_failure), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            values.put(MediaStore.MediaColumns.MIME_TYPE, mime.getMimeType());
             values.put(MediaStore.MediaColumns.IS_DOWNLOAD, 1);
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 values.put(MediaStore.MediaColumns.OWNER_PACKAGE_NAME, activity.getPackageName());
@@ -137,20 +145,20 @@ public class MediaActionHelper {
                 OutputStream os = resolver.openOutputStream(output);
                 if (os == null) throw new IOException("Failed to create the output stream");
 
-                if (!resource.compress(Bitmap.CompressFormat.JPEG, 100, os)) {
+                if (!bitmap.compress(mime.getCompressFormat(), 100, os)) {
                     throw new IOException("Failed to save the bitmap");
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     values.put(MediaStore.MediaColumns.IS_PENDING, 0);
                     resolver.update(output, values, null, null);
                 }
-                Log.e("StoreImage", "Image saved in " + output);
-                Toast.makeText(activity, String.format(Locale.getDefault(), "Abeelding opgeslagen in %s%s%s", Environment.DIRECTORY_PICTURES, File.separator, activity.getString(R.string.app_external_media_subdir)), Toast.LENGTH_SHORT).show();
+                Log.v("StoreImage", "Image saved in " + output);
+                Toast.makeText(activity, activity.getString(R.string.wilson_media_action_save_image_msg_success, Environment.DIRECTORY_PICTURES, File.separator, activity.getString(R.string.app_external_media_subdir)), Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
                 if(output != null) {
                     resolver.delete(output, null, null);
                 }
-                Toast.makeText(activity, "Opslaan van afbeelding mislukt", Toast.LENGTH_LONG).show(); // TODO string resource
+                Toast.makeText(activity, activity.getString(R.string.wilson_media_action_save_image_msg_failure), Toast.LENGTH_LONG).show();
             }
         }
 
@@ -161,20 +169,27 @@ public class MediaActionHelper {
     private CustomTarget<File> shareMediaCallback = new CustomTarget<File>() {
         @Override
         public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
-            String[] mimeTypeArray = new String[] { "image/jpeg"}; // TODO extract mime type
+            MediaFileProvider.MIME_TYPE mime_type = MediaFileProvider.findMimeType(resource);
+
+            String[] mimeTypeArray = new String[] { mime_type.getMimeType() }; // TODO extract mime type
             Intent intent = createBasicMediaShareIntent();
-            intent.setType("image/jpeg");
+            intent.setType(mime_type.getMimeType());
 
             Uri uri = FileProvider.getUriForFile(activity, activity.getPackageName() + ".provider", resource);;
 
             intent.setClipData(new ClipData(
-                    "Foto van U.S.C.K.I. Incognito uit de media collectie \"collectienaam\" (" + mediaView.getCurrentImageLink() + ")", // TODO
+                    getCollectionName() == null ?
+                            activity.getString(R.string.wilson_media_collection_intent_share_label,
+                            mediaView.getCurrentImageLink()) :
+                            activity.getString(R.string.wilson_media_collection_intent_share_label_with_collection,
+                            getCollectionName(),
+                            mediaView.getCurrentImageLink()),
                     mimeTypeArray,
                     new ClipData.Item(uri)
             ));
 
             intent.putExtra(Intent.EXTRA_STREAM, uri);
-            activity.startActivity(Intent.createChooser(intent, "Intent title")); // TODO
+            activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.wilson_media_collection_intent_share_title)));
         }
 
         @Override

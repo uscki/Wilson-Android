@@ -2,9 +2,9 @@ package nl.uscki.appcki.android.fragments.media.helpers.view.single;
 
 import android.content.Intent;
 
+import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.FullScreenMediaActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
-import nl.uscki.appcki.android.fragments.media.helpers.MediaActionHelper;
 
 public class FullScreenMediaSingleMediaUsckiView extends FullScreenMediaSingleMediaView {
 
@@ -27,7 +27,7 @@ public class FullScreenMediaSingleMediaUsckiView extends FullScreenMediaSingleMe
 
     @Override
     public String getCurrentImageLink() {
-        return MediaActionHelper.getImageLink(this.mediaId);
+        return activity.getString(R.string.incognito_website_image_url, this.mediaId);
     }
 
     @Override
