@@ -50,17 +50,19 @@ public class PollAdapter extends BaseItemAdapter<PollAdapter.ViewHolder, PollIte
 
         holder.question.setText(items.get(position).getPoll().getTitle());
 
-        // TODO vervang geplaatst op string met een ding uit strings.xml
-        String creation = "Geplaatst op " + items.get(position).getPoll().getCreation().toString("EEEE dd MMMM yyyy");
+        String creation = holder.itemView.getResources().getString(
+                R.string.poll_created_date,
+                items.get(position).getPoll().getCreation()
+                        .toString(
+                                holder.itemView.getResources()
+                                .getString(R.string.joda_datetime_format_year_month_day_with_day_names))
+        );
         holder.time.setText(creation);
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putInt(MainActivity.PARAM_POLL_ID, holder.mItem.getId());
-                EventBus.getDefault().post(new OpenFragmentEvent(new PollResultFragment(), bundle));
-            }
+        holder.mView.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt(MainActivity.PARAM_POLL_ID, holder.mItem.getId());
+            EventBus.getDefault().post(new OpenFragmentEvent(new PollResultFragment(), bundle));
         });
     }
 

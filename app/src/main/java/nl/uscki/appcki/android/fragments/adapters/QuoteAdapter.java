@@ -99,16 +99,19 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
                 new MenuInflater(v.getContext()).inflate(R.menu.quote_context_menu, menu);
                 menu.findItem(R.id.action_share_quote).setOnMenuItemClickListener(item -> {
 
-                    String quoteText = "Kijk deze quote van www.uscki.nl!\n\n";// TODO string resources
+                    String quoteText = holder.itemView.getResources().getString(R.string.quote_action_share_intent_text_extra);
                     // Undo CKI replacement
-                    quoteText += holder.quote.getText().toString()
+                    quoteText += "\n\n" + holder.quote.getText().toString()
                             .replaceAll(App.USCKI_CKI_CHARACTER, "CKI");
 
                     Intent intent = new Intent(Intent.ACTION_SEND);
-                    intent.putExtra(Intent.EXTRA_TITLE, quoteText); // TODO string resources
+                    intent.putExtra(Intent.EXTRA_TITLE, quoteText);
                     intent.putExtra(Intent.EXTRA_TEXT, quoteText);
                     intent.setType("text/*");
-                    holder.mView.getContext().startActivity(Intent.createChooser(intent, "Send to..."));
+                    holder.mView.getContext()
+                            .startActivity(Intent.createChooser(intent,
+                                    holder.itemView.getContext()
+                                            .getString(R.string.app_general_action_share_intent_text)));
                     return false;
                 });
             });
@@ -136,11 +139,11 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            quote = (BBTextView) view.findViewById(R.id.quote_quote);
-            votes_graph = (QuoteVoteGraphView) view.findViewById(R.id.quote_graph);
-            plus = (ImageButton) view.findViewById(R.id.quote_vote_plus);
-            minus = (ImageButton) view.findViewById(R.id.quote_vote_minus);
-            toonkans = (TextView) view.findViewById(R.id.quote_toonkans);
+            quote = view.findViewById(R.id.quote_quote);
+            votes_graph = view.findViewById(R.id.quote_graph);
+            plus = view.findViewById(R.id.quote_vote_plus);
+            minus = view.findViewById(R.id.quote_vote_minus);
+            toonkans = view.findViewById(R.id.quote_toonkans);
         }
     }
 }

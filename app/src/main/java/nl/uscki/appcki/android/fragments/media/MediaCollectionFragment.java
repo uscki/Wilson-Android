@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import de.greenrobot.event.EventBus;
@@ -64,8 +63,6 @@ public class MediaCollectionFragment extends PageableFragment<MediaCollectionAda
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // TODO add this as shared element callback fragment to MainActivity (via getActivity())
-
         if(getArguments() != null) {
             this.collectionID = getArguments().getInt(ARG_COLLECTION_ID, 0);
             this.parentCollections = getArguments().getParcelableArrayList(ARG_COLLECTION_PARENTS);
@@ -103,9 +100,9 @@ public class MediaCollectionFragment extends PageableFragment<MediaCollectionAda
             ActionBar bar = activity.getSupportActionBar();
             if(bar != null && collection != null) {
                 bar.setTitle(collection.name);
-                bar.setSubtitle(String.format(Locale.getDefault(), "Toegevoegd op %s", collection.getDateAdded().toString("d MMMM Y"))); // TODO string resources
+                bar.setSubtitle(getString(R.string.wilson_media_collection_added_date, collection.getDateAdded().toString(getString(R.string.joda_datetime_format_year_month_day))));
             } else if (bar != null) {
-                bar.setTitle("Media"); // TODO string resources
+                bar.setTitle(R.string.wilson_media_activity_header);
                 bar.setSubtitle(null);
             }
         }
@@ -271,7 +268,7 @@ public class MediaCollectionFragment extends PageableFragment<MediaCollectionAda
 
     @Override
     public String getEmptyText() {
-        return "Geen mediacollecties gevondeon"; // TODO put to strings
+        return getString(R.string.wilson_media_collections_empty);
     }
 
     @Override

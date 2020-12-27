@@ -25,8 +25,6 @@ import com.igreenwood.loupe.Loupe;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
-
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.media.adapters.FullScreenMediaItemAdapter;
@@ -128,7 +126,10 @@ public class ImageViewHolder {
 
         if (this.metaData != null) {
             tagView.setAdapter(new ImageTagAdapter(this.mediaView.getActivity(), this.metaData.getTags()));
-            dateAddedTextView.setText("Toegevoegd op " + this.metaData.getParentCollection().getDateAdded().toString("d MMMM Y")); // TODO string resources
+            dateAddedTextView.setText(
+                    mediaView.getActivity().getString(R.string.wilson_media_collection_added_date,
+                            this.metaData.getParentCollection().getDateAdded()
+                                    .toString(mediaView.getActivity().getString(R.string.joda_datetime_format_year_month_day))));
         } else {
             this.helpersContainer.setVisibility(View.GONE);
         }
@@ -136,7 +137,9 @@ public class ImageViewHolder {
         updateHelperVisibility();
         TextView currentIndexTextView = imageContainer.findViewById(R.id.full_screen_image_current_index);
         if (adapter != null) {
-            currentIndexTextView.setText(String.format(Locale.getDefault(), "%d / %d", this.fixedAdapterPosition + 1, adapter.getItemCount())); // TODO string resources
+            currentIndexTextView.setText(mediaView.getActivity().getString(
+                    R.string.wilson_media_viewpager_progress,
+                    this.fixedAdapterPosition + 1, adapter.getItemCount()));
         } else {
             currentIndexTextView.setText("");
         }

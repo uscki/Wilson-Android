@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- TODO convert to string resources -->
     <item
         android:id="@+id/fullscreen_image_menu_download_button"
         android:icon="@drawable/ic_save_alt_white_24dp"
-        android:title="Save"
+        android:title="@string/app_general_action_save"
         app:showAsAction="always" />
     <item
         android:id="@+id/fullscreen_image_menu_share_image"
         android:icon="@drawable/ic_share_white_24dp"
-        android:title="Share image"
+        android:title="@string/wilson_media_action_share_image"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/fullscreen_image_menu_share_link"
         android:icon="@drawable/ic_link_white_24dp"
-        android:title="Share link"
+        android:title="@string/wilson_media_action_share_url"
         app:showAsAction="ifRoom" />
 
     <item android:id="@+id/fullscreen_image_menu_show_collection"
-        android:title="Collectie bekijken"
+        android:title="@string/wilson_media_action_goto_collection"
         app:showAsAction="never"
         android:visible="false"
         />

@@ -17,7 +17,6 @@ import nl.uscki.appcki.android.activities.FullScreenMediaActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.media.adapters.FullScreenMediaItemAdapter;
-import nl.uscki.appcki.android.fragments.media.helpers.MediaActionHelper;
 import nl.uscki.appcki.android.fragments.media.helpers.view.FullScreenMediaView;
 import nl.uscki.appcki.android.fragments.media.helpers.view.ImageViewHolder;
 import nl.uscki.appcki.android.generated.common.Pageable;
@@ -86,7 +85,8 @@ public abstract class FullScreenPagerView extends FullScreenMediaView {
 
     @Override
     public String getCurrentImageLink() {
-        return MediaActionHelper.getImageLink(this.collectionId, this.adapter.getImageAt(this.viewPager.getCurrentItem()).getMetaData().getId());
+        return activity.getString(R.string.incognito_website_image_from_collection_url,
+                this.collectionId, this.adapter.getImageAt(this.viewPager.getCurrentItem()).getMetaData().getId());
     }
 
     @Override
