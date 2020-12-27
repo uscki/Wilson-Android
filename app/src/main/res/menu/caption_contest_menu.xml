@@ -13,4 +13,9 @@
         android:title="@string/agenda_archive_menu_string"
         app:showAsAction="never"
         />
+    <item
+        android:id="@+id/caption_contest_menu_confirm_vote_checkbox"
+        android:checkable="true"
+        android:title="@string/wilson_media_caption_contest_menu_confirm_vote_checkbox_label"
+        app:showAsAction="never"/>
 </menu>

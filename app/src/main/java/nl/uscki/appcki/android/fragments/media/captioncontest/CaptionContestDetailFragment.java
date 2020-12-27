@@ -53,6 +53,8 @@ import static androidx.core.content.ContextCompat.getSystemService;
 public class CaptionContestDetailFragment extends Fragment {
 
     public static final String ARG_CAPTION_CONTEST_ID = "ARG_CAPTION_CONTEST_ID";
+    public static final String PREFERENCE_SHOW_CAPTION_CONTEST_VOTE_CONFIRMATION
+            = "NL.USCKI.WILSON.PREFERENCE.CAPTIONCONTEST.SHOW_CONFIRM";
 
     private int id = -1;
     private CaptionContest captionContest;
@@ -64,6 +66,8 @@ public class CaptionContestDetailFragment extends Fragment {
     private RecyclerView captions;
     private CaptionAdapter adapter;
     private FloatingActionButton addCaptionFab;
+
+    private MenuItem askVoteConfirmationItem;
 
     public CaptionContestDetailFragment() {
         // Required empty public constructor
@@ -86,6 +90,7 @@ public class CaptionContestDetailFragment extends Fragment {
 
         MenuItem shareMenuItem = menu.findItem(R.id.caption_contest_menu_share);
         MenuItem archiveMenuItem = menu.findItem(R.id.caption_contest_menu_archive);
+        this.askVoteConfirmationItem = menu.findItem(R.id.caption_contest_menu_confirm_vote_checkbox);
 
         shareMenuItem.setOnMenuItemClickListener(item -> {
             Intent intent = new Intent(Intent.ACTION_SEND);
@@ -109,6 +114,14 @@ public class CaptionContestDetailFragment extends Fragment {
             EventBus.getDefault().post(event);
             return true;
         });
+
+        final SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(getContext());
+        askVoteConfirmationItem.setChecked(p.getBoolean(PREFERENCE_SHOW_CAPTION_CONTEST_VOTE_CONFIRMATION, true));
+        askVoteConfirmationItem.setOnMenuItemClickListener(item -> {
+            item.setChecked(!item.isChecked());
+            p.edit().putBoolean(PREFERENCE_SHOW_CAPTION_CONTEST_VOTE_CONFIRMATION, item.isChecked()).apply();
+            return false;
+        });
     }
 
     @Override
@@ -123,6 +136,8 @@ public class CaptionContestDetailFragment extends Fragment {
         this.adapter = new CaptionAdapter();
         this.captions.setAdapter(adapter);
         this.addCaptionFab = view.findViewById(R.id.caption_contest_add_caption_fab);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> loadCaptionContest());
 
         return view;
     }
@@ -152,6 +167,7 @@ public class CaptionContestDetailFragment extends Fragment {
                     if(checkBox.isChecked()) {
                         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(getContext());
                         p.edit().putBoolean(PREFERENCE_SHOW_CAPTION_CONTEST_VOTE_CONFIRMATION, false).apply();
+                        askVoteConfirmationItem.setChecked(false);
                     }
                     vote(caption);
                 })
@@ -198,11 +214,6 @@ public class CaptionContestDetailFragment extends Fragment {
                 })
                 .show();
     }
-
-
-    // TODO add option in settings to revert
-    public static final String PREFERENCE_SHOW_CAPTION_CONTEST_VOTE_CONFIRMATION
-            = "NL.USCKI.WILSON.PREFERENCE.CAPTIONCONTEST.SHOW_CONFIRM";
 
     private void vote(Caption caption) {
         Services.getInstance().captionContestService.vote(caption.getId()).enqueue(new Callback<ActionResponse<CaptionContest>>() {

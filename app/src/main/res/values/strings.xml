@@ -421,6 +421,7 @@
     <string name="wilson_media_caption_contest_vote_confirmed">Je hebt gestemd op deze Captioncontest!</string>
     <string name="wilson_media_caption_contest_vote_failed_warning">Er is iets fout gegaan bij het registreren van je stem</string>
     <string name="wilson_media_caption_contest_empty_text">Geen captioncontests gevonden</string>
+    <string name="wilson_media_caption_contest_menu_confirm_vote_checkbox_label">Vraag stembevestiging</string>
 
 
 
