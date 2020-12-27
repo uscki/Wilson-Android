@@ -6,13 +6,12 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     >
-    <!-- TODO string resources -->
     <TextView
         android:id="@+id/textView2"
         style="@style/AppTheme.TextSubSubHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Weet je zeker dat je op dit onderschrift wil stemmen?"
+        android:text="@string/wilson_media_caption_contest_confirm_vote_label"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,13 +42,12 @@
         app:layout_constraintBottom_toBottomOf="@id/imageView3"
         />
 
-    <!-- TODO string resources -->
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/checkbox"
         style="@style/AppTheme.Text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Niet meer om bevestiging vragen"
+        android:text="@string/shop_confirm_checkbox_dont_show_again"
         app:layout_constraintTop_toBottomOf="@id/BBTextView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

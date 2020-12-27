@@ -6,14 +6,12 @@
     android:padding="@dimen/text_margin"
     >
 
-    <!-- TODO string resources everywhere -->
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
-        android:text="Onderschrift toevoegen"
+        android:text="@string/wilson_media_caption_contest_add_caption"
         android:textAlignment="center"
         />
 
@@ -28,7 +26,7 @@
         android:id="@+id/add_caption_hide_name_checkbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Verberg mijn naam in de uitslagenlijst"
+        android:text="@string/wilson_media_caption_contest_hide_name_label"
         />
 
 

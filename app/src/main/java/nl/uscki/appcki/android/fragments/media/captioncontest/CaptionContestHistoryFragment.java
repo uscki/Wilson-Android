@@ -83,7 +83,7 @@ public class CaptionContestHistoryFragment extends PageableFragment<CaptionConte
 
     @Override
     public String getEmptyText() {
-        return "Geen captioncontests gevonden"; // TODO string resources
+        return getString(R.string.wilson_media_caption_contest_empty_text);
     }
 
     @Override

@@ -39,10 +39,10 @@ public class MediaCaptionContestSharedFragment extends Fragment {
             switch (position) {
                 default:
                 case 0:
-                    tab.setText("Caption Contest"); // TODO string resources
+                    tab.setText(getText(R.string.wilson_media_shared_tab_caption_contest_header));
                     break;
                 case 1:
-                    tab.setText("Media browser"); // TODO string resources
+                    tab.setText(getString(R.string.wilson_media_shared_tab_collection_header));
                     break;
             }
         }).attach();

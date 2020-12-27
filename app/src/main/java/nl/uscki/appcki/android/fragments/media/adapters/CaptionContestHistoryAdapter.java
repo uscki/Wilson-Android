@@ -1,5 +1,6 @@
 package nl.uscki.appcki.android.fragments.media.adapters;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
-import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
@@ -56,8 +56,8 @@ public class CaptionContestHistoryAdapter extends BaseItemAdapter<CaptionContest
                 .error(R.drawable.ic_wilson)
                 .into(holder.image);
 
-        holder.titleText.setText(String.format(Locale.getDefault(), "Captioncontest %s",
-                contest.getStartdate().toString("EEEE d MMMM Y"))); // TODO string resource, same as in detailFragment
+        holder.titleText.setText(holder.itemView.getContext().getString(R.string.wilson_media_caption_contest_header,
+                contest.getStartdate().toString(holder.itemView.getContext().getString(R.string.joda_datetime_format_year_month_day_with_day_names))));
 
         if(contest.getIsCurrentContest()) {
             bindViewholderForCurrent(holder, contest);
@@ -67,20 +67,21 @@ public class CaptionContestHistoryAdapter extends BaseItemAdapter<CaptionContest
     }
 
     private void bindViewholderForCurrent(ViewHolder holder, CaptionContest contest) {
+        Context c = holder.itemView.getContext();
         holder.winningCaption.setVisibility(View.GONE);
         if(contest.getStatus().isCanAdd()) {
-            holder.voteCount.setText(String.format(Locale.getDefault(), "Je kunt nog onderschriften toevoegen tot: %s",
-                    contest.getVotedate().toString("EEEE d MMMM Y")));  // TODO use same string resource as in detail fragment
+            holder.voteCount.setText(c.getString(R.string.wilson_media_caption_contest_add_caption_closes_label,
+                    contest.getVotedate().toString(c.getString(R.string.joda_datetime_format_year_month_day_with_day_names)))); // TODO same as detail fragment?
         } else if (contest.getStatus().equals(CaptionContest.Status.ADDED)) {
-            holder.voteCount.setText(String.format(Locale.getDefault(), "Je kunt stemmen vanaf %s",
-                    contest.getVotedate().toString("EEEE d MMMM Y")));  // TODO use same string resource as in detail fragment
+            holder.voteCount.setText(c.getString(R.string.wilson_media_caption_contest_voting_opens_label,
+                    contest.getVotedate().toString(holder.itemView.getContext().getString(R.string.joda_datetime_format_year_month_day_with_day_names))));  // TODO use same string resource as in detail fragment
         } else if (contest.getStatus().isCanVote()) {
-            holder.voteCount.setText(String.format(Locale.getDefault(), "Je hebt nog niet gestemd"));  // TODO use same string resource as in detail fragment
+            holder.voteCount.setText(c.getString(R.string.wilson_media_caption_contest_not_voted_label));  // TODO use same string resource as in detail fragment
         } else if (contest.getStatus().equals(CaptionContest.Status.VOTED)) {
-            holder.voteCount.setText(String.format(Locale.getDefault(), "Nog geen winnaar bekend")); // TODO use string resources
+            holder.voteCount.setText(c.getString(R.string.wilson_media_caption_contest_no_winner_announced)); // TODO use string resources
         } else {
-            holder.voteCount.setText(String.format(Locale.getDefault(), "Deze caption contest opent op %s",
-                    contest.getStartdate().toString("EEEE d MMMM Y")));
+            holder.voteCount.setText(c.getString(R.string.wilson_media_caption_contest_voting_opens_label,
+                    contest.getStartdate().toString(holder.itemView.getContext().getString(R.string.joda_datetime_format_year_month_day_with_day_names))));
         }
     }
 
@@ -99,20 +100,22 @@ public class CaptionContestHistoryAdapter extends BaseItemAdapter<CaptionContest
             }
         }
 
+        Context c = holder.itemView.getContext();
+
         if(caption != null && numberWithVotes == 1) {
             holder.winningCaption.setVisibility(View.VISIBLE);
             holder.winningCaption.setText(Parser.parse(caption.getCaption(), true, holder.winningCaption));
             if(caption.getPerson() != null) {
-                holder.voteCount.setText(String.format(Locale.getDefault(), "Gewonnen door %s met %d stemmen", caption.getPerson().getPostalname(), votes)); // TODO string resources TODO (Huidige...) winnaar? Alleen als al gestemd of !current?
+                holder.voteCount.setText(c.getString(R.string.wilson_media_caption_contest_winner_name, caption.getPerson().getPostalname(), votes));
             } else {
-                holder.voteCount.setText(String.format(Locale.getDefault(), "Gewonnen met %d stemmen", votes)); // TODO string resources TODO (Huidige...) winnaar? Alleen als al gestemd of !current?
+                holder.voteCount.setText(c.getString(R.string.wilson_media_caption_contest_winner_anonymous, votes));
             }
         } else if (caption != null) {
             holder.winningCaption.setVisibility(View.GONE);
-            holder.voteCount.setText(String.format(Locale.getDefault(), "%d onderschriften delen de eerste plaats met %d stemmen", numberWithVotes, votes)); // TODO string resources
+            holder.voteCount.setText(c.getString(R.string.wilson_media_caption_contest_shared_winners, numberWithVotes, votes));
         } else {
             holder.winningCaption.setVisibility(View.GONE);
-            holder.voteCount.setText("Deze captioncontest heeft geen onderschriften");
+            holder.voteCount.setText(c.getString(R.string.wilson_media_caption_contest_no_captions));
         }
     }
 

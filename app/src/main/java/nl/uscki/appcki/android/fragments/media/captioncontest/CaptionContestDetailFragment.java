@@ -31,7 +31,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
 import java.util.Objects;
 
 import de.greenrobot.event.EventBus;
@@ -88,25 +87,20 @@ public class CaptionContestDetailFragment extends Fragment {
         MenuItem shareMenuItem = menu.findItem(R.id.caption_contest_menu_share);
         MenuItem archiveMenuItem = menu.findItem(R.id.caption_contest_menu_archive);
 
-        shareMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.putExtra(Intent.EXTRA_TITLE, String.format(
-                        Locale.getDefault(), "Caption contest van %s",  // TODO string resource
-                        captionContest.getStartdate().toString("EEEE d MMMM Y") // TODO string resource
-                ));
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Captioncontest van uscki.nl");
+        shareMenuItem.setOnMenuItemClickListener(item -> {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_TITLE, getString(R.string.wilson_media_caption_contest_header,
+                    captionContest.getStartdate().toString(getString(R.string.joda_datetime_format_year_month_day_with_day_names))
+            ));
+            intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.wilson_media_caption_contest_share_intent_title));
 
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.putExtra(Intent.EXTRA_TEXT, String.format(
-                        "Heb je deze captioncontest gezien?\n%s", // TODO string resource
-                        getString(R.string.incognito_website_agenda_caption_contest_url, captionContest.getId()))
-                );
-                intent.setType("text/*");
-                getActivity().startActivity(Intent.createChooser(intent, "Send to...")); // TODO string resource
-                return true;
-            }
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.wilson_media_caption_contest_sharej_intent_text_extra,
+                    getString(R.string.incognito_website_agenda_caption_contest_url, captionContest.getId()))
+            );
+            intent.setType("text/*");
+            getActivity().startActivity(Intent.createChooser(intent, getString(R.string.app_general_action_share_intent_text)));
+            return true;
         });
 
         archiveMenuItem.setOnMenuItemClickListener(item -> {
@@ -154,14 +148,14 @@ public class CaptionContestDetailFragment extends Fragment {
 
         new AlertDialog.Builder(getContext())
                 .setView(dialogView)
-                .setPositiveButton("Stemmen!", (dialog, which) -> { // TODO string resource
+                .setPositiveButton(getString(R.string.vote_imperative), (dialog, which) -> {
                     if(checkBox.isChecked()) {
                         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(getContext());
                         p.edit().putBoolean(PREFERENCE_SHOW_CAPTION_CONTEST_VOTE_CONFIRMATION, false).apply();
                     }
                     vote(caption);
                 })
-                .setNegativeButton("Annuleren", null) // Todo string resource
+                .setNegativeButton(getString(R.string.cancel), null)
                 .show();
     }
 
@@ -178,11 +172,11 @@ public class CaptionContestDetailFragment extends Fragment {
 
         new AlertDialog.Builder(getContext())
                 .setView(dialogView)
-                .setPositiveButton("Onderschrift toevoegen", (dialog, which) -> { // TODO string resource
+                .setPositiveButton(getString(R.string.wilson_media_caption_contest_add_caption), (dialog, which) -> {
                     if(inputMethodManager != null)
                         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                         if (editText.getText().toString().isEmpty()) {
-                            Toast.makeText(getContext(), "Je hebt geen onderschrift ingevuld!", Toast.LENGTH_LONG).show(); // TODO string resources
+                            Toast.makeText(getContext(), getString(R.string.wilson_media_caption_contest_add_caption_empty_message_warning), Toast.LENGTH_LONG).show();
                         } else {
                         Services.getInstance().captionContestService
                                 .addCaption(editText.getText().toString(), checkBox.isChecked())
@@ -192,13 +186,13 @@ public class CaptionContestDetailFragment extends Fragment {
                                         if (response.body() != null) {
                                             captionContest.addCaption(response.body().payload);
                                             setupView();
-                                            Toast.makeText(getContext(), "Onderschrift toegevoegd", Toast.LENGTH_LONG).show(); // TODO string resources
+                                            Toast.makeText(getContext(), getString(R.string.wilson_media_caption_contest_add_caption_confirmed), Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 });
                         }
                 })
-                .setNegativeButton("Annuleren", (dialog, which) -> {
+                .setNegativeButton(getString(R.string.cancel), (dialog, which) -> {
                     if(inputMethodManager != null)
                         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                 })
@@ -217,9 +211,9 @@ public class CaptionContestDetailFragment extends Fragment {
                 if(response.body() != null) {
                     captionContest = response.body().payload;
                     setupView();
-                    Toast.makeText(getContext(), "Je hebt gestemd op deze Captioncontest!", Toast.LENGTH_LONG).show(); // TODO string resources;
+                    Toast.makeText(getContext(), getString(R.string.wilson_media_caption_contest_vote_confirmed), Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getContext(), "Er is iets fout gegaan bij het registreren van je stem", Toast.LENGTH_LONG).show(); // TODO string resources
+                    Toast.makeText(getContext(), getString(R.string.wilson_media_caption_contest_vote_failed_warning), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -228,8 +222,8 @@ public class CaptionContestDetailFragment extends Fragment {
     private void setupView() {
         CaptionContest.Status status = this.captionContest.getStatus();
         swipeRefreshLayout.setRefreshing(false);
-        headerTextview.setText(String.format(Locale.getDefault(), "Captioncontest %s",
-                captionContest.getStartdate().toString("EEEE d MMMM Y"))); // TODO string resource
+        headerTextview.setText(getString(R.string.wilson_media_caption_contest_header,
+                captionContest.getStartdate().toString(getString(R.string.joda_datetime_format_year_month_day_with_day_names))));
         loadImage();
         if(attachedSwipeCallback != null) {
             attachedSwipeCallback.attachToRecyclerView(null);
@@ -264,12 +258,12 @@ public class CaptionContestDetailFragment extends Fragment {
 
     private void setupClosesTextView(boolean showClosesDate, boolean canAdd) {
         if(showClosesDate && canAdd) {
-            closesTextView.setText(String.format(Locale.getDefault(), "Je kunt nog onderschriften toevoegen tot: %s", // TODO resources (same as history fragment)
-                    captionContest.getVotedate().toString("EEEE d MMMM Y")));
+            closesTextView.setText(getString(R.string.wilson_media_caption_contest_add_caption_closes_label,
+                    captionContest.getVotedate().toString(getString(R.string.joda_datetime_format_year_month_day_with_day_names))));
             closesTextView.setVisibility(View.VISIBLE);
         } else if (showClosesDate) {
-            closesTextView.setText(String.format(Locale.getDefault(), "Je kunt stemmen vanaf %s",
-                    captionContest.getVotedate().toString("EEEE d MMMM Y"))); // TODO string resources (same as history fragment)
+            closesTextView.setText(getString(R.string.wilson_media_caption_contest_voting_opens_label,
+                    captionContest.getVotedate().toString(getString(R.string.joda_datetime_format_year_month_day_with_day_names))));
             closesTextView.setVisibility(View.VISIBLE);
         } else {
             closesTextView.setVisibility(View.GONE);
