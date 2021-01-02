@@ -347,6 +347,14 @@ public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K exte
         EventBus.getDefault().unregister(this);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getAdapter() != null && getAdapter().getItemCount() > 0) {
+            swipeContainer.setRefreshing(false);
+        }
+    }
+
     /**
      * Override this method to return true to enable nested scrolling
      *
