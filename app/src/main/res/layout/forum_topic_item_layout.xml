@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/text_margin"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/forum_topic_sticky_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:src="@drawable/ic_sticky_24dp"
+        />
+
+    <TextView
+        android:id="@+id/forum_topic_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="@style/AppTheme.TextSubHeader"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/forum_topic_sticky_image"
+        app:layout_constraintEnd_toStartOf="@id/forum_topic_locked_icon"
+        android:text="Forum topic title placeholder"
+        />
+
+    <!-- This view does not exist on the website -->
+    <ImageView
+        android:id="@+id/forum_topic_locked_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/lock"
+        android:visibility="gone"
+        />
+
+    <!-- This view does not exist on the website -->
+    <TextView
+        android:id="@+id/forum_topic_posted_date_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/forum_topic_title"
+        android:drawablePadding="@dimen/text_margin"
+        android:text="Aangemaakt op Donderdag 13 November 2016"
+        app:drawableStartCompat="@drawable/clock" />
+
+        <TextView
+            android:id="@+id/forum_topic_n_views"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/forum_topic_posted_date_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/wilson_media_forum_topic_num_views"
+            android:drawablePadding="@dimen/text_margin"
+            app:drawableStartCompat="@drawable/ic_remove_red_eye_black_24dp" />
+
+
+    <!-- The below view does not work, because the API does not provide the same fields as the website.
+R.I.P. :( -->
+<!--    <TextView-->
+<!--        android:id="@+id/forum_topic_starter_label"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/forum_topic_title"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintWidth_percent=".33"-->
+<!--        android:text="@string/wilson_media_forum_topic_author_label"-->
+<!--        />-->
+
+<!--    <ImageView-->
+<!--        android:id="@+id/forum_topic_starter_profile_image"-->
+<!--        android:layout_width="40dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginEnd="@dimen/text_margin"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/forum_topic_starter_label"-->
+<!--        />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/forum_topic_starter_profile_name"-->
+<!--        style="@style/AppTheme.Text"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_weight="1"-->
+<!--        android:text="Levien van Krieken"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/forum_topic_starter_profile_image"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/forum_topic_starter_label"-->
+<!--        app:layout_constraintStart_toEndOf="@id/forum_topic_starter_profile_image"-->
+<!--        app:layout_constraintTop_toTopOf="@id/forum_topic_starter_profile_image" />-->
+
+
+<!--    <TextView-->
+<!--        android:id="@+id/forum_topic_last_reply_label"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/forum_topic_title"-->
+<!--        app:layout_constraintStart_toEndOf="@id/forum_topic_starter_label"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/forum_topic_n_views"-->
+<!--        android:text="@string/wilson_media_forum_topic_last_reply_label"-->
+<!--        app:drawableStartCompat="@drawable/ic_history_black_24dp" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/forum_topic_last_reply_author"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        style="@style/AppTheme.Text"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/forum_topic_last_reply_label"-->
+<!--        app:layout_constraintStart_toEndOf="@id/forum_topic_starter_label"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/forum_topic_n_views"-->
+<!--        android:text="Levien van Krieken"/>-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/forum_topic_last_reply_time"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/forum_topic_last_reply_author"-->
+<!--        app:layout_constraintStart_toEndOf="@id/forum_topic_starter_label"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/forum_topic_n_views"-->
+<!--        android:text="3 jaar geleden"/>-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/forum_topic_n_replies"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintStart_toStartOf="@id/forum_topic_n_views"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/forum_topic_n_views"-->
+<!--        android:text="@string/wilson_media_forum_topic_num_replies"-->
+<!--        app:drawableStartCompat="@drawable/message_text" />-->
+
+    <ImageView
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/list_divider"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

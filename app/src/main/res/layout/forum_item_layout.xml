@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/text_margin"
+    android:orientation="vertical"
+    >
+    <TextView
+        android:id="@+id/forum_item_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/AppTheme.TextSubHeader"
+        android:textColor="@color/colorPrimary"
+        android:text="Example Forum Header"/>
+
+    <TextView
+        android:id="@+id/forum_item_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/AppTheme.Text"
+        android:textStyle="italic"
+        android:text="Example forum description"/>
+
+    <ImageView
+        android:layout_marginTop="@dimen/text_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/list_divider"/>
+</LinearLayout>
