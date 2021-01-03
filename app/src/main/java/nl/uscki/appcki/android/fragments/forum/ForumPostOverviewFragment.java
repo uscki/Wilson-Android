@@ -32,6 +32,10 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
     private static final int PAGE_SIZE = 5;
 
     private Topic topic;
+    private int topicId;
+
+    // A notification only contains the topic ID. However, we abuse a feature (not a bug) in the
+    // API where the forumID is ignored in most API calls in that case.
     private int forumId = -1;
 
     private Menu menu;
@@ -52,23 +56,30 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null) {
+
+        if(getArguments() != null && getArguments().containsKey(ForumTopicOverviewFragment.ARG_TOPIC_OBJ)) {
             this.forumId = getArguments().getInt(ForumTopicOverviewFragment.ARG_FORUM_ID, -1);
             this.topic = getArguments().getParcelable(ForumTopicOverviewFragment.ARG_TOPIC_OBJ);
+            this.topicId = topic.getId();
+        } else if (getArguments() != null && getArguments().containsKey(ForumTopicOverviewFragment.ARG_TOPIC_ID)) {
+            this.topicId = getArguments().getInt(ForumTopicOverviewFragment.ARG_TOPIC_ID);
         }
+
         if(UserHelper.getInstance().getCurrentUser().isForum_new_posts_first()) {
             this.sort = sortStrings.get(R.id.forum_posts_sort_time_desc);
         }
         setAdapter(new ForumPostAdapter(new ArrayList<>(), this, (BasicActivity) getActivity(), topic));
         setHasOptionsMenu(true);
+
         onScrollRefresh();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        if(!topic.isLocked() && view != null) {
+        if((topic == null || !topic.isLocked()) && view != null) {
             FloatingActionButton fab = setFabEnabled(view, true);
             fab.setOnClickListener(v -> {
                 showNewPostDialog(null);
@@ -94,8 +105,8 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
         }
 
         menu.findItem(R.id.forum_posts_share_topic_action).setOnMenuItemClickListener(item -> {
-            String url = getResources().getString(R.string.incognito_website_forum_topic, topic.getId());
-            String shareText = getResources().getString(
+            String url = getResources().getString(R.string.incognito_website_forum_topic, topicId);
+            String shareText = topic == null ? url : getResources().getString(
                     R.string.wilson_media_forum_topic_share_intent_text_extra,
                     topic.getTitle(),
                     url
@@ -114,12 +125,12 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().forumService.getPosts(this.forumId, this.topic.getId(), this.page, getPageSize(), sort).enqueue(callback);
+        Services.getInstance().forumService.getPosts(this.forumId, this.topicId, this.page, getPageSize(), sort).enqueue(callback);
     }
 
     @Override
     public void onScrollRefresh() {
-        Services.getInstance().forumService.getPosts(this.forumId, this.topic.getId(), this.page, getPageSize(), sort).enqueue(callback);
+        Services.getInstance().forumService.getPosts(this.forumId, this.topicId, this.page, getPageSize(), sort).enqueue(callback);
     }
 
     @Override
@@ -156,8 +167,7 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
     public void showNewPostDialog(String content) {
         AddForumPostFragment dialog = new AddForumPostFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ForumTopicOverviewFragment.ARG_FORUM_ID, this.forumId);
-        bundle.putParcelable(ForumTopicOverviewFragment.ARG_TOPIC_OBJ, this.topic);
+        bundle.putInt(ForumTopicOverviewFragment.ARG_TOPIC_ID, this.topicId);
         bundle.putString(AddForumPostFragment.ARG_INITIAL_CONTENT, content);
         dialog.setArguments(bundle);
         dialog.show(getFragmentManager(), "AddForumPostDialog");

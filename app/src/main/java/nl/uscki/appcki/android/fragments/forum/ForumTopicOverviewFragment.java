@@ -23,6 +23,7 @@ public class ForumTopicOverviewFragment extends PageableFragment<ForumTopicAdapt
     private static final int PAGE_SIZE = 5;
     public static final String ARG_FORUM_ID = "WILSON_FORUM_TOPIC_OVERVIEW_FRAGMENT_ARG_FORUM_ID";
     public static final String ARG_TOPIC_OBJ = "WILSON_FORUM_TOPIC_OVERVIEW_FRAGMENT_ARG_TOPIC";
+    public static final String ARG_TOPIC_ID = "WILSON_FORUM_TOPIC_OVERVIEW_FRAGMENT_ARG_TOPIC_ID";
 
     private static final String SORT_ORDER_ASC = "asc";
     private static final String SORT_ORDER_DESC = "desc";

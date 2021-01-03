@@ -25,7 +25,6 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.generated.forum.Post;
-import nl.uscki.appcki.android.generated.forum.Topic;
 import nl.uscki.appcki.android.generated.organisation.CurrentUser;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.views.BBEditView;
@@ -34,10 +33,9 @@ import retrofit2.Response;
 public class AddForumPostFragment extends DialogFragment {
 
     public static final String ARG_INITIAL_CONTENT = "nl.uscki.wilson.FORUM.ARG.NEW_POST.INITIAL_CONTENT";
-    private static final String SHARED_PREFERENCE_SAVED_POST_TMP_FORMAT = "nl.uscki.wilson.SharedPreferences.SAVED_POST_FORUM_%d_TOPIC_%d";
+    private static final String SHARED_PREFERENCE_SAVED_POST_TMP_FORMAT = "nl.uscki.wilson.SharedPreferences.SAVED_POST_TOPIC_%d";
 
-    private int forum;
-    private Topic topic;
+    private int topicId;
     private String initialContent;
 
     private BBEditView content;
@@ -53,8 +51,7 @@ public class AddForumPostFragment extends DialogFragment {
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme_Dialog);
 
         assert getArguments() != null;
-        forum = getArguments().getInt(ForumTopicOverviewFragment.ARG_FORUM_ID);
-        topic = getArguments().getParcelable(ForumTopicOverviewFragment.ARG_TOPIC_OBJ);
+        topicId = getArguments().getInt(ForumTopicOverviewFragment.ARG_TOPIC_ID);
         initialContent = getArguments().getString(ARG_INITIAL_CONTENT);
     }
 
@@ -76,7 +73,7 @@ public class AddForumPostFragment extends DialogFragment {
             } else if (name.getText().toString().isEmpty()) {
                 Toast.makeText(getContext(), R.string.wilson_media_forum_empty_name_warning, Toast.LENGTH_LONG).show();
             }
-            Services.getInstance().forumService.addPost(forum, topic.getId(),
+            Services.getInstance().forumService.addPost(-1, topicId,
                 content.getPostContent(), name.getText().toString(),
                 signature.getText().toString())
 
@@ -107,7 +104,7 @@ public class AddForumPostFragment extends DialogFragment {
         if(getActivity() != null && getContext() != null) {
             SharedPreferences p = getActivity().getSharedPreferences(getContext().getPackageName(), Context.MODE_PRIVATE);
             savedPost = p.getString(
-                    String.format(Locale.getDefault(), SHARED_PREFERENCE_SAVED_POST_TMP_FORMAT, this.forum, this.topic.getId()),
+                    String.format(Locale.getDefault(), SHARED_PREFERENCE_SAVED_POST_TMP_FORMAT, this.topicId),
                     null
             );
         }
@@ -135,7 +132,7 @@ public class AddForumPostFragment extends DialogFragment {
         {
             String content = this.content.getPostContent();
             SharedPreferences p = getActivity().getSharedPreferences(getContext().getPackageName(), Context.MODE_PRIVATE);
-            String postKey = String.format(Locale.getDefault(), SHARED_PREFERENCE_SAVED_POST_TMP_FORMAT, forum, topic.getId());
+            String postKey = String.format(Locale.getDefault(), SHARED_PREFERENCE_SAVED_POST_TMP_FORMAT, topicId);
             if(this.content.getPostContent().isEmpty()) {
                 p.edit().remove(postKey).apply();
             } else {

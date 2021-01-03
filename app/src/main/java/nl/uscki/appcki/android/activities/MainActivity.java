@@ -39,6 +39,7 @@ import nl.uscki.appcki.android.fragments.AppInfoFragment;
 import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.forum.ForumOverviewFragment;
+import nl.uscki.appcki.android.fragments.forum.ForumPostOverviewFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
 import nl.uscki.appcki.android.fragments.media.MediaCollectionFragment;
@@ -66,6 +67,7 @@ public class MainActivity extends BasicActivity
     public static final String ACTION_POLL_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_POLL_OVERVIEW";
     public static final String ACTION_VIEW_STORE = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_STORE";
     public static final String ACTION_VIEW_COLLECTION = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_COLLECTION";
+    public static final String ACTION_VIEW_FORUM_TOPIC = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_FORUM_TOPIC";
 
     public static final String ACTION_VIEW_NEWSITEM
             = "nl.uscki.appcki.android.activities.action.ACTION_VIEW_NEWSITEM";
@@ -192,6 +194,8 @@ public class MainActivity extends BasicActivity
                 openFragment(new StoreFragment(), args, false);
             } else if (ACTION_VIEW_COLLECTION.equals(intent.getAction())) {
                 openFragment(new MediaCollectionFragment(), intent.getExtras(), false);
+            } else if (ACTION_VIEW_FORUM_TOPIC.equals(intent.getAction())) {
+                openFragment(new ForumPostOverviewFragment(), intent.getExtras(), true);
             } else {
                 openTab(HomeFragment.NEWS, false);
             }

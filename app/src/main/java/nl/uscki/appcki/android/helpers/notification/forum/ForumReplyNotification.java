@@ -2,10 +2,11 @@ package nl.uscki.appcki.android.helpers.notification.forum;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import com.google.firebase.messaging.RemoteMessage;
-import java.util.Locale;
 
+import com.google.firebase.messaging.RemoteMessage;
+
+import nl.uscki.appcki.android.activities.MainActivity;
+import nl.uscki.appcki.android.fragments.forum.ForumTopicOverviewFragment;
 import nl.uscki.appcki.android.helpers.notification.AbstractNotification;
 
 public class ForumReplyNotification extends AbstractNotification {
@@ -16,15 +17,10 @@ public class ForumReplyNotification extends AbstractNotification {
 
     @Override
     protected Intent getNotificationIntent() {
-        Intent forumIntent = new Intent(Intent.ACTION_VIEW);
-
-        forumIntent.setData(Uri.parse(String.format(
-                Locale.ENGLISH,
-                "https://www.uscki.nl/?pagina=Forum/ViewTopic&topicId=%d&newest=true#newest",
-                id)
-                .trim()));
-
-        return forumIntent;
+        Intent intent = new Intent(this.context, MainActivity.class);
+        intent.setAction(MainActivity.ACTION_VIEW_FORUM_TOPIC);
+        intent.putExtra(ForumTopicOverviewFragment.ARG_TOPIC_ID, this.id);
+        return intent;
     }
 
     @Override
