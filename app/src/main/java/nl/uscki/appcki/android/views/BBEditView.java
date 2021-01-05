@@ -19,6 +19,9 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import nl.uscki.appcki.android.R;
@@ -37,7 +40,7 @@ public class BBEditView extends Fragment {
 
     public static final String ARG_ALLOWED_TAGS = "nl.uscki.wilson.BB.tags.ALLOWED";
 
-    private String allowedTags = null;
+    private List<String> allowedTags = Collections.emptyList();
 
     private Button previewButton;
 
@@ -51,11 +54,27 @@ public class BBEditView extends Fragment {
     private int buttonSelectedBackgroundColor;
     private int buttonSelectedForegroundColor;
 
+    private List<BBEditViewCreatedListener> listeners;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null) {
-            this.allowedTags = getArguments().getString(ARG_ALLOWED_TAGS);
+        if(getArguments() != null && getArguments().containsKey(ARG_ALLOWED_TAGS)) {
+            Object allowedTags = getArguments().get(ARG_ALLOWED_TAGS);
+            if(allowedTags instanceof String) {
+                this.allowedTags = List.of(((String)allowedTags).split(","));
+            } else if (allowedTags instanceof String[]) {
+                this.allowedTags = List.of((String[]) allowedTags);
+            } else if (allowedTags instanceof Integer) {
+                this.allowedTags = List.of(getResources().getStringArray((int) allowedTags));
+            } else {
+                throw new IllegalArgumentException("BBEditView instantiated with invalid tag " +
+                        "collection specification. Value may be a String of lower-case tags " +
+                        "separated with a comma (,), a String array of lower-case tags, " +
+                        "or a array resource ID pointing to a valid tag collection");
+            }
+        } else {
+            this.allowedTags = List.of(getResources().getStringArray(R.array.tag_collection_default_tags));
         }
     }
 
@@ -99,6 +118,11 @@ public class BBEditView extends Fragment {
             this.content.setText(contentString);
             this.content.setSelection(contentString.length(), contentString.length());
         }
+
+        if(this.listeners != null)
+            for(BBEditViewCreatedListener listener : this.listeners) {
+                listener.onBBEditViewCreated(this, view);
+            }
 
         return view;
     }
@@ -268,10 +292,27 @@ public class BBEditView extends Fragment {
         return c;
     }
 
+    public EditText getEditBox() {
+        return this.content;
+    }
+
     public void setPostContent(String content) {
         this.contentString = content;
         if(this.content != null)
             this.content.setText(content);
+    }
+
+    public void registerViewListener(BBEditViewCreatedListener listener) {
+        if(this.listeners == null) this.listeners = new ArrayList<>();
+        this.listeners.add(listener);
+    }
+
+    public void deregisterViewListener(BBEditViewCreatedListener listener) {
+        if(this.listeners != null) {
+            this.listeners.remove(listener);
+            if (this.listeners.isEmpty())
+                this.listeners = null;
+        }
     }
 
     private void resetPreview() {
@@ -292,6 +333,15 @@ public class BBEditView extends Fragment {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Objects.requireNonNull(getContext()), InputMethodManager.class);
         if(inputMethodManager != null)
             inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(this.listeners != null)
+            for(BBEditViewCreatedListener listener : this.listeners) {
+                listener.onBBEditViewDestroy(this);
+            }
     }
 
     private String editBoxLabel;
@@ -338,5 +388,11 @@ public class BBEditView extends Fragment {
         public boolean isDefaultCursorBehavior() {
             return defaultCursorBehavior;
         }
+    }
+
+    public interface BBEditViewCreatedListener {
+        void onBBEditViewCreated(BBEditView editView, View view);
+
+        void onBBEditViewDestroy(BBEditView editView);
     }
 }

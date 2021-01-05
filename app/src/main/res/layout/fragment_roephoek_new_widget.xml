@@ -23,14 +23,11 @@
         android:layout_below="@+id/new_shout_nickname"
         >
 
-        <EditText
-            android:id="@+id/new_shout_content"
-            android:layout_weight="1"
+        <FrameLayout
+            android:id="@+id/new_shout_content_placeholder"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ems="40"
-            android:hint="@string/roephoek_dialog_content_hint"
-            android:inputType="textCapSentences|textAutoComplete|textAutoCorrect|textMultiLine"
+            android:layout_weight="1"
             />
 
         <RelativeLayout

@@ -115,7 +115,11 @@ public class AddForumPostFragment extends DialogFragment {
             savedPost = initialContent;
         }
 
+        Bundle arguments = new Bundle();
+        arguments.putInt(BBEditView.ARG_ALLOWED_TAGS, R.array.tag_collection_default_tags);
+
         this.content = new BBEditView();
+        this.content.setArguments(arguments);
         this.content.setEditBoxLabel(R.string.wilson_media_forum_new_post_content_label);
         this.content.setPostContent(savedPost);
         this.previewButton.setOnClickListener(content.getRequestPreviewListener());
