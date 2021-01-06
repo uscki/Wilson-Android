@@ -18,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -464,26 +466,41 @@ public class AgendaActivity extends BasicActivity {
 
     private void addSubscribeListener(MenuItem menuItem, final boolean subscribe, boolean enabled, final int text) {
         if(!enabled && text >= 0) {
-            menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    Toast.makeText(
-                            AgendaActivity.this,
-                            text,
-                            Toast.LENGTH_LONG).show();
+            menuItem.setOnMenuItemClickListener(menuItem1 -> {
+                Toast.makeText(
+                        AgendaActivity.this,
+                        text,
+                        Toast.LENGTH_LONG).show();
 
-                    return true;
-                }
+                return true;
             });
         } else if (enabled) {
-            menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    subscribeToAgenda(subscribe);
-                    return true;
-                }
+            menuItem.setOnMenuItemClickListener(item -> {
+                subscribeToAgenda(subscribe);
+                return true;
             });
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(!handleNewCommentItemBackStack(getSupportFragmentManager(), null))
+            super.onBackPressed();
+    }
+
+    private boolean handleNewCommentItemBackStack(FragmentManager fm, Fragment managerFragment) {
+        if(managerFragment != null && fm.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry e = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1);
+            if ("new_comment_reply".equals(e.getName()) && managerFragment instanceof CommentsFragment) {
+                return ((CommentsFragment)managerFragment).hideReplyBox();
+            }
+        }
+        // Recurse over fragments
+        for(Fragment fragment : fm.getFragments()) {
+            if(handleNewCommentItemBackStack(fragment.getChildFragmentManager(), fragment))
+                return true;
+        }
+        return false;
     }
 
     /**

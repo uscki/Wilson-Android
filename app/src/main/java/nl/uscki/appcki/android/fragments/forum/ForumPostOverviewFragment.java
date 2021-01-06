@@ -80,7 +80,7 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         if((topic == null || !topic.isLocked()) && view != null) {
-            FloatingActionButton fab = setFabEnabled(view, true);
+            FloatingActionButton fab = setFabEnabled(true);
             fab.setOnClickListener(v -> {
                 showNewPostDialog(null);
             });

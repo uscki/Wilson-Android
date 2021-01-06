@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,7 +21,6 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
@@ -33,8 +31,6 @@ import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Response;
-
-import static androidx.core.content.ContextCompat.getSystemService;
 
 public class BBEditView extends Fragment {
 
@@ -103,12 +99,6 @@ public class BBEditView extends Fragment {
                 Log.v("BB-Edit Textview", "SKipping button setup for BB-tag \"" + tag.toString() + "\"");
             }
         }
-
-        this.content.requestFocus();
-
-        InputMethodManager inputMethodManager = getSystemService(Objects.requireNonNull(getContext()), InputMethodManager.class);
-        if(inputMethodManager != null)
-            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
         this.buttonSelectedBackgroundColor = ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getActivity().getTheme());
         this.buttonSelectedForegroundColor = ResourcesCompat.getColor(getResources(), R.color.lb_control_button_text, getActivity().getTheme());
@@ -330,9 +320,6 @@ public class BBEditView extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Objects.requireNonNull(getContext()), InputMethodManager.class);
-        if(inputMethodManager != null)
-            inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
 
     @Override

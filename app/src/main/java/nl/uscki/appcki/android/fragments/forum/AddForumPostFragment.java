@@ -20,6 +20,7 @@ import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.api.models.ActionResponse;
@@ -123,6 +124,19 @@ public class AddForumPostFragment extends DialogFragment {
         this.content.setEditBoxLabel(R.string.wilson_media_forum_new_post_content_label);
         this.content.setPostContent(savedPost);
         this.previewButton.setOnClickListener(content.getRequestPreviewListener());
+
+        this.content.registerViewListener(new BBEditView.BBEditViewCreatedListener() {
+            @Override
+            public void onBBEditViewCreated(BBEditView editView, View view) {
+                Utils.toggleKeyboardForEditBox(getContext(), editView.getEditBox(), true);
+            }
+
+            @Override
+            public void onBBEditViewDestroy(BBEditView editView) {
+                Utils.toggleKeyboardForEditBox(getContext(), editView.getEditBox(), false);
+            }
+        });
+
         FragmentTransaction ft = this.getChildFragmentManager().beginTransaction();
         ft.replace(R.id.forum_post_editor_content_placeholder, this.content);
         ft.commit();

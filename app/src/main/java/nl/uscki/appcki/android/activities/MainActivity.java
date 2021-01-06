@@ -238,7 +238,7 @@ public class MainActivity extends BasicActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             FragmentManager sfm = getSupportFragmentManager();
-            if(handleChildFragmentStack()) {
+            if(handleChildFragmentStack(sfm)) {
                 // Stop here, as a back action has been performed
                return;
             } else if (sfm.getBackStackEntryCount() > 0) {
@@ -253,8 +253,7 @@ public class MainActivity extends BasicActivity
         }
     }
 
-    private boolean handleChildFragmentStack() {
-        FragmentManager fm = getSupportFragmentManager();
+    private boolean handleChildFragmentStack(FragmentManager fm) {
         Class currentFragmentClass = Utils.getClassForScreen(currentScreen);
         if(currentFragmentClass == null) return false;
 
@@ -268,6 +267,9 @@ public class MainActivity extends BasicActivity
 
                 // Nothing to do here
                 return false;
+            } else {
+                if(handleChildFragmentStack(f.getChildFragmentManager()))
+                    return true;
             }
         }
 

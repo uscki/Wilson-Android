@@ -12,22 +12,21 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.generated.roephoek.RoephoekItem;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.views.BBEditView;
 import nl.uscki.appcki.android.views.NewPageableItem;
 import retrofit2.Call;
 
-public class NewShoutWidget extends NewPageableItem<ActionResponse<RoephoekItem>> implements BBEditView.BBEditViewCreatedListener {
+public class NewShoutWidget extends NewPageableItem<RoephoekItem> implements BBEditView.BBEditViewCreatedListener {
 
     EditText nickname;
     BBEditView bbEditView;
@@ -37,7 +36,6 @@ public class NewShoutWidget extends NewPageableItem<ActionResponse<RoephoekItem>
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setFocusOnCreateView(false);
     }
 
     @Nullable
@@ -57,8 +55,11 @@ public class NewShoutWidget extends NewPageableItem<ActionResponse<RoephoekItem>
         this.bbEditView.registerViewListener(this);
         this.bbEditView.setEditBoxLabel(R.string.roephoek_dialog_content_hint);
 
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-        ft.replace(R.id.new_shout_content_placeholder, this.bbEditView).commitNow();
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(R.id.new_shout_content_placeholder, this.bbEditView)
+                .commitNow();
+
         return view;
     }
 
@@ -70,14 +71,15 @@ public class NewShoutWidget extends NewPageableItem<ActionResponse<RoephoekItem>
 
     @Override
     public void onBBEditViewCreated(BBEditView editView, View view) {
+        Utils.toggleKeyboardForEditBox(getContext(), editView.getEditBox(), true);
         this.bbEditView.getEditBox().addTextChangedListener(contentLengthWatcher);
         this.bbEditView.getEditBox().setMinLines(1);
     }
 
     @Override
     public void onBBEditViewDestroy(BBEditView editView) {
-        if(editView != null)
-            editView.deregisterViewListener(this);
+        Utils.toggleKeyboardForEditBox(getContext(), editView.getEditBox(), false);
+        editView.deregisterViewListener(this);
     }
 
     @Override
