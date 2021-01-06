@@ -18,5 +18,7 @@
 
     <string name="joda_datetime_format_year_month_day">dd MMMM yyyy</string>
     <string name="joda_datetime_format_year_month_day_with_day_names">EEEE dd MMMM yyyy</string>
+    <string name="joda_datetime_format_year_month_day_time">dd MMMM yyyy HH:mm</string>
+    <string name="joda_datetime_format_year_month_day_time_with_day_names">EEEE dd MMMM yyyy HH:mm</string>
 
 </resources>

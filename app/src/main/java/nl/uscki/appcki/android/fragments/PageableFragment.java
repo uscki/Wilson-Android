@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -47,6 +46,7 @@ public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K exte
     protected SwipeRefreshLayout swipeContainer;
     protected TextView emptyText;
     protected NestedScrollView emptyTextScrollview;
+    private FloatingActionButton floatingActionButton;
 
     // The minimum amount of items to have below your current scroll position
     // before loading more.
@@ -136,8 +136,9 @@ public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K exte
         setupRecyclerView(view);
 
         emptyTextScrollview = view.findViewById(R.id.empty_text_scrollview);
-        emptyText = (TextView) view.findViewById(R.id.empty_text);
+        emptyText = view.findViewById(R.id.empty_text);
         emptyText.setText(getEmptyText());
+        floatingActionButton = view.findViewById(R.id.pageableFloatingActionButton);
 
         refresh = true; // always start with a refreshing view
         scrollLoad = false;
@@ -262,23 +263,23 @@ public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K exte
         scrollDirection = direction;
     }
 
-    public FloatingActionButton setFabEnabled(@NonNull View view, boolean enabled) {
-        FloatingActionButton fab = view.findViewById(R.id.pageableFloatingActionButton);
-        if(fab == null) {
+    public FloatingActionButton setFabEnabled(boolean enabled) {
+
+        if(this.floatingActionButton == null) {
             Log.e(
                     getClass().getSimpleName(),
                     "Trying to enable Fabulous action button, but not found");
             return null;
         }
 
-        fab.setVisibility(enabled ? View.VISIBLE : View.GONE);
-        fab.setClickable(enabled);
+        this.floatingActionButton.setVisibility(enabled ? View.VISIBLE : View.GONE);
+        this.floatingActionButton.setClickable(enabled);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            fab.setFocusable(enabled);
+            this.floatingActionButton.setFocusable(enabled);
         }
 
         // Use the return value to set the onClick action
-        return fab;
+        return this.floatingActionButton;
     }
 
     /**
@@ -290,7 +291,7 @@ public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K exte
      *                      invisible again and show the fab. If set to false, the fragment is
      *                      always visible and no fab is shown
      */
-    public void addNewPageableItemWidget(NewPageableItem widget, boolean onlyWhenFab) {
+    public void addNewPageableItemWidget(NewPageableItem<K> widget, boolean onlyWhenFab) {
         widget.setParent(this);
         FragmentManager fm = getChildFragmentManager();
 
@@ -304,7 +305,7 @@ public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K exte
 
         View view = getView();
         if(onlyWhenFab && view != null) {
-            setFabEnabled(getView(), false);
+            setFabEnabled(false);
         }
     }
 
@@ -318,9 +319,11 @@ public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K exte
                 .replace(editBoxPosition, new Fragment())
                 .commitAllowingStateLoss();
 
+        // TODO maybe here we should pop the proper backstack? Otherwise, doesn't item stay on back stack?
+
         View view = getView();
         if(view != null)
-            setFabEnabled(view, true);
+            setFabEnabled(true);
     }
 
     public abstract void onSwipeRefresh();
@@ -345,6 +348,14 @@ public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K exte
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getAdapter() != null && getAdapter().getItemCount() > 0) {
+            swipeContainer.setRefreshing(false);
+        }
     }
 
     /**

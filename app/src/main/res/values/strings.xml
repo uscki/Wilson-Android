@@ -398,7 +398,6 @@
     <string name="wilson_media_shared_tab_caption_contest_header">Caption Contest</string>
 
 
-
     <!-- Caption contest -->
     <string name="wilson_media_caption_contest_header">Captioncontest %s</string>
     <string name="wilson_media_caption_contest_add_caption">Onderschrift toevoegen</string>
@@ -424,7 +423,56 @@
     <string name="wilson_media_caption_contest_menu_confirm_vote_checkbox_label">Vraag stembevestiging</string>
 
 
+    <!-- Forum -->
+    <string name="wilson_media_forum_header">Forum</string>
+    <string name="wilson_media_forum_fora_empty_text">Geen fora gevonden</string>
+    <string name="wilson_media_forum_topic_empty_text">Dit forum heeft nog geen topics</string>
+    <string name="wilson_media_forum_posts_empty_text">Dit topic bevat nog geen posts</string>
+    <string name="wilson_media_forum_topic_author_label">Topic gestart door:</string>
+    <string name="wilson_media_forum_topic_last_reply_label">Laatste reactie:</string>
+    <string name="wilson_media_forum_topic_num_views">%d keer bekeken</string>
+    <string name="wilson_media_forum_topic_num_replies">%d reacties</string>
+    <string name="wilson_media_forum_topic_created_date"> op %s</string>
 
+    <string name="wilson_media_forum_sort_desc">Meeste views</string>
+    <string name="wilson_media_forum_asc">Minste views</string>
+    <string name="wilson_media_forum_locked_desc">Unlocked eerst</string>
+    <string name="wilson_media_forum_locked_asc">Locked eerst</string>
+    <string name="wilson_media_forum_views_desc">Meeste views</string>
+    <string name="wilson_media_forum_views_asc">Minste views</string>
+    <string name="wilson_media_forum_new_post_header">Nieuw bericht plaatsen</string>
+    <string name="wilson_media_forum_new_post_name_label">Naam:</string>
+    <string name="wilson_media_forum_new_post_content_label">Bericht:</string>
+    <string name="wilson_media_forum_new_post_signature_label">Signature:</string>
+    <string name="wilson_media_forum_new_post_name_hint">Naam</string>
+    <string name="wilson_media_forum_new_post_content_hint">Bericht</string>
+    <string name="wilson_media_forum_new_post_signature_hint">Signature</string>
+    <string name="wilson_media_forum_new_post_confirm_btn_label">Plaats bericht</string>
+    <string name="wilson_media_forum_empty_name_warning">Kies een naam om dit bericht te kunnen plaatsen</string>
+    <string name="wilson_media_forum_empty_post_warning">Je hebt geen bericht getypt dat we kunnen plaatsen!</string>
+    <string name="wilson_media_forum_topic_share_intent_text_extra">Heb je het topic "%s" gezien?\n%s</string>
+    <string name="wilson_media_forum_post_share_intent_text_extra">Heb je dit bericht van %s op het topic "%s" gezien?\n%s</string>
+
+    <!-- BB Code Editor -->
+    <string name="wilson_bb_code_preview_btn_label">Voorvertoning</string>
+    <string name="wilson_bb_code_markup_header_1">h1</string>
+    <string name="wilson_bb_code_markup_header_2">h2</string>
+    <string name="wilson_bb_code_markup_header_3">h3</string>
+    <string name="wilson_bb_code_markup_bold"><b>B</b></string>
+    <string name="wilson_bb_code_markup_italic"><i>I</i></string>
+    <string name="wilson_bb_code_markup_underline"><u>U</u></string>
+    <string name="wilson_bb_code_markup_strikethrough"><strike>S</strike></string>
+    <string name="wilson_bb_code_markup_quote">Quote</string>
+    <string name="wilson_bb_code_markup_link">Link</string>
+    <string name="wilson_bb_code_markup_code">Code</string>
+    <string name="wilson_bb_code_markup_spoiler">spoiler</string>
+    <string name="wilson_bb_code_markup_image">Afbeelding</string>
+    <string name="wilson_bb_code_markup_email">Email</string>
+    <string name="wilson_bb_code_markup_list">Lijst</string>
+    <string name="wilson_bb_code_markup_superscript">Superscript</string>
+    <string name="wilson_bb_code_markup_subscript">Subscript</string>
+    <string name="wilson_bb_code_empty_preview_warning">We kunnen geen preview van een leeg veld maken</string>
+    <string name="wilson_bb_code_preview_parse_error">Voorbeeld kon niet worden gemaakt. Controleer de BB-syntax</string>
 
     <!-- Datable range (half-your-age-plus-seven) -->
     <string name="smobo_photos">Laatste foto\'s</string>

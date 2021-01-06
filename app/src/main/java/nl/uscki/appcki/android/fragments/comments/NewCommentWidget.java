@@ -8,7 +8,7 @@ import nl.uscki.appcki.android.views.NewSimplePageableItem;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class NewCommentWidget extends NewSimplePageableItem<ActionResponse<Comment>>{
+public class NewCommentWidget extends NewSimplePageableItem<Comment>{
 
     // This fragment handles the posting of the comment
     private CommentsFragment commentsFragment;
@@ -39,5 +39,10 @@ public class NewCommentWidget extends NewSimplePageableItem<ActionResponse<Comme
     @Override
     protected Call<ActionResponse<Comment>> postNewItem() {
         return commentsFragment.sendCommentToServer(-1, getMainTextInput().getText().toString());
+    }
+
+    @Override
+    protected int getTagCollection() {
+        return R.array.tag_collection_inline_tags;
     }
 }

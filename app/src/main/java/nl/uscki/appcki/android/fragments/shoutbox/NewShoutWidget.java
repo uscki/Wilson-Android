@@ -18,17 +18,25 @@ import java.util.List;
 import java.util.Locale;
 
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.generated.roephoek.RoephoekItem;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import nl.uscki.appcki.android.views.BBEditView;
 import nl.uscki.appcki.android.views.NewPageableItem;
 import retrofit2.Call;
 
-public class NewShoutWidget extends NewPageableItem {
+public class NewShoutWidget extends NewPageableItem<RoephoekItem> implements BBEditView.BBEditViewCreatedListener {
 
     EditText nickname;
-    EditText content;
+    BBEditView bbEditView;
     ImageButton confirmShout;
     TextView remainingChars;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
@@ -36,11 +44,22 @@ public class NewShoutWidget extends NewPageableItem {
         View view = inflater.inflate(R.layout.fragment_roephoek_new_widget, container, false);
 
         nickname = view.findViewById(R.id.new_shout_nickname);
-        content = view.findViewById(R.id.new_shout_content);
         confirmShout = view.findViewById(R.id.new_shout_confirm_button);
         remainingChars = view.findViewById(R.id.remaining_chars);
 
-        content.addTextChangedListener(contentLengthWatcher);
+        Bundle arg = new Bundle();
+        arg.putInt(BBEditView.ARG_ALLOWED_TAGS, R.array.tag_collection_inline_tags);
+
+        this.bbEditView = new BBEditView();
+        this.bbEditView.setArguments(arg);
+        this.bbEditView.registerViewListener(this);
+        this.bbEditView.setEditBoxLabel(R.string.roephoek_dialog_content_hint);
+
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(R.id.new_shout_content_placeholder, this.bbEditView)
+                .commitNow();
+
         return view;
     }
 
@@ -51,8 +70,29 @@ public class NewShoutWidget extends NewPageableItem {
     }
 
     @Override
+    public void onBBEditViewCreated(BBEditView editView, View view) {
+        Utils.toggleKeyboardForEditBox(getContext(), editView.getEditBox(), true);
+        this.bbEditView.getEditBox().addTextChangedListener(contentLengthWatcher);
+        this.bbEditView.getEditBox().setMinLines(1);
+    }
+
+    @Override
+    public void onBBEditViewDestroy(BBEditView editView) {
+        Utils.toggleKeyboardForEditBox(getContext(), editView.getEditBox(), false);
+        editView.deregisterViewListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(this.bbEditView != null) {
+            this.bbEditView.deregisterViewListener(this);
+        }
+    }
+
+    @Override
     protected EditText getMainTextInput() {
-        return content;
+        return bbEditView.getEditBox();
     }
 
     @Override
@@ -64,7 +104,7 @@ public class NewShoutWidget extends NewPageableItem {
     protected Call postNewItem() {
         return Services.getInstance()
                 .shoutboxService
-                .shout(nickname.getText().toString(), content.getText().toString());
+                .shout(nickname.getText().toString(), bbEditView.getPostContent());
     }
 
     @Override
@@ -72,8 +112,8 @@ public class NewShoutWidget extends NewPageableItem {
         List<View> incorrect = new ArrayList();
         if(!isFieldNotEmpty(nickname))
             incorrect.add(nickname);
-        if(!isFieldNotEmpty(content))
-            incorrect.add(content);
+        if(!isFieldNotEmpty(this.bbEditView.getEditBox()))
+            incorrect.add(this.bbEditView.getEditBox());
         return incorrect;
     }
 
@@ -84,7 +124,7 @@ public class NewShoutWidget extends NewPageableItem {
         @Override
         public void onTextChanged(CharSequence charSequence, int start, int count, int after) {
             int l = charSequence.length();
-            if(content.getLineCount() > 1) {
+            if(bbEditView.getEditBox().getLineCount() > 1) {
                 int c = getResources().getColor(l <= 160 ? android.R.color.primary_text_light : R.color.colorRed);
                 remainingChars.setText(String.format(Locale.getDefault(), "%d", 160-l));
                 remainingChars.setTextColor(c);

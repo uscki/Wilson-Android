@@ -15,6 +15,11 @@
             android:icon="@drawable/message_text"
             android:title="Roephoek" />
         <item
+            android:id="@+id/nav_forum"
+            android:icon="@drawable/ic_forum_black_24dp"
+            android:title="@string/wilson_media_forum_header"
+            />
+        <item
             android:id="@+id/nav_poll"
             android:icon="@drawable/format_list_bulleted"
             android:title="Poll" />
@@ -24,7 +29,7 @@
             android:title="Quotes" />
         <item android:id="@+id/nav_media"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Media"/>
+            android:title="@string/wilson_media_activity_header"/>
         <item
             android:id="@+id/nav_shop"
             android:icon="@drawable/cash_multiple"
