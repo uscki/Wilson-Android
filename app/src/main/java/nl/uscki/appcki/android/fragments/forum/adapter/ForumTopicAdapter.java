@@ -15,6 +15,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.fragments.forum.ForumPostOverviewFragment;
@@ -50,11 +51,12 @@ public class ForumTopicAdapter extends BaseItemAdapter<ForumTopicAdapter.ForumTo
         private TextView postedDate;
         private TextView views;
 
+        private TextView lastReplyName;
+        private TextView lastReplyDate;
+
         // Not present in API
 //        ImageView authorProfileImage;
 //        TextView authorName;
-//        TextView lastReplyName;
-//        TextView lastReplyDate;
 //        TextView replies;
 
         public ForumTopicViewHolder(@NonNull View itemView) {
@@ -65,12 +67,13 @@ public class ForumTopicAdapter extends BaseItemAdapter<ForumTopicAdapter.ForumTo
             lockedIcon = itemView.findViewById(R.id.forum_topic_locked_icon);
             postedDate = itemView.findViewById(R.id.forum_topic_posted_date_label);
 
+            lastReplyName = itemView.findViewById(R.id.forum_topic_last_reply_author);
+            lastReplyDate = itemView.findViewById(R.id.forum_topic_last_reply_time);
+
             // Not present in API
-//        viewHolder.authorName = view.findViewById(R.id.forum_topic_starter_profile_name);
-//        viewHolder.authorProfileImage = view.findViewById(R.id.forum_topic_starter_profile_image);
-//        viewHolder.lastReplyName = view.findViewById(R.id.forum_topic_last_reply_author);
-//        viewHolder.lastReplyDate = view.findViewById(R.id.forum_topic_last_reply_time);
-//        viewHolder.replies = view.findViewById(R.id.forum_topic_n_replies);
+//            authorName = itemView.findViewById(R.id.forum_topic_starter_profile_name);
+//            authorProfileImage = itemView.findViewById(R.id.forum_topic_starter_profile_image);
+//            viewHolder.replies = view.findViewById(R.id.forum_topic_n_replies);
         }
 
         void populateFromTopic(Topic topic) {
@@ -83,6 +86,16 @@ public class ForumTopicAdapter extends BaseItemAdapter<ForumTopicAdapter.ForumTo
             this.views.setText(c.getString(R.string.wilson_media_forum_topic_num_views, topic.getViews()));
             this.itemView.setOnClickListener(this);
             this.sticky.setVisibility(topic.isSticky() ? View.VISIBLE : View.GONE);
+
+            if (topic.getLastPost() != null) {
+                lastReplyName.setVisibility(View.VISIBLE);
+                lastReplyName.setText(topic.getLastPost().getPosterName());
+                lastReplyDate.setVisibility(View.VISIBLE);
+                lastReplyDate.setText(Utils.timestampConversion(topic.getLastPost().getPost_time().getMillis()));
+            } else {
+                lastReplyName.setVisibility(View.GONE);
+                lastReplyDate.setVisibility(View.GONE);
+            }
         }
 
         @Override

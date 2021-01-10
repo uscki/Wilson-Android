@@ -48,25 +48,13 @@
         android:text="Aangemaakt op Donderdag 13 November 2016"
         app:drawableStartCompat="@drawable/clock" />
 
-        <TextView
-            android:id="@+id/forum_topic_n_views"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/forum_topic_posted_date_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="@string/wilson_media_forum_topic_num_views"
-            android:drawablePadding="@dimen/text_margin"
-            app:drawableStartCompat="@drawable/ic_remove_red_eye_black_24dp" />
-
-
     <!-- The below view does not work, because the API does not provide the same fields as the website.
 R.I.P. :( -->
 <!--    <TextView-->
 <!--        android:id="@+id/forum_topic_starter_label"-->
 <!--        android:layout_width="0dp"-->
 <!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/forum_topic_title"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/forum_topic_n_views"-->
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintWidth_percent=".33"-->
 <!--        android:text="@string/wilson_media_forum_topic_author_label"-->
@@ -93,36 +81,51 @@ R.I.P. :( -->
 <!--        app:layout_constraintStart_toEndOf="@id/forum_topic_starter_profile_image"-->
 <!--        app:layout_constraintTop_toTopOf="@id/forum_topic_starter_profile_image" />-->
 
+    <TextView
+        android:id="@+id/forum_topic_last_reply_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/forum_topic_posted_date_label"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/wilson_media_forum_topic_last_reply_label"
+        android:drawablePadding="@dimen/text_margin"
+        android:layout_marginTop="@dimen/text_margin"
+        app:drawableStartCompat="@drawable/ic_history_black_24dp" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/forum_topic_last_reply_label"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/forum_topic_title"-->
-<!--        app:layout_constraintStart_toEndOf="@id/forum_topic_starter_label"-->
-<!--        app:layout_constraintEnd_toStartOf="@id/forum_topic_n_views"-->
-<!--        android:text="@string/wilson_media_forum_topic_last_reply_label"-->
-<!--        app:drawableStartCompat="@drawable/ic_history_black_24dp" />-->
+    <TextView
+        android:id="@+id/forum_topic_last_reply_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/AppTheme.Text"
+        app:layout_constraintTop_toBottomOf="@id/forum_topic_last_reply_label"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingStart="40dp"
+        android:text="Levien van Krieken"/>
 
-<!--    <TextView-->
-<!--        android:id="@+id/forum_topic_last_reply_author"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        style="@style/AppTheme.Text"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/forum_topic_last_reply_label"-->
-<!--        app:layout_constraintStart_toEndOf="@id/forum_topic_starter_label"-->
-<!--        app:layout_constraintEnd_toStartOf="@id/forum_topic_n_views"-->
-<!--        android:text="Levien van Krieken"/>-->
+    <TextView
+        android:id="@+id/forum_topic_last_reply_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/forum_topic_last_reply_author"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="3 jaar geleden"
+        android:paddingStart="40dp"
+        android:paddingBottom="@dimen/text_margin"
+        />
 
-<!--    <TextView-->
-<!--        android:id="@+id/forum_topic_last_reply_time"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/forum_topic_last_reply_author"-->
-<!--        app:layout_constraintStart_toEndOf="@id/forum_topic_starter_label"-->
-<!--        app:layout_constraintEnd_toStartOf="@id/forum_topic_n_views"-->
-<!--        android:text="3 jaar geleden"/>-->
+    <TextView
+        android:id="@+id/forum_topic_n_views"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/forum_topic_posted_date_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/wilson_media_forum_topic_num_views"
+        android:drawablePadding="@dimen/text_margin"
+        app:drawableEndCompat="@drawable/ic_remove_red_eye_black_24dp" />
 
+    <!-- The below view does not work, because the API does not provide the same fields as the website.
+R.I.P. :( -->
 <!--    <TextView-->
 <!--        android:id="@+id/forum_topic_n_replies"-->
 <!--        android:layout_width="wrap_content"-->

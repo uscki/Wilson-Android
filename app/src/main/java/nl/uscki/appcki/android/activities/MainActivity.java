@@ -38,7 +38,7 @@ import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.fragments.AppInfoFragment;
 import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
-import nl.uscki.appcki.android.fragments.forum.ForumOverviewFragment;
+import nl.uscki.appcki.android.fragments.forum.ForumLandingFragment;
 import nl.uscki.appcki.android.fragments.forum.ForumPostOverviewFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
@@ -108,7 +108,8 @@ public class MainActivity extends BasicActivity
         STORE_BUY(R.id.nav_shop),
         MEDIA_COLLECTION_OVERVIEW(R.id.nav_media),
         MEDIA_LANDING_PAGE(R.id.nav_media),
-        FORUM(R.id.nav_forum);
+        FORUM(R.id.nav_forum),
+        FORUM_LANDING_PAGE(R.id.nav_forum);
 
         private int menuItemId;
 
@@ -351,7 +352,8 @@ public class MainActivity extends BasicActivity
                 openFragment(new MediaCaptionContestSharedFragment(), null, true);
                 currentScreen = Screen.MEDIA_LANDING_PAGE;
             } else if (id == R.id.nav_forum) {
-                openFragment(new ForumOverviewFragment(), null, true);
+                openFragment(new ForumLandingFragment(), null, true);
+                currentScreen = Screen.FORUM_LANDING_PAGE;
             }
         }
 

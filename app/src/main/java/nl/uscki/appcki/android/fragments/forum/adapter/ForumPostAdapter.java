@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -56,6 +57,7 @@ public class ForumPostAdapter extends BaseItemAdapter<ForumPostAdapter.ForumPost
     public class ForumPostViewHolder extends RecyclerView.ViewHolder {
         private Post post;
 
+        private ImageView notificationDot;
         private ImageView authorImage;
         private TextView authorName;
         private TextView postedDate;
@@ -70,6 +72,7 @@ public class ForumPostAdapter extends BaseItemAdapter<ForumPostAdapter.ForumPost
 
         public ForumPostViewHolder(@NonNull View itemView) {
             super(itemView);
+            this.notificationDot = itemView.findViewById(R.id.forum_post_unread_notification_dot);
             this.authorImage = itemView.findViewById(R.id.forum_post_author_image);
             this.authorName = itemView.findViewById(R.id.forum_post_author_name);
             this.postedDate = itemView.findViewById(R.id.forum_post_posted_date);
@@ -88,12 +91,19 @@ public class ForumPostAdapter extends BaseItemAdapter<ForumPostAdapter.ForumPost
             }
             this.authorName.setText(post.getPosterName());
 
-            this.postedDate.setText(post.getPost_time().toString(c.getString(R.string.joda_datetime_format_year_month_day_time_with_day_names)));
+            this.postedDate.setText(post.getOriginal_post_time().toString(c.getString(R.string.joda_datetime_format_year_month_day_time_with_day_names)));
             Drawable editedDrawable = null;
-            if(post.getPost_time().getMillis() - post.getOriginal_post_time().getMillis() < -3000) {
+            this.postedDate.setOnClickListener(null);
+            if(post.getPost_time().getMillis() - post.getOriginal_post_time().getMillis() > 3000) {
                 // Equals goes on millisecond basis, but parsing is less accurate than that
                 // Let's assume if people edit within 3 seconds it should be considered the same post :)
                 editedDrawable = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_outline_edit_24px_black);
+                this.postedDate.setOnClickListener(v ->
+                        Toast.makeText(c, c.getString(
+                                R.string.wilson_media_forum_post_edited_info,
+                                post.getPost_time().toString(c.getString(
+                                        R.string.joda_datetime_format_year_month_day_time_with_day_names)))
+                                , Toast.LENGTH_SHORT).show());
             }
             this.postedDate.setCompoundDrawablesRelativeWithIntrinsicBounds(editedDrawable, null, null, null);
 
@@ -139,6 +149,12 @@ public class ForumPostAdapter extends BaseItemAdapter<ForumPostAdapter.ForumPost
                 itemView.getContext().startActivity(Intent.createChooser(intent,
                         itemView.getContext().getString(R.string.app_general_action_share_intent_text)));
             });
+
+            if(topic == null || topic.isRead(post)) {
+                notificationDot.setVisibility(View.GONE);
+            } else {
+                notificationDot.setVisibility(View.VISIBLE);
+            }
         }
 
         private void loadAuthorPhoto(Post post) {
@@ -153,10 +169,13 @@ public class ForumPostAdapter extends BaseItemAdapter<ForumPostAdapter.ForumPost
                 authorImage.setImageDrawable(null);
             }
 
-            if(post.getPerson() != null) {
+            if(post.getPerson() != null && post.getPerson().getId() != null) {
+                // Forum sends Person object with null values???
                 authorImage.setOnClickListener(v -> {
                     ForumPostAdapter.this.activity.openSmoboFor(post.getPerson());
                 });
+            } else {
+                authorImage.setOnClickListener(null);
             }
         }
     }

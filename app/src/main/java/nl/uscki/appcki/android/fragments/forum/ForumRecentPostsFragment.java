@@ -12,22 +12,19 @@ import java.util.ArrayList;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.PageableFragment;
-import nl.uscki.appcki.android.fragments.forum.adapter.ForumOverviewAdapter;
-import nl.uscki.appcki.android.generated.forum.Forum;
+import nl.uscki.appcki.android.fragments.forum.adapter.ForumRecentPostsAdapter;
+import nl.uscki.appcki.android.generated.forum.RecentTopic;
 
-public class ForumOverviewFragment extends PageableFragment<ForumOverviewAdapter.ForumOverviewViewHolder, Forum> {
+public class ForumRecentPostsFragment extends PageableFragment<ForumRecentPostsAdapter.ViewHolder, RecentTopic> {
 
-    private static final int FORUM_PAGE_SIZE = 10;
-
-    public ForumOverviewFragment() {
-        // Required empty constructor
-    }
+    private static final int PAGE_SIZE = 10;
+    private static final String DEFAULT_SORT = "originalPostTime,desc";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setAdapter(new ForumOverviewAdapter(new ArrayList<>()));
-        onSwipeRefresh();
+        setAdapter(new ForumRecentPostsAdapter(new ArrayList<>()));
+        onScrollRefresh();
     }
 
     @Override
@@ -42,21 +39,21 @@ public class ForumOverviewFragment extends PageableFragment<ForumOverviewAdapter
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().forumService.getFora(page, getPageSize()).enqueue(callback);
+        Services.getInstance().forumService.getRecent(this.page, getPageSize(), DEFAULT_SORT).enqueue(callback);
     }
 
     @Override
     public void onScrollRefresh() {
-        Services.getInstance().forumService.getFora(page, getPageSize()).enqueue(callback);
+        Services.getInstance().forumService.getRecent(this.page, getPageSize(), DEFAULT_SORT).enqueue(callback);
     }
 
     @Override
     public String getEmptyText() {
-        return getString(R.string.wilson_media_forum_fora_empty_text);
+        return getString(R.string.wilson_media_forum_recent_posts_empty_text);
     }
 
     @Override
     protected int getPageSize() {
-        return FORUM_PAGE_SIZE;
+        return PAGE_SIZE;
     }
 }
