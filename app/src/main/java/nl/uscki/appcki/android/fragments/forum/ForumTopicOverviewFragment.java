@@ -5,18 +5,23 @@ import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.forum.adapter.ForumTopicAdapter;
 import nl.uscki.appcki.android.generated.forum.Topic;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import retrofit2.Response;
 
 public class ForumTopicOverviewFragment extends PageableFragment<ForumTopicAdapter.ForumTopicViewHolder, Topic> {
 
@@ -27,9 +32,9 @@ public class ForumTopicOverviewFragment extends PageableFragment<ForumTopicAdapt
 
     private static final String SORT_ORDER_ASC = "asc";
     private static final String SORT_ORDER_DESC = "desc";
-    private static final String SORT_KEY_TIME = "publishtimestamp";
-    private static final String SORT_KEY_VIEWS = "views";
-    private static final String SORT_KEY_LOCKED = "locked";
+    private static final String SORT_KEY_TIME = "topic.publishtimestamp";
+    private static final String SORT_KEY_VIEWS = "topic.views";
+    private static final String SORT_KEY_LOCKED = "topic.locked";
     private static final int CHECKED_MENU_ITEM_ICON = R.drawable.check;
 
     private int forumId = -1;
@@ -43,12 +48,12 @@ public class ForumTopicOverviewFragment extends PageableFragment<ForumTopicAdapt
     static
     {
         sortStrings = new SparseArray<>();
-        sortStrings.put(R.id.forum_topics_sort_posteddate_desc, new String[] {"posted,desc"}); //default
-        sortStrings.put(R.id.forum_topics_sort_posteddate_asc, new String[] {"posted,asc"});
-        sortStrings.put(R.id.forum_topics_sort_views_asc, new String[] {"views,asc"});
-        sortStrings.put(R.id.forum_topics_sort_views_desc, new String[] {"views,desc"});
-        sortStrings.put(R.id.forum_topics_sort_locked_asc, new String[] {"locked,asc"});
-        sortStrings.put(R.id.forum_topics_sort_locked_desc, new String[] {"locked,desc"});
+        sortStrings.put(R.id.forum_topics_sort_posteddate_desc, new String[] {"topic.posted,desc"}); //default
+        sortStrings.put(R.id.forum_topics_sort_posteddate_asc, new String[] {"topic.posted,asc"});
+        sortStrings.put(R.id.forum_topics_sort_views_asc, new String[] {"topic.views,asc"});
+        sortStrings.put(R.id.forum_topics_sort_views_desc, new String[] {"topic.views,desc"});
+        sortStrings.put(R.id.forum_topics_sort_locked_asc, new String[] {"topic.locked,asc"});
+        sortStrings.put(R.id.forum_topics_sort_locked_desc, new String[] {"topic.locked,desc"});
     }
 
     private MenuItem.OnMenuItemClickListener sortListener = menuItem -> {
@@ -80,7 +85,7 @@ public class ForumTopicOverviewFragment extends PageableFragment<ForumTopicAdapt
 
     private String[] getSortString() {
         String[] sort = new String[4];
-        sort[0] = "sticky,desc";
+        sort[0] = "topic.sticky,desc";
         sort[1] = lockedSort != null ? SORT_KEY_LOCKED + "," + lockedSort : null;
         sort[2] = viewsSort != null ? SORT_KEY_VIEWS + "," + viewsSort : null;
         sort[3] = SORT_KEY_TIME + "," + baseSort;
@@ -117,6 +122,38 @@ public class ForumTopicOverviewFragment extends PageableFragment<ForumTopicAdapt
         }
         setHasOptionsMenu(true);
         onScrollRefresh();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupNewTopic();
+    }
+
+    private void setupNewTopic() {
+        if(this.forumId < 0) return;
+
+        Services.getInstance().forumService.canPost(this.forumId).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onSucces(Response<Boolean> response) {
+                if(response != null && response.body() != null && response.body()) {
+                    FloatingActionButton fab = setFabEnabled(true);
+                    fab.setOnClickListener(v -> showNewTopicDialog());
+                } else {
+                    setFabEnabled(false);
+                }
+            }
+        });
+    }
+
+    private void showNewTopicDialog() {
+        AddForumPostFragment dialog = new AddForumPostFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(AddForumPostFragment.ARG_NEW_TOPIC, true);
+        bundle.putInt(ForumTopicOverviewFragment.ARG_FORUM_ID, this.forumId);
+        dialog.setArguments(bundle);
+        dialog.show(getFragmentManager(), "AddForumPostDialog");
+        dialog.setCancelable(true);
     }
 
     @Override

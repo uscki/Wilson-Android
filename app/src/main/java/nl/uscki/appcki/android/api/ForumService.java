@@ -4,6 +4,7 @@ import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.forum.Forum;
 import nl.uscki.appcki.android.generated.forum.Post;
+import nl.uscki.appcki.android.generated.forum.RecentTopic;
 import nl.uscki.appcki.android.generated.forum.Topic;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -23,6 +24,9 @@ public interface ForumService {
 
     @GET("fora/{forum}/topics/{topic}/posts/")
     Call<Pageable<Post>> getPosts(@Path("forum") int forumId, @Path("topic") int topicId, @Query("page") int page, @Query("size") int size, @Query("sort") String... sort);
+
+    @GET("fora/recent/")
+    Call<Pageable<RecentTopic>> getRecent(@Query("page") int page, @Query("size") int size, @Query("sort") String... sort);
 
     @POST("fora/{forum}/topics/new")
     Call<ActionResponse<Topic>> createTopic(@Path("forum") int forumId, @Query("content") String content, @Query("name") String name, @Query("signature") String signature, @Query("title") String title);

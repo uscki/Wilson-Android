@@ -423,15 +423,20 @@
     <string name="wilson_media_caption_contest_menu_confirm_vote_checkbox_label">Vraag stembevestiging</string>
 
     <!-- Forum -->
+    <string name="wilson_media_forum_landing_page_recent_header">Recent</string>
+    <string name="wilson_media_forum_landing_page_fora_header">Fora</string>
     <string name="wilson_media_forum_header">Forum</string>
     <string name="wilson_media_forum_fora_empty_text">Geen fora gevonden</string>
     <string name="wilson_media_forum_topic_empty_text">Dit forum heeft nog geen topics</string>
     <string name="wilson_media_forum_posts_empty_text">Dit topic bevat nog geen posts</string>
+    <string name="wilson_media_forum_recent_posts_empty_text">Geen recente forumposts gevonden</string>
     <string name="wilson_media_forum_topic_author_label">Topic gestart door:</string>
     <string name="wilson_media_forum_topic_last_reply_label">Laatste reactie:</string>
     <string name="wilson_media_forum_topic_num_views">%d keer bekeken</string>
     <string name="wilson_media_forum_topic_num_replies">%d reacties</string>
-    <string name="wilson_media_forum_topic_created_date"> op %s</string>
+    <string name="wilson_media_forum_topic_created_date">Aangemaakt op %s</string>
+    <string name="wilson_media_forum_post_edited_info">Laatste wijziging op %s</string>
+    <string name="wilson_media_forum_recent_post_author_and_forum">%s @ %s</string>
 
     <string name="wilson_media_forum_sort_desc">Meeste views</string>
     <string name="wilson_media_forum_asc">Minste views</string>
@@ -441,14 +446,17 @@
     <string name="wilson_media_forum_views_asc">Minste views</string>
     <string name="wilson_media_forum_new_post_header">Nieuw bericht plaatsen</string>
     <string name="wilson_media_forum_new_post_name_label">Naam:</string>
+    <string name="wilson_media_forum_new_post_topic_title_label">Topic titel:</string>
     <string name="wilson_media_forum_new_post_content_label">Bericht:</string>
     <string name="wilson_media_forum_new_post_signature_label">Signature:</string>
     <string name="wilson_media_forum_new_post_name_hint">Naam</string>
+    <string name="wilson_media_forum_new_post_topic_title_hint">Topic titel</string>
     <string name="wilson_media_forum_new_post_content_hint">Bericht</string>
     <string name="wilson_media_forum_new_post_signature_hint">Signature</string>
     <string name="wilson_media_forum_new_post_confirm_btn_label">Plaats bericht</string>
-    <string name="wilson_media_forum_empty_name_warning">Kies een naam om dit bericht te kunnen plaatsen</string>
-    <string name="wilson_media_forum_empty_post_warning">Je hebt geen bericht getypt dat we kunnen plaatsen!</string>
+    <string name="wilson_media_forum_new_topic_empty_title_warning">Kies een titel om een topic aan te maken</string>
+    <string name="wilson_media_forum_new_post_empty_name_warning">Kies een naam om dit bericht te kunnen plaatsen</string>
+    <string name="wilson_media_forum_new_post_empty_post_warning">Je hebt geen bericht getypt dat we kunnen plaatsen!</string>
     <string name="wilson_media_forum_topic_share_intent_text_extra">Heb je het topic "%s" gezien?\n%s</string>
     <string name="wilson_media_forum_post_share_intent_text_extra">Heb je dit bericht van %s op het topic "%s" gezien?\n%s</string>
 

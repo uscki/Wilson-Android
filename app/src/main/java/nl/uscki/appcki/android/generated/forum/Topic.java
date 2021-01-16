@@ -29,6 +29,12 @@ public class Topic implements IWilsonBaseItem, Parcelable {
     @Expose
     Integer views;
 
+    @Expose
+    Post lastRead;
+
+    @Expose
+    Post lastPost;
+
     protected Topic(Parcel in) {
         if (in.readByte() == 0) {
             id = null;
@@ -58,6 +64,14 @@ public class Topic implements IWilsonBaseItem, Parcelable {
         }
     };
 
+    public boolean isRead() {
+        return lastPost == null || lastRead == null || lastPost.getOriginal_post_time().isBefore(lastRead.getPost_time()) || lastPost.getOriginal_post_time().equals(lastRead.getPost_time());
+    }
+
+    public boolean isRead(Post post) {
+        return lastRead == null || post.getPost_time().isBefore(lastRead.getOriginal_post_time()) || post.getPost_time().equals(lastRead.getOriginal_post_time());
+    }
+
     @Override
     public Integer getId() {
         return this.id;
@@ -86,6 +100,14 @@ public class Topic implements IWilsonBaseItem, Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public Post getLastRead() {
+        return lastRead;
+    }
+
+    public Post getLastPost() {
+        return lastPost;
     }
 
     @Override

@@ -45,8 +45,8 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
     static
     {
         sortStrings = new SparseArray<>();
-        sortStrings.put(R.id.forum_posts_sort_time_desc, new String[] {"postTime,desc"});
-        sortStrings.put(R.id.forum_posts_sort_time_asc, new String[] {"postTime,asc"});
+        sortStrings.put(R.id.forum_posts_sort_time_desc, new String[] {"originalPostTime,desc"});
+        sortStrings.put(R.id.forum_posts_sort_time_asc, new String[] {"originalPostTime,asc"});
     }
 
     public ForumPostOverviewFragment() {
