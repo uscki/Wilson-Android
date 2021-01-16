@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
+        android:id="@+id/caption_option_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorGreen"
+        >
+
+        <ImageView
+            android:id="@+id/pollVoteBackgroundButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/lb_ic_thumb_up"
+            android:contentDescription="@string/vote_imperative"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/text_margin"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/vote_imperative"
+            android:textColor="@color/colorWhite"
+            android:layout_toEndOf="@id/pollVoteBackgroundButton"
+            android:layout_marginEnd="@dimen/text_margin"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/caption_option_foreground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
+        android:padding="@dimen/text_margin">
+
+        <ImageView
+            android:id="@+id/caption_author_image"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/text_margin"
+            android:src="@drawable/account"
+            android:visibility="invisible"
+            />
+
+        <TextView
+            android:id="@+id/caption_author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/lb_browse_header_description_text_size"
+            android:text="Menno Veen"
+            android:visibility="gone"
+            android:layout_toRightOf="@id/caption_author_image"
+             />
+
+        <nl.uscki.appcki.android.views.BBTextView
+            android:id="@+id/caption_text"
+            style="@style/AppTheme.Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/caption_author"
+            android:layout_marginBottom="@dimen/text_margin"
+            android:text="Dit is een caption om te laten zien hoe dit er uit gaat zien"
+            android:layout_toRightOf="@id/caption_author_image"
+            />
+
+        <nl.uscki.appcki.android.views.votesgraphview.CaptionVotesGraphView
+            android:id="@+id/caption_votes_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:barColor="@color/colorPrimary"
+            android:layout_below="@id/caption_text"
+            android:layout_toRightOf="@id/caption_author_image"
+            />
+    </RelativeLayout>
+    <ImageView
+        android:id="@+id/caption_separator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/list_divider"
+        android:layout_gravity="bottom"
+        />
+</FrameLayout>

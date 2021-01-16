@@ -171,7 +171,7 @@ public class MediaActionHelper {
         public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
             MediaFileProvider.MIME_TYPE mime_type = MediaFileProvider.findMimeType(resource);
 
-            String[] mimeTypeArray = new String[] { mime_type.getMimeType() }; // TODO extract mime type
+            String[] mimeTypeArray = new String[] { mime_type.getMimeType() };
             Intent intent = createBasicMediaShareIntent();
             intent.setType(mime_type.getMimeType());
 

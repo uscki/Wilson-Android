@@ -19,7 +19,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 
@@ -27,10 +26,8 @@ import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import okhttp3.Cache;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -80,23 +77,20 @@ public class ServiceGenerator {
         logging.addFilter("www.uscki.nl").addFilter("api/media/");
         httpClient.addInterceptor(logging);// TODO uncomment voor debug output
 
-        httpClient.addInterceptor(new Interceptor() {
-            @Override
-            public Response intercept(Interceptor.Chain chain) throws IOException {
-                Request original = chain.request();
-                if(UserHelper.getInstance().getToken() == null) {
-                    return chain.proceed(original);
-                }
-
-                if (!original.url().host().contains("uscki.nl"))
-                    return chain.proceed(original);
-
-                Request.Builder requestBuilder = original.newBuilder()
-                        .header(AUTH_HEADER, UserHelper.getInstance().getToken())
-                        .method(original.method(), original.body());
-
-                return chain.proceed(requestBuilder.build());
+        httpClient.addInterceptor(chain -> {
+            Request original = chain.request();
+            if(UserHelper.getInstance().getToken() == null) {
+                return chain.proceed(original);
             }
+
+            if (!original.url().toString().contains(context.getString(R.string.apiurl)))
+                return chain.proceed(original);
+
+            Request.Builder requestBuilder = original.newBuilder()
+                    .header(AUTH_HEADER, UserHelper.getInstance().getToken())
+                    .method(original.method(), original.body());
+
+            return chain.proceed(requestBuilder.build());
         });
 
         client = httpClient

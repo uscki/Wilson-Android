@@ -231,9 +231,13 @@ public class MediaCollectionFragment extends PageableFragment<MediaCollectionAda
         this.mediaGridLayoutManager.setOrientation(StaggeredGridLayoutManager.VERTICAL);
         this.recyclerView.setLayoutManager(this.mediaGridLayoutManager);
 
+        if(this.swipeContainer.getLayoutTransition() != null) {
+            // animateLayoutChanges interferes with ViewPager2
+            this.swipeContainer.getLayoutTransition().setAnimateParentHierarchy(false);
+        }
+
         RecyclerView breadcrumbs = view.findViewById(R.id.media_breadcrumbs);
         breadcrumbs.setAdapter(new BreadcrumbAdapter(parentCollections == null ? Collections.emptyList() : parentCollections));
-
         return view;
     }
 

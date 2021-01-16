@@ -362,7 +362,7 @@
     <string name="shop_preference_default_always_choose">Laat me altijd kiezen</string>
     <string name="shop_preference_confirm_before_order">Bevestigen voor bestellen</string>
     <string name="shop_preference_confirm_before_order_summary">Als deze optie uitgeschakeld is, wordt een bestelling direct doorgevoerd zodra je op de groene plus klikt. Dit kan niet ongedaan worden gemaakt.</string>
-    <string name="shop_confirm_checkbox_dont_show_again">Niet meer tonen</string>
+    <string name="shop_confirm_checkbox_dont_show_again">Niet meer om bevestiging vragen</string>
     <string name="shop_preference_summary_loading">Voorkeurswinkel wordt geladen</string>
     <string name="shop_empty">Geen producten gevonden voor deze shop</string>
     <string name="shop_price_header">Prijs</string>
@@ -393,6 +393,34 @@
     <string name="wilson_media_action_save_image_msg_failure">Opslaan van afbeelding mislukt</string>
 
     <string name="wilson_media_collections_empty">Geen mediacollecties gevonden</string>
+
+    <string name="wilson_media_shared_tab_collection_header">Media Browser</string>
+    <string name="wilson_media_shared_tab_caption_contest_header">Caption Contest</string>
+
+
+    <!-- Caption contest -->
+    <string name="wilson_media_caption_contest_header">Captioncontest %s</string>
+    <string name="wilson_media_caption_contest_add_caption">Onderschrift toevoegen</string>
+    <string name="wilson_media_caption_contest_hide_name_label">Verberg mijn naam in de uitslagenlijst</string>
+    <string name="wilson_media_caption_contest_confirm_vote_label">Weet je zeker dat je op dit onderschrift wil stemmen?</string>
+    <string name="wilson_media_caption_contest_add_caption_closes_label">Je kunt nog onderschriften toevoegen tot: %s</string>
+    <string name="wilson_media_caption_contest_voting_opens_label">Je kunt stemmen vanaf %s</string>
+    <string name="wilson_media_caption_contest_not_voted_label">Je hebt nog niet gestemd</string>
+    <string name="wilson_media_caption_contest_no_winner_announced">Nog geen winnaar bekend</string>
+    <string name="wilson_media_caption_contest_add_coption_opens_label">Deze caption contest opent op %s</string>
+    <string name="wilson_media_caption_contest_winner_name">Gewonnen door %s met %d stemmen</string>
+    <string name="wilson_media_caption_contest_winner_anonymous">Gewonnen met %d stemmen</string>
+    <string name="wilson_media_caption_contest_shared_winners">%d onderschriften delen de eerste plaats met %d stemmen</string>
+    <string name="wilson_media_caption_contest_no_captions">Deze captioncontest heeft geen onderschriften</string>
+    <string name="wilson_media_caption_contest_share_intent_title">Captioncontest van uscki.nl</string>
+    <string name="wilson_media_caption_contest_sharej_intent_text_extra">Heb je deze captioncontest gezien?
+%s</string>
+    <string name="wilson_media_caption_contest_add_caption_empty_message_warning">Je hebt geen onderschrift ingevuld!</string>
+    <string name="wilson_media_caption_contest_add_caption_confirmed">Onderschrift toegevoegd</string>
+    <string name="wilson_media_caption_contest_vote_confirmed">Je hebt gestemd op deze Captioncontest!</string>
+    <string name="wilson_media_caption_contest_vote_failed_warning">Er is iets fout gegaan bij het registreren van je stem</string>
+    <string name="wilson_media_caption_contest_empty_text">Geen captioncontests gevonden</string>
+    <string name="wilson_media_caption_contest_menu_confirm_vote_checkbox_label">Vraag stembevestiging</string>
 
     <!-- Forum -->
     <string name="wilson_media_forum_header">Forum</string>

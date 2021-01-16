@@ -248,34 +248,36 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
         this.timerTask = new TimerTask() {
             @Override
             public void run() {
-                context.runOnUiThread(() -> {
-                    String countdownString = SmoboPersonFragment.this
-                            .dateRangeHelper.getFullCountdownString();
+                if (context != null) {
+                    context.runOnUiThread(() -> {
+                        String countdownString = SmoboPersonFragment.this
+                                .dateRangeHelper.getFullCountdownString();
 
-                    String loveStatusString;
-                    int heartIcon = R.drawable.ic_outline_broken_heart_24px;
-                    if(SmoboPersonFragment.this.dateRangeHelper.getLoveStatus()
-                            .equals(DateRangeHelper.DateRange.IN_RANGE)) {
-                        loveStatusString = getString(
-                                R.string.hyap7_verdict_dating_allowed,
-                                p.getPerson().getFirstname());
-                        heartIcon = R.drawable.ic_outline_favorite_24px;
-                    } else if(SmoboPersonFragment.this.dateRangeHelper.getLoveStatus()
-                            .equals(DateRangeHelper.DateRange.OTHER_TOO_YOUNG)) {
-                        loveStatusString = getString(
-                                R.string.hyap7_verdict_dating_other_too_young,
-                                p.getPerson().getFirstname());
-                    } else {
-                        loveStatusString = getString(
-                                R.string.hyap7_verdict_dating_me_too_young,
-                                p.getPerson().getFirstname());
-                    }
+                        String loveStatusString;
+                        int heartIcon = R.drawable.ic_outline_broken_heart_24px;
+                        if (SmoboPersonFragment.this.dateRangeHelper.getLoveStatus()
+                                .equals(DateRangeHelper.DateRange.IN_RANGE)) {
+                            loveStatusString = getString(
+                                    R.string.hyap7_verdict_dating_allowed,
+                                    p.getPerson().getFirstname());
+                            heartIcon = R.drawable.ic_outline_favorite_24px;
+                        } else if (SmoboPersonFragment.this.dateRangeHelper.getLoveStatus()
+                                .equals(DateRangeHelper.DateRange.OTHER_TOO_YOUNG)) {
+                            loveStatusString = getString(
+                                    R.string.hyap7_verdict_dating_other_too_young,
+                                    p.getPerson().getFirstname());
+                        } else {
+                            loveStatusString = getString(
+                                    R.string.hyap7_verdict_dating_me_too_young,
+                                    p.getPerson().getFirstname());
+                        }
 
-                    SmoboPersonFragment.this.datableRangeIcon.setImageResource(heartIcon);
-                    SmoboPersonFragment.this.countdownText.setText(countdownString);
-                    SmoboPersonFragment.this.loveStatus.setText(loveStatusString);
-                    datableRangeInfo.setVisibility(View.VISIBLE);
-                });
+                        SmoboPersonFragment.this.datableRangeIcon.setImageResource(heartIcon);
+                        SmoboPersonFragment.this.countdownText.setText(countdownString);
+                        SmoboPersonFragment.this.loveStatus.setText(loveStatusString);
+                        datableRangeInfo.setVisibility(View.VISIBLE);
+                    });
+                }
             }
         };
 

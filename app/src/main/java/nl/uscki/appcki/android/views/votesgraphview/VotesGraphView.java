@@ -2,14 +2,17 @@ package nl.uscki.appcki.android.views.votesgraphview;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
@@ -29,6 +32,11 @@ public abstract class VotesGraphView<T extends IWilsonBaseItem> extends View {
     final int round_bar_radius = (int)convertDpToPixel(6.6666665f);
     final int round_bar_size = (int)convertDpToPixel(13.333333f);
     final int bar_margin = (int)convertDpToPixel(1.666666f);
+
+    /**
+     * Default color resource can be set in XML
+     */
+    private int defaultColorResource;
 
     /**
      * Item that is drawn using this view
@@ -176,7 +184,7 @@ public abstract class VotesGraphView<T extends IWilsonBaseItem> extends View {
      */
     protected Paint getDefaultPaint() {
         Paint p = new Paint();
-        p.setColor(getResources().getColor(R.color.colorAccent));
+        p.setColor(this.defaultColorResource);
         return p;
     }
 
@@ -192,17 +200,40 @@ public abstract class VotesGraphView<T extends IWilsonBaseItem> extends View {
 
     public VotesGraphView(Context context) {
         super(context);
+        this.defaultColorResource = getDefaultColorFromResources(context);
         init();
     }
 
     public VotesGraphView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        parseAttrs(context, attrs);
         init();
     }
 
     public VotesGraphView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        parseAttrs(context, attrs);
         init();
+    }
+
+    private void parseAttrs(Context context, AttributeSet attrs) {
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.VotesGraphView, 0, 0);
+        int defaultColor = getDefaultColorFromResources(context);
+        try {
+            this.defaultColorResource = ta.getColor(R.styleable.VotesGraphView_barColor, defaultColor);
+        } finally {
+            ta.recycle();
+        }
+    }
+
+    private int getDefaultColorFromResources(Context context) {
+        int defaultColor;
+        if  (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            defaultColor = context.getColor(R.color.colorPrimary);
+        } else {
+            defaultColor = context.getResources().getColor(R.color.colorPrimary);
+        }
+        return defaultColor;
     }
 
     @Override
