@@ -43,7 +43,14 @@ public class NewsItemAdapter extends BaseItemAdapter<NewsItemAdapter.ViewHolder,
         final NewsItem item = items.get(position);
         holder.mItem = item;
         holder.title.setText(item.getTitle().replaceAll("CKI", App.USCKI_CKI_CHARACTER));
-        holder.content.setText(Parser.parse(item.getShorttext(), true, holder.content));
+
+        if(item.getShorttext() != null) {
+            holder.content.setText(Parser.parse(item.getShorttext(), true, holder.content));
+            holder.content.setVisibility(View.VISIBLE);
+        } else {
+            holder.content.setText("");
+            holder.content.setVisibility(View.GONE);
+        }
 
         holder.metadata.setText(String.format(Locale.getDefault(), "(%s / %s)", item.getPerson().getPostalname(), Utils.timestampConversion(item.getTimestamp().getMillis(), false)));
         holder.metadata.setOnClickListener(v -> {
