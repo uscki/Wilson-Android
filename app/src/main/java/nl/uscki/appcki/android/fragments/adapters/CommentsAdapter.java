@@ -16,6 +16,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -37,6 +38,8 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
     private boolean isNested = false;
     private CommentsFragment commentsFragment;
 
+    private ViewHolder hasVisibleReplyRowViewHolder = null;
+
     public CommentsAdapter(CommentsFragment commentsFragment, List<Comment> items) {
         super(items);
         this.commentsFragment = commentsFragment;
@@ -47,6 +50,16 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_comment_item, parent, false);
         return new ViewHolder(view);
+    }
+
+    public boolean hideReplyBox() {
+        if(hasVisibleReplyRowViewHolder != null) {
+            hasVisibleReplyRowViewHolder.replyRow.setVisibility(View.GONE);
+            hasVisibleReplyRowViewHolder.actualCommentText.setText("");
+            hasVisibleReplyRowViewHolder = null;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -66,11 +79,6 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
 
         // Set the photo of the commenter
         Integer profilePictureId = holder.comment.person.getPhotomediaid();
-//        if(profilePictureId != null) {
-//            holder.commenterPhoto.setImageURI(MediaAPI.getMediaUri(profilePictureId, MediaAPI.MediaSize.SMALL));
-//        } else {
-//            holder.commenterPhoto.setImageURI("");
-//        }
         if(profilePictureId != null) {
             Glide.with(holder.mView)
                     .load(MediaAPI.getMediaUri(profilePictureId, MediaAPI.MediaSize.SMALL))
@@ -124,15 +132,18 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
         } else {
             holder.itemView.findViewById(R.id.comment_list_divider).setVisibility(View.VISIBLE);
             holder.replyButton.setVisibility(View.VISIBLE);
-            holder.replyButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    holder.replyRow.setVisibility(View.VISIBLE);
-                    Utils.toggleKeyboardForEditBox(
-                            holder.mView.getContext(),
-                            holder.actualCommentText,
-                            true);
-                }
+            holder.replyButton.setOnClickListener(view -> {
+                // Allows intercepting onBackPressed later
+                hasVisibleReplyRowViewHolder = holder;
+                commentsFragment.getChildFragmentManager()
+                        .beginTransaction()
+                        .addToBackStack("new_comment_reply")
+                        .commit();
+                holder.replyRow.setVisibility(View.VISIBLE);
+                Utils.toggleKeyboardForEditBox(
+                        holder.mView.getContext(),
+                        holder.actualCommentText,
+                        true);
             });
             holder.activateReplyCommentButton();
         }
@@ -206,6 +217,8 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
             postCommentButton.setOnClickListener(view -> {
                 replyRow.setVisibility(View.GONE);
                 commentsFragment.postComment(actualCommentText, ViewHolder.this);
+                hasVisibleReplyRowViewHolder = null;
+                commentsFragment.getChildFragmentManager().popBackStack("new_comment_reply", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             });
         }
 

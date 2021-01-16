@@ -38,6 +38,8 @@ import nl.uscki.appcki.android.events.UserLoggedInEvent;
 import nl.uscki.appcki.android.fragments.AppInfoFragment;
 import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
+import nl.uscki.appcki.android.fragments.forum.ForumOverviewFragment;
+import nl.uscki.appcki.android.fragments.forum.ForumPostOverviewFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
 import nl.uscki.appcki.android.fragments.media.MediaCaptionContestSharedFragment;
@@ -66,6 +68,7 @@ public class MainActivity extends BasicActivity
     public static final String ACTION_POLL_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_POLL_OVERVIEW";
     public static final String ACTION_VIEW_STORE = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_STORE";
     public static final String ACTION_VIEW_COLLECTION = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_COLLECTION";
+    public static final String ACTION_VIEW_FORUM_TOPIC = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_FORUM_TOPIC";
 
     public static final String ACTION_VIEW_NEWSITEM
             = "nl.uscki.appcki.android.activities.action.ACTION_VIEW_NEWSITEM";
@@ -104,7 +107,8 @@ public class MainActivity extends BasicActivity
         STORE_SELECTION(R.id.nav_shop),
         STORE_BUY(R.id.nav_shop),
         MEDIA_COLLECTION_OVERVIEW(R.id.nav_media),
-        MEDIA_LANDING_PAGE(R.id.nav_media);
+        MEDIA_LANDING_PAGE(R.id.nav_media),
+        FORUM(R.id.nav_forum);
 
         private int menuItemId;
 
@@ -192,9 +196,13 @@ public class MainActivity extends BasicActivity
                 openFragment(new StoreFragment(), args, false);
             } else if (ACTION_VIEW_COLLECTION.equals(intent.getAction())) {
                 openFragment(new MediaCollectionFragment(), intent.getExtras(), false);
+            } else if (ACTION_VIEW_FORUM_TOPIC.equals(intent.getAction())) {
+                openFragment(new ForumPostOverviewFragment(), intent.getExtras(), true);
             } else {
                 openTab(HomeFragment.NEWS, false);
             }
+
+            // TODO add forum from notification
         }
     }
 
@@ -232,7 +240,7 @@ public class MainActivity extends BasicActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             FragmentManager sfm = getSupportFragmentManager();
-            if(handleChildFragmentStack()) {
+            if(handleChildFragmentStack(sfm)) {
                 // Stop here, as a back action has been performed
                return;
             } else if (sfm.getBackStackEntryCount() > 0) {
@@ -247,8 +255,7 @@ public class MainActivity extends BasicActivity
         }
     }
 
-    private boolean handleChildFragmentStack() {
-        FragmentManager fm = getSupportFragmentManager();
+    private boolean handleChildFragmentStack(FragmentManager fm) {
         Class currentFragmentClass = Utils.getClassForScreen(currentScreen);
         if(currentFragmentClass == null) return false;
 
@@ -262,6 +269,9 @@ public class MainActivity extends BasicActivity
 
                 // Nothing to do here
                 return false;
+            } else {
+                if(handleChildFragmentStack(f.getChildFragmentManager()))
+                    return true;
             }
         }
 
@@ -340,6 +350,8 @@ public class MainActivity extends BasicActivity
             } else if (id == R.id.nav_media) {
                 openFragment(new MediaCaptionContestSharedFragment(), null, true);
                 currentScreen = Screen.MEDIA_LANDING_PAGE;
+            } else if (id == R.id.nav_forum) {
+                openFragment(new ForumOverviewFragment(), null, true);
             }
         }
 

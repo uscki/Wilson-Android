@@ -115,6 +115,9 @@ public abstract class CommentsFragment extends PageableFragment<CommentsAdapter.
         }
     }
 
+    public boolean hideReplyBox() {
+        return ((CommentsAdapter)getAdapter()).hideReplyBox();
+    }
     /**
      * Delete a user comment
      * @param commentId     ID of comment to delete

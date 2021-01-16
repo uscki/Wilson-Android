@@ -13,15 +13,12 @@
         android:orientation="horizontal"
         >
 
-        <EditText
-            android:id="@+id/quoteTextInput"
-            android:layout_weight="1"
+        <FrameLayout
+            android:id="@+id/single_item_input_edit_text_placeholder"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ems="40"
-            android:hint="Hint"
-            android:inputType="textCapSentences|textAutoComplete|textAutoCorrect|textMultiLine" />
-
+            android:layout_weight="1"
+            />
         <ImageButton
             android:id="@+id/confirmNewQuoteButton"
             android:layout_width="34dp"

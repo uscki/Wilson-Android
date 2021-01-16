@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/bb_text_editor_button_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:flexDirection="row"
+        app:justifyContent="flex_start"
+        app:flexWrap="wrap"
+        >
+        <Button
+            android:id="@+id/bb_editor_add_header_1_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:text="@string/wilson_bb_code_markup_header_1"
+            />
+        <Button
+            android:id="@+id/bb_editor_add_header_2_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:text="@string/wilson_bb_code_markup_header_2"
+            />
+        <Button
+            android:id="@+id/bb_editor_add_header_3_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:text="@string/wilson_bb_code_markup_header_3"
+            />
+
+        <Button
+            android:id="@+id/bb_editor_add_bold_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:text="@string/wilson_bb_code_markup_bold"
+            />
+        <Button
+            android:id="@+id/bb_editor_add_italic_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:text="@string/wilson_bb_code_markup_italic"
+            />
+        <Button
+            android:id="@+id/bb_editor_add_underline_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:text="@string/wilson_bb_code_markup_underline"
+            />
+        <Button
+            android:id="@+id/bb_editor_add_strikethrough_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:text="@string/wilson_bb_code_markup_strikethrough"
+            />
+
+        <ImageButton
+            android:id="@+id/bb_editor_add_subscript_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:src="@drawable/ic_subscript_black_24dp"
+            android:contentDescription="@string/wilson_bb_code_markup_subscript"
+            />
+
+        <ImageButton
+            android:id="@+id/bb_editor_add_superscript_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:src="@drawable/ic_superscript_black_24dp"
+            android:contentDescription="@string/wilson_bb_code_markup_superscript"
+            />
+
+        <ImageButton
+            android:id="@+id/bb_editor_add_list_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:src="@drawable/format_list_bulleted"
+            android:contentDescription="@string/wilson_bb_code_markup_list"
+            />
+
+        <ImageButton
+            android:id="@+id/bb_editor_add_email_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:src="@drawable/ic_alternate_email_black_24dp"
+            android:contentDescription="@string/wilson_bb_code_markup_email"
+            />
+
+        <ImageButton
+            android:id="@+id/bb_editor_add_image_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:src="@drawable/ic_image_black_24dp"
+            android:contentDescription="@string/wilson_bb_code_markup_image"
+            />
+
+        <ImageButton
+            android:id="@+id/bb_editor_add_quote_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:src="@drawable/format_quote_close"
+            android:contentDescription="@string/wilson_bb_code_markup_quote"
+            />
+        <ImageButton
+            android:id="@+id/bb_editor_add_code_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:src="@drawable/ic_code_black_24dp"
+            android:contentDescription="@string/wilson_bb_code_markup_code"
+            />
+        <ImageButton
+            android:id="@+id/bb_editor_add_link_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:src="@drawable/ic_link_black_24dp"
+            android:contentDescription="@string/wilson_bb_code_markup_link"
+            />
+
+        <Button
+            android:id="@+id/bb_editor_add_spoiler_button"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:padding="0dp"
+            android:text="@string/wilson_bb_code_markup_spoiler"
+            />
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <TextView
+        android:id="@+id/bb_editor_content_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:labelFor="@id/bb_editor_content"
+        app:layout_constraintTop_toBottomOf="@+id/bb_text_editor_button_row"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:visibility="gone"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bb_editor_content_label">
+
+        <EditText
+            android:id="@+id/bb_editor_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/wilson_media_forum_new_post_content_hint"
+            android:inputType="textMultiLine|textAutoComplete|textAutoCorrect|textWebEditText"
+            android:minLines="5"
+            android:gravity="top|start"
+            android:singleLine="false"
+            />
+
+        <nl.uscki.appcki.android.views.BBTextView
+            android:id="@+id/bb_editor_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/AppTheme.Text"
+            android:visibility="gone"/>
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/bb_editor_loading_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"/>
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

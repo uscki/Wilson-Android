@@ -6,8 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.IBinder;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -205,24 +203,18 @@ public class Utils {
             InputMethodManager imm =
                     (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 
-            View view = editText.getRootView();
-
-            if(imm != null && view != null) {
-                IBinder windowToken = view.getWindowToken();
+            if(imm != null) {
                 if(show) {
-                    imm.toggleSoftInputFromWindow(
-                            windowToken,
-                            InputMethodManager.SHOW_IMPLICIT,
-                            0);
                     editText.setFocusable(true);
                     if(context.getResources().getConfiguration().hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
                         editText.requestFocusFromTouch();
                     } else {
                         editText.requestFocus();
                     }
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
                 } else {
-                    imm.hideSoftInputFromWindow(windowToken, 0);
                     editText.clearFocus();
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                 }
             }
         }

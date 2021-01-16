@@ -73,7 +73,7 @@ public class QuoteFragment extends PageableFragment<QuoteAdapter.ViewHolder, Quo
 
         MainActivity.currentScreen = MainActivity.Screen.QUOTE_OVERVIEW;
 
-        setAdapter(new QuoteAdapter(new ArrayList<Quote>()));
+        setAdapter(new QuoteAdapter(new ArrayList<>()));
         Services.getInstance().quoteService.getQuotesCollection(page, getPageSize()).enqueue(callback);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -82,14 +82,9 @@ public class QuoteFragment extends PageableFragment<QuoteAdapter.ViewHolder, Quo
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        FloatingActionButton fab = setFabEnabled(view, true);
+        FloatingActionButton fab = setFabEnabled(true);
         if (fab != null) {
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    addNewPageableItemWidget(new NewQuoteWidget(), true);
-                }
-            });
+            fab.setOnClickListener(view1 -> addNewPageableItemWidget(new NewQuoteWidget(), true));
         }
     }
 

@@ -1,7 +1,6 @@
 package nl.uscki.appcki.android.fragments.home;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,15 +44,10 @@ public class HomeRoephoekTab extends PageableFragment<RoephoekItemAdapter.ViewHo
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FloatingActionButton fab = setFabEnabled(view, true);
+
+        FloatingActionButton fab = setFabEnabled(true);
         if(fab != null) {
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    addNewPageableItemWidget(new NewShoutWidget(), true);
-                    Log.e(getClass().getSimpleName(), "Clicked new shout button");
-                }
-            });
+            fab.setOnClickListener(v -> addNewPageableItemWidget(new NewShoutWidget(), true));
         }
     }
 
