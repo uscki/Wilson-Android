@@ -422,7 +422,6 @@
     <string name="wilson_media_caption_contest_empty_text">Geen captioncontests gevonden</string>
     <string name="wilson_media_caption_contest_menu_confirm_vote_checkbox_label">Vraag stembevestiging</string>
 
-
     <!-- Forum -->
     <string name="wilson_media_forum_landing_page_recent_header">Recent</string>
     <string name="wilson_media_forum_landing_page_fora_header">Fora</string>
