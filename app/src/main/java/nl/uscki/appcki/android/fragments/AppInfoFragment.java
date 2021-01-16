@@ -32,7 +32,7 @@ public class AppInfoFragment extends Fragment {
     private ImageView facebookButton;
 
     private TextView versionCodeTextView;
-    private TextView reportBugGitlabTextView;
+    private TextView reportBugGithubTextView;
     private TextView reportBugUsckiTextView;
 
     private TextView copyrightYearEnd;
@@ -70,7 +70,7 @@ public class AppInfoFragment extends Fragment {
         this.instagramButton = view.findViewById(R.id.clickable_instagram_button);
         this.facebookButton = view.findViewById(R.id.clickable_facebook_button);
         this.versionCodeTextView = view.findViewById(R.id.app_info_version_code);
-        this.reportBugGitlabTextView = view.findViewById(R.id.app_info_report_bug_gitlab);
+        this.reportBugGithubTextView = view.findViewById(R.id.app_info_report_bug_github);
         this.reportBugUsckiTextView = view.findViewById(R.id.app_info_report_bug_uscki);
         this.copyrightYearEnd = view.findViewById(R.id.app_info_copyright_current);
         this.privacyPolicyText = view.findViewById(R.id.app_info_privacy_policy_link);
@@ -95,7 +95,8 @@ public class AppInfoFragment extends Fragment {
     }
 
     private void createUrlListeners() {
-        this.reportBugGitlabTextView.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://git.dev.uscki.nl/AppCKI/appcki-native-android/issues"))));
+//        this.reportBugGithubTextView.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://git.dev.uscki.nl/AppCKI/appcki-native-android/issues"))));
+        this.reportBugGithubTextView.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/uscki/Wilson-Android/issues"))));
         this.reportBugUsckiTextView.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.uscki.nl/?pagina=Bugtracker/Edit"))));
         this.instagramButton.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/uscki_incognito"))));
         this.facebookButton.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/uscki/"))));

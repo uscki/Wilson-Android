@@ -272,6 +272,7 @@
     <string name="settings_app_info_payment_made_out_to">t.n.v.</string>
     <string name="settings_app_info_file_bug_report">Reporteer een bug op:</string>
     <string name="company_name_gitlab">Gitlab</string>
+    <string name="company_name_github">Github</string>
     <string name="settings_app_info_bug_tracker">Bug Tracker (US\u01de)</string>
     <string name="settings_app_info_data_indexation">Dataverwerking</string>
     <string name="settigns_app_info_copyright_base">© 2017 -</string>

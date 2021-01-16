@@ -254,18 +254,18 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/gitlab"
+                app:srcCompat="@drawable/ic_octicons_mark_github"
                 android:layout_marginEnd="5dp"
                 />
             <TextView
-                android:id="@+id/app_info_report_bug_gitlab"
+                android:id="@+id/app_info_report_bug_github"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/AppTheme"
                 android:focusable="true"
                 android:clickable="true"
                 android:autoLink="all"
-                android:text="@string/company_name_gitlab" />
+                android:text="@string/company_name_github" />
 
             <ImageView
                 android:layout_marginStart="3dp"
