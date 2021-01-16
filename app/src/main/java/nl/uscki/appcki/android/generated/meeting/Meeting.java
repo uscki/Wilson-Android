@@ -42,7 +42,7 @@ public class Meeting implements IWilsonBaseItem{
     // TODO this should be a DateTime in the future. Ref https://git.dev.uscki.nl/AppCKI/B.A.D.W.O.L.F./issues/165
     @SerializedName("enddate")
     @Expose
-    private long enddate;
+    private DateTime enddate;
 
     @SerializedName("agenda")
     @Expose
@@ -226,7 +226,7 @@ public class Meeting implements IWilsonBaseItem{
      */
     public void setEnddate(DateTime enddate) {
         // TODO should just set the passed variable in future (see TODO at member)
-        this.enddate = enddate.getMillis();
+        this.enddate = enddate;
     }
 
     /**
