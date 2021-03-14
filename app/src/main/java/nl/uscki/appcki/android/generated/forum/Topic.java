@@ -65,11 +65,11 @@ public class Topic implements IWilsonBaseItem, Parcelable {
     };
 
     public boolean isRead() {
-        return lastPost == null || lastRead == null || lastPost.getOriginal_post_time().isBefore(lastRead.getPost_time()) || lastPost.getOriginal_post_time().equals(lastRead.getPost_time());
+        return lastPost == null || (lastRead != null && (lastPost.getOriginal_post_time().isBefore(lastRead.getPost_time()) || lastPost.getOriginal_post_time().equals(lastRead.getPost_time())));
     }
 
     public boolean isRead(Post post) {
-        return lastRead == null || post.getPost_time().isBefore(lastRead.getOriginal_post_time()) || post.getPost_time().equals(lastRead.getOriginal_post_time());
+        return lastRead != null && (post.getPost_time().isBefore(lastRead.getOriginal_post_time()) || post.getPost_time().equals(lastRead.getOriginal_post_time()));
     }
 
     @Override
@@ -108,6 +108,15 @@ public class Topic implements IWilsonBaseItem, Parcelable {
 
     public Post getLastPost() {
         return lastPost;
+    }
+
+    /**
+     * WARNING: This call only changes the object temporarily until the next API refresh.
+     * To make the last read post persistent, make sure to use the ForumAPI.
+     * @param lastRead  Last read post
+     */
+    public void setLastRead(Post lastRead) {
+        this.lastRead = lastRead;
     }
 
     @Override

@@ -83,6 +83,10 @@ public class ForumPostAdapter extends BaseItemAdapter<ForumPostAdapter.ForumPost
             this.signature = itemView.findViewById(R.id.forum_post_signature);
         }
 
+        public Post getPost() {
+            return post;
+        }
+
         public void populateFromPost(Post post) {
             this.post = post;
             Context c = itemView.getContext();
@@ -154,6 +158,23 @@ public class ForumPostAdapter extends BaseItemAdapter<ForumPostAdapter.ForumPost
                 notificationDot.setVisibility(View.GONE);
             } else {
                 notificationDot.setVisibility(View.VISIBLE);
+            }
+        }
+
+        public void updateRead(boolean tentative) {
+            int visibility;
+            if(topic == null || topic.isRead(post)) {
+                visibility = View.GONE;
+            } else {
+                visibility = View.VISIBLE;
+            }
+
+            if(visibility != notificationDot.getVisibility()) {
+                notificationDot.animate()
+                        .alpha(visibility == View.GONE ? tentative ? 0.3f : 0.0f : 1.0f)
+                        .withEndAction(() -> {
+                            if(!tentative) notificationDot.setVisibility(visibility);
+                        });
             }
         }
 

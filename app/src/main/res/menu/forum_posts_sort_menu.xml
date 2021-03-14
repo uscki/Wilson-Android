@@ -23,4 +23,9 @@
         android:title="@string/app_general_action_share"
         android:icon="@drawable/ic_share_white_24dp"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/forum_post_mark_topic_as_read"
+        android:title="@string/wilson_media_forum_topic_mark_as_read"
+        app:showAsAction="never"
+        />
 </menu>
