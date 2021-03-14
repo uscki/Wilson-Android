@@ -65,11 +65,11 @@ public class Topic implements IWilsonBaseItem, Parcelable {
     };
 
     public boolean isRead() {
-        return lastPost == null || (lastRead != null && (lastPost.getOriginal_post_time().isBefore(lastRead.getPost_time()) || lastPost.getOriginal_post_time().equals(lastRead.getPost_time())));
+        return lastPost == null || (lastRead != null && (lastRead.id >= lastPost.id));
     }
 
     public boolean isRead(Post post) {
-        return lastRead != null && (post.getPost_time().isBefore(lastRead.getOriginal_post_time()) || post.getPost_time().equals(lastRead.getOriginal_post_time()));
+        return lastRead != null && (lastRead.id >= post.id);
     }
 
     @Override
