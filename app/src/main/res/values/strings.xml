@@ -438,6 +438,8 @@
     <string name="wilson_media_forum_topic_created_date">Aangemaakt op %s</string>
     <string name="wilson_media_forum_post_edited_info">Laatste wijziging op %s</string>
     <string name="wilson_media_forum_recent_post_author_and_forum">%s @ %s</string>
+    <string name="wilson_media_forum_topic_mark_as_read">Markeren als gelezen</string>
+
 
     <string name="wilson_media_forum_sort_desc">Meeste views</string>
     <string name="wilson_media_forum_asc">Minste views</string>

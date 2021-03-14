@@ -12,20 +12,27 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.BasicActivity;
+import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.forum.adapter.ForumPostAdapter;
 import nl.uscki.appcki.android.generated.forum.Post;
 import nl.uscki.appcki.android.generated.forum.Topic;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import retrofit2.Response;
 
 public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter.ForumPostViewHolder, Post> {
 
@@ -37,6 +44,12 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
     // A notification only contains the topic ID. However, we abuse a feature (not a bug) in the
     // API where the forumID is ignored in most API calls in that case.
     private int forumId = -1;
+
+    // Dealing with read status of individual posts and topic as a whole
+    private Integer isReadingPost = null;
+    private Timer markAsReadTimer = new Timer();
+    private TimerTask markAsReadTask = null;
+    private static final int MARK_AS_READ_DELAY = 1500;
 
     private Menu menu;
     private String[] sort = sortStrings.get(R.id.forum_posts_sort_time_asc);
@@ -86,7 +99,115 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
             });
         }
 
+        if (this.topic != null && !this.topic.isRead()) {
+            // If this topic contains unread posts, monitor of user is reading those posts
+
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    LinearLayoutManager layout = (LinearLayoutManager) recyclerView.getLayoutManager();
+                    if (layout == null) return;
+
+                    if(isLastReadVisible(layout)) {
+                        Post markRead = getPostAt(layout.findFirstCompletelyVisibleItemPosition());
+                        if(markRead != null && !markRead.getId().equals(isReadingPost) && !topic.isRead(markRead)) {
+                            isReadingPost = markRead.getId();
+                            startReadTimer(markRead);
+                        }
+                    } else  {
+                        cancelReadTimer();
+                    }
+                }
+            });
+        }
+
         return view;
+    }
+
+    private @Nullable Post getPostAt(int index) {
+        ForumPostAdapter.ForumPostViewHolder h = getViewHolderAt(index);
+        if (h == null) return null;
+        return h.getPost();
+    }
+
+    private @Nullable ForumPostAdapter.ForumPostViewHolder getViewHolderAt(int index) {
+        if(index == RecyclerView.NO_POSITION) return null;
+        View child = recyclerView.getChildAt(index);
+        if (child == null) return null;
+        return (ForumPostAdapter.ForumPostViewHolder) recyclerView.getChildViewHolder(child);
+    }
+
+    private boolean isLastReadVisible(LinearLayoutManager layoutManager) {
+        if(topic != null) {
+            if(topic.getLastRead() == null) {
+                Post lastPost = getAdapter().getItems().get(getAdapter().getItemCount() - 1);
+                if(lastPost != null) {
+                    Post lastVisible = getPostAt(layoutManager.findLastCompletelyVisibleItemPosition());
+                    return lastPost.equals(lastVisible);
+                }
+            } else {
+                for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                    Post post = getPostAt(i);
+                    if (post != null && post.getId().equals(topic.getLastRead().getId())) {
+                        View lastReadView = layoutManager.getChildAt(i);
+                        if (lastReadView != null) {
+                            return layoutManager.isViewPartiallyVisible(lastReadView, false, true) ||
+                                    layoutManager.isViewPartiallyVisible(lastReadView, true, true);
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private void cancelReadTimer() {
+        if(this.markAsReadTask != null) {
+            this.markAsReadTask.cancel();
+            this.markAsReadTask = null;
+        }
+        isReadingPost = null;
+    }
+
+    private void startReadTimer(Post post) {
+        cancelReadTimer();
+        markAsReadTask = new TimerTask() {
+            @Override
+            public void run() {
+                topic.setLastRead(post);
+                updateReadStatus(true);
+                if(post.equals(getAdapter().getItems().get(0))) {
+                    markTopicAsRead();
+                }
+            }
+        };
+        markAsReadTimer.schedule(markAsReadTask, MARK_AS_READ_DELAY);
+    }
+
+    private void markTopicAsRead() {
+        Services.getInstance().forumService.markRead(forumId, topicId).enqueue(new Callback<ActionResponse<Boolean>>() {
+            @Override
+            public void onSucces(Response<ActionResponse<Boolean>> response) {
+                if(response != null && response.body() != null && response.body().payload) {
+                    updateReadStatus(false);
+                }
+            }
+        });
+    }
+
+    private void updateReadStatus(boolean tentative) {
+        for(int i = 0; i < recyclerView.getChildCount(); i++) {
+            ForumPostAdapter.ForumPostViewHolder vh = getViewHolderAt(i);
+            if(vh != null) {
+                vh.updateRead(tentative);
+            }
+        }
     }
 
     @Override
@@ -120,6 +241,14 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
                     getContext().getString(R.string.app_general_action_share_intent_text)));
 
             return true;
+        });
+
+        menu.findItem(R.id.forum_post_mark_topic_as_read).setOnMenuItemClickListener(item -> {
+            markTopicAsRead();
+            if(topic != null) {
+                topic.setLastRead(getAdapter().getItems().get(0));
+            }
+            return false;
         });
     }
 
@@ -172,5 +301,11 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
         dialog.setArguments(bundle);
         dialog.show(getFragmentManager(), "AddForumPostDialog");
         dialog.setCancelable(true);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        cancelReadTimer();
     }
 }
