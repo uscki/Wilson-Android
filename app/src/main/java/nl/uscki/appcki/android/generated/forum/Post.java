@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Objects;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.organisation.PersonName;
@@ -59,5 +60,18 @@ public class Post implements IWilsonBaseItem {
 
     public String getSignature() {
         return signature;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return id.equals(post.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

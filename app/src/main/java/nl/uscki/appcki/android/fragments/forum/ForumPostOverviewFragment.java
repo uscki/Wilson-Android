@@ -29,6 +29,7 @@ import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.forum.adapter.ForumPostAdapter;
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.forum.Post;
 import nl.uscki.appcki.android.generated.forum.Topic;
 import nl.uscki.appcki.android.helpers.UserHelper;
@@ -46,7 +47,7 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
     private int forumId = -1;
 
     // Dealing with read status of individual posts and topic as a whole
-    private Integer isReadingPost = null;
+    private Post isReadingPost = null;
     private Timer markAsReadTimer = new Timer();
     private TimerTask markAsReadTask = null;
     private static final int MARK_AS_READ_DELAY = 1500;
@@ -78,14 +79,13 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
             this.topicId = getArguments().getInt(ForumTopicOverviewFragment.ARG_TOPIC_ID);
         }
 
-        if(UserHelper.getInstance().getCurrentUser().isForum_new_posts_first()) {
+        if(UserHelper.getInstance().getCurrentUser().isForum_new_posts_first() || topic != null && !topic.isRead()) {
             this.sort = sortStrings.get(R.id.forum_posts_sort_time_desc);
         }
         setAdapter(new ForumPostAdapter(new ArrayList<>(), this, (BasicActivity) getActivity(), topic));
         setHasOptionsMenu(true);
 
         onScrollRefresh();
-
     }
 
     @Override
@@ -115,9 +115,11 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
                     if (layout == null) return;
 
                     if(isLastReadVisible(layout)) {
-                        Post markRead = getPostAt(layout.findFirstCompletelyVisibleItemPosition());
-                        if(markRead != null && !markRead.getId().equals(isReadingPost) && !topic.isRead(markRead)) {
-                            isReadingPost = markRead.getId();
+                        int index = layout.findFirstCompletelyVisibleItemPosition();
+                        if(index == RecyclerView.NO_POSITION) index = layout.findFirstVisibleItemPosition();
+                        Post markRead = getPostAt(index);
+                        if(markRead != null && !markRead.equals(isReadingPost) && !topic.isRead(markRead)) {
+                            isReadingPost = markRead;
                             startReadTimer(markRead);
                         }
                     } else  {
@@ -131,30 +133,58 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
     }
 
     private @Nullable Post getPostAt(int index) {
-        ForumPostAdapter.ForumPostViewHolder h = getViewHolderAt(index);
-        if (h == null) return null;
-        return h.getPost();
+        ForumPostAdapter.ForumPostViewHolder h;
+        if (index < recyclerView.getChildCount()) {
+            h = getViewHolderAt(index);
+            if (h == null) return null;
+            return h.getPost();
+        } else if (index < getAdapter().getItemCount()) {
+             /*
+                So, the LinearLayoutManager uses a utility class to learn how many
+                views are 'hidden', i.e. not currently displayed in the RecyclerView,
+                even though an item exists in the adapter. This value is supposed to be
+                used as an offset, so that the value returned by
+                findLast(Completely)VisibleItemPosition actually corresponds with the
+                index of the view in the RecyclerView's list of children. Unfortunately,
+                it appears sometimes this offset is always 0, hence an extra check
+             */
+             IWilsonBaseItem item = getAdapter().getItems().get(index);
+
+             // Warning, Android Studio calls this call redundant. It definitely is not!
+             if(item instanceof Post) return (Post)item;
+             else return null;
+        } else {
+            return null;
+        }
     }
 
     private @Nullable ForumPostAdapter.ForumPostViewHolder getViewHolderAt(int index) {
         if(index == RecyclerView.NO_POSITION) return null;
-        View child = recyclerView.getChildAt(index);
+        View child = recyclerView.getLayoutManager().getChildAt(index);
         if (child == null) return null;
-        return (ForumPostAdapter.ForumPostViewHolder) recyclerView.getChildViewHolder(child);
+        RecyclerView.ViewHolder vh = recyclerView.getChildViewHolder(child);
+        if(vh instanceof ForumPostAdapter.ForumPostViewHolder)
+            return (ForumPostAdapter.ForumPostViewHolder) recyclerView.getChildViewHolder(child);
+        else
+            return null;
     }
 
     private boolean isLastReadVisible(LinearLayoutManager layoutManager) {
         if(topic != null) {
-            if(topic.getLastRead() == null) {
-                Post lastPost = getAdapter().getItems().get(getAdapter().getItemCount() - 1);
+            if(topic.getLastRead() == null && getAdapter().getItemCount() > 0) {
+                IWilsonBaseItem lastPost = getAdapter().getItems().get(getAdapter().getItemCount() - 1);
+                int lastItemPosition = layoutManager.findLastCompletelyVisibleItemPosition();
+                if (lastItemPosition == RecyclerView.NO_POSITION) {
+                    // Sometimes, the last post is too long, but we do not want to do this by default
+                    lastItemPosition = layoutManager.findLastVisibleItemPosition();
+                }
                 if(lastPost != null) {
-                    Post lastVisible = getPostAt(layoutManager.findLastCompletelyVisibleItemPosition());
-                    return lastPost.equals(lastVisible);
+                    return lastPost.equals(getPostAt(lastItemPosition));
                 }
             } else {
                 for (int i = 0; i < recyclerView.getChildCount(); i++) {
                     Post post = getPostAt(i);
-                    if (post != null && post.getId().equals(topic.getLastRead().getId())) {
+                    if (post != null && post.equals(topic.getLastRead())) {
                         View lastReadView = layoutManager.getChildAt(i);
                         if (lastReadView != null) {
                             return layoutManager.isViewPartiallyVisible(lastReadView, false, true) ||
@@ -182,7 +212,7 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
             public void run() {
                 topic.setLastRead(post);
                 updateReadStatus(true);
-                if(post.equals(getAdapter().getItems().get(0))) {
+                if(getAdapter().getItemCount() > 0 && post.equals(getAdapter().getItems().get(0))) {
                     markTopicAsRead();
                 }
             }
@@ -191,10 +221,10 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
     }
 
     private void markTopicAsRead() {
-        Services.getInstance().forumService.markRead(forumId, topicId).enqueue(new Callback<ActionResponse<Boolean>>() {
+        Services.getInstance().forumService.markRead(-1, topicId).enqueue(new Callback<ActionResponse<Boolean>>() {
             @Override
             public void onSucces(Response<ActionResponse<Boolean>> response) {
-                if(response != null && response.body() != null && response.body().payload) {
+                if (response != null && response.body() != null && response.body().payload) {
                     updateReadStatus(false);
                 }
             }
