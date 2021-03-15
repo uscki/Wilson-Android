@@ -101,11 +101,6 @@ public abstract class ReproducibleAgendaActionNotification extends AbstractNotif
     }
 
     private void addSubscribeAction() {
-        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT_WATCH) {
-            // Operation not supported on older devices
-            return;
-        }
-
         // Building remote input object
         String subscribeLabel = this.context.getResources().getString(R.string.action_agenda_subscribe);
         RemoteInput remoteInput = new RemoteInput.Builder(AgendaSubscribeServiceHelper.PARAM_SUBSCRIBE_COMMENT)

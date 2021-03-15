@@ -11,10 +11,13 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Log;
+
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import android.util.Log;
+
 import com.google.firebase.messaging.RemoteMessage;
+
 import nl.uscki.appcki.android.NotificationUtil;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
@@ -213,6 +216,7 @@ public abstract class AbstractNotification {
         if(i == null) return;
 
         i = addReproducabilityExtras(i);
+        i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         // Make sure the intent always has an action
         if(i.getAction() == null) i.setAction(Intent.ACTION_VIEW);
@@ -223,7 +227,7 @@ public abstract class AbstractNotification {
         String backstackAction = this.type.getBackstackAction();
 
         if(backstackAction == null || backstackAction.equals("")) {
-            pendingIntent = PendingIntent.getActivity(this.context, 0, i, 0);
+            pendingIntent = PendingIntent.getActivity(this.context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
         } else {
             // TODO this may become a problem if an action from a different activity than the main activity is used
             Intent backPressedIntent = new Intent(this.context, MainActivity.class);
