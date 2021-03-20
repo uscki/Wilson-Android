@@ -44,9 +44,12 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.error.Error;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
+import nl.uscki.appcki.android.events.CommentsUpdatedEvent;
+import nl.uscki.appcki.android.events.ContentLoadedEvent;
 import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.ServerErrorEvent;
+import nl.uscki.appcki.android.fragments.agenda.AgendaCommentsFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailAdapter;
 import nl.uscki.appcki.android.fragments.agenda.SubscribeDialogFragment;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
@@ -650,6 +653,22 @@ public class AgendaActivity extends BasicActivity {
             case 412:
                 //TODO translate error message
                 Toast.makeText(this, event.error.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void onEventMainThread(CommentsUpdatedEvent event) {
+        if(event.fragment instanceof AgendaCommentsFragment) {
+            this.item.setTotalComments(event.numberOfComments);
+            updateTabTitleCounts();
+            EventBus.getDefault().post(new DetailItemUpdatedEvent<>(this.item));
+        }
+    }
+
+    public void onEventMainThread(ContentLoadedEvent event) {
+        if(event.updatedPageableFragment instanceof AgendaCommentsFragment) {
+            this.item.setTotalComments(((CommentsFragment) event.updatedPageableFragment).getTotalCommentsCount());
+            updateTabTitleCounts();
+            EventBus.getDefault().post(new DetailItemUpdatedEvent<>(this.item));
         }
     }
 

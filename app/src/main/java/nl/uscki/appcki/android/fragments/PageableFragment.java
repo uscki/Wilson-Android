@@ -99,14 +99,11 @@ public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K exte
                 if(response.body() != null) {
                     Log.e("pageablefragment", "totalpages: " + response.body().getTotalPages());
                     if(response.body().getNumberOfElements() == 0 && response.body().getFirst()) {
-                        emptyText.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
                         noMoreContent = true;
                     } else {
-                        emptyText.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
                         noMoreContent = response.body().getNumberOfElements() < getPageSize();
                     }
+                    updateEmptyStatus();
 
                     Log.e("pageablefragment", "adding items to the bottom");
                     getAdapter().addItems(response.body().getContent());
@@ -118,6 +115,16 @@ public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K exte
             EventBus.getDefault().post(new ContentLoadedEvent(PageableFragment.this));
         }
     };
+
+    public void updateEmptyStatus() {
+        if(getAdapter().getItemCount() == 0) {
+            emptyText.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            emptyText.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+    }
 
 
     /**
@@ -200,14 +207,11 @@ public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K exte
     }
 
     protected void setupSwipeContainer(View view) {
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.refreshContainer);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                page = 0;
-                refresh = true;
-                onSwipeRefresh();
-            }
+        swipeContainer = view.findViewById(R.id.refreshContainer);
+        swipeContainer.setOnRefreshListener(() -> {
+            page = 0;
+            refresh = true;
+            onSwipeRefresh();
         });
 
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,

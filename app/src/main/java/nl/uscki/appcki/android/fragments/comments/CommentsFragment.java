@@ -12,10 +12,12 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.models.ActionResponse;
+import nl.uscki.appcki.android.events.CommentsUpdatedEvent;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.CommentsAdapter;
 import nl.uscki.appcki.android.generated.comments.Comment;
@@ -185,6 +187,10 @@ public abstract class CommentsFragment extends PageableFragment<CommentsAdapter.
                 } else {
                     getAdapter().add(c);
                 }
+                updateEmptyStatus();
+                EventBus.getDefault().post(
+                        new CommentsUpdatedEvent(CommentsFragment.this, c, true, getTotalCommentsCount())
+                );
             }
         }
     };
@@ -198,8 +204,27 @@ public abstract class CommentsFragment extends PageableFragment<CommentsAdapter.
                 swipeContainer.setRefreshing(true);
                 refresh = true;
                 onSwipeRefresh();
+                EventBus.getDefault().post(
+                        new CommentsUpdatedEvent(CommentsFragment.this, null, false, getTotalCommentsCount())
+                );
             }
             Toast.makeText(getContext(), toastText, Toast.LENGTH_LONG).show();
         }
     };
+
+    public final int getTotalCommentsCount() {
+        int numberOfComments = getAdapter().getItemCount();
+        for(Comment c : getAdapter().getItems()) {
+            numberOfComments += countSubItems(c);
+        }
+        return numberOfComments;
+    }
+
+    private int countSubItems(Comment comment) {
+        int items = comment.reactions.size();
+        for (Comment reply : comment.reactions) {
+            items += countSubItems(reply);
+        }
+        return items;
+    }
 }

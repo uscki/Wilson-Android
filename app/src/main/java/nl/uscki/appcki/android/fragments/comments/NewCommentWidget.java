@@ -24,7 +24,7 @@ public class NewCommentWidget extends NewSimplePageableItem<Comment>{
             public void onSucces(Response<ActionResponse<Comment>> response) {
                 if(response != null && response.body() != null) {
                     cleanupAfterPost();
-                    commentsFragment.getAdapter().add(response.body().payload);
+                    commentsFragment.commentPostedCallback.onSucces(response);
                     commentsFragment.scrollToEnd();
                 }
             }
