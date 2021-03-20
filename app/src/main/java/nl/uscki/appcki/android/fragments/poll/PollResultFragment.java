@@ -19,6 +19,7 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.poll.PollItem;
 import retrofit2.Response;
@@ -186,14 +187,14 @@ public class PollResultFragment extends RefreshableFragment {
         PollResultAdapter adapter = (PollResultAdapter) options.getAdapter();
         int optionId = adapter.getItems().get(adapterPosition).getId();
 
-        Services.getInstance().pollService.vote(optionId).enqueue(new Callback<PollItem>() {
+        Services.getInstance().pollService.vote(optionId).enqueue(new Callback<ActionResponse<PollItem>>() {
             @Override
-            public void onSucces(Response<PollItem> response) {
-                if(response != null && response.body() != null) {
-                    item = response.body();
-                    swipeContainer.setRefreshing(false);
-                    setupViews();
+            public void onSucces(Response<ActionResponse<PollItem>> response) {
+                if(response != null && response.body() != null && response.body().payload != null) {
+                    item = response.body().payload;
                 }
+                setupViews();
+                swipeContainer.setRefreshing(false);
             }
         });
     }
