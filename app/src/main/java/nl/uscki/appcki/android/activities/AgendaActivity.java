@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -140,6 +141,7 @@ public class AgendaActivity extends BasicActivity {
 
         EventBus.getDefault().post(new DetailItemUpdatedEvent<>(item));
 
+
         if(item.getPosterid() != null && item.getPosterid() >= 0) {
             Glide.with(this)
                     .load(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.LARGE))
@@ -154,6 +156,14 @@ public class AgendaActivity extends BasicActivity {
             });
         } else {
             this.appBarLayout.setExpanded(false);
+            final TypedArray styledAttributes = getTheme().obtainStyledAttributes(
+                new int[] { android.R.attr.actionBarSize }
+            );
+            int mActionBarSize = (int) styledAttributes.getDimension(0, 0);
+            this.appBarLayout.setExpanded(false, false);
+            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) this.toolbarLayout.getLayoutParams();
+            params.height = 2*mActionBarSize;
+            appBarLayout.requestLayout();
         }
 
         if(toolbarLayout != null) {

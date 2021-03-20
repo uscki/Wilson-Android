@@ -37,7 +37,7 @@ public abstract class CommentsFragment extends PageableFragment<CommentsAdapter.
     private boolean scrollToEnd = false;
     private Integer scrollToState;
 
-    private CommentsAdapter addNextCallbackToAdapter;
+    private CommentsAdapter.ViewHolder addNextCommentToViewHolder;
     private boolean canDelete = false;
 
     // FIXME: this is not set anywhere but it is cleared in onSwipeRefresh
@@ -109,7 +109,7 @@ public abstract class CommentsFragment extends PageableFragment<CommentsAdapter.
     public void postComment(EditText commentBox, final Integer parentId) {
         String comment = commentBox.getText().toString();
         if(comment.trim().equals("")) {
-            addNextCallbackToAdapter = null;
+            addNextCommentToViewHolder = null;
             WrongTextfieldHelper.alertEmptyTextfield(getContext(), commentBox);
         } else {
             clearText(commentBox);
@@ -135,7 +135,7 @@ public abstract class CommentsFragment extends PageableFragment<CommentsAdapter.
      * @param commentViewHolder     View holder for the comment this comment is a reply to.
      */
     public void postComment(EditText commentBox, CommentsAdapter.ViewHolder commentViewHolder) {
-        addNextCallbackToAdapter = commentViewHolder.adapter;
+        addNextCommentToViewHolder = commentViewHolder;
         postComment(commentBox, commentViewHolder.comment.id);
     }
 
@@ -181,9 +181,10 @@ public abstract class CommentsFragment extends PageableFragment<CommentsAdapter.
         public void onSucces(Response<ActionResponse<Comment>> response) {
             if(response != null && response.body() != null) {
                 Comment c = response.body().payload;
-                if(addNextCallbackToAdapter != null) {
-                    addNextCallbackToAdapter.add(c);
-                    addNextCallbackToAdapter = null;
+                if(addNextCommentToViewHolder != null) {
+                    addNextCommentToViewHolder.comment.reactions.add(c);
+                    addNextCommentToViewHolder.adapter.add(c);
+                    addNextCommentToViewHolder = null;
                 } else {
                     getAdapter().add(c);
                 }
