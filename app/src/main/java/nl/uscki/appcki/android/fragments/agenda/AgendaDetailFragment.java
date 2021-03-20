@@ -1,7 +1,6 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -129,11 +128,11 @@ public class AgendaDetailFragment extends RefreshableFragment {
         setTextView(view, item.getWhat(), R.id.agenda_summary_title_text);
         setTextView(view, item.getLocation(), R.id.agenda_summary_waar_text);
 
-        /*if (item.getWhen() != null) {
+        if (item.getWhen() != null) {
             summaryWhen.setText(item.getWhen());
         } else {
             summaryWhen.setText(when);
-        }*/
+        }
         setTextView(view, item.getCosts(), R.id.agenda_summary_cost_text);
     }
 

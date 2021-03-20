@@ -107,7 +107,7 @@
     <string name="meeting_header_present">Aanwezig</string>
     <string name="meeting_header_absent">Afwezig</string>
     <string name="meeting_header_planner_view">Planner</string>
-    <string name="meeting_header_responded">Gerageerd</string>
+    <string name="meeting_header_responded">Gereageerd</string>
     <string name="meeting_header_no_response">Geen reactie</string>
     <string name="meeting_detail_notes">Opmerkingen:</string>
     <string name="meeting_detail_plannotes">Opmerkingen bij het plannen:</string>
@@ -125,7 +125,7 @@
     <string name="connection_error">Er ging iets fout tijdens het verbinden met de server!</string>
 
     <string name="agenda_confirm_unsubscribe_header">Uitschrijven bevestigen</string>
-    <string name="agenda_confirm_unsubscribe_message"></string>
+    <string name="agenda_confirm_unsubscribe_message">Weet je zeker dat je je wil uitschrijven?</string>
     <string name="agenda_confirm_unsubscribe_backuplist">Weet je zeker dat je je wil uitschrijven? Als je je nu uitschrijft kun je je mogelijk niet langer inschrijven. Er zijn al %d van de maximale %d inschrijvingen</string>
     <string name="agenda_confirm_unsubscribe_deadline">Weet je zeker dat je je wil uitschrijven? Als je je nu uitschrijft kun je je niet meer inschrijven, omdat de inschrijfdeadline is verlopen</string>
     <string name="agenda_confirm_unsubscribe_positive">Uitschrijven!</string>
