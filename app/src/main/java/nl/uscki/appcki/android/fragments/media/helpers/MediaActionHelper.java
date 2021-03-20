@@ -67,7 +67,7 @@ public class MediaActionHelper {
     }
 
     public void writeMediaIfPermitted() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             if (this.activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 this.activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, FullScreenMediaActivity.REQUEST_STORAGE_PERMISSION);
                 return;
@@ -87,8 +87,8 @@ public class MediaActionHelper {
                     activity.getString(R.string.wilson_media_collection_intent_share_text_extra, collectionName));
             intent.putExtra(Intent.EXTRA_SUBJECT, collectionName);
         } else {
-            intent.putExtra(Intent.EXTRA_TITLE, activity.getString(R.string.wilson_media_collection_intent_share_text_extra));
-            intent.putExtra(Intent.EXTRA_SUBJECT, activity.getString(R.string.wilson_media_collection_intent_share_text_extra));
+            intent.putExtra(Intent.EXTRA_TITLE, activity.getString(R.string.wilson_media_collection_intent_share_title));
+            intent.putExtra(Intent.EXTRA_SUBJECT, activity.getString(R.string.wilson_media_collection_intent_share_title));
         }
         intent.putExtra(Intent.EXTRA_TEXT, this.mediaView.getCurrentImageLink());
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -108,11 +108,12 @@ public class MediaActionHelper {
         @Override
         public void onResourceReady(@NonNull File file, @Nullable Transition<? super File> transition) {
             String relativeLocation = Environment.DIRECTORY_PICTURES + File.separator + activity.getString(R.string.app_external_media_subdir);
-
             ContentValues values = new ContentValues();
             String collectionName = getCollectionName();
+
             if(collectionName != null) {
-                values.put(MediaStore.MediaColumns.DISPLAY_NAME, collectionName.trim().replaceAll(" ", "_") + "_" + System.currentTimeMillis());
+                String displayName = collectionName.trim().replaceAll(" ", "_") + "_" + System.currentTimeMillis();
+                values.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName);
             }
 
             Bitmap bitmap = null;
@@ -130,15 +131,22 @@ public class MediaActionHelper {
             }
 
             values.put(MediaStore.MediaColumns.MIME_TYPE, mime.getMimeType());
-            values.put(MediaStore.MediaColumns.IS_DOWNLOAD, 1);
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                values.put(MediaStore.MediaColumns.IS_DOWNLOAD, 1);
                 values.put(MediaStore.MediaColumns.OWNER_PACKAGE_NAME, activity.getPackageName());
                 values.put(MediaStore.MediaColumns.RELATIVE_PATH, relativeLocation);
                 values.put(MediaStore.MediaColumns.IS_PENDING, 0);
             }
 
-            ContentResolver resolver = activity.getContentResolver();
-            Uri output = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            Uri mediaCollection;
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                mediaCollection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+            } else {
+                mediaCollection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            }
+
+            ContentResolver resolver = activity.getApplicationContext().getContentResolver();
+            Uri output = resolver.insert(mediaCollection, values);
 
             try {
                 if(output == null) throw new IOException("Failed to create a MediaStore record");
@@ -155,6 +163,7 @@ public class MediaActionHelper {
                 Log.v("StoreImage", "Image saved in " + output);
                 Toast.makeText(activity, activity.getString(R.string.wilson_media_action_save_image_msg_success, Environment.DIRECTORY_PICTURES, File.separator, activity.getString(R.string.app_external_media_subdir)), Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
+                Log.e("StoreMedia", e.getMessage() == null ? "Failed to write media file" : e.getMessage());
                 if(output != null) {
                     resolver.delete(output, null, null);
                 }
