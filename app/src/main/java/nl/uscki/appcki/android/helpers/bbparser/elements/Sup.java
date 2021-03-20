@@ -2,6 +2,7 @@ package nl.uscki.appcki.android.helpers.bbparser.elements;
 
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.style.SubscriptSpan;
 import android.text.style.SuperscriptSpan;
 
 import java.util.ArrayList;
