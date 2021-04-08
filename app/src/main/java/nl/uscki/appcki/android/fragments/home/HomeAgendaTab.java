@@ -14,14 +14,13 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.AgendaItemAdapter;
-import nl.uscki.appcki.android.generated.agenda.Agenda;
-import nl.uscki.appcki.android.generated.agenda.AgendaItem;
+import nl.uscki.appcki.android.generated.agenda.SimpleAgendaItem;
 
 /**
  * Created by peter on 11/23/16.
  */
 
-public class HomeAgendaTab extends PageableFragment<Agenda> {
+public class HomeAgendaTab extends PageableFragment<AgendaItemAdapter.ViewHolder, SimpleAgendaItem> {
     private final int AGENDA_PAGE_SIZE = 5;
 
     boolean showArchive = false;
@@ -31,8 +30,10 @@ public class HomeAgendaTab extends PageableFragment<Agenda> {
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
-        setAdapter(new AgendaItemAdapter(new ArrayList<AgendaItem>()));
-        Services.getInstance().agendaService.newer(page, AGENDA_PAGE_SIZE).enqueue(callback);
+        if(getAdapter() == null) {
+            setAdapter(new AgendaItemAdapter(new ArrayList<>()));
+            Services.getInstance().agendaService.agenda(page, AGENDA_PAGE_SIZE).enqueue(callback);
+        }
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -55,7 +56,7 @@ public class HomeAgendaTab extends PageableFragment<Agenda> {
         if (item.getItemId() == R.id.action_agenda_archive) {
             showArchive = true;
 
-            page = 0; // reset page in case user has scrolled with newer
+            page = 0; // reset page in case user has scrolled with agenda
             getAdapter().clear();
             scrollLoad = true;
             onScrollRefresh();
@@ -72,20 +73,27 @@ public class HomeAgendaTab extends PageableFragment<Agenda> {
     @Override
     public void onSwipeRefresh() {
         showArchive = false;
-        Services.getInstance().agendaService.newer(page, AGENDA_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().agendaService.agenda(page, AGENDA_PAGE_SIZE).enqueue(callback);
     }
 
     @Override
     public void onScrollRefresh() {
         if (showArchive) {
-            Services.getInstance().agendaService.older(page, AGENDA_PAGE_SIZE).enqueue(callback);
+            Services.getInstance().agendaService.archive(page, AGENDA_PAGE_SIZE).enqueue(callback);
         } else {
-            Services.getInstance().agendaService.newer(page, AGENDA_PAGE_SIZE).enqueue(callback);
+            Services.getInstance().agendaService.agenda(page, AGENDA_PAGE_SIZE).enqueue(callback);
         }
     }
 
     @Override
     public String getEmptyText() {
         return getString(R.string.agenda_no_new_agendas);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(this.getAdapter().getItemCount() > 0)
+            this.swipeContainer.setRefreshing(false);
     }
 }

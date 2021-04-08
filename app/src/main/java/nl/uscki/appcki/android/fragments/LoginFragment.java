@@ -2,9 +2,8 @@ package nl.uscki.appcki.android.fragments;
 
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -18,18 +17,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.gson.Gson;
-
-import java.io.UnsupportedEncodingException;
-
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.BuildConfig;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
-import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.generated.organisation.CurrentUser;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.services.NotificationReceiver;
@@ -47,6 +41,8 @@ public class LoginFragment extends Fragment {
     ImageView logoTop;
     ObjectAnimator animation;
 
+    public static final String AUTH_HEADER = "Authorization";
+
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -57,9 +53,9 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-        userView = (AutoCompleteTextView) view.findViewById(R.id.username);
+        userView = view.findViewById(R.id.username);
 
-        passwordView = (EditText) view.findViewById(R.id.password);
+        passwordView = view.findViewById(R.id.password);
         passwordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -72,9 +68,9 @@ public class LoginFragment extends Fragment {
         });
 
 
-        logoTop = (ImageView) view.findViewById(R.id.login_logo_top);
+        logoTop = view.findViewById(R.id.login_logo_top);
 
-        Button signIn = (Button) view.findViewById(R.id.sign_in_button);
+        Button signIn = view.findViewById(R.id.sign_in_button);
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,7 +133,7 @@ public class LoginFragment extends Fragment {
             Services.getInstance().userService.login(userName, password).enqueue(new Callback<Void>() {
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
-                    showError("Failed to connect to server!");
+                    showError(R.string.connection_error);
                     Log.e("LoginFragment", t.getLocalizedMessage());
                 }
 
@@ -145,34 +141,45 @@ public class LoginFragment extends Fragment {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if(response.isSuccessful()) {
                         Headers headers = response.headers();
-                        String token = headers.get("X-AUTH-TOKEN");
+                        final String token = headers.get(AUTH_HEADER);
 
-                        Gson gson = new Gson();
-
-                        try {
-                            if(BuildConfig.DEBUG) {
-                                Log.i("LoginActivity: ", "token: " + token);
-                                Log.i("LoginActivity: ", "decoded: " + new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"));
-                            }
-                            PersonSimple person = gson.fromJson(new String(Base64.decode(token.split("\\.")[1], Base64.DEFAULT), "UTF-8"), PersonSimple.class);
-                            UserHelper.getInstance().login(token, person);
-
-                            if(PermissionHelper.hasAgreedToNotificationPolicy(getContext())) {
-                                // Force firebase to generate a new notification token by invalidating the current token
-                                NotificationReceiver.invalidateFirebaseInstanceId(true);
-                            }
-
-                            EventBus.getDefault().post(new UserLoggedInEvent(true));
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                            showError("Token contains invalid characters, please sent help");
+                        if(BuildConfig.DEBUG) {
+                            Log.i("LoginActivity: ", "token: " + token);
                         }
+
+                        // Let's do one request before login to find the current user, which also verifies the token works
+                        Services.getInstance().userService.currentUser(token).enqueue(new nl.uscki.appcki.android.api.Callback<CurrentUser>() {
+                            @Override
+                            public void onSucces(Response<CurrentUser> response) {
+                                CurrentUser currentUser = response.body();
+                                if (currentUser != null) {
+                                    // Force load the current user at least once before login is propegated through app
+                                    UserHelper.getInstance().setCurrentUser(currentUser);
+                                    UserHelper.getInstance().login(token);
+                                    if (PermissionHelper.hasAgreedToNotificationPolicy(getContext())) {
+                                        // Force firebase to generate a new notification token by invalidating the current token
+                                        NotificationReceiver.invalidateFirebaseInstanceId(true);
+                                    }
+
+                                    EventBus.getDefault().post(new UserLoggedInEvent(true));
+                                } else {
+                                    showError(R.string.error_user_not_found);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Response<CurrentUser> response) {
+//                                super.onError(response);
+                                showError(R.string.error_user_not_found);
+                            }
+                        });
+
                     } else {
                         if(response.code() == 401) {
-                            showError("Username or password is incorrect!");
+                            showError(R.string.error_incorrect_password);
                         }
                         else {
-                            showError("Unknown error encountered on the server");
+                            showError(R.string.error_login_failed);
                         }
                     }
                 }
@@ -180,9 +187,9 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void showError(String error) {
+    private void showError(int error) {
         animation.end();
-        passwordView.setError(error);
+        passwordView.setError(getResources().getString(error));
         passwordView.requestFocus();
     }
 }

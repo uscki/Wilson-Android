@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:id="@+id/forum_post_sort"
+        android:icon="@drawable/ic_outline_sort_24px"
+        android:title="@string/quote_sort_title"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/forum_posts_sort_time_desc"
+                android:title="@string/quote_sort_option_time_desc" />
+            <item
+                android:id="@+id/forum_posts_sort_time_asc"
+                android:icon="@drawable/check"
+                android:title="@string/quote_sort_option_time_asc" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/forum_posts_share_topic_action"
+        android:title="@string/app_general_action_share"
+        android:icon="@drawable/ic_share_white_24dp"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/forum_post_mark_topic_as_read"
+        android:title="@string/wilson_media_forum_topic_mark_as_read"
+        app:showAsAction="never"
+        />
+</menu>

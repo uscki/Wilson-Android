@@ -1,132 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="4dp">
+    android:paddingBottom="4dp"
+    android:layout_marginEnd="@dimen/text_margin">
 
-    <TextView
-        android:id="@+id/agenda_item_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/example_text"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/agenda_item_poster"
-        android:layout_toEndOf="@+id/agenda_item_poster"
-        android:textStyle="bold"
-        android:layout_marginTop="3dp"
-        style="@style/AppTheme.TextSubHeader" />
-
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/agenda_item_poster"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_margin="10dp"
-        fresco:actualImageScaleType="fitCenter"/>
+        android:layout_margin="10dp"/>
+
+    <TextView
+        android:id="@+id/agenda_item_title"
+        style="@style/AppTheme.TextSubHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/agenda_item_poster"
+        android:text="@string/example_text" />
 
     <TextView
         android:id="@+id/agenda_item_when"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Medium Text"
         android:layout_below="@+id/agenda_item_title"
-        android:layout_toRightOf="@+id/agenda_item_poster"
         android:layout_toEndOf="@+id/agenda_item_poster"
         style="@style/AppTheme.Text"
         android:drawableStart="@drawable/calendar_clock"
-        android:drawableLeft="@drawable/calendar_clock"
         android:drawablePadding="5dp"
         android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/agenda_item_deelnemers"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/agenda_item_poster"
         android:text="Medium Text"
-        android:layout_toEndOf="@+id/agenda_item_poster"
         android:layout_below="@+id/agenda_item_when"
         style="@style/AppTheme.Text"
-        android:layout_toRightOf="@+id/agenda_item_poster"
-        android:drawableLeft="@drawable/account_multiple"
         android:drawableStart="@drawable/account_multiple"
         android:drawablePadding="5dp"
         android:gravity="center_vertical" />
 
     <TextView
+        android:id="@+id/registration_compulsory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/agenda_item_deelnemers"
+        android:layout_toEndOf="@id/agenda_item_poster"
+        style="@style/AppTheme.Text"
+        android:drawableStart="@drawable/ic_outline_whatshot_24px"
+        android:tint="@color/colorRed"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/agenda_item_comment_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/registration_compulsory"
+        android:layout_toEndOf="@id/agenda_item_poster"
+        style="@style/AppTheme.Text"
+        android:drawableStart="@drawable/format_quote_close"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        />
+
+    <TextView
         android:id="@+id/agenda_item_waar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Medium Text"
-        android:layout_below="@+id/agenda_item_deelnemers"
-        android:layout_toRightOf="@+id/agenda_item_poster"
+        android:layout_below="@+id/agenda_item_comment_number"
         android:layout_toEndOf="@+id/agenda_item_poster"
         style="@style/AppTheme.Text"
-        android:drawableLeft="@drawable/earth"
         android:drawableStart="@drawable/earth"
         android:drawablePadding="5dp"
         android:gravity="center_vertical" />
-
-    <RelativeLayout
-        android:id="@+id/agenda_inschrijven_verplicht"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/agenda_item_waar"
-        android:layout_margin="4dp"
-        android:layout_toEndOf="@+id/agenda_item_poster"
-        android:layout_toRightOf="@+id/agenda_item_poster"
-        android:background="@drawable/agenda_inschrijven_verplicht_background"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/inschrijven_verplicht_text"
-            style="@style/AppTheme.Text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="8dp"
-            android:drawableLeft="@drawable/emoticon_happy"
-            android:drawablePadding="5dp"
-            android:drawableStart="@drawable/emoticon_happy"
-            android:gravity="center_vertical"
-            android:text="@string/agenda_inschrijven_verplicht"
-            android:textColor="#FFF"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/inschrijven_verplicht_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/inschrijven_verplicht_text"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="20dp"
-            android:text="maandag 20 januari 1979 23:59"
-            android:textColor="#fff" />
-
-        <TextView
-            android:id="@+id/prepublished_event_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/inschrijven_verplicht_date"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="0dp"
-            android:text="@string/agenda_prepublished_event_registration_closed_short_message"
-            android:textColor="#fff"
-            android:visibility="visible" />
-
-    </RelativeLayout>
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/list_divider"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/agenda_item_waar"
+        android:layout_marginTop="@dimen/text_margin"
         android:layout_marginEnd="14dp"
         android:layout_marginRight="14dp"
         android:layout_marginStart="14dp"

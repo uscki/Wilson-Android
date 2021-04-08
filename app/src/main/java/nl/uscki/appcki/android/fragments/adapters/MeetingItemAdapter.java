@@ -1,13 +1,12 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.joda.time.DateTime;
 
@@ -19,7 +18,8 @@ import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
-import nl.uscki.appcki.android.helpers.UserHelper;
+
+import static nl.uscki.appcki.android.activities.MeetingActivity.PARAM_MEETING_ID;
 
 /**
  * Created by peter on 7/3/16.
@@ -30,7 +30,7 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_meeting_list_item, parent, false);
         return new ViewHolder(view);
@@ -38,7 +38,7 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
 
     @Override
     public void onBindCustomViewHolder(final ViewHolder holder, int position) {
-        MeetingItem item = items.get(position);
+        final MeetingItem item = items.get(position);
         holder.mItem = item;
         holder.title.setText(item.getMeeting().getTitle());
 
@@ -55,32 +55,20 @@ public class MeetingItemAdapter extends BaseItemAdapter<MeetingItemAdapter.ViewH
             holder.where.setText(item.getMeeting().getLocation());
         }
         holder.mensen.setText(getMensenString(item));
-        holder.status.setText(getStatusString(item));
+
+        MeetingItem.MeetingResponseStatus status = item.getResponseStatus();
+        holder.status.setText(status.getResponseStatusMessage());
+        holder.status.setCompoundDrawablesWithIntrinsicBounds(status.getResponseStatusIcon(), 0, 0, 0);
+        holder.mensen.setCompoundDrawablesWithIntrinsicBounds(status.getResponseStatusPeopleIcon(), 0, 0, 0);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle();
-                Gson gson = new Gson();
-                String json = gson.toJson(holder.mItem, MeetingItem.class);
-                args.putString("item", json);
-                // TODO: 7/3/16 launch vergaderplanner fragment
+                args.putInt(PARAM_MEETING_ID, item.getId());
                 EventBus.getDefault().post(new OpenFragmentEvent(new MeetingDetailTabsFragment(), args));
             }
         });
-    }
-
-    private String getStatusString(MeetingItem meeting) {
-        if (meeting.getMeeting().getStartdate() != null) {
-            return "Deze vergadering is al gepland";
-        } else {
-            //noinspection SuspiciousMethodCalls
-            if (!meeting.getEnrolledPersons().contains(UserHelper.getInstance().getPerson())) {
-                return "Je hebt nog niet gereageerd.";
-            } else {
-                return "Deze vergadering is nog niet gepland";
-            }
-        }
     }
 
     private String getMensenString(MeetingItem meeting) {

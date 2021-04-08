@@ -9,7 +9,20 @@ import org.joda.time.DateTime;
 
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
-public class Person extends PersonSimple implements IWilsonBaseItem {
+/**
+ * This class corresponds to nl.uscki.api.web.rest.beans.organization.PersonSimpleBean in the
+ * B.A.D.W.O.L.F. API
+ */
+public class Person extends PersonName implements IWilsonBaseItem {
+
+    @Expose
+    private String firstname;
+
+    @Expose
+    private String middlename;
+
+    @Expose
+    private String lastname;
 
     @Expose
     private String address1;
@@ -18,7 +31,7 @@ public class Person extends PersonSimple implements IWilsonBaseItem {
     private String address2;
 
     @Expose
-    private Long birthdate;
+    private    String zipcode;
 
     @Expose
     private String city;
@@ -26,28 +39,52 @@ public class Person extends PersonSimple implements IWilsonBaseItem {
     @Expose
     private String country;
 
+    @SerializedName("phonenumber")
     @Expose
-    private String emailaddress;
-
-    @Expose
-    private String gender;
-
-    @Expose
-    private String homepage;
+    private   String phonenumber;
 
     @SerializedName("mobilenumber")
     @Expose
     private   String mobilenumber;
 
-    @SerializedName("phonenumber")
     @Expose
-    private   String phonenumber;
+    private String gender;
+
+    @Expose
+    private String emailaddress;
+
+    @Expose
+    private String homepage;
 
     @Expose
     private   String signature;
 
     @Expose
-    private    String zipcode;
+    private String birthdate;
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getMiddlename() {
+        return middlename;
+    }
+
+    public void setMiddlename(String middlename) {
+        this.middlename = middlename;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
 
     public String getAddress2() {
         return address2;
@@ -85,7 +122,7 @@ public class Person extends PersonSimple implements IWilsonBaseItem {
         return new DateTime(birthdate);
     }
 
-    public void setBirthdate(Long birthdate) {
+    public void setBirthdate(String birthdate) {
         this.birthdate = birthdate;
     }
 
@@ -162,5 +199,43 @@ public class Person extends PersonSimple implements IWilsonBaseItem {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    public String getFullAddres(boolean includeCountry) {
+        StringBuilder b = new StringBuilder();
+
+        boolean addNewline = false;
+
+        if(address1 != null && address1.trim().length() != 0) {
+            b.append(address1);
+            addNewline = true;
+        }
+
+        if(address2 != null && address2.trim().length() != 0) {
+            if(addNewline) b.append("\n");
+            b.append(address2);
+            addNewline = true;
+        }
+
+        if(zipcode != null && zipcode.trim().length() != 0) {
+            if(addNewline) b.append("\n");
+            b.append(zipcode);
+            addNewline = true;
+
+            if(city != null && city.trim().length() != 0) {
+                b.append(", ");
+                b.append(city);
+            }
+        } else if(city != null && city.trim().length() != 0) {
+            b.append(city);
+            addNewline = true;
+        }
+
+        if(includeCountry && country != null && country.trim().length() != 0) {
+            if(addNewline) b.append("\n");
+            b.append(country);
+        }
+
+        return b.toString();
     }
 }

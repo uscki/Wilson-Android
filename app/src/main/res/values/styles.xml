@@ -1,10 +1,11 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowSharedElementsUseOverlay">true</item>
     </style>
 
     <style name="Theme.App.Base" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -13,9 +14,81 @@
         <item name="colorControlHighlight">@color/colorAccent</item>
     </style>
 
+    <style name="AgendaTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">#ffffff</item>
+        <item name="android:textColorPrimary">#ffffff</item>
+        <item name="android:textColorSecondary">#bdbdbd</item>
+    </style>
+
+    <style name="AppTheme.SemiTransparentActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBarOverlay">true</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/colorAccent</item>
+        <item name="android:windowSharedElementsUseOverlay">true</item>
+    </style>
+
+    <style name="AppTheme.PhotoDetail" parent="AppTheme.NoActionBar">
+        <item name="colorControlNormal">#fff</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowSharedElementsUseOverlay">true</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/smooth_image_transition</item>
+        <item name="android:windowSharedElementExitTransition">@transition/smooth_image_transition</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <!-- This flag overrides navigation bar (divider) color, but removing it breaks fitsInSystemWindow
+                and hideToolbar() with the custom action bar -->
+<!--        <item name="android:windowTranslucentNavigation">true</item>-->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">@android:color/transparent</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:fitsSystemWindows">false</item>
+
+        <!-- Without this option, fullscreen mode adds an ugly green/red (because of our app's
+            settings) bar in the place of the status bar on devices with a notch -->
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="p">shortEdges</item>
+    </style>
+
+    <style name="AppTheme.Dialog" parent="AppTheme">
+        <item name="android:windowMinWidthMajor">97%</item>
+        <item name="android:windowMinWidthMinor">97%</item>
+
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowTitleStyle">@style/RtlOverlay.DialogWindowTitle.AppCompat</item>
+        <item name="android:windowTitleBackgroundStyle">@style/Base.DialogWindowTitleBackground.AppCompat</item>
+        <item name="android:windowBackground">@drawable/abc_dialog_material_background</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@style/Animation.AppCompat.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
+
+        <item name="listPreferredItemPaddingLeft">24dip</item>
+        <item name="listPreferredItemPaddingRight">24dip</item>
+
+        <item name="android:listDivider">@null</item>
+
+        <item name="android:buttonBarStyle">@style/Widget.AppCompat.ButtonBar.AlertDialog</item>
+        <item name="android:borderlessButtonStyle">@style/Widget.AppCompat.Button.Borderless</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -44,6 +117,10 @@
         <item name="android:textColor">@color/colorNormalText</item>
     </style>
 
+    <style name="AppTheme.Text.Selectable" parent="AppTheme.Text">
+        <item name="android:textIsSelectable">true</item>
+    </style>
+
     <style name="CodeFont" parent="@android:style/TextAppearance.Small">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -68,5 +145,16 @@
         <item name="android:textSize">25sp</item>
         <item name="android:maxLines">2</item>
         <item name="android:singleLine">false</item>
+    </style>
+
+    <style name="CardView.Wilson.Base">
+        <item name="android:layout_marginTop">@dimen/cards_margin_top</item>
+        <item name="cardCornerRadius">4dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="CardView.Wilson" parent="CardView.Wilson.Base">
+        <item name="android:layout_marginStart">@dimen/cards_margin_sides</item>
+        <item name="android:layout_marginEnd">@dimen/cards_margin_sides</item>
     </style>
 </resources>

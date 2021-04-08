@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="blackTransparent">#64000000</color>
     <color name="colorPrimary">#890000</color>
     <color name="colorPrimaryDark">#890000</color>
     <color name="colorAccent">#890000</color>
+    <color name="colorPrimaryTransparent">#aa890000</color>
+    <color name="colorPrimaryDarkTransparent">#aa890000</color>
+    <color name="colorAccentTransparent">#aa890000</color>
     <color name="colorTabIndicator">#ffb74d</color>
     <color name="colorCodeBackground">#bdbdbd</color>
     <color name="colorNormalText">#424242</color>

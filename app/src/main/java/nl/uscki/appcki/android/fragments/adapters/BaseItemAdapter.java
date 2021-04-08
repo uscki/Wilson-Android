@@ -4,20 +4,25 @@ package nl.uscki.appcki.android.fragments.adapters;
  * Created by peter on 5/16/16.
  */
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
+import nl.uscki.appcki.android.generated.ListSectionHeader;
 import nl.uscki.appcki.android.generated.LoadingMoreItem;
 
 public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K extends IWilsonBaseItem> extends RecyclerView.Adapter<T> {
@@ -68,6 +73,8 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
     }
 
     public void showLoadingMoreItems(boolean show) {
+        // TODO: this function is called inside the scroll callback. Android is complaining that we can't
+        // TODO: call notifyDataSetChanged inside a scroll callback.
         if(show && loadingMoreIndex < 0) {
             LoadingMoreItem item = new LoadingMoreItem();
             this.loadingMoreIndex = this.items.size();
@@ -87,7 +94,7 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
         }
     }
 
-    public abstract T onCreateCustomViewHolder(ViewGroup parent);
+    public abstract T onCreateCustomViewHolder(ViewGroup parent, int viewType);
     public abstract void onBindCustomViewHolder(T holder, int position);
 
 
@@ -108,14 +115,20 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.fragment_loading_bottom, parent, false);
             return (T) new LoadingMoreViewHolder(view);
-        } else {
-            return onCreateCustomViewHolder(parent);
+        } else if(viewType == 2) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.fragment_agenda_participant_section_header, parent, false);
+            return (T) new ListSectionHeaderHolder(view);
+        } {
+            return onCreateCustomViewHolder(parent, viewType);
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull T holder, int position) {
-        if(!(holder instanceof BaseItemAdapter.LoadingMoreViewHolder)) {
+        if(holder instanceof BaseItemAdapter.ListSectionHeaderHolder) {
+            bindListDividerViewHolder((ListSectionHeaderHolder) holder, (ListSectionHeader) items.get(position));
+        } else if(!(holder instanceof BaseItemAdapter.LoadingMoreViewHolder)) {
             onBindCustomViewHolder(holder, position);
         }
     }
@@ -123,9 +136,43 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
     @Override
     public void onBindViewHolder(@NonNull T holder, int position, @NonNull List<Object> payloads) {
         super.onBindViewHolder(holder, position, payloads);
-        if(!(holder instanceof BaseItemAdapter.LoadingMoreViewHolder)) {
+        if(holder instanceof BaseItemAdapter.ListSectionHeaderHolder) {
+            bindListDividerViewHolder((ListSectionHeaderHolder) holder, (ListSectionHeader) items.get(position));
+        } else if(!(holder instanceof BaseItemAdapter.LoadingMoreViewHolder)) {
             onBindCustomViewHolder(holder, position, payloads);
         }
+    }
+
+    private void bindListDividerViewHolder(@NonNull ListSectionHeaderHolder holder, final ListSectionHeader headerInfo) {
+        holder.header.setText(headerInfo.getDividingListHeader());
+        if(headerInfo.getDividingSubHeader() != null) {
+            holder.subHeader.setText(headerInfo.getDividingSubHeader());
+            holder.subHeader.setVisibility(View.VISIBLE);
+        } else {
+            holder.subHeader.setVisibility(View.GONE);
+        }
+        if(headerInfo.getMessageBody() != null) {
+            holder.messageBody.setText(headerInfo.getMessageBody());
+            holder.messageBody.setVisibility(View.VISIBLE);
+        } else {
+            holder.messageBody.setVisibility(View.GONE);
+        }
+        if(headerInfo.getHelpText() != null) {
+            holder.helpButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(), headerInfo.getHelpText(), Toast.LENGTH_LONG).show();
+                }
+            });
+            holder.helpButton.setVisibility(View.VISIBLE);
+        } else {
+            holder.helpButton.setVisibility(View.GONE);
+        }
+        if(headerInfo.isBottomDividerVisible()) {
+            holder.listDivider.setVisibility(View.VISIBLE);
+        }
+
+        // TODO maybe add custom margins so it aligns with any list?
     }
 
     @Override
@@ -133,6 +180,8 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
         final K item = items.get(position);
         if(item instanceof LoadingMoreItem) {
             return 1;
+        } else if(item instanceof ListSectionHeader) {
+            return 2;
         } else {
             return 0;
         }
@@ -141,17 +190,42 @@ public abstract class BaseItemAdapter<T extends RecyclerView.ViewHolder, K exten
     public class LoadingMoreViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
 
-        @BindView(R.id.loadMoreProgressBar)
-        ProgressBar progressBar;
+        ImageView progressBar;
+        Drawable drawable;
 
-        public LoadingMoreViewHolder(View itemView) {
+        LoadingMoreViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            progressBar = itemView.findViewById(R.id.loadMoreProgressBar);
+            drawable = progressBar.getDrawable();
+            if(drawable instanceof Animatable)
+                ((Animatable)drawable).start();
             mView = itemView;
         }
 
         public void showLoadingMore(boolean visible) {
             progressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    public class ListSectionHeaderHolder extends RecyclerView.ViewHolder {
+        public final View view;
+
+        TextView header;
+        TextView subHeader;
+        TextView messageBody;
+        Button helpButton;
+        ImageView listDivider;
+
+        ListSectionHeaderHolder(View itemView) {
+            super(itemView);
+
+            header = itemView.findViewById(R.id.dividing_list_header);
+            subHeader = itemView.findViewById(R.id.dividing_list_subheader);
+            messageBody = itemView.findViewById(R.id.dividing_list_message_body);
+            helpButton = itemView.findViewById(R.id.helpButton);
+            listDivider = itemView.findViewById(R.id.dividing_list_header_bottom_divider);
+
+            this.view = itemView;
         }
     }
 }

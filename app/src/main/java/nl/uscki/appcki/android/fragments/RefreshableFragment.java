@@ -1,12 +1,13 @@
 package nl.uscki.appcki.android.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
@@ -30,23 +31,19 @@ public abstract class RefreshableFragment extends Fragment {
     }
 
     protected void setupRecyclerView(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setAdapter(adapter);
     }
 
     protected void setupSwipeContainer(View view) {
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.refreshContainer);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                onSwipeRefresh();
-            }
-        });
+        swipeContainer = view.findViewById(R.id.refreshContainer);
+        swipeContainer.setOnRefreshListener(this::onSwipeRefresh);
 
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+
 
         swipeContainer.setRefreshing(false);
     }

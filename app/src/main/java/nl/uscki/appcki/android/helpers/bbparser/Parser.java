@@ -1,17 +1,13 @@
 package nl.uscki.appcki.android.helpers.bbparser;
 
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.List;
 
-import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.helpers.bbparser.elements.GenericElement;
 import nl.uscki.appcki.android.views.BBTextView;
-import uk.co.chrisjenx.calligraphy.CalligraphyTypefaceSpan;
-import uk.co.chrisjenx.calligraphy.TypefaceUtils;
 
 /**
  * Created by peter on 12/20/16.
@@ -36,19 +32,8 @@ public class Parser {
                     string = string.replaceAll("<br />", "\n");
                 }
 
-                if (string.contains("CKI")) {
-                    SpannableStringBuilder str = new SpannableStringBuilder(string);
-                    int start = string.indexOf("CKI");
-                    int end = start+3;
-
-                    str.replace(start, end, "a");
-                    CalligraphyTypefaceSpan typefaceSpan = new CalligraphyTypefaceSpan(TypefaceUtils.load(App.getContext().getAssets(), "fonts/ckilogos.ttf"));
-                    str.setSpan(typefaceSpan, start, start+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    output.append(str);
-                } else {
-                    // Add the string to the StringBuilder
-                    output.append(string);
-                }
+                // We have updated the font to contain the CKI logo at the below used unicode point
+                output.append(string.replaceAll("CKI", "\u01de"));
             }
             else
             {

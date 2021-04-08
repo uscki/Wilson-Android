@@ -2,66 +2,68 @@ package nl.uscki.appcki.android.fragments.agenda;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.RecyclerView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import java.util.ArrayList;
+import java.util.Locale;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.AgendaActivity;
-import nl.uscki.appcki.android.api.Callback;
-import nl.uscki.appcki.android.api.Services;
-import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
-import nl.uscki.appcki.android.events.AgendaSubscribersEvent;
+import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
+import nl.uscki.appcki.android.generated.ListSectionHeader;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
-import retrofit2.Response;
 
 /**
  * A fragment representing a list of AgendaParticipants.
  */
 public class AgendaDeelnemersFragment extends RefreshableFragment {
-    private int id;
-
-    @BindView(R.id.empty_text)
     TextView emptyText;
-
-    @BindView(R.id.recyclerView)
     RecyclerView participantList;
+    NestedScrollView emptyTextView;
 
-    private Callback<AgendaItem> refreshCallback = new Callback<AgendaItem>() {
-        @Override
-        public void onSucces(Response<AgendaItem> response) {
-            Log.e(getClass().getSimpleName(), "Succesful callback on participants!");
-            swipeContainer.setRefreshing(false);
-            if (getAdapter() instanceof AgendaDeelnemersAdapter) {
-                getAdapter().update(response.body().getParticipants());
-            }
-            if(emptyText != null && participantList != null) {
-                if (response.body().getMaxregistrations() != null && response.body().getMaxregistrations() == 0) {
-                    emptyText.setText(getString(R.string.agenda_prepublished_event_registration_closed));
-                    emptyText.setVisibility(View.VISIBLE);
-                    participantList.setVisibility(View.GONE);
-                } else if (response.body().getParticipants().isEmpty()) {
-                    emptyText.setText(getString(R.string.agenda_participants_list_empty));
-                    emptyText.setVisibility(View.VISIBLE);
-                    participantList.setVisibility(View.GONE);
-                } else {
-                    emptyText.setVisibility(View.GONE);
-                    participantList.setVisibility(View.VISIBLE);
-                }
+    private AgendaActivity activity;
+
+    private void setupParticipantList(AgendaItem item) {
+        if (getAdapter() instanceof AgendaDeelnemersAdapter) {
+            getAdapter().update(item.getParticipants());
+            if(item.getBackupList().size() > 0) {
+                ListSectionHeader seperatingHeader = new ListSectionHeader(String.format(
+                        Locale.getDefault(),
+                        "%s (%d)",
+                        getString(R.string.agenda_participants_backup_list),
+                        item.getBackupList().size()));
+                seperatingHeader.setHelpText(getString(R.string.agenda_participants_backup_list_help));
+                getAdapter().add(seperatingHeader);
+                getAdapter().addItems(item.getBackupList());
             }
         }
-    };
+        if(emptyText != null && emptyTextView != null && participantList != null) {
+            if (item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
+                emptyText.setText(getString(R.string.agenda_prepublished_event_registration_opens_later));
+                emptyText.setVisibility(View.VISIBLE);
+                emptyTextView.setVisibility(View.VISIBLE);
+                participantList.setVisibility(View.GONE);
+            } else if (item.getParticipants().isEmpty()) {
+                emptyText.setText(getString(R.string.agenda_participants_list_empty));
+                emptyText.setVisibility(View.VISIBLE);
+                emptyTextView.setVisibility(View.VISIBLE);
+                participantList.setVisibility(View.GONE);
+            } else {
+                emptyText.setVisibility(View.GONE);
+                emptyTextView.setVisibility(View.GONE);
+                participantList.setVisibility(View.VISIBLE);
+            }
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,46 +75,35 @@ public class AgendaDeelnemersFragment extends RefreshableFragment {
                              Bundle savedInstanceState) {
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, view);
 
-        if (getArguments() != null) {
-            id = getArguments().getInt("id");
-            Services.getInstance().agendaService.get(getArguments().getInt("id")).enqueue(refreshCallback);
-        }
+        emptyText = view.findViewById(R.id.empty_text);
+        this.emptyTextView = view.findViewById(R.id.empty_text_scrollview);
+        participantList = view.findViewById(R.id.recyclerView);
 
         return view;
     }
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().agendaService.get(id).enqueue(refreshCallback);
+        activity.refreshAgendaItem();
     }
 
     @Override
     public void onAttach(Context context) {
         if (context instanceof AgendaActivity) {
+            this.activity = (AgendaActivity) context;
             AgendaDeelnemersAdapter adapter = new AgendaDeelnemersAdapter(new ArrayList<AgendaParticipant>());
-            adapter.activity = (AgendaActivity) context;
+            adapter.activity = this.activity;
             setAdapter(adapter);
         }
         super.onAttach(context);
     }
 
     // EVENT HANDLING
-
-    public void onEventMainThread(AgendaSubscribersEvent event) {
+    public void onEventMainThread(DetailItemUpdatedEvent<AgendaItem> event) {
         swipeContainer.setRefreshing(false);
-        if (getAdapter() instanceof AgendaDeelnemersAdapter) {
-            getAdapter().update(event.subscribers.getContent());
-        }
-    }
-
-    public void onEventMainThread(AgendaItemSubscribedEvent event) {
-        swipeContainer.setRefreshing(false);
-        if (getAdapter() instanceof AgendaDeelnemersAdapter) {
-            if(event.subscribed != null) { //TODO because of dirty hackin MainActivity
-                getAdapter().update(event.subscribed.getParticipants());
-            }
+        if(getAdapter() instanceof AgendaDeelnemersAdapter) {
+            setupParticipantList(activity.getAgendaItem());
         }
     }
 

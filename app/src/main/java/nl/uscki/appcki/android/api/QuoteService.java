@@ -1,12 +1,14 @@
 package nl.uscki.appcki.android.api;
 
+import nl.uscki.appcki.android.api.models.ActionResponse;
+import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.quotes.Quote;
-import nl.uscki.appcki.android.generated.quotes.QuotesPage;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -14,36 +16,20 @@ import retrofit2.http.Query;
  */
 
 public interface QuoteService {
-    @GET("quote/get")
-    Call<Quote> get(@Query("id") Integer id);
+    @GET("quotes/{id}")
+    Call<Quote> get(@Path("id") Integer id);
 
-    @GET("quote/get")
-    Call<Quote> get(@Query("id") Integer id, @Query("html") boolean html);
+    @GET("quotes/")
+    Call<Pageable<Quote>> getQuotesCollection(@Query("page") Integer page, @Query("size") Integer size);
 
-    @GET("quote/newer")
-    Call<QuotesPage> newer(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer newer);
-
-    @GET("quote/older")
-    Call<QuotesPage> older(@Query("page") Integer page, @Query("size") Integer size);
-
-    @GET("quote/older")
-    Call<QuotesPage> older(@Query("page") Integer page, @Query("size") Integer size, @Query("sort") String... sort);
-
-    @GET("quote/older")
-    Call<QuotesPage> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older);
-
-    @GET("quote/older")
-    Call<QuotesPage> older(@Query("page") Integer page, @Query("size") Integer size, @Query("id") Integer older, @Query("sort") String... sort);
+    @GET("quotes/")
+    Call<Pageable<Quote>> getQuotesCollection(@Query("page") Integer page, @Query("size") Integer size, @Query("sort") String... sort);
 
     @FormUrlEncoded
-    @POST("quote/vote")
-    Call<Quote> vote(@Field("id") Integer id, @Field("positive") boolean positive);
+    @POST("quotes/{id}/vote")
+    Call<ActionResponse<Quote>> vote(@Path("id") Integer id, @Field("positive") boolean positive);
 
     @FormUrlEncoded
-    @POST("quote/vote")
-    Call<Quote> vote(@Field("id") Integer id, @Field("positive") boolean positive, @Field("html") boolean html);
-
-    @FormUrlEncoded
-    @POST("quote/new")
-    Call<Quote> newQuote(@Field("quote") String name, @Field("html") boolean html);
+    @POST("quotes/new")
+    Call<ActionResponse<Quote>> newQuote(@Field("quote") String name);
 }

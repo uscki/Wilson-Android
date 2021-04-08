@@ -1,30 +1,33 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
-
+import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
+import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.api.Callback;
-import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.activities.AgendaActivity;
+import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
+import nl.uscki.appcki.android.helpers.AgendaSubscribedHelper;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AgendaDetailFragment extends RefreshableFragment {
-    private TextView title;
-    private TextView when;
+    private TextView startTime;
+    private TextView participants;
+    private TextView registrationRequired;
     private BBTextView longText;
-
     private TextView summaryCommissie;
     private TextView summaryTitle;
     private TextView summaryWaar;
@@ -32,12 +35,11 @@ public class AgendaDetailFragment extends RefreshableFragment {
     private TextView summaryCost;
     private View root;
 
-    public static AgendaItem item;
+    private AgendaActivity activity;
 
     public AgendaDetailFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,63 +47,93 @@ public class AgendaDetailFragment extends RefreshableFragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_agenda_detail, container, false);
 
+        this.startTime = view.findViewById(R.id.agenda_detail_time);
+        this.participants = view.findViewById(R.id.agenda_detail_participants);
+        this.registrationRequired = view.findViewById(R.id.agenda_registration_required);
+        this.longText = view.findViewById(R.id.agenda_detail_longtext);
+        this.summaryCommissie = view.findViewById(R.id.agenda_summary_commissie_text);
+        this.summaryTitle = view.findViewById(R.id.agenda_summary_title_text);
+        this.summaryWaar = view.findViewById(R.id.agenda_summary_waar_text);
+        this.summaryWhen = view.findViewById(R.id.agenda_summary_when_text);
+        this.summaryCost = view.findViewById(R.id.agenda_summary_cost_text);
+        this.root = view.findViewById(R.id.agenda_detail_root);
         setupSwipeContainer(view);
 
-        if (getArguments() != null) {
-            int id = getArguments().getInt("id");
-            swipeContainer.setRefreshing(true);
-            Services.getInstance().agendaService.get(id).enqueue(new Callback<AgendaItem>() {
-                @Override
-                public void onSucces(Response<AgendaItem> response) {
-                    swipeContainer.setRefreshing(false);
-                    item = response.body();
-                    root.setVisibility(View.VISIBLE);
-                    findViews(view);
-                    setupViews(view);
-                }
-            });
+        if(activity.getAgendaItem() != null) {
+            setupViews(view, activity.getAgendaItem());
         }
-
-        findViews(view);
-        root.setVisibility(View.INVISIBLE);
 
         return view;
     }
 
-    private void setupViews(View view) {
-        title.setText(item.getTitle());
-        if (item.getEnd() != null) {
-            String whenStr = item.getStart().toString("EEEE dd MMMM YYYY HH:mm") + " - " + item.getEnd().toString("EEEE dd MMMM YYYY HH:mm");
-            when.setText(whenStr);
+    public void onEventMainThread(DetailItemUpdatedEvent<AgendaItem> event) {
+        swipeContainer.setRefreshing(false);
+        if(getView() != null) {
+            setupViews(getView(), event.getUpdatedItem());
         } else {
-            when.setText(item.getStart().toString("EEEE dd MMMM YYYY HH:mm"));
+            Log.e(getClass().getSimpleName(), "Trying to update agenda item, but view is null");
         }
-        longText.setText(Parser.parse(item.getDescriptionJSON(), true, longText));
+    }
+
+    private void setupViews(View view, AgendaItem item) {
+        longText.setText(Parser.parse(item.getDescription(), true, longText));
+
+        String when = AgendaSubscribedHelper.getWhen(item);
+        this.startTime.setText(when);
+
+        String participantsText;
+        if(item.getMaxregistrations() == null) {
+            participantsText = getString(R.string.agenda_n_participants, item.getParticipants().size());
+        } else if (item.getMaxregistrations() <= 0) {
+            participantsText = getString(R.string.agenda_prepublished_event_registration_opens_later);
+        } else if (item.getBackupList().isEmpty()) {
+            participantsText = getString(R.string.agenda_n_participants_max,
+                    item.getParticipants().size(), item.getMaxregistrations());
+        } else {
+            participantsText = getString(R.string.agenda_n_participants_backup,
+                    item.getParticipants().size(), item.getMaxregistrations(),
+                    item.getBackupList().size());
+        }
+        this.participants.setText(participantsText);
+
+        int participationImg = R.drawable.account_multiple;
+        if(item.getUserParticipation() != null && item.getUserParticipation().isAttends()) {
+            participationImg = R.drawable.account_multiple_subscribed;
+        } else if (item.getUserParticipation() != null && item.getUserParticipation().isBackuplist()) {
+            participationImg = R.drawable.account_multiple_backup;
+        }
+        this.participants.setCompoundDrawablesWithIntrinsicBounds(participationImg, 0, 0, 0);
+
+        if(item.getRegistrationrequired()) {
+            if(item.getHasDeadline()) {
+                // registrationRequired and hasDeadline can be two different things, so technically
+                // the following line should be within the first if-clause, not the second. However,
+                // max n participants (i.e. prepublishing) can only be set when registration is
+                // required, meaning 'registration required' does not mean too much on pre-published
+                // events.
+                registrationRequired.setVisibility(View.VISIBLE);
+                int registrationRequiredText = item.getDeadline().isBeforeNow() ?
+                        R.string.agenda_event_register_deadline_passed_date :
+                        R.string.agenda_registration_required_before;
+
+                registrationRequired.setText(getString(
+                        registrationRequiredText,
+                        item.getDeadline().toString("EEEE, dd MMM YYYY, HH:mm")
+                    )
+                );
+            }
+        }
 
         setTextView(view, item.getWho(), R.id.agenda_summary_commissie_text);
         setTextView(view, item.getWhat(), R.id.agenda_summary_title_text);
         setTextView(view, item.getLocation(), R.id.agenda_summary_waar_text);
 
-        if (item.getEnd() != null) {
+        if (item.getWhen() != null) {
             summaryWhen.setText(item.getWhen());
         } else {
-            summaryWhen.setText(item.getStart().toString("EEEE dd MMMM YYYY HH:mm"));
+            summaryWhen.setText(when);
         }
         setTextView(view, item.getCosts(), R.id.agenda_summary_cost_text);
-    }
-
-    private void findViews(View view) {
-        root = view.findViewById(R.id.agenda_detail_root);
-
-        title = (TextView) view.findViewById(R.id.agenda_detail_title);
-        when = (TextView) view.findViewById(R.id.agenda_detail_when);
-        longText = (BBTextView) view.findViewById(R.id.agenda_detail_longtext);
-
-        summaryCommissie = (TextView) view.findViewById(R.id.agenda_summary_commissie_text);
-        summaryTitle = (TextView) view.findViewById(R.id.agenda_summary_title_text);
-        summaryWaar = (TextView) view.findViewById(R.id.agenda_summary_waar_text);
-        summaryWhen = (TextView) view.findViewById(R.id.agenda_summary_when_text);
-        summaryCost = (TextView) view.findViewById(R.id.agenda_summary_cost_text);
     }
 
     private void setTextView(View v, String str, int id) {
@@ -114,13 +146,28 @@ public class AgendaDetailFragment extends RefreshableFragment {
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().agendaService.get(item.getId()).enqueue(new Callback<AgendaItem>() {
-            @Override
-            public void onSucces(Response<AgendaItem> response) {
-                item = response.body();
-                getView().invalidate();
-                swipeContainer.setRefreshing(false);
-            }
-        });
+        activity.refreshAgendaItem();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        if (context instanceof AgendaActivity) {
+            activity = (AgendaActivity) context;
+        }
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 }

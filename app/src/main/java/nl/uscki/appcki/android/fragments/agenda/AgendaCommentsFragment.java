@@ -1,6 +1,7 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.comments.Comment;
 import retrofit2.Call;
@@ -9,6 +10,7 @@ public class AgendaCommentsFragment extends CommentsFragment{
 
     public AgendaCommentsFragment() {
         // Required empty public constructor
+        super(true);
     }
 
     @Override
@@ -23,7 +25,17 @@ public class AgendaCommentsFragment extends CommentsFragment{
     }
 
     @Override
-    public Call<Comment> sendCommentToServer(Integer replyToComment, String comment) {
+    public Call<ActionResponse<Comment>> sendCommentToServer(Integer replyToComment, String comment) {
         return Services.getInstance().agendaService.replyToComment(commentOnTopicId, replyToComment, comment);
+    }
+
+    @Override
+    protected Call<Boolean> deleteCommentFromServer(Integer commentId) {
+        return Services.getInstance().agendaService.deleteComment(commentOnTopicId, commentId);
+    }
+
+    @Override
+    protected boolean getUseNestedScrolling() {
+        return true;
     }
 }

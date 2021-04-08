@@ -1,9 +1,8 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -15,18 +14,23 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
-import com.facebook.drawee.view.SimpleDraweeView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.activities.AgendaActivity;
-import nl.uscki.appcki.android.activities.BasicActivity;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.comments.Comment;
+import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
 
@@ -34,32 +38,37 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
     private boolean isNested = false;
     private CommentsFragment commentsFragment;
 
-    public CommentsAdapter(List<Comment> items) {
+    private ViewHolder hasVisibleReplyRowViewHolder = null;
+
+    public CommentsAdapter(CommentsFragment commentsFragment, List<Comment> items) {
         super(items);
+        this.commentsFragment = commentsFragment;
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_comment_item, parent, false);
         return new ViewHolder(view);
     }
 
-    /**
-     * Set a reference to the CommentsFragment that uses this adapter, so replies can be posted
-     * @param fragment  CommentsFragment that uses this adapter
-     */
-    public void setCommentsFragment(CommentsFragment fragment) {
-        this.commentsFragment = fragment;
+    public boolean hideReplyBox() {
+        if(hasVisibleReplyRowViewHolder != null) {
+            hasVisibleReplyRowViewHolder.replyRow.setVisibility(View.GONE);
+            hasVisibleReplyRowViewHolder.actualCommentText.setText("");
+            hasVisibleReplyRowViewHolder = null;
+            return true;
+        }
+        return false;
     }
 
     /**
-     * NOTE: Explicitly set all properties. ViewHolder may be overwritten with a different comment.
+     * NOTE: Explicitly set all properties. MediaCollectionViewHolder may be overwritten with a different comment.
      * Not all viewholders are built from scratch!
      *
      * If properties are not explicitly set, they can take the value of the wrong comment
      * 
-     * @param holder        ViewHolder to populate
+     * @param holder        MediaCollectionViewHolder to populate
      * @param position      Position of the item in the adapter, which contains the data to populate
      *                      the viewholder with
      */
@@ -71,9 +80,15 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
         // Set the photo of the commenter
         Integer profilePictureId = holder.comment.person.getPhotomediaid();
         if(profilePictureId != null) {
-            holder.commenterPhoto.setImageURI(MediaAPI.getMediaUri(profilePictureId, MediaAPI.MediaSize.SMALL));
+            Glide.with(holder.mView)
+                    .load(MediaAPI.getMediaUri(profilePictureId, MediaAPI.MediaSize.SMALL))
+                    .fitCenter()
+                    .optionalCircleCrop()
+                    .placeholder(R.drawable.account)
+                    .into(holder.commenterPhoto);
         } else {
-            holder.commenterPhoto.setImageURI("");
+            Glide.with(holder.mView)
+                    .clear(holder.commenterPhoto);
         }
 
         final AgendaActivity act = (AgendaActivity)holder.mView.getContext();
@@ -117,15 +132,18 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
         } else {
             holder.itemView.findViewById(R.id.comment_list_divider).setVisibility(View.VISIBLE);
             holder.replyButton.setVisibility(View.VISIBLE);
-            holder.replyButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    holder.replyRow.setVisibility(View.VISIBLE);
-                    Utils.toggleKeyboardForEditBox(
-                            holder.mView.getContext(),
-                            holder.actualCommentText,
-                            true);
-                }
+            holder.replyButton.setOnClickListener(view -> {
+                // Allows intercepting onBackPressed later
+                hasVisibleReplyRowViewHolder = holder;
+                commentsFragment.getChildFragmentManager()
+                        .beginTransaction()
+                        .addToBackStack("new_comment_reply")
+                        .commit();
+                holder.replyRow.setVisibility(View.VISIBLE);
+                Utils.toggleKeyboardForEditBox(
+                        holder.mView.getContext(),
+                        holder.actualCommentText,
+                        true);
             });
             holder.activateReplyCommentButton();
         }
@@ -139,6 +157,20 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
             // again
             holder.showIsAnnouncementView.setVisibility(View.GONE);
         }
+
+        // Set comment delete button behavior
+        if(canCommentDelete(holder.comment)) {
+            holder.comment_delete_view.setVisibility(View.VISIBLE);
+            holder.activateDeleteCommentButton();
+        } else {
+            holder.comment_delete_view.setOnClickListener(null);
+            holder.comment_delete_view.setVisibility(View.GONE);
+        }
+    }
+
+    private boolean canCommentDelete(Comment comment) {
+        return comment.person.equals(UserHelper.getInstance().getCurrentUser()) &&
+                comment.reactions.isEmpty() && commentsFragment.canDelete();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -146,54 +178,63 @@ public class CommentsAdapter extends BaseItemAdapter<CommentsAdapter.ViewHolder,
         public Comment comment;
         public CommentsAdapter adapter;
 
-        @BindView(R.id.comment_person_photo)
-        public SimpleDraweeView commenterPhoto;
-
-        @BindView(R.id.comment_placer_name)
-        public TextView commenterName;
-
-        @BindView(R.id.verified_announcement_view)
+        ImageView commenterPhoto;
+        TextView commenterName;
         ImageView showIsAnnouncementView;
-
-        @BindView(R.id.comment_reply_button)
-        public ImageButton replyButton;
-
-        @BindView(R.id.comment_content)
+        ImageButton comment_delete_view;
+        ImageButton replyButton;
         BBTextView commentContent;
-
-        @BindView(R.id.comment_replies)
         RecyclerView replies;
-
-        @BindView(R.id.comment_reply_row)
         TableRow replyRow;
-
-        @BindView(R.id.place_comment_button)
         ImageButton postCommentButton;
-
-        @BindView(R.id.comment_edit_text)
         EditText actualCommentText;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
-            ButterKnife.bind(this, itemView);
+
+            actualCommentText = itemView.findViewById(R.id.comment_edit_text);
+            postCommentButton = itemView.findViewById(R.id.place_comment_button);
+            replyRow = itemView.findViewById(R.id.comment_reply_row);
+            replies = itemView.findViewById(R.id.comment_replies);
+            commentContent = itemView.findViewById(R.id.comment_content);
+            replyButton = itemView.findViewById(R.id.comment_reply_button);
+            showIsAnnouncementView = itemView.findViewById(R.id.verified_announcement_view);
+            comment_delete_view = itemView.findViewById(R.id.comment_delete_view);
+            commenterName = itemView.findViewById(R.id.comment_placer_name);
+            commenterPhoto = itemView.findViewById(R.id.comment_person_photo);
+
             if(adapter != null) {
                 adapter.clear();
             }
-            adapter = new CommentsAdapter(new ArrayList<Comment>());
+            adapter = new CommentsAdapter(CommentsAdapter.this.commentsFragment, new ArrayList<Comment>());
             adapter.isNested = true;
             replies.setAdapter(adapter);
         }
 
         // Add a listener to the post comment button to process the comment
         void activateReplyCommentButton() {
-            postCommentButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    replyRow.setVisibility(View.GONE);
-                    commentsFragment.postComment(actualCommentText, ViewHolder.this);
-                }
+            postCommentButton.setOnClickListener(view -> {
+                replyRow.setVisibility(View.GONE);
+                commentsFragment.postComment(actualCommentText, ViewHolder.this);
+                hasVisibleReplyRowViewHolder = null;
+                commentsFragment.getChildFragmentManager().popBackStack("new_comment_reply", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             });
+        }
+
+        void activateDeleteCommentButton() {
+            comment_delete_view.setOnClickListener(view -> new AlertDialog.Builder(mView.getContext())
+                    .setTitle(R.string.comment_delete_header)
+                    .setMessage(R.string.comment_delete_message)
+                    .setIcon(R.drawable.ic_delete_24px)
+                    .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            commentsFragment.deleteComment(comment.id);
+                        }
+                    })
+                    .setNegativeButton(R.string.dialog_no, null)
+                    .show());
         }
     }
 }

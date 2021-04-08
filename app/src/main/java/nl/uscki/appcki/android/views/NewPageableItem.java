@@ -1,26 +1,28 @@
 package nl.uscki.appcki.android.views;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import java.util.List;
 
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.helpers.WrongTextfieldHelper;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public abstract class NewPageableItem<T extends IWilsonBaseItem> extends Fragment {
-    protected PageableFragment parent;
+public abstract class NewPageableItem<X extends IWilsonBaseItem> extends Fragment {
+    protected PageableFragment<?, X> parent;
 
     private boolean focusOnCreateView = false;
 
@@ -28,33 +30,34 @@ public abstract class NewPageableItem<T extends IWilsonBaseItem> extends Fragmen
         this.focusOnCreateView = focusOnCreateView;
     }
 
+    protected boolean isFocusOnCreateView() {
+        return this.focusOnCreateView;
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         // Set confirm button behavior
-        getConfirmButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                List<View> incorrectViews = getIncorrectFields();
-                if(incorrectViews.isEmpty()) {
-                    postNewItem().enqueue(getPostNewItemCallback());
-                } else {
-                    WrongTextfieldHelper.alertIncorrectViews(getContext(), incorrectViews);
-                }
+        getConfirmButton().setOnClickListener(v -> {
+            List<View> incorrectViews = getIncorrectFields();
+            if(incorrectViews.isEmpty()) {
+                postNewItem().enqueue(getPostNewItemCallback());
+            } else {
+                WrongTextfieldHelper.alertIncorrectViews(getContext(), incorrectViews);
             }
         });
 
-        if(focusOnCreateView) {
+        if(focusOnCreateView && getMainTextInput() != null) {
             Utils.toggleKeyboardForEditBox(getContext(), getMainTextInput(), true);
         }
     }
 
     @Override
     public void onDestroy() {
-        if(parent != null && parent.getView() != null && focusOnCreateView) {
+        if(parent != null && focusOnCreateView) {
             // New Item fragment deleted. Re-enable FAB
-            parent.setFabEnabled(parent.getView(), true);
+            parent.setFabEnabled(true);
         }
         super.onDestroy();
     }
@@ -64,14 +67,14 @@ public abstract class NewPageableItem<T extends IWilsonBaseItem> extends Fragmen
      * class
      * @param parent Reference to the PageableFragment to which this class belongs
      */
-    public void setParent(PageableFragment parent) {
+    public void setParent(PageableFragment<?, X> parent) {
         this.parent = parent;
     }
 
-    protected Callback<T> getPostNewItemCallback() {
-        return new Callback<T>() {
+    protected Callback<ActionResponse<X>> getPostNewItemCallback() {
+        return new Callback<ActionResponse<X>>() {
             @Override
-            public void onSucces(Response response) {
+            public void onSucces(Response<ActionResponse<X>> response) {
                 if (parent != null) parent.refresh();
                 cleanupAfterPost();
             }
@@ -80,7 +83,7 @@ public abstract class NewPageableItem<T extends IWilsonBaseItem> extends Fragmen
 
     protected abstract EditText getMainTextInput();
     protected abstract ImageButton getConfirmButton();
-    protected abstract Call<T> postNewItem();
+    protected abstract Call<ActionResponse<X>> postNewItem();
 
     /**
      * Obtain a list of input fragments in this fragment for which

@@ -1,38 +1,63 @@
 package nl.uscki.appcki.android.activities;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
 
+import java.util.Locale;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
+import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.error.Error;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
+import nl.uscki.appcki.android.events.CommentsUpdatedEvent;
+import nl.uscki.appcki.android.events.ContentLoadedEvent;
+import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.events.ServerErrorEvent;
+import nl.uscki.appcki.android.fragments.agenda.AgendaCommentsFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailAdapter;
-import nl.uscki.appcki.android.fragments.agenda.AgendaDetailFragment;
 import nl.uscki.appcki.android.fragments.agenda.SubscribeDialogFragment;
 import nl.uscki.appcki.android.fragments.comments.CommentsFragment;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
-import nl.uscki.appcki.android.generated.agenda.AgendaParticipant;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
+import nl.uscki.appcki.android.generated.agenda.AgendaUserParticipation;
+import nl.uscki.appcki.android.helpers.AgendaSubscribedHelper;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import nl.uscki.appcki.android.helpers.calendar.CalendarHelper;
@@ -42,9 +67,18 @@ import retrofit2.Response;
 public class AgendaActivity extends BasicActivity {
     public static final String PARAM_AGENDA_ID = "nl.uscki.appcki.android.activities.param.AGENDA_ID";
 
-    AgendaItem item;
+    public static final String ACTION_AGENDA_MAIN = "nl.uscki.appcki.android.activities.agenda.action.MAIN";
+    public static final String ACTION_AGENDA_PARTICIPANTS = "nl.uscki.appcki.android.activities.agenda.action.PARTICIPANT_LIST";
+
+    protected AgendaItem item;
+    private int agendaId = -1;
+    AgendaDetailAdapter fragmentAdapter;
+
+    CollapsingToolbarLayout toolbarLayout;
     TabLayout tabLayout;
     ViewPager viewPager;
+    ImageView poster;
+    AppBarLayout appBarLayout;
     Toolbar toolbar;
 
     boolean foundUser = false;
@@ -53,78 +87,131 @@ public class AgendaActivity extends BasicActivity {
     private Callback<AgendaItem> agendaCallback = new Callback<AgendaItem>() {
         @Override
         public void onSucces(Response<AgendaItem> response) {
+        if(response == null || response.body() == null) {
+            Log.e(this.getClass().toString(), "No response or body");
+            return;
+        }
 
-            if(response == null) {
-                Log.e(this.getClass().toString(), "No response");
-                return;
-            }
+        item = response.body();
 
-            if(response.body() == null) {
-                Log.e(this.getClass().toString(), "No response or response body");
-                return;
-            }
-
-            item = response.body();
-            viewPager.setAdapter(new AgendaDetailAdapter(getSupportFragmentManager(), item));
-
-            // This isn't nice, but the callback overrides tab selection, and its only called once
-            // so with the current implementation, this is best
-            if(getIntent() != null && getIntent().getAction() != null &&
-                    getIntent().getAction().equals(CommentsFragment.ACTION_VIEW_COMMENTS)) {
-                viewPager.setCurrentItem(2);
-                tabLayout.setScrollPosition(2, 0f, false);
-            }
-
-            for (AgendaParticipant part : item.getParticipants()) {
-                if (part.getPerson() != null && UserHelper.getInstance().getPerson() != null) {
-                    if (part.getPerson().getId().equals(UserHelper.getInstance().getPerson().getId())) {
-                        foundUser = true;
-                    }
-                } else {
-                    finish();
-                }
-            }
-            
-            setSubscribeButtons();
-            setExportButtons();
+        setupItem();
         }
     };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        setContentView(R.layout.activity_agenda);
-
-        toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.app_name));
-        setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null)
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        MainActivity.currentScreen = MainActivity.Screen.AGENDA_DETAIL;
-
-        viewPager = findViewById(R.id.viewpager);
-        tabLayout = findViewById(R.id.tabLayout);
-        tabLayout.addTab(tabLayout.newTab().setText("Agenda"));
-        tabLayout.addTab(tabLayout.newTab().setText("Deelnemers"));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.comments)));
-
-        if (getIntent().getBundleExtra("item") != null) {
-            Gson gson = new Gson();
-            item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), AgendaItem.class);
-            Services.getInstance().agendaService.get(item.getId()).enqueue(agendaCallback);
-        } else if (getIntent().getStringExtra("item") != null) {
-            Gson gson = new Gson();
-            item = gson.fromJson(getIntent().getStringExtra("item"), AgendaItem.class);
-            Services.getInstance().agendaService.get(item.getId()).enqueue(agendaCallback);
-        } else if (getIntent().getIntExtra(PARAM_AGENDA_ID, -1) >= 0) {
-            Services.getInstance().agendaService.get(getIntent().getIntExtra(PARAM_AGENDA_ID, -1)).enqueue(agendaCallback);
+    /**
+     * Download the agenda item for the ID that is currently stored on this object
+     */
+    public void refreshAgendaItem() {
+        if(agendaId >= 0) {
+            Services.getInstance().agendaService.get(agendaId).enqueue(agendaCallback);
         } else {
-            // the item is no longer loaded so we can't open this activity, thus we'll close it
-            Log.e(getClass().getSimpleName(), "Not loaded. Finish");
-            finish();
+            Log.e(getClass().getSimpleName(), "ID not yet present");
         }
+    }
+
+    public AgendaItem getAgendaItem() {
+        return item;
+    }
+
+    private void updateTabTitleCounts() {
+        if(this.item != null) {
+            updateTabTitleCount(AgendaDetailAdapter.AGENDA_PARTICIPANTS_TAB_POSITION, R.string.tab_agenda_participants, this.item.getParticipants().size());
+            updateTabTitleCount(AgendaDetailAdapter.AGENDA_COMMENTS_TAB_POSITION, R.string.comments, this.item.getTotalComments());
+        }
+    }
+
+    private void updateTabTitleCount(int tabIndex, int stringResource, int count) {
+        TabLayout.Tab t = tabLayout.getTabAt(tabIndex);
+        if(t != null) {
+            String title = String.format(
+                    Locale.getDefault(),
+                    "%d %s",
+                    count,
+                    getString(stringResource)
+            );
+            t.setText(title);
+        }
+    }
+
+    /**
+     * Once the item is loaded, populate the view with the agenda information
+     */
+    private void setupItem() {
+        if(item == null) return;
+
+        EventBus.getDefault().post(new DetailItemUpdatedEvent<>(item));
+
+
+        if(item.getPosterid() != null && item.getPosterid() >= 0) {
+            Glide.with(this)
+                    .load(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.LARGE))
+                    .thumbnail(Glide.with(this).load(MediaAPI.getMediaUri(item.getPosterid(), MediaAPI.MediaSize.SMALL)).fitCenter().listener(posterRequestListener))
+                    .listener(posterRequestListener)
+                    .into(poster);
+            poster.setTransitionName("media_poster");
+            poster.setOnClickListener((v) -> {
+                Intent intent = new FullScreenMediaActivity.SingleImageIntentBuilder(item.getTitle(), poster.getTransitionName())
+                        .media(item.getPosterid()).build(this);
+                startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this, poster, poster.getTransitionName()).toBundle());
+            });
+        } else {
+            this.appBarLayout.setExpanded(false);
+            final TypedArray styledAttributes = getTheme().obtainStyledAttributes(
+                new int[] { android.R.attr.actionBarSize }
+            );
+            int mActionBarSize = (int) styledAttributes.getDimension(0, 0);
+            this.appBarLayout.setExpanded(false, false);
+            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) this.toolbarLayout.getLayoutParams();
+            params.height = 2*mActionBarSize;
+            appBarLayout.requestLayout();
+        }
+
+        if(toolbarLayout != null) {
+            this.toolbarLayout.setTitle(this.item.getTitle());
+        }
+
+        foundUser = item.getUserParticipation() != null &&
+                (item.getUserParticipation().isAttends() || item.getUserParticipation().isBackuplist());
+
+        setSubscribeButtons();
+        setExportButtons();
+        updateTabTitleCounts();
+    }
+
+    RequestListener<Drawable> posterRequestListener = new RequestListener<Drawable>() {
+        @Override
+        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+            if(!isFirstResource)
+                appBarLayout.setExpanded(false);
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+            float scale = toolbarLayout.getWidth() / (float) resource.getIntrinsicWidth();
+            int height = Math.round(scale * resource.getIntrinsicHeight());
+            int preferredToolbarHeight = toolbarLayout.getHeight();
+
+            if(height > preferredToolbarHeight) {
+                poster.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            } else {
+                poster.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                toolbarLayout.getLayoutParams().height = height;
+            }
+            return false;
+        }
+    };
+
+    /**
+     * Create one adapter that can be used from now on
+     */
+    private void createAdapter() {
+        fragmentAdapter = new AgendaDetailAdapter(getSupportFragmentManager(), this.agendaId);
+        viewPager.setAdapter(fragmentAdapter);
+
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.tab_agenda_details)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.tab_agenda_participants)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.comments)));
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -134,15 +221,88 @@ public class AgendaActivity extends BasicActivity {
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
+            public void onTabUnselected(TabLayout.Tab tab) { }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
+            public void onTabReselected(TabLayout.Tab tab) { }
         });
+
+        setTabByIntent();
+    }
+
+    private void setTabByIntent() {
+        Intent intent = getIntent();
+
+        if(intent != null && intent.getAction() != null) {
+            // Tab defaults to details
+            int tab;
+            switch (intent.getAction()) {
+                case ACTION_AGENDA_MAIN:
+                    // Intentional carry-over
+                default:
+                    tab = AgendaDetailAdapter.AGENDA_DETAILS_TAB_POSITION;
+                    break;
+                case ACTION_AGENDA_PARTICIPANTS:
+                    tab = AgendaDetailAdapter.AGENDA_PARTICIPANTS_TAB_POSITION;
+                    break;
+                case CommentsFragment.ACTION_VIEW_COMMENTS:
+                    tab = AgendaDetailAdapter.AGENDA_COMMENTS_TAB_POSITION;
+                    break;
+            }
+
+            viewPager.setCurrentItem(tab);
+            tabLayout.setScrollPosition(tab, 0f, false);
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_agenda);
+
+        toolbarLayout = findViewById(R.id.agenda_collapsing_toolbar);
+        tabLayout = findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.viewpager);
+        poster = findViewById(R.id.agenda_poster);
+        appBarLayout = findViewById(R.id.appbar);
+        toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        MainActivity.currentScreen = MainActivity.Screen.AGENDA_DETAIL;
+
+        if (getIntent().getBundleExtra("item") != null) {
+            Gson gson = new Gson();
+            item = gson.fromJson(getIntent().getBundleExtra("item").getString("item"), AgendaItem.class);
+            Log.e(getClass().getSimpleName(), "WARNIGN! Used Bundle JSON to pass agenda item! Use ID instead!");
+        } else if (getIntent().getStringExtra("item") != null) {
+            Gson gson = new Gson();
+            item = gson.fromJson(getIntent().getStringExtra("item"), AgendaItem.class);
+            Log.e(getClass().getSimpleName(), "WARNIGN! Used StringExtra JSON to pass agenda item! Use ID instead!");
+        } else if (getIntent().getIntExtra(PARAM_AGENDA_ID, -1) >= 0) {
+            agendaId = getIntent().getIntExtra(PARAM_AGENDA_ID, -1);
+        } else {
+            // the item is no longer loaded so we can't open this activity, thus we'll close it
+            Log.e(getClass().getSimpleName(), "Not loaded. Finish");
+            finish();
+        }
+
+        if (UserHelper.getInstance().getCurrentUser() == null) {
+            finish();
+        }
+
+        if(agendaId < 0 && item != null) {
+            // Artifact of passing objects rather than only the ID.
+            // TODO: Refactor agenda intentions to only pass ID, never a (serialized) agenda item
+            agendaId = item.getId();
+        }
+
+        createAdapter();
+
+        // Perform an initial load of the data
+        refreshAgendaItem();
     }
 
     @Override
@@ -171,7 +331,18 @@ public class AgendaActivity extends BasicActivity {
         setSubscribeButtons();
         setExportButtons();
 
+        this.menu.findItem(R.id.action_share_agenda_item).setOnMenuItemClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_TITLE, item.getTitle());
+            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.incognito_website_agenda_event_url, item.getId()));
+            intent.putExtra(Intent.EXTRA_SUBJECT, item.getTitle());
+            intent.setType("text/*");
+            startActivity(Intent.createChooser(intent, getText(R.string.app_general_action_share_intent_text)));
+            return true;
+        });
+
         this.menu.findItem(R.id.action_agenda_archive).setVisible(false);
+        this.menu.findItem(R.id.action_share_agenda_item).setVisible(true);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -192,6 +363,10 @@ public class AgendaActivity extends BasicActivity {
         EventBus.getDefault().unregister(this);
     }
 
+    /**
+     * Set the visibility of export or delete buttons based on permissions and if the current
+     * event is already in the users system calendar
+     */
     private void setExportButtons() {
         if(menu == null || item == null)
             return;
@@ -218,9 +393,8 @@ public class AgendaActivity extends BasicActivity {
         if(calendarEventItemId > 0)
         {
             menu.findItem(R.id.action_agenda_export).setVisible(false);
-            if(PermissionHelper.canDeleteCalendar()) {
+            if (PermissionHelper.canDeleteCalendar()) {
                 menu.findItem(R.id.action_remove_from_calendar).setVisible(true);
-
             }
         } else {
             menu.findItem(R.id.action_remove_from_calendar).setVisible(false);
@@ -228,23 +402,22 @@ public class AgendaActivity extends BasicActivity {
         }
     }
 
+    /**
+     * Show or hide subscribe and unsubscribe buttons based on the subscribed status of the current
+     * user for this event, and the registration status of the event.
+     *
+     * // TODO obnoxiously long method
+     */
     private void setSubscribeButtons() {
         if(menu == null) return;
 
         MenuItem subscribe = menu.findItem(R.id.action_agenda_subscribe);
         MenuItem unsubscribe = menu.findItem(R.id.action_agenda_unsubscribe);
 
+        // Make sure not to break app
         if(subscribe == null || unsubscribe == null) {
             Log.e(getClass().getSimpleName(), "Trying to set button behavior before menu is created");
             return;
-        }
-
-        if(foundUser) {
-            subscribe.setVisible(false);
-            unsubscribe.setVisible(true);
-        } else {
-            subscribe.setVisible(true);
-            unsubscribe.setVisible(false);
         }
 
         if(item == null) {
@@ -252,71 +425,104 @@ public class AgendaActivity extends BasicActivity {
             return;
         }
 
-        if (this.item.getMaxregistrations() != null && this.item.getMaxregistrations() == 0) {
-            prepareSubscribeButtonsForNoRegistration(subscribe, unsubscribe);
-        } else {
-            prepareSubscribeButtonsForRegistration(subscribe, unsubscribe);
+        // Initial checks
+        boolean registered = this.item.getUserParticipation() != null &&
+                (this.item.getUserParticipation().isAttends() || this.item.getUserParticipation().isBackuplist());
+        boolean started = this.item.getStart().isBeforeNow();
+        boolean registrationPassed = this.item.getHasDeadline() && this.item.getDeadline().isBeforeNow();
+        boolean unregisterPassed = item.getHasUnregisterDeadline() && this.item.getUnregisterDeadline().isBeforeNow();
+        boolean subscribeEnabled = true, unsubscribeEnabled = true;
+
+        // Aggregation variables
+        int onclickText = -1, registerIcon = R.drawable.plus, unregisterIcon = R.drawable.close;
+
+        // Check if unregistration should be disabled
+        if (unregisterPassed || (started && !this.item.getHasUnregisterDeadline())) {
+            unregisterIcon = R.drawable.close_disabled;
+            unsubscribeEnabled = false;
+            onclickText = unregisterPassed ?
+                    R.string.agenda_unsubscribe_deadline_passed : R.string.agenda_event_started;
+        }
+
+        // Check if registration should be disabled
+        if (registrationPassed || (started && !this.item.getHasDeadline())) {
+            registerIcon = R.drawable.plus_disabled;
+            subscribeEnabled = false;
+            onclickText = registrationPassed ?
+                    R.string.agenda_subscribe_deadline_passed : R.string.agenda_event_started;
+        }
+
+        // Check if registration icon should be edit icon
+        if (registered && (registrationPassed || (started && !this.item.getHasDeadline()))
+        ) {
+            registerIcon = R.drawable.ic_outline_edit_disabled_24px;
+            onclickText = registrationPassed ?
+                    R.string.agenda_subscribe_deadline_passed : R.string.agenda_event_started;
+        } else if (registered) {
+            registerIcon = R.drawable.ic_outline_edit_24px;
+        }
+
+        if(this.item.getMaxregistrations() != null && this.item.getMaxregistrations() == 0) {
+            registerIcon = registered ? R.drawable.ic_outline_edit_disabled_24px : R.drawable.plus_disabled;
+            onclickText = R.string.agenda_prepublished_event_registration_opens_later;
+            subscribeEnabled = false;
+        }
+
+        // Mark icons based on calculated configuration
+        subscribe.setIcon(registerIcon).setVisible(true);
+        unsubscribe.setIcon(unregisterIcon).setVisible(registered);
+
+        // Add proper listeners to menu buttons
+        addSubscribeListener(subscribe, true, subscribeEnabled, onclickText);
+        addSubscribeListener(unsubscribe, false, unsubscribeEnabled, onclickText);
+    }
+
+    private void addSubscribeListener(MenuItem menuItem, final boolean subscribe, boolean enabled, final int text) {
+        if(!enabled && text >= 0) {
+            menuItem.setOnMenuItemClickListener(menuItem1 -> {
+                Toast.makeText(
+                        AgendaActivity.this,
+                        text,
+                        Toast.LENGTH_LONG).show();
+
+                return true;
+            });
+        } else if (enabled) {
+            menuItem.setOnMenuItemClickListener(item -> {
+                subscribeToAgenda(subscribe);
+                return true;
+            });
         }
     }
 
-    private void prepareSubscribeButtonsForRegistration(MenuItem subscribeButton, MenuItem unsubscribeButton) {
-        subscribeButton
-            .setIcon(R.drawable.plus)
-            .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    subscribeToAgenda(true);
-                    return true;
-                }
-            });
-
-        unsubscribeButton
-            .setIcon(R.drawable.close)
-            .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    subscribeToAgenda(false);
-                    return true;
-                }
-            });
+    @Override
+    public void onBackPressed() {
+        if(!handleNewCommentItemBackStack(getSupportFragmentManager(), null))
+            super.onBackPressed();
     }
 
-    private void prepareSubscribeButtonsForNoRegistration(MenuItem subscribeButton, MenuItem unsubscribeButton) {
-        subscribeButton
-            .setIcon(R.drawable.plus_disabled)
-            .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    Toast.makeText(
-                            AgendaActivity.this,
-                            R.string.agenda_prepublished_event_registration_closed,
-                            Toast.LENGTH_LONG).show();
-
-                    return true;
-                }
-            });
-        unsubscribeButton
-            .setIcon(R.drawable.close_disabled)
-            .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    Toast.makeText(
-                            AgendaActivity.this,
-                            R.string.agenda_prepublished_event_registration_closed,
-                            Toast.LENGTH_LONG).show();
-
-                    return true;
-                }
-            });
+    private boolean handleNewCommentItemBackStack(FragmentManager fm, Fragment managerFragment) {
+        if(managerFragment != null && fm.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry e = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1);
+            if ("new_comment_reply".equals(e.getName()) && managerFragment instanceof CommentsFragment) {
+                return ((CommentsFragment)managerFragment).hideReplyBox();
+            }
+        }
+        // Recurse over fragments
+        for(Fragment fragment : fm.getFragments()) {
+            if(handleNewCommentItemBackStack(fragment.getChildFragmentManager(), fragment))
+                return true;
+        }
+        return false;
     }
 
     /**
      * Sets an alarm for 30 minutes before the start time of this event.
-     * @param item
+     *
+     * @param item Event to set the alarm for
      */
     private void setAlarmForEvent(AgendaItem item) {
         DateTime time = item.getStart().minusMinutes(30);
-        time = new DateTime().plusMinutes(2); // FOR DEBUGGING PURPOSES
         Log.e("AgendaDetailTabs", "Setting alarm for id: " + item.getId() + " at time: " + time.toString());
         Gson gson = new Gson();
 
@@ -328,6 +534,10 @@ public class AgendaActivity extends BasicActivity {
         alarmManager.set(AlarmManager.RTC, time.getMillis(), pendingIntent);
     }
 
+    /**
+     * Remove a previously set alarm for an event
+     * @param item  Event to remove a previous alarm for
+     */
     private void unsetAlarmForEvent(AgendaItem item) {
         Log.e("AgendaDetailTabs", "Unsetting alarm for id: " + item.getId());
         Gson gson = new Gson();
@@ -336,35 +546,33 @@ public class AgendaActivity extends BasicActivity {
         myIntent.putExtra("item", gson.toJson(item));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, item.getId(), myIntent, PendingIntent.FLAG_ONE_SHOT);
 
-        AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
     }
 
+    /**
+     * Subscribe or unsubscribe the current user as a participant to the agenda item currently
+     * on display
+     * @param subscribe True for subscribe, false for unsubscribe
+     */
     private void subscribeToAgenda(boolean subscribe) {
         if(item.getMaxregistrations() != null && item.getMaxregistrations() == 0) {
             // Don't allow subscribing if max registrations is 0
             return;
         }
 
-        if(subscribe) {
+        if (subscribe) {
             DialogFragment newFragment = new SubscribeDialogFragment();
-            Bundle args = new Bundle();
-//            args.putInt("id", item.getId());
-            args.putSerializable("agenda_item", item);
-            newFragment.setArguments(args);
             newFragment.show(getSupportFragmentManager(), "agenda_subscribe");
         } else {
-            AgendaItem item = AgendaDetailFragment.item;
-
-            if(item.getHasUnregisterDeadline()) {
+            if (item.getHasUnregisterDeadline()) {
                 DateTime deadline = new DateTime(item.getUnregisterDeadline());
-
-                if(!deadline.isAfterNow()) {
+                if (!deadline.isAfterNow()) {
                     EventBus.getDefault().post(new ErrorEvent(new Error() {
 
                         @Override
                         public String getMessage() {
-                            return getString(R.string.agenda_unsubscribe_deadline_past);
+                            return getString(R.string.agenda_unsubscribe_deadline_passed);
                         }
 
                     }));
@@ -373,21 +581,61 @@ public class AgendaActivity extends BasicActivity {
                 }
             }
 
-            // no deadline for unsubscribing
-            Log.d("MainActivity", "unsubscribing for:" + AgendaDetailFragment.item.getId());
+            if(item.getHasDeadline() && item.getDeadline().isBeforeNow()) {
+                requestConfirm(getResources().getString(R.string.agenda_confirm_unsubscribe_deadline));
+            } else if (item.getMaxregistrations() != null && item.getMaxregistrations() > 0 && item.getParticipants().size() >= item.getMaxregistrations() - 5) {
+                // Arbitrary border but still nice
+                requestConfirm(getResources().getString(
+                        R.string.agenda_confirm_unsubscribe_backuplist,
+                        this.item.getParticipants().size(),
+                        this.item.getMaxregistrations()));
+            } else {
+                queUnregister();
+            }
 
-            Services.getInstance().agendaService.unsubscribe(AgendaDetailFragment.item.getId())
-                    .enqueue(new nl.uscki.appcki.android.api.Callback<AgendaParticipantLists>() {
+            // no deadline for unsubscribing
+            Log.d("MainActivity", "unsubscribing for:" + item.getId());
+        }
+    }
+
+    /**
+     * Unregister current user from active event through API
+     * Sends a AgendaItemSubscribedEvent on EventBus
+     */
+    private void queUnregister() {
+        Services.getInstance().agendaService.unsubscribe(item.getId())
+            .enqueue(new nl.uscki.appcki.android.api.Callback<ActionResponse<AgendaParticipantLists>>() {
 
                 @Override
-                public void onSucces(Response<AgendaParticipantLists> response) {
+                public void onSucces(Response<ActionResponse<AgendaParticipantLists>> response) {
                     EventBus.getDefault()
-                            .post(new AgendaItemSubscribedEvent(response.body(), true));
-                    setExportButtons();
+                            .post(new AgendaItemSubscribedEvent(response.body().payload, true));
                 }
 
+                @Override
+                public void onError(Response<ActionResponse<AgendaParticipantLists>> response) {
+                    super.onError(response);
+                    Toast.makeText(AgendaActivity.this, R.string.agenda_unsubscribe_failed, Toast.LENGTH_SHORT).show();
+                }
             });
-        }
+    }
+
+    /**
+     * Show a confirmation dialog that unsubscribes the user from active event when confirmed
+     * @param message   Message to show in dialog
+     */
+    private void requestConfirm(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.agenda_confirm_unsubscribe_header)
+                .setMessage(message)
+                .setPositiveButton(R.string.agenda_confirm_unsubscribe_positive, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        queUnregister();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
     }
 
     private void exportToCalendar() {
@@ -398,7 +646,7 @@ public class AgendaActivity extends BasicActivity {
     }
 
     private void removeFromCalendar() {
-        if(CalendarHelper.getInstance().removeItemFromCalendar(item))
+        if (CalendarHelper.getInstance().removeItemFromCalendar(item))
             Toast.makeText(
                     this,
                     R.string.agenda_toast_removed_from_calendar,
@@ -418,11 +666,31 @@ public class AgendaActivity extends BasicActivity {
         }
     }
 
+    public void onEventMainThread(CommentsUpdatedEvent event) {
+        if(event.fragment instanceof AgendaCommentsFragment) {
+            this.item.setTotalComments(event.numberOfComments);
+            updateTabTitleCounts();
+            EventBus.getDefault().post(new DetailItemUpdatedEvent<>(this.item));
+        }
+    }
+
+    public void onEventMainThread(ContentLoadedEvent event) {
+        if(event.updatedPageableFragment instanceof AgendaCommentsFragment) {
+            this.item.setTotalComments(((CommentsFragment) event.updatedPageableFragment).getTotalCommentsCount());
+            updateTabTitleCounts();
+            EventBus.getDefault().post(new DetailItemUpdatedEvent<>(this.item));
+        }
+    }
+
+    /**
+     * Triggered by unsubscribing in this activity, and by subscribing in the SubscribeDialogFragment
+     * @param event
+     */
     public void onEventMainThread(AgendaItemSubscribedEvent event) {
+        this.item.setParticipants(event.subscribed.getParticipants());
+        this.item.setBackupList(event.subscribed.getBackupList());
         if(!event.showSubscribe) {
             setAlarmForEvent(item);
-            menu.findItem(R.id.action_agenda_subscribe).setVisible(false);
-            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(true);
 
             int calendarEventItemId;
 
@@ -436,10 +704,68 @@ public class AgendaActivity extends BasicActivity {
                 exportToCalendar();
             }
         } else {
+            Toast.makeText(AgendaActivity.this, R.string.agenda_unsubscribe_confirmed, Toast.LENGTH_SHORT).show();
             unsetAlarmForEvent(item);
-            menu.findItem(R.id.action_agenda_subscribe).setVisible(true);
-            menu.findItem(R.id.action_agenda_unsubscribe).setVisible(false);
+
+            // TODO UserParticipation should be updated by API; not like this
+            this.item.getUserParticipation().setAnswer(null);
+            this.item.getUserParticipation().setNote(null);
+            this.item.getUserParticipation().setSubscribed(null);
         }
+        updateSubscribedStatus(event.subscribed);
         setExportButtons();
+        setSubscribeButtons();
+        showSubscribeConfirmation(event.subscribed);
+        EventBus.getDefault().post(new DetailItemUpdatedEvent<>(item));
+        updateTabTitleCounts();
+    }
+
+    /**
+     * Update subscribed status of user on current Agenda item, until refresh
+     * @param nowSubscribedLists    List passed by (un)subscribe API call
+     */
+    // TODO this is really ugly, and should just be returned by API
+    private void updateSubscribedStatus(AgendaParticipantLists nowSubscribedLists) {
+        if(UserHelper.getInstance().getCurrentUser() != null) {
+            AgendaUserParticipation participation = this.item.getUserParticipation();
+            int status = AgendaSubscribedHelper.isSubscribed(nowSubscribedLists);
+
+            if(status == AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED) {
+                participation.setBackuplist(false);
+                participation.setAttends(false);
+            } else if (status == AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST) {
+                participation.setBackuplist(true);
+                participation.setAttends(false);
+            } else {
+                participation.setAttends(true);
+                participation.setBackuplist(false);
+            }
+        }
+    }
+
+    private void showSubscribeConfirmation(AgendaParticipantLists nowSubscribedLists) {
+        int messageResourceId = -1;
+
+        if(UserHelper.getInstance().getCurrentUser() != null) {
+
+            // TODO userParticipation is not a response payload to (un)subscribing, so we still need this
+            int status = AgendaSubscribedHelper.isSubscribed(nowSubscribedLists);
+            int previousStatus = AgendaSubscribedHelper.isSubscribed(item);
+
+            if(status == previousStatus) {
+                messageResourceId = R.string.agenda_subscribe_changed;
+            } else if (status == AgendaSubscribedHelper.AGENDA_SUBSCRIBED) {
+
+                messageResourceId = R.string.agenda_subscribe_confirmed;
+            } else if (status == AgendaSubscribedHelper.AGENDA_ON_BACKUP_LIST) {
+                messageResourceId = R.string.agenda_subscribe_backuplist;
+            }
+
+            if (status > AgendaSubscribedHelper.AGENDA_NOT_SUBSCRIBED) {
+                Toast.makeText(this, messageResourceId, Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e(getClass().getSimpleName(), "User not found on either list. No message shown");
+            }
+        }
     }
 }

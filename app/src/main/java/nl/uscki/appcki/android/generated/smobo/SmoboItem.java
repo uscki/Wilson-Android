@@ -25,6 +25,9 @@ public class SmoboItem {
     @Expose
     @SerializedName("wickiPage")
     List<Object> wickiPage;
+    @Expose
+    @SerializedName("numOfPhotos")
+    Integer numOfPhotos;
 
     public List<Committee> getGroups() {
         return groups;
@@ -56,5 +59,9 @@ public class SmoboItem {
 
     public void setWickiPage(List<Object> wickiPage) {
         this.wickiPage = wickiPage;
+    }
+
+    public int getNumOfPhotos() {
+        return numOfPhotos == null ? 0 : numOfPhotos;
     }
 }

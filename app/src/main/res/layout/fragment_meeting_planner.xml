@@ -1,13 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.core.widget.NestedScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+    <androidx.cardview.widget.CardView
+        android:id="@+id/meeting_planner_notes_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/CardView.Wilson"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="@dimen/text_margin">
+
+            <TextView
+                android:id="@+id/meeting_planner_notes_text"
+                style="@style/AppTheme.TextSubHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/meeting_detail_notes" />
+
+            <TextView
+                android:id="@+id/meeting_planner_notes"
+                style="@style/AppTheme.Text.Selectable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/example_text" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/planner_list"
     android:name="nl.uscki.appcki.android.fragments.meeting.MeetingPlannerFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginStart="@dimen/text_margin"
+    android:layout_marginEnd="@dimen/text_margin"
+    android:layout_margin="@dimen/text_margin"
     app:layoutManager="LinearLayoutManager"
     tools:context="nl.uscki.appcki.android.fragments.meeting.MeetingPlannerFragment"
     tools:listitem="@layout/fragment_meeting_preference_day" />
+</LinearLayout>
+</androidx.core.widget.NestedScrollView>

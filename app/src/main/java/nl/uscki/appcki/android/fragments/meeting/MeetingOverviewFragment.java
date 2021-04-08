@@ -2,12 +2,13 @@ package nl.uscki.appcki.android.fragments.meeting;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
@@ -16,12 +17,11 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.MeetingItemAdapter;
 import nl.uscki.appcki.android.generated.meeting.MeetingItem;
-import nl.uscki.appcki.android.generated.meeting.MeetingOverview;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MeetingOverviewFragment extends PageableFragment<MeetingOverview> {
+public class MeetingOverviewFragment extends PageableFragment<MeetingItemAdapter.ViewHolder, MeetingItem> {
     public MeetingOverviewFragment() {
         // Required empty public constructor
     }
@@ -33,8 +33,8 @@ public class MeetingOverviewFragment extends PageableFragment<MeetingOverview> {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        setAdapter(new MeetingItemAdapter(new ArrayList<MeetingItem>()));
-        Services.getInstance().meetingService.older(page, MEETING_PAGE_SIZE).enqueue(callback);
+        setAdapter(new MeetingItemAdapter(new ArrayList<>()));
+        Services.getInstance().meetingService.getMeetingCollection(page, MEETING_PAGE_SIZE).enqueue(callback);
     }
 
     @Override
@@ -58,12 +58,12 @@ public class MeetingOverviewFragment extends PageableFragment<MeetingOverview> {
 
     @Override
     public void onScrollRefresh() {
-        Services.getInstance().meetingService.older(page, MEETING_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().meetingService.getMeetingCollection(page, MEETING_PAGE_SIZE).enqueue(callback);
     }
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().meetingService.older(page, MEETING_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().meetingService.getMeetingCollection(page, MEETING_PAGE_SIZE).enqueue(callback);
     }
 
     @Override

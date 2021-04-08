@@ -9,7 +9,7 @@
         android:text="New Switch"
         android:id="@+id/meeting_slot_switch"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp" />
 
@@ -18,20 +18,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/meeting_slot_color"
         android:src="@drawable/meeting_slot_colorcode"
-        android:layout_alignLeft="@+id/meeting_slot_switch"
         android:layout_alignStart="@+id/meeting_slot_switch"
         android:layout_alignBottom="@+id/meeting_slot_note"
         android:layout_marginBottom="5dp"
-        android:layout_marginRight="6dp" />
+        android:layout_marginEnd="6dp" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/meeting_slot_note"
-        android:layout_toRightOf="@+id/meeting_slot_color"
-        android:layout_alignParentRight="true"
+        android:layout_toEndOf="@+id/meeting_slot_color"
         android:layout_alignParentEnd="true"
-        android:hint="Note"
+        android:hint="@string/agenda_dialog_note_hint"
         android:layout_below="@+id/meeting_slot_switch"
         android:inputType="text|textShortMessage"
         android:maxLines="1"

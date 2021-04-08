@@ -1,15 +1,14 @@
 package nl.uscki.appcki.android.fragments.search;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.appcompat.widget.SearchView;
 
 import java.util.ArrayList;
 
@@ -18,21 +17,20 @@ import nl.uscki.appcki.android.activities.BasicActivity;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.SmoboSearchResultAdapter;
-import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
-import nl.uscki.appcki.android.generated.smobo.SmoboSearchPage;
+import nl.uscki.appcki.android.generated.organisation.PersonName;
 
 /**
  * Created by peter on 4/24/17.
  */
 
-public class SmoboSearch extends PageableFragment<SmoboSearchPage> {
+public class SmoboSearch extends PageableFragment<SmoboSearchResultAdapter.ViewHolder, PersonName> {
     private final int PAGE_SIZE = 10;
     private String query;
     private BasicActivity activity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setAdapter(new SmoboSearchResultAdapter(new ArrayList<PersonSimpleName>()));
+        setAdapter(new SmoboSearchResultAdapter(new ArrayList<>()));
 
         // do this after setAdapter because super.onCreateView has a dependency on the adapter set there
         // and do this before setRefreshing because this creates the swipeContainer
@@ -41,7 +39,6 @@ public class SmoboSearch extends PageableFragment<SmoboSearchPage> {
 
         // search doesn't start with a loading view, it has to wait for user input
         swipeContainer.setRefreshing(false);
-        activity.getSupportActionBar().setTitle("");
 
         return view;
     }

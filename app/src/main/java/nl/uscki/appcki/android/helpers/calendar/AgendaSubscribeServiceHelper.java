@@ -5,20 +5,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
-
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.ServiceGenerator;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.generated.ServerError;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
+import nl.uscki.appcki.android.helpers.notification.agenda.AgendaNewNotification;
 import nl.uscki.appcki.android.services.EventExportJobService;
-import nl.uscki.appcki.android.services.NotificationReceiver;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -47,7 +46,7 @@ public class AgendaSubscribeServiceHelper {
      * @return          String containing user entered subscribe text
      */
     public CharSequence getSubscribeText(Intent intent) {
-        Bundle remoteInput = android.support.v4.app.RemoteInput.getResultsFromIntent(intent);
+        Bundle remoteInput = androidx.core.app.RemoteInput.getResultsFromIntent(intent);
 
         if(remoteInput != null) {
             return remoteInput.getCharSequence(PARAM_SUBSCRIBE_COMMENT);
@@ -69,21 +68,21 @@ public class AgendaSubscribeServiceHelper {
         }
 
         // Make API available
-        ServiceGenerator.init();
+        ServiceGenerator.init(context);
 
         // Get token active
         UserHelper.getInstance().load();
 
         Services.getInstance().agendaService.subscribe(agendaId, subscribeComment)
-                .enqueue(new retrofit2.Callback<AgendaParticipantLists>() {
+                .enqueue(new retrofit2.Callback<ActionResponse<AgendaParticipantLists>>() {
 
                     @Override
                     public void onResponse(
-                            Call<AgendaParticipantLists> call,
-                            Response<AgendaParticipantLists> response)
+                            Call<ActionResponse<AgendaParticipantLists>> call,
+                            Response<ActionResponse<AgendaParticipantLists>> response)
                     {
                         if(response.isSuccessful()) {
-                            handleSuccess(response, agendaId, intent);
+                            handleSuccess(response.body().payload, agendaId, intent);
                         } else {
                             String errorMsg = context.getString(R.string.connection_error);
                             boolean allowSubscribe = true;
@@ -93,7 +92,7 @@ public class AgendaSubscribeServiceHelper {
                                         response.errorBody().string(), ServerError.class);
 
                                 if(error.getStatus() == 401) {
-                                    errorMsg = context.getString(R.string.notauthorized);
+                                    errorMsg = context.getString(R.string.noaccess);
                                     allowSubscribe = false;
                                 }
                                 if(error.getStatus() == 400) {
@@ -121,7 +120,7 @@ public class AgendaSubscribeServiceHelper {
                     }
 
                     @Override
-                    public void onFailure(Call<AgendaParticipantLists> call, Throwable t) {
+                    public void onFailure(Call<ActionResponse<AgendaParticipantLists>> call, Throwable t) {
                         Log.e(getClass().toString(), t.getMessage());
                         handleError(intent, context.getString(R.string.unknown_server_error), true);
                     }
@@ -132,18 +131,17 @@ public class AgendaSubscribeServiceHelper {
      * On successful subscribe attempt, update the notification and show a toast notification
      * indicating success
      *
-     * @param response      Server response for subscribe action
+     * @param response      Server response parsed as AgendaParticipantLists for subscribe action
      * @param agendaId      ID of agenda item subscribed to
      * @param intent        Intent with which this service was started
      */
     private void handleSuccess(
-            Response<AgendaParticipantLists> response,
+            AgendaParticipantLists response,
             int agendaId,
             Intent intent
     ) {
         EventBus.getDefault()
-                .post(new AgendaItemSubscribedEvent(response.body(), false));
-        NotificationReceiver notificationReceiver = new NotificationReceiver(context);
+                .post(new AgendaItemSubscribedEvent(response, false));
 
         boolean allowExport = true;
 
@@ -153,9 +151,7 @@ public class AgendaSubscribeServiceHelper {
                     .enqueueExportAgendaToCalendarAction(context, agendaId);
         }
 
-        notificationReceiver
-                .buildNewAgendaItemNotificationFromIntent(intent, allowExport, false);
-
+        recreateNotificationSilently(intent, false, allowExport);
         Toast.makeText(
                 context,
                 context.getString(R.string.agenda_subscribe_success),
@@ -169,12 +165,22 @@ public class AgendaSubscribeServiceHelper {
      * @param error     Error message to show
      */
     private void handleError(Intent intent, String error, boolean allowExport) {
-        NotificationReceiver notificationReceiver = new NotificationReceiver(context);
-        notificationReceiver.buildNewAgendaItemNotificationFromIntent(intent, allowExport, true);
+        recreateNotificationSilently(intent, true, allowExport);
         Toast.makeText(
                 context,
                 error,
                 Toast.LENGTH_SHORT)
                 .show();
+    }
+
+    private void recreateNotificationSilently(Intent intent, boolean allowSubscribe, boolean allowExport) {
+        try {
+            AgendaNewNotification n = new AgendaNewNotification(this.context, intent, allowSubscribe, allowExport);
+            n.setSilent(true);
+            n.build();
+            n.show();
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), e.getMessage(), e);
+        }
     }
 }

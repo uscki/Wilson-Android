@@ -1,18 +1,19 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.generated.SingleValueWilsonItem;
+import nl.uscki.appcki.android.generated.agenda.AgendaUserParticipation;
 
 public class PossibleAnswersAdapter extends BaseItemAdapter<PossibleAnswersAdapter.ViewHolder, SingleValueWilsonItem<String>> {
 
@@ -21,6 +22,7 @@ public class PossibleAnswersAdapter extends BaseItemAdapter<PossibleAnswersAdapt
     private RecyclerView parentRecyclerView;
     private SubscribeDialogFragment dialogFragment;
     private String selectedValue = null;
+    private AgendaUserParticipation participation;
 
     public String getSelectedValue() {
         return selectedValue;
@@ -31,8 +33,12 @@ public class PossibleAnswersAdapter extends BaseItemAdapter<PossibleAnswersAdapt
         this.dialogFragment = dialogFragment;
     }
 
+    public void setUserParticipation(AgendaUserParticipation participation) {
+        this.participation = participation;
+    }
+
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_agenda_possible_answer, parent,false);
         return new ViewHolder(view);
@@ -40,7 +46,8 @@ public class PossibleAnswersAdapter extends BaseItemAdapter<PossibleAnswersAdapt
 
     @Override
     public void onBindCustomViewHolder(final ViewHolder holder, int position) {
-        holder.possibleAnswerText.setText(items.get(position).getValue().trim());
+        String itemValue = items.get(position).getValue().trim();
+        holder.possibleAnswerText.setText(itemValue);
         holder.possibleAnswerValue = items.get(position).getValue();
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,6 +58,12 @@ public class PossibleAnswersAdapter extends BaseItemAdapter<PossibleAnswersAdapt
                 dialogFragment.notifySelectionMade();
             }
         });
+
+        // Set the current selected item in case one exists
+        if(this.participation != null && itemValue.equals((this.participation.getAnswer()))) {
+            holder.checkmark.setVisibility(View.VISIBLE);
+            this.selectedValue = itemValue;
+        }
     }
 
     private void resetCheckmarks() {
@@ -66,15 +79,15 @@ public class PossibleAnswersAdapter extends BaseItemAdapter<PossibleAnswersAdapt
         private final View mView;
         private String possibleAnswerValue;
 
-        @BindView(R.id.possible_answer_checkmark)
         ImageView checkmark;
-
-        @BindView(R.id.possible_answer_value)
         TextView possibleAnswerText;
 
         public ViewHolder(View view) {
             super(view);
-            ButterKnife.bind(this, view);
+
+            checkmark = view.findViewById(R.id.possible_answer_checkmark);
+            possibleAnswerText = view.findViewById(R.id.possible_answer_value);
+
             this.mView = view;
         }
 

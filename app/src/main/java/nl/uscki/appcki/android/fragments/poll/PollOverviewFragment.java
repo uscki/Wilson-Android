@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,13 +15,12 @@ import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.PollAdapter;
 import nl.uscki.appcki.android.generated.poll.PollItem;
-import nl.uscki.appcki.android.generated.poll.PollPage;
 
 /**
  * Created by peter on 3/7/17.
  */
 
-public class PollOverviewFragment extends PageableFragment<PollPage> {
+public class PollOverviewFragment extends PageableFragment<PollAdapter.ViewHolder, PollItem> {
     private final int POLL_PAGE_SIZE = 14;
 
     @Override
@@ -31,7 +29,7 @@ public class PollOverviewFragment extends PageableFragment<PollPage> {
         MainActivity.currentScreen = MainActivity.Screen.POLL_OVERVIEW;
         setHasOptionsMenu(true);
 
-        setAdapter(new PollAdapter(new ArrayList<PollItem>()));
+        setAdapter(new PollAdapter(new ArrayList<>()));
         Services.getInstance().pollService.overview(page, getPageSize()).enqueue(callback);
         return super.onCreateView(inflater, container, savedInstanceState);
     }

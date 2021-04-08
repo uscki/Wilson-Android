@@ -3,14 +3,6 @@ package nl.uscki.appcki.android.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +11,19 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.facebook.drawee.view.SimpleDraweeView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.bumptech.glide.Glide;
+import com.google.android.material.navigation.NavigationView;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
@@ -27,13 +31,19 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.ContentLoadedEvent;
+import nl.uscki.appcki.android.events.CurrentUserUpdateRequiredDirectiveEvent;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.events.UserLoggedInEvent;
+import nl.uscki.appcki.android.fragments.AppInfoFragment;
 import nl.uscki.appcki.android.fragments.LoginFragment;
 import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
+import nl.uscki.appcki.android.fragments.forum.ForumLandingFragment;
+import nl.uscki.appcki.android.fragments.forum.ForumPostOverviewFragment;
 import nl.uscki.appcki.android.fragments.home.HomeFragment;
 import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
+import nl.uscki.appcki.android.fragments.media.MediaCaptionContestSharedFragment;
+import nl.uscki.appcki.android.fragments.media.MediaCollectionFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
@@ -42,11 +52,10 @@ import nl.uscki.appcki.android.fragments.quotes.QuoteFragment;
 import nl.uscki.appcki.android.fragments.search.SmoboSearch;
 import nl.uscki.appcki.android.fragments.shop.StoreFragment;
 import nl.uscki.appcki.android.fragments.shop.StoreSelectionFragment;
-import nl.uscki.appcki.android.generated.organisation.PersonSimple;
+import nl.uscki.appcki.android.generated.organisation.CurrentUser;
 import nl.uscki.appcki.android.helpers.ShopPreferenceHelper;
 import nl.uscki.appcki.android.helpers.UserHelper;
 import retrofit2.Response;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends BasicActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -57,12 +66,17 @@ public class MainActivity extends BasicActivity
     public static final String ACTION_SHOUTBOX_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_SHOUTBOX_OVERVIEW";
     public static final String ACTION_MEETING_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_MEETING_OVERVIEW";
     public static final String ACTION_POLL_OVERVIEW = "nl.uscki.appcki.android.actions.MainActivity.ACTION_POLL_OVERVIEW";
+    public static final String ACTION_VIEW_STORE = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_STORE";
+    public static final String ACTION_VIEW_COLLECTION = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_COLLECTION";
+    public static final String ACTION_VIEW_FORUM_TOPIC = "nl.uscki.appcki.android.actions.MainActivity.ACTION_VIEW_FORUM_TOPIC";
 
     public static final String ACTION_VIEW_NEWSITEM
             = "nl.uscki.appcki.android.activities.action.ACTION_VIEW_NEWSITEM";
 
     public static final String PARAM_NEWS_ID
             = "nl.uscki.appcki.android.activities.param.PARAM_NEWS_ID";
+    public static final String PARAM_POLL_ID
+            = "nl.uscki.appcki.android.activities.param.PARAM_POLL_ID";
 
     private int focusNewsId = -1;
     private int focusTriesSoFar = 0;
@@ -72,25 +86,40 @@ public class MainActivity extends BasicActivity
     Toolbar toolbar;
     NavigationView navigationView;
     DrawerLayout drawer;
+    TextView logout;
 
     LoginFragment loginFragment = new LoginFragment();
 
     public enum Screen {
-        LOGIN,
-        NEWS,
-        AGENDA,
-        POLL_OVERVIEW,
-        ROEPHOEK,
-        AGENDA_DETAIL,
-        MEETING_OVERVIEW,
-        MEETING_PLANNER,
-        MEETING_DETAIL,
-        QUOTE_OVERVIEW,
-        POLL_DETAIL,
-        POLL_ACTIVE,
-        SMOBO_SEARCH,
-        STORE_SELECTION,
-        STORE_BUY
+        LOGIN(-1),
+        NEWS(R.id.nav_news),
+        AGENDA(R.id.nav_agenda),
+        POLL_OVERVIEW(R.id.nav_poll),
+        ROEPHOEK(R.id.nav_roephoek),
+        AGENDA_DETAIL(R.id.nav_agenda),
+        MEETING_OVERVIEW(R.id.nav_meeting),
+        MEETING_PLANNER(R.id.nav_meeting),
+        MEETING_DETAIL(R.id.nav_meeting),
+        QUOTE_OVERVIEW(R.id.nav_quotes),
+        POLL_DETAIL(R.id.nav_poll),
+        POLL_ACTIVE(R.id.nav_poll),
+        SMOBO_SEARCH(R.id.nav_search),
+        STORE_SELECTION(R.id.nav_shop),
+        STORE_BUY(R.id.nav_shop),
+        MEDIA_COLLECTION_OVERVIEW(R.id.nav_media),
+        MEDIA_LANDING_PAGE(R.id.nav_media),
+        FORUM(R.id.nav_forum),
+        FORUM_LANDING_PAGE(R.id.nav_forum);
+
+        private int menuItemId;
+
+        Screen(int menuItemId) {
+            this.menuItemId = menuItemId;
+        }
+
+        public int getMenuItemId() {
+            return this.menuItemId;
+        }
     }
 
     public static Screen currentScreen;
@@ -100,23 +129,39 @@ public class MainActivity extends BasicActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
         toolbar = findViewById(R.id.toolbar);
+        navigationView = findViewById(R.id.nav_view);
+        drawer = findViewById(R.id.drawer_layout);
+        logout = findViewById(R.id.menu_logout);
+
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
 
-        drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         if (!UserHelper.getInstance().isLoggedIn()) {
             initLoggedOutUI();
         } else {
             initLoggedInUI();
+
+            logout.setClickable(true);
+            logout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UserHelper.getInstance().logout();
+                    initLoggedOutUI();
+                    currentScreen = Screen.LOGIN;
+                }
+            });
+
+            // Ensure a full user info object is loaded
+            UserHelper.getInstance().getCurrentUser(MainActivity.this);
 
             // Get the intent, verify the action and get the query
             handleIntention(getIntent());
@@ -142,26 +187,36 @@ public class MainActivity extends BasicActivity
             } else if (ACTION_SHOUTBOX_OVERVIEW.equals(intent.getAction())) {
                 openTab(HomeFragment.ROEPHOEK);
             } else if (ACTION_MEETING_OVERVIEW.equals(intent.getAction())) {
-                openFragment(new MeetingOverviewFragment(), null);
+                openFragment(new MeetingOverviewFragment(), null, false);
                 currentScreen = Screen.MEETING_OVERVIEW;
             } else if (ACTION_POLL_OVERVIEW.equals(intent.getAction())) {
-                openFragment(new PollOverviewFragment(), null);
+                openFragment(new PollOverviewFragment(), null, false);
+            } else if (ACTION_VIEW_STORE.equals(intent.getAction())) {
+                Bundle args = new Bundle();
+                args.putInt("id", intent.getIntExtra(StoreFragment.PARAM_STORE_ID, -1));
+                openFragment(new StoreFragment(), args, false);
+            } else if (ACTION_VIEW_COLLECTION.equals(intent.getAction())) {
+                openFragment(new MediaCollectionFragment(), intent.getExtras(), false);
+            } else if (ACTION_VIEW_FORUM_TOPIC.equals(intent.getAction())) {
+                openFragment(new ForumPostOverviewFragment(), intent.getExtras(), true);
             } else {
-                openTab(HomeFragment.NEWS);
+                openTab(HomeFragment.NEWS, false);
             }
+
+            // TODO add forum from notification
         }
     }
 
     private void handleAgendaItemIntent(Intent intent) {
         Bundle args = new Bundle();
         args.putString("item", getIntent().getStringExtra("item"));
-        openFragment(new AgendaDetailTabsFragment(), args);
+        openFragment(new AgendaDetailTabsFragment(), args, false);
     }
 
     private void handleNewsItemIntent(Intent intent) {
         focusNewsId = intent.getIntExtra(PARAM_NEWS_ID, -1);
         focusTriesSoFar = 0;
-        openTab(HomeFragment.NEWS, focusNewsId);
+        openTab(HomeFragment.NEWS, focusNewsId, false);
     }
 
     @Override
@@ -185,35 +240,23 @@ public class MainActivity extends BasicActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if(handleChildFragmentStack()) {
+            FragmentManager sfm = getSupportFragmentManager();
+            if(handleChildFragmentStack(sfm)) {
                 // Stop here, as a back action has been performed
-                return;
-            }
-
-            if (currentScreen == Screen.AGENDA_DETAIL) {
-                openTab(HomeFragment.AGENDA);
-            } else if (currentScreen == Screen.MEETING_PLANNER || currentScreen == Screen.MEETING_DETAIL) {
-                openFragment(new MeetingOverviewFragment(), null);
-                currentScreen = Screen.MEETING_OVERVIEW;
-            } else if(currentScreen == Screen.POLL_ACTIVE) {
-                openTab(HomeFragment.NEWS);
-            } else if (currentScreen == Screen.POLL_DETAIL) {
-                openFragment(new PollOverviewFragment(), null);
-            } else if (currentScreen == Screen.POLL_OVERVIEW) {
-                openFragment(new PollResultFragment(), null);
-            } else if (currentScreen == Screen.STORE_BUY) {
-                openFragment(new StoreSelectionFragment(), null);
-            } else if (currentScreen != Screen.NEWS) {
-                openTab(HomeFragment.NEWS);
-            }
-            else {
+               return;
+            } else if (sfm.getBackStackEntryCount() > 0) {
+                FragmentManager.BackStackEntry entry = sfm.getBackStackEntryAt(sfm.getBackStackEntryCount() - 1);
+                String name = entry.getBreadCrumbTitle() == null ? null : entry.getBreadCrumbTitle().toString();
+                getSupportFragmentManager().popBackStack();
+                currentScreen = Screen.valueOf(name);
+            } else {
                 super.onBackPressed();
             }
+            changeDrawerMenuSelection();
         }
     }
 
-    private boolean handleChildFragmentStack() {
-        FragmentManager fm = getSupportFragmentManager();
+    private boolean handleChildFragmentStack(FragmentManager fm) {
         Class currentFragmentClass = Utils.getClassForScreen(currentScreen);
         if(currentFragmentClass == null) return false;
 
@@ -227,6 +270,9 @@ public class MainActivity extends BasicActivity
 
                 // Nothing to do here
                 return false;
+            } else {
+                if(handleChildFragmentStack(f.getChildFragmentManager()))
+                    return true;
             }
         }
 
@@ -236,6 +282,10 @@ public class MainActivity extends BasicActivity
 
     public static void setHomescreenDestroyed() {
         homeScreenExists = false;
+    }
+
+    public static void setHomeScreenExists() {
+        homeScreenExists = true;
     }
 
     @Override
@@ -258,8 +308,10 @@ public class MainActivity extends BasicActivity
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;
+        } else if (id == R.id.action_about) {
+            openFragment(new AppInfoFragment(), null, true);
         } else if (id == R.id.action_poll_archive) {
-            openFragment(new PollOverviewFragment(), null);
+            openFragment(new PollOverviewFragment(), null, true);
         }
 
         return super.onOptionsItemSelected(item);
@@ -278,46 +330,48 @@ public class MainActivity extends BasicActivity
             } else if (id == R.id.nav_shop) {
                 ShopPreferenceHelper shopPreferenceHelper = new ShopPreferenceHelper(this);
                 if(shopPreferenceHelper.getShop() < 0) {
-                    openFragment(new StoreSelectionFragment(), null);
+                    openFragment(new StoreSelectionFragment(), null, true);
                 } else {
                     Bundle bundle = new Bundle();
                     bundle.putInt("id", shopPreferenceHelper.getShop());
-                    openFragment(new StoreFragment(), bundle);
+                    openFragment(new StoreFragment(), bundle, true);
                 }
             } else if (id == R.id.nav_quotes) {
-                openFragment(new QuoteFragment(), null);
+                openFragment(new QuoteFragment(), null, true);
             } else if (id == R.id.nav_poll) {
-                openFragment(new PollResultFragment(), null);
+                openFragment(new PollResultFragment(), null, true);
             } else if (id == R.id.nav_roephoek) {
                 openTab(HomeFragment.ROEPHOEK);
             } else if (id == R.id.nav_meeting) {
-                openFragment(new MeetingOverviewFragment(), null);
+                openFragment(new MeetingOverviewFragment(), null, true);
                 currentScreen = Screen.MEETING_OVERVIEW;
             } else if (id == R.id.nav_search) {
-                openFragment(new SmoboSearch(), null);
+                openFragment(new SmoboSearch(), null, true);
                 currentScreen = Screen.SMOBO_SEARCH;
-            } else if (id == R.id.nav_logout) {
-                UserHelper.getInstance().logout();
-                initLoggedOutUI();
-                currentScreen = Screen.LOGIN;
-            }
-        } else {
-            if (id == R.id.nav_login) {
-                openFragment(loginFragment, null);
-                currentScreen = Screen.LOGIN;
+            } else if (id == R.id.nav_media) {
+                openFragment(new MediaCaptionContestSharedFragment(), null, true);
+                currentScreen = Screen.MEDIA_LANDING_PAGE;
+            } else if (id == R.id.nav_forum) {
+                openFragment(new ForumLandingFragment(), null, true);
+                currentScreen = Screen.FORUM_LANDING_PAGE;
             }
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 
     private void openTab(int index) {
-        openTab(index, -1);
+        openTab(index, -1, true);
     }
 
-    private void openTab(int index, int scrollToId) {
+    private void openTab(int index, boolean addToBackStack) {
+        openTab(index, -1, addToBackStack);
+    }
+
+    private void openTab(int index, int scrollToId, boolean addToBackStack) {
 
         if (
                 homeScreenExists &&
@@ -331,7 +385,7 @@ public class MainActivity extends BasicActivity
         } else {
             Bundle bundle = new Bundle();
             bundle.putInt("index", index);
-            openFragment(new HomeFragment(), bundle);
+            openFragment(new HomeFragment(), bundle, addToBackStack);
             homeScreenExists = true;
         }
 
@@ -339,13 +393,7 @@ public class MainActivity extends BasicActivity
     }
 
     private void setMenuToTab(int homeFragmentTabIndex) {
-        if(homeFragmentTabIndex == HomeFragment.NEWS) {
-            changeDrawerMenuSelection(R.id.nav_news);
-        } else if(homeFragmentTabIndex == HomeFragment.AGENDA) {
-            changeDrawerMenuSelection(R.id.nav_agenda);
-        } else if(homeFragmentTabIndex == HomeFragment.ROEPHOEK) {
-            changeDrawerMenuSelection(R.id.nav_roephoek);
-        }
+        changeDrawerMenuSelection();
     }
 
     public void changeDrawerMenuSelection(int menuItemId) {
@@ -358,7 +406,12 @@ public class MainActivity extends BasicActivity
         }
     }
 
-    private void openFragment(Fragment fragment, Bundle arguments) {
+    public void changeDrawerMenuSelection() {
+        if(currentScreen != null)
+            changeDrawerMenuSelection(currentScreen.getMenuItemId());
+    }
+
+    private void openFragment(Fragment fragment, Bundle arguments, boolean addToBackStack) {
         if (fragment instanceof LoginFragment) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         } else {
@@ -371,9 +424,17 @@ public class MainActivity extends BasicActivity
             fragment.setArguments(arguments);
         }
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment);
+
+        if(addToBackStack && currentScreen != null) {
+            transaction.addToBackStack(null)
+                    .setBreadCrumbTitle(currentScreen.name());
+        }
+
+        transaction.commit();
+
+        changeDrawerMenuSelection();
     }
 
     private void initLoggedInUI() {
@@ -381,40 +442,49 @@ public class MainActivity extends BasicActivity
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         hideKeyboard(findViewById(R.id.drawer_layout));
 
-        navigationView.getMenu().findItem(R.id.nav_login).setVisible(false);
-        navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
+        logout.setVisibility(View.VISIBLE);
 
-        TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
-        name.setText(UserHelper.getInstance().getPerson().getPostalname());
-
-        final SimpleDraweeView profile = navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
-
-        profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openSmoboFor(UserHelper.getInstance().getPerson());
-            }
-        });
-        // load the users profile picture
-        Services.getInstance().userService.currentUser().enqueue(new Callback<PersonSimple>() {
-            @Override
-            public void onSucces(Response<PersonSimple> response) {
-                Log.e(TAG, response.body().toString());
-                UserHelper.getInstance().setPerson(response.body());
-                if(UserHelper.getInstance().getPerson().getPhotomediaid() != null) {
-                    profile.setImageURI(MediaAPI.getMediaUri(UserHelper.getInstance().getPerson().getPhotomediaid(), MediaAPI.MediaSize.SMALL));
+        CurrentUser user = UserHelper.getInstance().getCurrentUser();
+        if(user != null) {
+            setUserDependentFeatures(user);
+        } else {
+            Services.getInstance().userService.currentUser().enqueue(new Callback<CurrentUser>() {
+                @Override
+                public void onSucces(Response<CurrentUser> response) {
+                    UserHelper.getInstance().setCurrentUser(response.body());
+                    setUserDependentFeatures(response.body());
                 }
-            }
+            });
+        }
+    }
+
+    private void setUserDependentFeatures(final CurrentUser user) {
+        TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
+        name.setText(user.getPostalname());
+
+        final ImageView profile = navigationView.getHeaderView(0).findViewById(R.id.nav_header_profilepic);
+
+        profile.setOnClickListener(v -> {
+            openSmoboFor(user);
+            EventBus.getDefault().post(new CurrentUserUpdateRequiredDirectiveEvent());
         });
+
+        if (user.getPhotomediaid() != null) {
+            Glide.with(this)
+                    .load(MediaAPI.getMediaUri(user.getPhotomediaid(), MediaAPI.MediaSize.SMALL))
+                    .fitCenter()
+                    .optionalCircleCrop()
+                    .placeholder(R.drawable.account)
+                    .into(profile);
+        }
     }
 
     private void initLoggedOutUI() {
         toolbar.setVisibility(View.GONE);
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        openFragment(new LoginFragment(), null);
+        openFragment(new LoginFragment(), null, false);
         currentScreen = Screen.LOGIN;
-        navigationView.getMenu().findItem(R.id.nav_login).setVisible(true);
-        navigationView.getMenu().findItem(R.id.nav_logout).setVisible(false);
+        logout.setVisibility(View.GONE);
 
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         name.setText("");
@@ -448,16 +518,16 @@ public class MainActivity extends BasicActivity
         //TODO refactor this
         if(event.screen instanceof AgendaDetailTabsFragment) {
             Intent agenda = new Intent(this, AgendaActivity.class);
-            agenda.putExtra("item", event.arguments);
+            agenda.putExtras(event.arguments);
             startActivity(agenda);
             return;
         } else if(event.screen instanceof MeetingDetailTabsFragment) {
             Intent meeting = new Intent(this, MeetingActivity.class);
-            meeting.putExtra("item", event.arguments);
+            meeting.putExtras(event.arguments);
             startActivity(meeting);
             return;
         }
-        openFragment(event.screen, event.arguments);
+        openFragment(event.screen, event.arguments, true);
     }
 
     public void onEventMainThread(ContentLoadedEvent event) {
@@ -476,8 +546,5 @@ public class MainActivity extends BasicActivity
         setMenuToTab(event.index);
     }
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-    }
+
 }

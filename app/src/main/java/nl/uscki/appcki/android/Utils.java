@@ -6,13 +6,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v4.app.Fragment;
-import android.os.IBinder;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.widget.AppCompatDrawableManager;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.fragment.app.Fragment;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -30,11 +28,12 @@ import nl.uscki.appcki.android.fragments.agenda.AgendaDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.home.HomeAgendaTab;
 import nl.uscki.appcki.android.fragments.home.HomeNewsTab;
 import nl.uscki.appcki.android.fragments.home.HomeRoephoekTab;
+import nl.uscki.appcki.android.fragments.media.MediaCaptionContestSharedFragment;
+import nl.uscki.appcki.android.fragments.media.MediaCollectionFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingDetailTabsFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingOverviewFragment;
 import nl.uscki.appcki.android.fragments.meeting.MeetingPlannerFragment;
 import nl.uscki.appcki.android.fragments.poll.PollOverviewFragment;
-import nl.uscki.appcki.android.fragments.poll.PollResultAdapter;
 import nl.uscki.appcki.android.fragments.poll.PollResultFragment;
 import nl.uscki.appcki.android.fragments.quotes.QuoteFragment;
 import nl.uscki.appcki.android.fragments.search.SmoboSearch;
@@ -153,11 +152,14 @@ public class Utils {
             case QUOTE_OVERVIEW:
                 return QuoteFragment.class;
             case POLL_DETAIL:
-                return PollResultFragment.class;
             case POLL_ACTIVE:
                 return PollResultFragment.class;
             case SMOBO_SEARCH:
                 return SmoboSearch.class;
+            case MEDIA_COLLECTION_OVERVIEW:
+                return MediaCollectionFragment.class;
+            case MEDIA_LANDING_PAGE:
+                return MediaCaptionContestSharedFragment.class;
             default:
                 return null;
         }
@@ -201,24 +203,18 @@ public class Utils {
             InputMethodManager imm =
                     (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 
-            View view = editText.getRootView();
-
-            if(imm != null && view != null) {
-                IBinder windowToken = view.getWindowToken();
+            if(imm != null) {
                 if(show) {
-                    imm.toggleSoftInputFromWindow(
-                            windowToken,
-                            InputMethodManager.SHOW_IMPLICIT,
-                            0);
                     editText.setFocusable(true);
                     if(context.getResources().getConfiguration().hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
                         editText.requestFocusFromTouch();
                     } else {
                         editText.requestFocus();
                     }
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
                 } else {
-                    imm.hideSoftInputFromWindow(windowToken, 0);
                     editText.clearFocus();
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                 }
             }
         }

@@ -2,6 +2,10 @@ package nl.uscki.appcki.android.api;
 
 import android.net.Uri;
 
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.load.model.LazyHeaderFactory;
+
 import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 
@@ -9,7 +13,7 @@ import nl.uscki.appcki.android.R;
  * Created by peter on 2/6/16.
  */
 public class MediaAPI {
-    public static String API_URL = App.getContext().getString(R.string.apiurl) + "media/";
+    public static String API_URL = App.getContext().getString(R.string.apiurl) + "media/file/";
 
     public enum MediaSize {
         SMALL,

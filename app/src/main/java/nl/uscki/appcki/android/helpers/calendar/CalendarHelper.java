@@ -13,10 +13,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
-import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.util.Pair;
 
+import androidx.core.app.ActivityCompat;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -408,7 +407,7 @@ public class CalendarHelper {
      */
     private String getAgendaItemDescription(AgendaItem item) {
         StringBuilder description = new StringBuilder();
-        description.append(Parser.parseToHTML(item.getDescriptionJSON(), true));
+        description.append(Parser.parseToHTML(item.getDescription(), true));
         description.append("<br/>");
         description.append("<br/><b>Wie</b>: " + item.getWho());
         description.append("<br/><b>Wat</b>: " + item.getWhat());

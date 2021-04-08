@@ -1,25 +1,27 @@
 package nl.uscki.appcki.android.fragments.agenda;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.RecyclerView;
+
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.activities.AgendaActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.events.AgendaItemSubscribedEvent;
 import nl.uscki.appcki.android.generated.agenda.AgendaItem;
 import nl.uscki.appcki.android.generated.agenda.AgendaParticipantLists;
@@ -30,33 +32,29 @@ import retrofit2.Response;
  */
 public class SubscribeDialogFragment extends DialogFragment {
 
-    @BindView(R.id.agenda_dialog_note)
-    EditText note;
-
-    @BindView(R.id.agenda_dialog_registration_question_answer)
-    EditText registrationQuestionAnswer;
-
-    @BindView(R.id.subscribe_agenda_question)
-    TextView registrationQuestion;
-
-    @BindView(R.id.agenda_registration_question_options)
-    RecyclerView possibleAnswersView;
-
+    private EditText note;
+    private EditText registrationQuestionAnswer;
+    private TextView registrationQuestion;
+    private RecyclerView possibleAnswersView;
     private Button positiveButton;
-
     private PossibleAnswersAdapter adapter;
+    private AgendaActivity activity;
 
-    private AgendaItem item;
-
-    private Callback<AgendaParticipantLists> agendaSubscribeCallback =
-        new Callback<AgendaParticipantLists>() {
+    private Callback<ActionResponse<AgendaParticipantLists>> agendaSubscribeCallback =
+        new Callback<ActionResponse<AgendaParticipantLists>>() {
             @Override
-            public void onSucces(Response<AgendaParticipantLists> response) {
+            public void onSucces(Response<ActionResponse<AgendaParticipantLists>> response) {
                 EventBus.getDefault()
                         .post(new AgendaItemSubscribedEvent(
-                                response.body(),
+                                response.body().payload,
                                 false
                         ));
+            }
+
+            @Override
+            public void onError(Response<ActionResponse<AgendaParticipantLists>> response) {
+                super.onError(response);
+                Toast.makeText(getContext(), R.string.agenda_subscribe_failed, Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -65,12 +63,13 @@ public class SubscribeDialogFragment extends DialogFragment {
                 @Override
                 public void onShow(DialogInterface dialogInterface) {
                     final AlertDialog dialog = (AlertDialog) dialogInterface;
-                    if(item.getQuestion() != null && !item.getQuestion().isEmpty()) {
+                    if (activity.getAgendaItem().getQuestion() != null && !activity.getAgendaItem().getQuestion().isEmpty()) {
                         positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                        positiveButton.setEnabled(false);
+                        positiveButton.setEnabled(registrationQuestionAnswer.getText().length() > 0);
                         registrationQuestionAnswer.addTextChangedListener(new TextWatcher() {
                             @Override
-                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            }
 
                             @Override
                             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -78,7 +77,8 @@ public class SubscribeDialogFragment extends DialogFragment {
                             }
 
                             @Override
-                            public void afterTextChanged(Editable editable) { }
+                            public void afterTextChanged(Editable editable) {
+                            }
                         });
                     }
                 }
@@ -88,12 +88,22 @@ public class SubscribeDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        this.activity = (AgendaActivity) getActivity();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
 
         View view = getActivity().getLayoutInflater().inflate(R.layout.agenda_subscribe_dialog, null);
-        ButterKnife.bind(this, view);
 
-        item = (AgendaItem) getArguments().getSerializable("agenda_item");
+        this.note = view.findViewById(R.id.agenda_dialog_note);
+        this.registrationQuestionAnswer = view.findViewById(R.id.agenda_dialog_registration_question_answer);
+        this.registrationQuestion = view.findViewById(R.id.subscribe_agenda_question);
+        this.possibleAnswersView = view.findViewById(R.id.agenda_registration_question_options);
+
+        final AgendaItem item = this.activity.getAgendaItem();
+
+        // Issues with restarting when item is not yet loaded on activity.
+        // Worst case, this dialog is not visible after activity, but no crash
+        if(item == null) return builder.create();
 
         builder.setTitle("Inschrijven")
                 .setView(view)
@@ -101,9 +111,9 @@ public class SubscribeDialogFragment extends DialogFragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        if(item.getQuestion() == null || item.getQuestion().isEmpty()) {
+                        if (item.getQuestion() == null || item.getQuestion().isEmpty()) {
                             subscribeWithNote();
-                        } else if(item.getPossibleAnswers() == null || item.getPossibleAnswers().length == 0) {
+                        } else if (item.getPossibleAnswers() == null || item.getPossibleAnswers().length == 0) {
                             subscribeWithOpenQuestion();
                         } else {
                             subscribeWithMultipleChoice();
@@ -117,46 +127,71 @@ public class SubscribeDialogFragment extends DialogFragment {
                     }
                 });
 
-        if(item.getQuestion() != null && item.getQuestion() != "") {
-            registrationQuestion.setText(item.getQuestion());
-            registrationQuestion.setVisibility(View.VISIBLE);
-            registrationQuestionAnswer.setVisibility(View.VISIBLE);
-        }
+        prepareNote();
+        prepareQuestion();
+        prepareAnsweringMechanism();
 
-        if(item.getPossibleAnswers() != null && item.getPossibleAnswers().length > 0) {
-            registrationQuestionAnswer.setVisibility(View.GONE);
-            possibleAnswersView.setVisibility(View.VISIBLE);
-            adapter = new PossibleAnswersAdapter(item.getPossibleAnswersAsWilsonItemList());
-            adapter.setParentElements(possibleAnswersView, this);
-            possibleAnswersView.setAdapter(adapter);
-        }
-
-        AlertDialog dialog =  builder.create();
-
+        AlertDialog dialog = builder.create();
         dialog.setOnShowListener(onDialogShowListener);
 
         return dialog;
     }
 
+    private void prepareNote() {
+        if(this.activity.getAgendaItem().getUserParticipation() != null) {
+            note.setText(this.activity.getAgendaItem().getUserParticipation().getNote());
+        }
+    }
+
+    private void prepareQuestion() {
+        if (this.activity.getAgendaItem().getQuestion() != null && !this.activity.getAgendaItem().getQuestion().isEmpty()) {
+            registrationQuestion.setText(this.activity.getAgendaItem().getQuestion());
+            registrationQuestion.setVisibility(View.VISIBLE);
+            registrationQuestionAnswer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void prepareAnsweringMechanism() {
+        if (this.activity.getAgendaItem().getPossibleAnswers() != null && this.activity.getAgendaItem().getPossibleAnswers().length > 0) {
+            registrationQuestionAnswer.setVisibility(View.GONE);
+            possibleAnswersView.setVisibility(View.VISIBLE);
+            adapter = new PossibleAnswersAdapter(this.activity.getAgendaItem().getPossibleAnswersAsWilsonItemList());
+            adapter.setParentElements(possibleAnswersView, this);
+            adapter.setUserParticipation(this.activity.getAgendaItem().getUserParticipation());
+            possibleAnswersView.setAdapter(adapter);
+            notifySelectionMade();
+        } else if (this.activity.getAgendaItem().getUserParticipation() != null &&
+                this.activity.getAgendaItem().getUserParticipation().getAnswer() != null &&
+                !this.activity.getAgendaItem().getUserParticipation().getAnswer().isEmpty())
+        {
+            registrationQuestionAnswer.setText(this.activity.getAgendaItem().getUserParticipation().getAnswer());
+        }
+    }
+
     public void notifySelectionMade() {
-        if(positiveButton != null && adapter.getSelectedValue() != null) {
+        if (positiveButton != null && adapter.getSelectedValue() != null) {
             positiveButton.setEnabled(true);
         }
     }
 
     private void subscribeWithNote() {
-        if(item.getQuestion() == null || item.getQuestion().isEmpty()) {
+        if (this.activity.getAgendaItem().getQuestion() == null || this.activity.getAgendaItem().getQuestion().isEmpty()) {
+            this.activity.getAgendaItem().getUserParticipation().setNote(note.getText().toString().trim());
             Services.getInstance().agendaService
-                    .subscribe(item.getId(),
+                    .subscribe(
+                            this.activity.getAgendaItem().getId(),
                             note.getText().toString().trim()
-                    ).enqueue(agendaSubscribeCallback);
+                    )
+                    .enqueue(agendaSubscribeCallback);
         }
     }
 
     private void subscribeWithOpenQuestion() {
-        if((item.getQuestion() != null || !item.getQuestion().isEmpty()) && !registrationQuestionAnswer.getText().toString().trim().isEmpty()) {
+        if ((this.activity.getAgendaItem().getQuestion() != null || !this.activity.getAgendaItem().getQuestion().isEmpty()) && !registrationQuestionAnswer.getText().toString().trim().isEmpty()) {
+            this.activity.getAgendaItem().getUserParticipation().setNote(note.getText().toString().trim());
+            this.activity.getAgendaItem().getUserParticipation().setAnswer(registrationQuestionAnswer.getText().toString().trim());
             Services.getInstance().agendaService
-                    .subscribe(item.getId(),
+                    .subscribe(this.activity.getAgendaItem().getId(),
                             note.getText().toString().trim(),
                             registrationQuestionAnswer.getText().toString().trim()
                     ).enqueue(agendaSubscribeCallback);
@@ -164,9 +199,11 @@ public class SubscribeDialogFragment extends DialogFragment {
     }
 
     private void subscribeWithMultipleChoice() {
-        if(adapter.getSelectedValue() != null) {
+        if (adapter.getSelectedValue() != null) {
+            this.activity.getAgendaItem().getUserParticipation().setNote(note.getText().toString().trim());
+            this.activity.getAgendaItem().getUserParticipation().setAnswer(adapter.getSelectedValue());
             Services.getInstance().agendaService
-                    .subscribe(item.getId(),
+                    .subscribe(this.activity.getAgendaItem().getId(),
                             note.getText().toString().trim(),
                             adapter.getSelectedValue()
                     ).enqueue(agendaSubscribeCallback);

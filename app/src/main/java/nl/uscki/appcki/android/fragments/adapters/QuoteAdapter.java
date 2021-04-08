@@ -1,19 +1,24 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
-import android.support.v7.widget.RecyclerView;
+import android.content.Intent;
 import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 import java.util.Locale;
 
+import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.generated.quotes.Quote;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
 import nl.uscki.appcki.android.views.BBTextView;
@@ -31,7 +36,7 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_quote, parent, false);
         return new ViewHolder(view);
@@ -61,7 +66,7 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
     public void onBindCustomViewHolder(final ViewHolder holder, int position) {
         holder.mItem = this.items.get(position);
 
-        SpannableStringBuilder text = Parser.parse(items.get(position).getQuoteJSON(), true, holder.quote);
+        SpannableStringBuilder text = Parser.parse(items.get(position).getQuote(), true, holder.quote);
         holder.quote.setText(text);
         double toonkans = ((double)holder.mItem.getWeight()/(double)holder.mItem.getTotalWeight()) * 100;
         holder.toonkans.setText(roundOffTo2DecPlaces(toonkans));
@@ -76,28 +81,39 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
             holder.plus.setVisibility(View.VISIBLE);
             holder.minus.setVisibility(View.VISIBLE);
 
-            holder.plus.setOnClickListener(new View.OnClickListener() {
+            holder.plus.setOnClickListener(v -> Services.getInstance().quoteService.vote(holder.mItem.getId(), true).enqueue(new Callback<ActionResponse<Quote>>() {
                 @Override
-                public void onClick(View v) {
-                    Services.getInstance().quoteService.vote(holder.mItem.getId(), true).enqueue(new Callback<Quote>() {
-                        @Override
-                        public void onSucces(Response<Quote> response) {
-                            notifyItemChanged(holder.getAdapterPosition(), response.body());
-                        }
-                    });
+                public void onSucces(Response<ActionResponse<Quote>> response) {
+                    notifyItemChanged(holder.getAdapterPosition(), response.body().payload);
                 }
-            });
+            }));
 
-            holder.minus.setOnClickListener(new View.OnClickListener() {
+            holder.minus.setOnClickListener(v -> Services.getInstance().quoteService.vote(holder.mItem.getId(), false).enqueue(new Callback<ActionResponse<Quote>>() {
                 @Override
-                public void onClick(View v) {
-                    Services.getInstance().quoteService.vote(holder.mItem.getId(), false).enqueue(new Callback<Quote>() {
-                        @Override
-                        public void onSucces(Response<Quote> response) {
-                            notifyItemChanged(holder.getAdapterPosition(), response.body());
-                        }
-                    });
+                public void onSucces(Response<ActionResponse<Quote>> response) {
+                    notifyItemChanged(holder.getAdapterPosition(), response.body().payload);
                 }
+            }));
+
+            holder.mView.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
+                new MenuInflater(v.getContext()).inflate(R.menu.quote_context_menu, menu);
+                menu.findItem(R.id.action_share_quote).setOnMenuItemClickListener(item -> {
+
+                    String quoteText = holder.itemView.getResources().getString(R.string.quote_action_share_intent_text_extra);
+                    // Undo CKI replacement
+                    quoteText += "\n\n" + holder.quote.getText().toString()
+                            .replaceAll(App.USCKI_CKI_CHARACTER, "CKI");
+
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.putExtra(Intent.EXTRA_TITLE, quoteText);
+                    intent.putExtra(Intent.EXTRA_TEXT, quoteText);
+                    intent.setType("text/*");
+                    holder.mView.getContext()
+                            .startActivity(Intent.createChooser(intent,
+                                    holder.itemView.getContext()
+                                            .getString(R.string.app_general_action_share_intent_text)));
+                    return false;
+                });
             });
         }
     }
@@ -123,11 +139,11 @@ public class QuoteAdapter extends BaseItemAdapter<QuoteAdapter.ViewHolder, Quote
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            quote = (BBTextView) view.findViewById(R.id.quote_quote);
-            votes_graph = (QuoteVoteGraphView) view.findViewById(R.id.quote_graph);
-            plus = (ImageButton) view.findViewById(R.id.quote_vote_plus);
-            minus = (ImageButton) view.findViewById(R.id.quote_vote_minus);
-            toonkans = (TextView) view.findViewById(R.id.quote_toonkans);
+            quote = view.findViewById(R.id.quote_quote);
+            votes_graph = view.findViewById(R.id.quote_graph);
+            plus = view.findViewById(R.id.quote_vote_plus);
+            minus = view.findViewById(R.id.quote_vote_minus);
+            toonkans = view.findViewById(R.id.quote_toonkans);
         }
     }
 }

@@ -4,4 +4,9 @@
     <item
         android:id="@+id/shops_change_shop"
         android:title="@string/shop_select" />
+    <item android:id="@+id/shops_pin_shortcut"
+        android:title="@string/shop_pin_shortcut"
+        android:icon="@drawable/ic_outline_add_to_home_screen_24px"
+        android:visible="false"
+        />
 </menu>

@@ -2,7 +2,7 @@ package nl.uscki.appcki.android.helpers.bbparser.elements;
 
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.style.RelativeSizeSpan;
+import android.text.style.SubscriptSpan;
 
 import java.util.ArrayList;
 
@@ -32,7 +32,7 @@ public class Sub extends GenericElement {
     public SpannableStringBuilder getSpannedText(BBTextView view) {
         SpannableStringBuilder str = Parser.parse(getContent(), false, view);
 
-        str.setSpan(new RelativeSizeSpan(0.75f), 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        str.setSpan(new SubscriptSpan(), 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         return str;
     }

@@ -1,11 +1,16 @@
 package nl.uscki.appcki.android.helpers.bbparser.elements;
 
+import android.content.Intent;
+import android.graphics.drawable.LevelListDrawable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.view.View;
 
 import java.util.ArrayList;
 
+import nl.uscki.appcki.android.activities.FullScreenMediaActivity;
 import nl.uscki.appcki.android.helpers.bbparser.Parser;
+import nl.uscki.appcki.android.helpers.bbparser.spans.ClickableSpan;
 import nl.uscki.appcki.android.helpers.bbparser.spans.NetworkImageSpan;
 import nl.uscki.appcki.android.views.BBTextView;
 
@@ -33,8 +38,19 @@ public class Img extends GenericElement {
     public SpannableStringBuilder getSpannedText(BBTextView view) {
         SpannableStringBuilder str = Parser.parse(getContent(), false, view);
         final String url = str.toString();
-
-        str.setSpan(new NetworkImageSpan(null, url, view), 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        NetworkImageSpan imageSpan = new NetworkImageSpan(new LevelListDrawable(), url, view);
+        str.setSpan(imageSpan, 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        str.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                // Unfortunately, I do not think (Image)Spans support shared element transitions. Still, better than nothing
+                Intent intent = new FullScreenMediaActivity.SingleImageIntentBuilder("", null)
+                        .url(url)
+                        .build(view.getContext());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                view.getContext().startActivity(intent);
+            }
+        }, 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return str;
     }
 }

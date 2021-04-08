@@ -13,9 +13,7 @@
         android:text="New Text"
         android:id="@+id/roephoek_item_nickname"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentRight="false"
         android:layout_alignParentEnd="false"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
@@ -28,7 +26,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Small Text"
             android:id="@+id/roephoek_item_time"
-            style="@style/AppTheme.Text"
+            style="@style/AppTheme.Text.Selectable"
             android:layout_alignBaseline="@+id/roephoek_item_nickname"
             android:layout_alignBottom="@+id/roephoek_item_nickname"
             android:layout_toRightOf="@+id/roephoek_item_nickname"
@@ -48,7 +46,7 @@
         android:layout_alignParentEnd="false"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
-        style="@style/AppTheme.Text" />
+        style="@style/AppTheme.Text.Selectable" />
 
 
 </RelativeLayout>

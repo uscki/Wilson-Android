@@ -1,21 +1,18 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.events.OpenFragmentEvent;
 import nl.uscki.appcki.android.fragments.poll.PollResultFragment;
 import nl.uscki.appcki.android.generated.poll.PollItem;
@@ -30,7 +27,7 @@ public class PollAdapter extends BaseItemAdapter<PollAdapter.ViewHolder, PollIte
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_poll, parent, false);
         return new ViewHolder(view);
@@ -53,18 +50,19 @@ public class PollAdapter extends BaseItemAdapter<PollAdapter.ViewHolder, PollIte
 
         holder.question.setText(items.get(position).getPoll().getTitle());
 
-        // TODO vervang geplaatst op string met een ding uit strings.xml
-        String creation = "Geplaatst op " + items.get(position).getPoll().getCreation().toString("EEEE dd MMMM yyyy");
+        String creation = holder.itemView.getResources().getString(
+                R.string.poll_created_date,
+                items.get(position).getPoll().getCreation()
+                        .toString(
+                                holder.itemView.getResources()
+                                .getString(R.string.joda_datetime_format_year_month_day_with_day_names))
+        );
         holder.time.setText(creation);
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                String item = new Gson().toJson(holder.mItem);
-                bundle.putString("item", item);
-                EventBus.getDefault().post(new OpenFragmentEvent(new PollResultFragment(), bundle));
-            }
+        holder.mView.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt(MainActivity.PARAM_POLL_ID, holder.mItem.getId());
+            EventBus.getDefault().post(new OpenFragmentEvent(new PollResultFragment(), bundle));
         });
     }
 
@@ -77,15 +75,15 @@ public class PollAdapter extends BaseItemAdapter<PollAdapter.ViewHolder, PollIte
         public final View mView;
         public PollItem mItem;
 
-        @BindView(R.id.poll_item_question)
         TextView question;
-        @BindView(R.id.poll_item_time)
         TextView time;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            ButterKnife.bind(this, view);
+
+            question = view.findViewById(R.id.poll_item_question);
+            time = view.findViewById(R.id.poll_item_time);
         }
     }
 }

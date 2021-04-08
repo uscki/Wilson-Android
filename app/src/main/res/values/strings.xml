@@ -1,10 +1,22 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Wilson</string>
+    <string name="app_external_media_subdir">USCKI media</string>
+    <string name="app_general_action_confirm">Bevestigen</string>
+    <string name="app_general_action_cancel">Annuleren</string>
+    <string name="app_general_action_share">Delen</string>
+    <string name="app_general_action_save">Opslaan</string>
+    <string name="app_general_action_share_intent_text">Delen met…</string>
+
+    <string name="home_fragment_tab_header_news">Nieuws</string>
+    <string name="home_fragment_tab_header_agenda">Agenda</string>
+    <string name="home_fragment_tab_header_shoutbox">Roephoek</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Instellingen</string>
+    <string name="action_preferences">Voorkeuren</string>
+    <string name="action_close">Sluiten</string>
     <string name="action_roephoek_roep">Roep</string>
     <string name="action_agenda_subscribe">Deelnemen</string>
     <string name="action_agenda_unsubscribe">Uitschrijven</string>
@@ -15,22 +27,26 @@
     <string name="prompt_password">Wachtwoord</string>
     <string name="action_sign_in">Inloggen</string>
     <string name="action_sign_in_short">Log in</string>
-    <string name="error_invalid_username">This username address is invalid</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_username">Deze gebruikersnaam is neit geldig</string>
+    <string name="error_incorrect_password">Dit wachtwoord is niet geldig</string>
+    <string name="error_field_required">Dit veld is verplicht</string>
 
     <string name="login_request">nl.uscki.appcki.android.LOGIN_REQUEST</string>
-    <string name="logout">Logout</string>
-    <string name="login">Login</string>
+    <string name="logout">Uitloggen</string>
+    <string name="login">Inloggen</string>
 
     <string name="notloggedin">Je bent niet ingelogd.</string>
-    <string name="notauthorized">Je hebt geen toegang tot deze content.</string>
+    <string name="noaccess">Je hebt geen toegang tot deze content.</string>
     <string name="agenda_subscribe_bad_request_error">Er is iets fout gegaan met je inschrijving. Open dit evenement in de app, en probeer het vanuit daar nogmaals.</string>
     <string name="content_loading_error">Er ging iets fout bij het laden van de content.</string>
     <string name="unknown_server_error">Er is een onbekende fout opgetreden op de server. Probeer het later nog eens.</string>
+    <string name="error_user_not_found">Deze gebruiker kon niet worden gevonden.</string>
+    <string name="error_login_failed">Inloggen mislukt.</string>
 
     <string name="agenda_inschrijven">Inschrijven</string>
     <string name="agenda_uitschrijven">Uitschrijven</string>
+    <string name="tab_agenda_details">Details</string>
+    <string name="tab_agenda_participants">Deelnemers</string>
 
     <string name="title_activity_main">MainActivity</string>
 
@@ -50,28 +66,76 @@
     <string name="agenda_no_new_agendas">Er zijn geen evenementen meer.</string>
     <string name="agenda_toast_added_to_calendar">Evenement is toegevoegd aan agenda</string>
     <string name="agenda_toast_removed_from_calendar">Evenement is verwijderd uit agenda</string>
+    <string name="agenda_subscribe_confirmed">Je bent ingeschreven voor deze activiteit</string>
+    <string name="agenda_subscribe_changed">Je inschrijving is gewijzigd</string>
+    <string name="agenda_unsubscribe_confirmed">Je bent uitgeschreven voor deze activiteit</string>
+    <string name="agenda_subscribe_failed">Er ging iets fout. Je inschrijving is niet behandelt!</string>
+    <string name="agenda_unsubscribe_failed">Er ging iets fout. Je bent nog steeds ingeschreven!</string>
+    <string name="agenda_subscribe_backuplist">Het maximum aantal inschrijvingen is al behaald. Je bent op de wachtlijst geplaatst. Als er uitschrijvingen zijn heb je kans alsnog ingeschreven te worden.</string>
+    <string name="agenda_item_n_registrations">%d</string>
+    <string name="agenda_item_n_registrations_max">%d (max %d)</string>
+    <string name="agenda_item_n_registration_plus_backup">%d + %d (max %d)</string>
 
     <string name="agenda_inschrijven_verplicht">Inschrijven verplicht</string>
+    <string name="agenda_registration_required_before">Inschrijving verplicht vóór %s</string>
+    <string name="agenda_registration_required_passed">Inschrijfdeadline was %s</string>
+    <string name="agenda_n_participants">%d deelnemers</string>
+    <string name="agenda_n_participants_max">%d van maximaal %d inschrijvingen</string>
+    <string name="agenda_n_participants_backup">%d van maximaal %d inschrijvingen (%d op wachtlijst)</string>
     <string name="agenda_archive_menu_string">Archief</string>
     <string name="vote_imperative">Stemmen</string>
     <string name="action_agenda_export">Opslaan</string>
     <string name="action_agenda_remove_from_calendar">Verwijderen uit agenda</string>
+    <string name="agenda_n_comments_singular">%d reactie</string>
+    <string name="agenda_n_comments_plural">%d reacties</string>
+    <string name="agenda_participants_backup_list">Wachtlijst</string>
+    <string name="agenda_participants_backup_list_help">Als er een maximum aantal inschrijvingen geldt voor een evenement en dat aantal inschrijvingen is al gehaald, word je op de wachtlijst geplaatst als jij je ook inschrijft. Wanneer bestaande deelnemers zich uitschrijven, heb je kans van de wachtlijst naar de deelnemerslijst te worden geplaatst. Dit gebeurt in volgorde van inschrijving voor alle wachtenden.</string>
+
+    <string name="dialog_yes">Ja</string>
+    <string name="dialog_no">Nee</string>
+    <string name="comment_delete_header">Reactie verwijderen</string>
+    <string name="comment_delete_message">Weet je zeker dat je je reactie wil verwijderen?</string>
+    <string name="comment_delete_success">Reactie verwijderd</string>
+    <string name="comment_delete_error">Reactie kon niet worden verwijderd</string>
 
     <string name="example_text">Example text</string>
 
+    <string name="meeting_planned">Vergadering gepland</string>
+    <string name="meeting_response_MISSING">Je hebt nog niet gereageerd</string>
+    <string name="meeting_response_OK">Deze vergadering is nog niet gepland</string>
+    <string name="meeting_header_overview">Overzicht</string>
+    <string name="meeting_header_present">Aanwezig</string>
+    <string name="meeting_header_absent">Afwezig</string>
+    <string name="meeting_header_planner_view">Planner</string>
+    <string name="meeting_header_responded">Gereageerd</string>
+    <string name="meeting_header_no_response">Geen reactie</string>
     <string name="meeting_detail_notes">Opmerkingen:</string>
     <string name="meeting_detail_plannotes">Opmerkingen bij het plannen:</string>
     <string name="meeting_detail_agenda">Agenda:</string>
     <string name="meeting_no_new_meetings">Er zijn geen actieve vergaderplanners.</string>
+    <string name="meeting_slot_preference_dialog_header">Voorkeuren</string>
+    <string name="meeting_slot_preference_dialog_available">Beschikbaar</string>
+    <string name="meeting_slot_preference_dialog_unavailable">Niet beschikbaar</string>
+    <string name="meeting_participant_empty_responded">Nog niemand heeft gereagerd</string>
+    <string name="meeting_participant_empty_not_responded">Iedereen heeft gereageerd</string>
+    <string name="meeting_participant_empty_available">Niemand is beschikbaar</string>
+    <string name="meeting_participant_empty_unavailable">Iedereen is beschikbaar</string>
 
     <!-- error handling -->
     <string name="connection_error">Er ging iets fout tijdens het verbinden met de server!</string>
 
+    <string name="agenda_confirm_unsubscribe_header">Uitschrijven bevestigen</string>
     <string name="agenda_confirm_unsubscribe_message">Weet je zeker dat je je wil uitschrijven?</string>
+    <string name="agenda_confirm_unsubscribe_backuplist">Weet je zeker dat je je wil uitschrijven? Als je je nu uitschrijft kun je je mogelijk niet langer inschrijven. Er zijn al %d van de maximale %d inschrijvingen</string>
+    <string name="agenda_confirm_unsubscribe_deadline">Weet je zeker dat je je wil uitschrijven? Als je je nu uitschrijft kun je je niet meer inschrijven, omdat de inschrijfdeadline is verlopen</string>
     <string name="agenda_confirm_unsubscribe_positive">Uitschrijven!</string>
-    <string name="agenda_unsubscribe_deadline_past">De deadline om je te kunnen uitschrijven is verstreken</string>
-    <string name="agenda_prepublished_event_registration_closed">De inschrijving voor dit evenement wordt op een later tijdstip geopend</string>
-    <string name="agenda_prepublished_event_registration_closed_short_message">Inschrijving opent later</string>
+    <string name="agenda_subscribe_deadline_passed">De inschrijfdeadline is verstreken. Inschrijving kan niet meer worden aangepast</string>
+    <string name="agenda_event_started">Inschrijving mag niet meer worden gewijzigd, omdat dit evenement al gestart is.</string>
+    <string name="agenda_unsubscribe_deadline_passed">De deadline om je te kunnen uitschrijven is verstreken</string>
+    <string name="agenda_prepublished_event_registration_opens_later">De inschrijving voor dit evenement wordt op een later tijdstip geopend</string>
+    <string name="agenda_prepublished_event_registration_opens_later_short_message">Inschrijving opent later</string>
+    <string name="agenda_event_registration_closed">Inschrijven niet meer mogelijk</string>
+    <string name="agenda_event_register_deadline_passed_date">Inschrijven niet meer mogelijk. Deadline was %s</string>
     <string name="agenda_participants_list_empty">Nog geen deelnemers voor dit evenement</string>
 
     <string name="person_not_display_online_msg">Deze persoon kan niet worden opgeslagen vanwege zijn of haar privacy instellingen</string>
@@ -81,100 +145,11 @@
 
     <string name="main_failure_to_show_newsitem">Dit nieuwsitem kon niet worden getoond. Probeer het later opnieuw.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="title_activity_agenda">AgendaActivity</string>
-    <string name="large_text">
-        "Material is the metaphor.\n\n"
-
-        "A material metaphor is the unifying theory of a rationalized space and a system of motion."
-        "The material is grounded in tactile reality, inspired by the study of paper and ink, yet "
-        "technologically advanced and open to imagination and magic.\n"
-        "Surfaces and edges of the material provide visual cues that are grounded in reality. The "
-        "use of familiar tactile attributes helps users quickly understand affordances. Yet the "
-        "flexibility of the material creates new affordances that supercede those in the physical "
-        "world, without breaking the rules of physics.\n"
-        "The fundamentals of light, surface, and movement are key to conveying how objects move, "
-        "interact, and exist in space and in relation to each other. Realistic lighting shows "
-        "seams, divides space, and indicates moving parts.\n\n"
-
-        "Bold, graphic, intentional.\n\n"
-
-        "The foundational elements of print based design typography, grids, space, scale, color, "
-        "and use of imagery guide visual treatments. These elements do far more than please the "
-        "eye. They create hierarchy, meaning, and focus. Deliberate color choices, edge to edge "
-        "imagery, large scale typography, and intentional white space create a bold and graphic "
-        "interface that immerse the user in the experience.\n"
-        "An emphasis on user actions makes core functionality immediately apparent and provides "
-        "waypoints for the user.\n\n"
-
-        "Motion provides meaning.\n\n"
-
-        "Motion respects and reinforces the user as the prime mover. Primary user actions are "
-        "inflection points that initiate motion, transforming the whole design.\n"
-        "All action takes place in a single environment. Objects are presented to the user without "
-        "breaking the continuity of experience even as they transform and reorganize.\n"
-        "Motion is meaningful and appropriate, serving to focus attention and maintain continuity. "
-        "Feedback is subtle yet clear. Transitions are efﬁcient yet coherent.\n\n"
-
-        "3D world.\n\n"
-
-        "The material environment is a 3D space, which means all objects have x, y, and z "
-        "dimensions. The z-axis is perpendicularly aligned to the plane of the display, with the "
-        "positive z-axis extending towards the viewer. Every sheet of material occupies a single "
-        "position along the z-axis and has a standard 1dp thickness.\n"
-        "On the web, the z-axis is used for layering and not for perspective. The 3D world is "
-        "emulated by manipulating the y-axis.\n\n"
-
-        "Light and shadow.\n\n"
-
-        "Within the material environment, virtual lights illuminate the scene. Key lights create "
-        "directional shadows, while ambient light creates soft shadows from all angles.\n"
-        "Shadows in the material environment are cast by these two light sources. In Android "
-        "development, shadows occur when light sources are blocked by sheets of material at "
-        "various positions along the z-axis. On the web, shadows are depicted by manipulating the "
-        "y-axis only. The following example shows the card with a height of 6dp.\n\n"
-
-        "Resting elevation.\n\n"
-
-        "All material objects, regardless of size, have a resting elevation, or default elevation "
-        "that does not change. If an object changes elevation, it should return to its resting "
-        "elevation as soon as possible.\n\n"
-
-        "Component elevations.\n\n"
-
-        "The resting elevation for a component type is consistent across apps (e.g., FAB elevation "
-        "does not vary from 6dp in one app to 16dp in another app).\n"
-        "Components may have different resting elevations across platforms, depending on the depth "
-        "of the environment (e.g., TV has a greater depth than mobile or desktop).\n\n"
-
-        "Responsive elevation and dynamic elevation offsets.\n\n"
-
-        "Some component types have responsive elevation, meaning they change elevation in response "
-        "to user input (e.g., normal, focused, and pressed) or system events. These elevation "
-        "changes are consistently implemented using dynamic elevation offsets.\n"
-        "Dynamic elevation offsets are the goal elevation that a component moves towards, relative "
-        "to the component’s resting state. They ensure that elevation changes are consistent "
-        "across actions and component types. For example, all components that lift on press have "
-        "the same elevation change relative to their resting elevation.\n"
-        "Once the input event is completed or cancelled, the component will return to its resting "
-        "elevation.\n\n"
-
-        "Avoiding elevation interference.\n\n"
-
-        "Components with responsive elevations may encounter other components as they move between "
-        "their resting elevations and dynamic elevation offsets. Because material cannot pass "
-        "through other material, components avoid interfering with one another any number of ways, "
-        "whether on a per component basis or using the entire app layout.\n"
-        "On a component level, components can move or be removed before they cause interference. "
-        "For example, a floating action button (FAB) can disappear or move off screen before a "
-        "user picks up a card, or it can move if a snackbar appears.\n"
-        "On the layout level, design your app layout to minimize opportunities for interference. "
-        "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
-        "when a user tries to pick up one of cards.\n\n"
-    </string>
     <string name="title_activity_smobo">SmoboActivity</string>
     <string name="title_activity_news">NewsActivity</string>
-    <string name="news_read_more">Read more</string>
+    <string name="news_read_more">Langere beschrijving</string>
+    <string name="news_read_less">Kortere beschrijving</string>
+    <string name="news_resource_link">Lees verder…</string>
 
     <!-- Old type of notification channels -->
     <string name="notification_channel_activities_name">Interactieve notificaties</string>
@@ -285,6 +260,30 @@
     <string name="vibration_pattern_CKI_morse">CKI (morse)</string>
     <string name="vibration_pattern_default">@string/vibration_pattern_long_twice</string>
 
+    <!-- app info -->
+    <string name="settings_app_info_about_header">Over deze applicatie</string>
+    <string name="settings_app_info_app_description" tools:ignore="TypographyOther">Officiele mobiele applicatie van US\u01de Incognito: De Utrechtse Studievereniging voor Cognitieve Kunstmatige Intelligentie.
+        De studievereniging voor alle studenten (C)KI aan de Universiteit Utrecht.
+        De US\u01de Incognito is een studievereniging voor alle studenten \u01de aan het departement Wijsbegeerte, faculteit Geesteswetenschappen, Universiteit Utrecht.</string>
+    <string name="settings_app_info_visit_address">Bezoekadres:</string>
+    <string name="settings_app_info_postal_address">Postadres:</string>
+    <string name="settings_app_info_uithocki_address">UitHo\u01de:</string>
+    <string name="settings_app_info_iban">IBAN:</string>
+    <string name="settings_app_info_payment_made_out_to">t.n.v.</string>
+    <string name="settings_app_info_file_bug_report">Reporteer een bug op:</string>
+    <string name="company_name_gitlab">Gitlab</string>
+    <string name="company_name_github">Github</string>
+    <string name="settings_app_info_bug_tracker">Bug Tracker (US\u01de)</string>
+    <string name="settings_app_info_data_indexation">Dataverwerking</string>
+    <string name="settigns_app_info_copyright_base">© 2017 -</string>
+
+    <string name="settings_app_info_appcki_description">Deze applicatie wordt onderhouden door de App\u01de (appcki@uscki.nl) in opdracht van het Bestuur van U.S.C.K.I. Incognito.</string>
+    <string name="settings_app_info_syso_description">Deze applicatie maakt gebruik van de officiele API van de U.S.C.K.I. website, onderhouden door Systeembeheer (systeembeheer@uscki.nl) in opdracht van het Bestuur van U.S.C.K.I. Incognito.</string>
+    <string name="settings_app_info_invite_members">Duurt het te lang sinds de vorige update, of denk je dat je het beter kan? Meld je nu aan voor de App\u01de als jij Android echt vet vindt of je creativiteit wil loslaten op de Wilson app.
+        Stuur direct een email naar appcki@uscki.nl. \n\nIs het kleine scherm te min voor jou maar wil je toch werken aan een vet project waar Incognito nog jaren plezier van blijft hebben?
+        Mail dan naar icki@uscki.nl en word een van Incognito\'s web developers. \n\nAllebei teveel gepriegel met frond-end voor je, of gaat jouw hart sneller kloppen van databases, of termen als \"API\",
+        \"persoonsgegevensbescherming\" of \"GDPR\", geef dan Systeembeheer een kans door te e-mailen naar bestuur@uscki.nl</string>
+
     <!-- Comments -->
     <string name="comments_empty_text">Geen reacties</string>
     <string name="comments">Reacties</string>
@@ -302,10 +301,13 @@
     <string name="quote_sort_option_positives_votes_desc">Meeste positief</string>
     <string name="quote_sort_option_negative_votes_asc">Minste negatief</string>
 
+    <string name="quote_action_share_intent_text_extra">Bekijk deze quote van www.uscki.nl!</string>
+
 
     <!-- Poll -->
     <string name="poll_archive_menu_string">Archief</string>
     <string name="no_polls_found">Geen polls om weer te geven</string>
+    <string name="poll_created_date">Geplaatst op %s</string>
 
     <!-- Privacy Policy -->
     <string name="privacy_policy_header">Privacy policy</string>
@@ -361,12 +363,138 @@
     <string name="shop_preference_default_always_choose">Laat me altijd kiezen</string>
     <string name="shop_preference_confirm_before_order">Bevestigen voor bestellen</string>
     <string name="shop_preference_confirm_before_order_summary">Als deze optie uitgeschakeld is, wordt een bestelling direct doorgevoerd zodra je op de groene plus klikt. Dit kan niet ongedaan worden gemaakt.</string>
-    <string name="shop_confirm_checkbox_dont_show_again">Niet meer tonen</string>
+    <string name="shop_confirm_checkbox_dont_show_again">Niet meer om bevestiging vragen</string>
     <string name="shop_preference_summary_loading">Voorkeurswinkel wordt geladen</string>
     <string name="shop_empty">Geen producten gevonden voor deze shop</string>
     <string name="shop_price_header">Prijs</string>
     <string name="shop_price_total_header">Totaal:</string>
     <string name="shop_price_format">€%.2f p.st.</string>
     <string name="shop_price_format_simple">€%.2f</string>
+    <string name="shop_pin_shortcut">Vastzetten op thuisscherm</string>
+    <string name="shop_long_store_name">Winkel %s</string>
 
+
+    <!-- Media -->
+    <string name="wilson_media_activity_header">Media</string>
+    <string name="wilson_media_num_photos">%d foto\'s</string>
+    <string name="wilson_media_collection_added_date">Toegevoegd op %s</string>
+    <string name="wilson_media_viewpager_progress">%d / %d</string>
+
+    <string name="wilson_media_collection_intent_share_text_extra">Foto uit %s</string>
+    <string name="wilson_media_collection_intent_share_title">Foto van www.uscki.nl</string>
+    <string name="wilson_media_collection_intent_share_label_with_collection">Foto van U.S.C.K.I. Incognito uit de media collectie "%s" (%s)</string>
+    <string name="wilson_media_collection_intent_share_label">Foto van U.S.C.K.I. Incognito (%s)</string>
+    <string name="wilson_media_action_share_image">Afbeelding delen</string>
+    <string name="wilson_media_action_share_url">Link delen</string>
+    <string name="wilson_media_action_goto_collection">Collectie bekijken</string>
+
+    <string name="wilson_media_action_media_has_no_collecton_msg">Geen collectie gevonden voor deze afbeelding</string>
+    <string name="wilson_media_action_save_image_msg_success">Abeelding opgeslagen in %s%s%s</string>
+    <string name="wilson_media_action_save_image_requires_storage_permission_error_msg">Afbeelding kan niet worden opgeslagen zonder toestemming voor storage</string>
+    <string name="wilson_media_action_save_image_msg_failure">Opslaan van afbeelding mislukt</string>
+
+    <string name="wilson_media_collections_empty">Geen mediacollecties gevonden</string>
+
+    <string name="wilson_media_shared_tab_collection_header">Media Browser</string>
+    <string name="wilson_media_shared_tab_caption_contest_header">Caption Contest</string>
+
+
+    <!-- Caption contest -->
+    <string name="wilson_media_caption_contest_header">Captioncontest %s</string>
+    <string name="wilson_media_caption_contest_add_caption">Onderschrift toevoegen</string>
+    <string name="wilson_media_caption_contest_hide_name_label">Verberg mijn naam in de uitslagenlijst</string>
+    <string name="wilson_media_caption_contest_confirm_vote_label">Weet je zeker dat je op dit onderschrift wil stemmen?</string>
+    <string name="wilson_media_caption_contest_add_caption_closes_label">Je kunt nog onderschriften toevoegen tot: %s</string>
+    <string name="wilson_media_caption_contest_voting_opens_label">Je kunt stemmen vanaf %s</string>
+    <string name="wilson_media_caption_contest_not_voted_label">Je hebt nog niet gestemd</string>
+    <string name="wilson_media_caption_contest_no_winner_announced">Nog geen winnaar bekend</string>
+    <string name="wilson_media_caption_contest_add_coption_opens_label">Deze caption contest opent op %s</string>
+    <string name="wilson_media_caption_contest_winner_name">Gewonnen door %s met %d stemmen</string>
+    <string name="wilson_media_caption_contest_winner_anonymous">Gewonnen met %d stemmen</string>
+    <string name="wilson_media_caption_contest_shared_winners">%d onderschriften delen de eerste plaats met %d stemmen</string>
+    <string name="wilson_media_caption_contest_no_captions">Deze captioncontest heeft geen onderschriften</string>
+    <string name="wilson_media_caption_contest_share_intent_title">Captioncontest van uscki.nl</string>
+    <string name="wilson_media_caption_contest_sharej_intent_text_extra">Heb je deze captioncontest gezien?
+%s</string>
+    <string name="wilson_media_caption_contest_add_caption_empty_message_warning">Je hebt geen onderschrift ingevuld!</string>
+    <string name="wilson_media_caption_contest_add_caption_confirmed">Onderschrift toegevoegd</string>
+    <string name="wilson_media_caption_contest_vote_confirmed">Je hebt gestemd op deze Captioncontest!</string>
+    <string name="wilson_media_caption_contest_vote_failed_warning">Er is iets fout gegaan bij het registreren van je stem</string>
+    <string name="wilson_media_caption_contest_empty_text">Geen captioncontests gevonden</string>
+    <string name="wilson_media_caption_contest_menu_confirm_vote_checkbox_label">Vraag stembevestiging</string>
+
+    <!-- Forum -->
+    <string name="wilson_media_forum_landing_page_recent_header">Recent</string>
+    <string name="wilson_media_forum_landing_page_fora_header">Fora</string>
+    <string name="wilson_media_forum_header">Forum</string>
+    <string name="wilson_media_forum_fora_empty_text">Geen fora gevonden</string>
+    <string name="wilson_media_forum_topic_empty_text">Dit forum heeft nog geen topics</string>
+    <string name="wilson_media_forum_posts_empty_text">Dit topic bevat nog geen posts</string>
+    <string name="wilson_media_forum_recent_posts_empty_text">Geen recente forumposts gevonden</string>
+    <string name="wilson_media_forum_topic_author_label">Topic gestart door:</string>
+    <string name="wilson_media_forum_topic_last_reply_label">Laatste reactie:</string>
+    <string name="wilson_media_forum_topic_num_views">%d keer bekeken</string>
+    <string name="wilson_media_forum_topic_num_replies">%d reacties</string>
+    <string name="wilson_media_forum_topic_created_date">Aangemaakt op %s</string>
+    <string name="wilson_media_forum_post_edited_info">Laatste wijziging op %s</string>
+    <string name="wilson_media_forum_recent_post_author_and_forum">%s @ %s</string>
+    <string name="wilson_media_forum_topic_mark_as_read">Markeren als gelezen</string>
+
+
+    <string name="wilson_media_forum_sort_desc">Meeste views</string>
+    <string name="wilson_media_forum_asc">Minste views</string>
+    <string name="wilson_media_forum_locked_desc">Unlocked eerst</string>
+    <string name="wilson_media_forum_locked_asc">Locked eerst</string>
+    <string name="wilson_media_forum_views_desc">Meeste views</string>
+    <string name="wilson_media_forum_views_asc">Minste views</string>
+    <string name="wilson_media_forum_new_post_header">Nieuw bericht plaatsen</string>
+    <string name="wilson_media_forum_new_post_name_label">Naam:</string>
+    <string name="wilson_media_forum_new_post_topic_title_label">Topic titel:</string>
+    <string name="wilson_media_forum_new_post_content_label">Bericht:</string>
+    <string name="wilson_media_forum_new_post_signature_label">Signature:</string>
+    <string name="wilson_media_forum_new_post_name_hint">Naam</string>
+    <string name="wilson_media_forum_new_post_topic_title_hint">Topic titel</string>
+    <string name="wilson_media_forum_new_post_content_hint">Bericht</string>
+    <string name="wilson_media_forum_new_post_signature_hint">Signature</string>
+    <string name="wilson_media_forum_new_post_confirm_btn_label">Plaats bericht</string>
+    <string name="wilson_media_forum_new_topic_empty_title_warning">Kies een titel om een topic aan te maken</string>
+    <string name="wilson_media_forum_new_post_empty_name_warning">Kies een naam om dit bericht te kunnen plaatsen</string>
+    <string name="wilson_media_forum_new_post_empty_post_warning">Je hebt geen bericht getypt dat we kunnen plaatsen!</string>
+    <string name="wilson_media_forum_topic_share_intent_text_extra">Heb je het topic "%s" gezien?\n%s</string>
+    <string name="wilson_media_forum_post_share_intent_text_extra">Heb je dit bericht van %s op het topic "%s" gezien?\n%s</string>
+
+    <!-- BB Code Editor -->
+    <string name="wilson_bb_code_preview_btn_label">Voorvertoning</string>
+    <string name="wilson_bb_code_markup_header_1">h1</string>
+    <string name="wilson_bb_code_markup_header_2">h2</string>
+    <string name="wilson_bb_code_markup_header_3">h3</string>
+    <string name="wilson_bb_code_markup_bold"><b>B</b></string>
+    <string name="wilson_bb_code_markup_italic"><i>I</i></string>
+    <string name="wilson_bb_code_markup_underline"><u>U</u></string>
+    <string name="wilson_bb_code_markup_strikethrough"><strike>S</strike></string>
+    <string name="wilson_bb_code_markup_quote">Quote</string>
+    <string name="wilson_bb_code_markup_link">Link</string>
+    <string name="wilson_bb_code_markup_code">Code</string>
+    <string name="wilson_bb_code_markup_spoiler">spoiler</string>
+    <string name="wilson_bb_code_markup_image">Afbeelding</string>
+    <string name="wilson_bb_code_markup_email">Email</string>
+    <string name="wilson_bb_code_markup_list">Lijst</string>
+    <string name="wilson_bb_code_markup_superscript">Superscript</string>
+    <string name="wilson_bb_code_markup_subscript">Subscript</string>
+    <string name="wilson_bb_code_empty_preview_warning">We kunnen geen preview van een leeg veld maken</string>
+    <string name="wilson_bb_code_preview_parse_error">Voorbeeld kon niet worden gemaakt. Controleer de BB-syntax</string>
+
+    <!-- Datable range (half-your-age-plus-seven) -->
+    <string name="smobo_photos">Laatste foto\'s</string>
+    <string name="smobo_half_your_age_plus_seven">Half-your-age-plus-seven</string>
+    <string name="hyap7_time_since_in_range">Jullie zijn al %s oud genoeg voor elkaar.</string>
+    <string name="hyap7_time_until_in_range">Jullie moeten nog %s wachten.</string>
+    <string name="hyap7_verdict_dating_allowed">Jij en %s mogen daten!</string>
+    <string name="hyap7_verdict_dating_other_too_young">%s is nog te jong voor jou.</string>
+    <string name="hyap7_verdict_dating_me_too_young">Jij bent nog te jong voor %s</string>
+
+    <!-- General stuff -->
+    <string name="list_concat_seperator">%s,&#160;</string>
+    <string name="list_concat_and">%s en %s</string>
+    <string name="sep">—</string>
 </resources>

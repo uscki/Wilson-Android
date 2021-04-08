@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/caption_contest_menu_share"
+        android:icon="@drawable/ic_share_white_24dp"
+        android:title="@string/app_general_action_share"
+        app:showAsAction="ifRoom"
+        />
+    <item
+        android:id="@+id/caption_contest_menu_archive"
+        android:icon="@drawable/ic_menu_slideshow"
+        android:title="@string/agenda_archive_menu_string"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/caption_contest_menu_confirm_vote_checkbox"
+        android:checkable="true"
+        android:title="@string/wilson_media_caption_contest_menu_confirm_vote_checkbox_label"
+        app:showAsAction="never"/>
+</menu>

@@ -1,6 +1,5 @@
 package nl.uscki.appcki.android.fragments.adapters;
 
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,8 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
+import nl.uscki.appcki.android.App;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.Utils;
 import nl.uscki.appcki.android.generated.roephoek.RoephoekItem;
@@ -26,7 +28,7 @@ public class RoephoekItemAdapter extends BaseItemAdapter<RoephoekItemAdapter.Vie
     }
 
     @Override
-    public ViewHolder onCreateCustomViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateCustomViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.roephoek_item, parent, false);
         return new ViewHolder(view);
@@ -40,12 +42,11 @@ public class RoephoekItemAdapter extends BaseItemAdapter<RoephoekItemAdapter.Vie
     @Override
     public void onBindCustomViewHolder(ViewHolder holder, int position) {
         RoephoekItem item = items.get(position);
-        //Log.d("RoephoekAdapter", item.getMessageJSON().toString());
-        SpannableStringBuilder text = Parser.parse(item.getMessageJSON(), true, holder.message);
-        holder.nickname.setText(item.getNickname());
+        SpannableStringBuilder text = Parser.parse(item.getMessage(), true, holder.message);
+        holder.nickname.setText(item.getNickname().replaceAll("CKI", App.USCKI_CKI_CHARACTER));
         //holder.message.setText(item.getMessage());
         holder.message.setText(trim(text));
-        holder.time.setText(Utils.timestampConversion(item.getTimestamp()));
+        holder.time.setText(Utils.timestampConversion(item.getTimestamp().getMillis()));
     }
 
     private SpannableStringBuilder trim(SpannableStringBuilder str) {

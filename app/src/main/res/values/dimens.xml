@@ -23,4 +23,5 @@
 
     <dimen name="cards_margin_sides">6dp</dimen>
     <dimen name="cards_margin_top">12dp</dimen>
+    <dimen name="item_width">200dp</dimen>
 </resources>

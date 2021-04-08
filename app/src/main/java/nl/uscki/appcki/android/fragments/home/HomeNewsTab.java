@@ -1,7 +1,6 @@
 package nl.uscki.appcki.android.fragments.home;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,13 +17,12 @@ import nl.uscki.appcki.android.events.SwitchTabEvent;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.NewsItemAdapter;
 import nl.uscki.appcki.android.generated.news.NewsItem;
-import nl.uscki.appcki.android.generated.news.NewsOverview;
 
 /**
  * Created by peter on 11/23/16.
  */
 
-public class HomeNewsTab extends PageableFragment<NewsOverview> {
+public class HomeNewsTab extends PageableFragment<NewsItemAdapter.ViewHolder, NewsItem> {
     private final int NEWS_PAGE_SIZE = 3;
 
     @Override
@@ -32,8 +30,10 @@ public class HomeNewsTab extends PageableFragment<NewsOverview> {
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
-        setAdapter(new NewsItemAdapter(new ArrayList<NewsItem>()));
-        Services.getInstance().newsService.older(page, NEWS_PAGE_SIZE).enqueue(callback);
+        if(getAdapter() == null) {
+            setAdapter(new NewsItemAdapter(new ArrayList<>()));
+            Services.getInstance().newsService.getNewsCollection(page, NEWS_PAGE_SIZE).enqueue(callback);
+        }
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -52,11 +52,11 @@ public class HomeNewsTab extends PageableFragment<NewsOverview> {
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().newsService.older(page, NEWS_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().newsService.getNewsCollection(page, NEWS_PAGE_SIZE).enqueue(callback);
     }
 
     public void onScrollRefresh() {
-        Services.getInstance().newsService.older(page, NEWS_PAGE_SIZE).enqueue(callback);
+        Services.getInstance().newsService.getNewsCollection(page, NEWS_PAGE_SIZE).enqueue(callback);
     }
 
     @Override
@@ -90,4 +90,10 @@ public class HomeNewsTab extends PageableFragment<NewsOverview> {
         return false;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getAdapter().getItemCount() > 0)
+            this.swipeContainer.setRefreshing(false);
+    }
 }

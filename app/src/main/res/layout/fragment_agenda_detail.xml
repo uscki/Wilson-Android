@@ -1,4 +1,5 @@
-<android.support.v4.widget.SwipeRefreshLayout
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -6,131 +7,158 @@
     android:id="@+id/refreshContainer"
     tools:context="nl.uscki.appcki.android.fragments.PageableFragment">
 
-<android.support.v4.widget.NestedScrollView
+<androidx.core.widget.NestedScrollView
     android:id="@+id/agenda_detail_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context="nl.uscki.appcki.android.fragments.agenda.AgendaDetailFragment">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/agenda_detail_title"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/example_text"
-            style="@style/AppTheme.TextHeader" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <androidx.cardview.widget.CardView
             android:id="@+id/agenda_detail_when"
-            android:layout_below="@+id/agenda_detail_title"
-            android:text="@string/example_text"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            style="@style/AppTheme.TextSubHeader" />
-
-        <nl.uscki.appcki.android.views.BBTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/agenda_detail_longtext"
+            android:layout_alignParentTop="true"
+            style="@style/CardView.Wilson"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="@dimen/text_margin">
+
+                <TextView
+                    android:id="@+id/agenda_detail_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/calendar_clock"
+                    android:drawablePadding="@dimen/text_margin"
+                    android:gravity="center_vertical"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/agenda_detail_participants"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/account_multiple"
+                    android:drawablePadding="@dimen/text_margin"
+                    android:layout_gravity="center_vertical"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/colorBlack"
+                    />
+
+                <TextView
+                    android:id="@+id/agenda_registration_required"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/agenda_inschrijven_verplicht"
+                    android:drawableStart="@drawable/ic_outline_whatshot_24px"
+                    android:layout_gravity="center_vertical"
+                    android:textAlignment="gravity"
+                    android:drawablePadding="@dimen/text_margin"
+                    android:textColor="@color/colorBlack"
+                    />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/agenda_detail_longtext_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/agenda_detail_when"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            style="@style/AppTheme.Text"/>
+            style="@style/CardView.Wilson">
 
-        <RelativeLayout
+            <nl.uscki.appcki.android.views.BBTextView
+                android:id="@+id/agenda_detail_longtext"
+                style="@style/AppTheme.Text.Selectable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_marginTop="@dimen/cards_margin_top"
+                android:layout_marginEnd="@dimen/text_margin"
+                android:layout_marginBottom="@dimen/cards_margin_top" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_below="@id/agenda_detail_longtext_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/agenda_detail_longtext"
-            android:layout_margin="16dp"
-            android:background="@drawable/agenda_detail_summary_background">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/agenda_summary_commissie_text"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:text="@string/example_text"
-                android:drawableLeft="@drawable/account_multiple"
-                android:drawableStart="@drawable/account_multiple"
-                android:drawablePadding="5dp"
-                style="@style/AppTheme.Text"
-                android:gravity="center_vertical" />
+            android:layout_marginBottom="@dimen/cards_margin_top"
+            style="@style/CardView.Wilson">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/agenda_detail_summary"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/agenda_summary_title_text"
-                android:layout_below="@+id/agenda_summary_commissie_text"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="5dp"
-                android:text="@string/example_text"
-                android:drawableLeft="@drawable/label_outline"
-                android:drawableStart="@drawable/label_outline"
-                android:drawablePadding="5dp"
-                style="@style/AppTheme.Text"
-                android:gravity="center_vertical" />
+                android:layout_margin="@dimen/text_margin"
+                >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/agenda_summary_waar_text"
-                android:layout_below="@+id/agenda_summary_title_text"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="5dp"
-                android:text="@string/example_text"
-                android:drawableLeft="@drawable/earth"
-                android:drawableStart="@drawable/earth"
-                android:drawablePadding="5dp"
-                style="@style/AppTheme.Text"
-                android:gravity="center_vertical" />
+                <TextView
+                    android:id="@+id/agenda_summary_commissie_text"
+                    style="@style/AppTheme.Text.Selectable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/account_multiple"
+                    android:drawablePadding="5dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/example_text" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/agenda_summary_when_text"
-                android:layout_below="@+id/agenda_summary_waar_text"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="5dp"
-                android:text="@string/example_text"
-                android:drawableLeft="@drawable/calendar"
-                android:drawableStart="@drawable/calendar"
-                android:drawablePadding="5dp"
-                style="@style/AppTheme.Text"
-                android:gravity="center_vertical" />
+                <TextView
+                    android:id="@+id/agenda_summary_title_text"
+                    style="@style/AppTheme.Text.Selectable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/agenda_summary_commissie_text"
+                    android:layout_marginBottom="5dp"
+                    android:drawableStart="@drawable/label_outline"
+                    android:drawablePadding="5dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/example_text" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/agenda_summary_cost_text"
-                android:layout_below="@+id/agenda_summary_when_text"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="10dp"
-                android:text="@string/example_text"
-                android:drawableLeft="@drawable/cash_multiple"
-                android:drawableStart="@drawable/cash_multiple"
-                android:drawablePadding="5dp"
-                style="@style/AppTheme.Text"
-                android:gravity="center_vertical" />
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/agenda_summary_waar_text"
+                    style="@style/AppTheme.Text.Selectable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/agenda_summary_title_text"
+                    android:layout_marginBottom="5dp"
+                    android:drawableStart="@drawable/earth"
+                    android:drawablePadding="5dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/example_text" />
+
+                <TextView
+                    android:id="@+id/agenda_summary_when_text"
+                    style="@style/AppTheme.Text.Selectable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/agenda_summary_waar_text"
+                    android:layout_marginBottom="5dp"
+                    android:drawableStart="@drawable/calendar"
+                    android:drawablePadding="5dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/example_text" />
+
+                <TextView
+                    android:id="@+id/agenda_summary_cost_text"
+                    style="@style/AppTheme.Text.Selectable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/agenda_summary_when_text"
+                    android:drawableStart="@drawable/cash_multiple"
+                    android:drawablePadding="5dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/example_text" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
     </RelativeLayout>
-</android.support.v4.widget.NestedScrollView>
-</android.support.v4.widget.SwipeRefreshLayout>
+</androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

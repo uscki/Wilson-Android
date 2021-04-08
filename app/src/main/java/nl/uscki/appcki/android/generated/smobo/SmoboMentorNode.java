@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
+import nl.uscki.appcki.android.generated.organisation.PersonName;
 
 /**
  * Created by peter on 3/4/17.
@@ -14,27 +14,27 @@ import nl.uscki.appcki.android.generated.organisation.PersonSimpleName;
 public class SmoboMentorNode {
     @Expose
     @SerializedName("children")
-    List<PersonSimpleName> children;
+    List<PersonName> children;
     @Expose
     @SerializedName("parents")
-    List<PersonSimpleName> parents;
+    List<PersonName> parents;
     @Expose
     @SerializedName("subnodes")
     List<SmoboMentorNode> subnodes;
 
-    public List<PersonSimpleName> getChildren() {
+    public List<PersonName> getChildren() {
         return children;
     }
 
-    public void setChildren(List<PersonSimpleName> children) {
+    public void setChildren(List<PersonName> children) {
         this.children = children;
     }
 
-    public List<PersonSimpleName> getParents() {
+    public List<PersonName> getParents() {
         return parents;
     }
 
-    public void setParents(List<PersonSimpleName> parents) {
+    public void setParents(List<PersonName> parents) {
         this.parents = parents;
     }
 

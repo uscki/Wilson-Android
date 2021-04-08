@@ -3,31 +3,21 @@ package nl.uscki.appcki.android;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.AudioManager;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Parcel;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.RequiresApi;
+
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessaging;
-
-import java.util.HashMap;
-import java.util.Locale;
 
 import nl.uscki.appcki.android.helpers.PermissionHelper;
 import nl.uscki.appcki.android.helpers.VibrationPatternPreferenceHelper;
@@ -50,98 +40,6 @@ public class NotificationUtil extends ContextWrapper {
             "nl.uscki.appcki.android.notifications.";
     private static final String nameStringResourceSuffix = "name.";
     private static final String descriptionStringResourceSuffix = "description.";
-
-    /**
-     * The ACTIVITIES notification channel contains important updates
-     * that (often) require action from the user
-     */
-    public static final String NOTIFICATION_CHANNEL_ACTIVITIES_ID = "nl.uscki.appcki.android.NOTIFICATIONS_ACTIVITIES";
-    public static final int NOTIFICATION_CHANNEL_ACTIVITIES = 2;
-
-    /**
-     * The GENERAL notifications channel contains relatively important notifications
-     * that are general to all USCKI members, such as shoutbox and news, but do not
-     * require action (although actions could be permitted when e.g. a new poll is released)
-     */
-    public static final String NOTIFICATION_CHANNEL_GENERAL_ID = "nl.uscki.appcki.android.NOTIFICATIONS_GENERAL";
-    public static final int NOTIFICATION_CHANNEL_GENERAL = 1;
-
-    /**
-     * The PERSONAL notification channel contains notifications on activities the user participated
-     * in, such as agenda replies or forum updates
-     */
-    public static final String NOTIFICATION_CHANNEL_PERSONAL_ID = "nl.uscki.appcki.android.NOTIFICATIONS_PERSONAL";
-    public static final int NOTIFICATION_CHANNEL_PERSONAL = 0;
-
-    // Per the guides of https://material.io/design/platform-guidance/android-notifications.html#settings
-    public static final HashMap<NotificationType, Integer> channelPriorities;
-    static {
-        channelPriorities = new HashMap<>();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            channelPriorities.put(NotificationType.achievement,
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channelPriorities.put(NotificationType.agenda_announcement,
-                    NotificationManager.IMPORTANCE_LOW);
-            channelPriorities.put(NotificationType.agenda_from_backup,
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channelPriorities.put(NotificationType.agenda_new,
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channelPriorities.put(NotificationType.agenda_reply,
-                    NotificationManager.IMPORTANCE_LOW);
-            channelPriorities.put(NotificationType.bugtracker_comment,
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channelPriorities.put(NotificationType.bugtracker_new,
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channelPriorities.put(NotificationType.bugtracker_status_changed,
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channelPriorities.put(NotificationType.forum_new_topic,
-                    NotificationManager.IMPORTANCE_LOW);
-            channelPriorities.put(NotificationType.forum_reply,
-                    NotificationManager.IMPORTANCE_LOW);
-            channelPriorities.put(NotificationType.other,
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channelPriorities.put(NotificationType.meeting_filledin,
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channelPriorities.put(NotificationType.meeting_new,
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channelPriorities.put(NotificationType.meeting_planned,
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channelPriorities.put(NotificationType.news,
-                    NotificationManager.IMPORTANCE_DEFAULT);
-        } else {
-            channelPriorities.put(NotificationType.achievement,
-                    NOTIFICATION_CHANNEL_PERSONAL);
-            channelPriorities.put(NotificationType.agenda_announcement,
-                    NOTIFICATION_CHANNEL_GENERAL);
-            channelPriorities.put(NotificationType.agenda_from_backup,
-                    NOTIFICATION_CHANNEL_PERSONAL);
-            channelPriorities.put(NotificationType.agenda_new,
-                    NOTIFICATION_CHANNEL_GENERAL);
-            channelPriorities.put(NotificationType.agenda_reply,
-                    NOTIFICATION_CHANNEL_PERSONAL);
-            channelPriorities.put(NotificationType.bugtracker_status_changed,
-                    NOTIFICATION_CHANNEL_GENERAL);
-            channelPriorities.put(NotificationType.bugtracker_new,
-                    NOTIFICATION_CHANNEL_GENERAL);
-            channelPriorities.put(NotificationType.bugtracker_comment,
-                    NOTIFICATION_CHANNEL_GENERAL);
-            channelPriorities.put(NotificationType.forum_new_topic,
-                    NOTIFICATION_CHANNEL_PERSONAL);
-            channelPriorities.put(NotificationType.forum_reply,
-                    NOTIFICATION_CHANNEL_PERSONAL);
-            channelPriorities.put(NotificationType.other,
-                    NOTIFICATION_CHANNEL_GENERAL);
-            channelPriorities.put(NotificationType.meeting_filledin,
-                    NOTIFICATION_CHANNEL_GENERAL);
-            channelPriorities.put(NotificationType.meeting_new,
-                    NOTIFICATION_CHANNEL_ACTIVITIES);
-            channelPriorities.put(NotificationType.meeting_planned,
-                    NOTIFICATION_CHANNEL_ACTIVITIES);
-            channelPriorities.put(NotificationType.news,
-                    NOTIFICATION_CHANNEL_GENERAL);
-        }
-    }
-
 
 
     /**
@@ -183,32 +81,6 @@ public class NotificationUtil extends ContextWrapper {
     }
 
     /**
-     * Three different bugtracker notifications have to go to the bugtracker detail view on the
-     * website. For now, use this method
-     * @param context   Context from which this notification is being built
-     * @param n         Notification builder containing base notification
-     * @param id        ID of the ticket
-     * @return          Updates notification builder
-     */
-    public static NotificationCompat.Builder goToBugTracker(Context context, NotificationCompat.Builder n, int id) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            n.setCategory(Notification.CATEGORY_SOCIAL);
-        }
-        Intent bugtrackerIntent = new Intent(Intent.ACTION_VIEW);
-
-        bugtrackerIntent.setData(Uri.parse(String.format(
-                Locale.ENGLISH,
-                "https://www.uscki.nl/?pagina=Bugtracker/Ticket&id=%d",
-                id)
-                .trim()));
-
-        PendingIntent pIntent =
-                PendingIntent.getActivity(context, 0, bugtrackerIntent, 0);
-        n.setContentIntent(pIntent);
-        return n;
-    }
-
-    /**
      * Create a notification channel for a given notification type
      *
      * @param notificationType      Notification type
@@ -245,7 +117,7 @@ public class NotificationUtil extends ContextWrapper {
         // Required information for creating a channel
         String channelID = channelId(notificationType);
         String name = getResources().getString(nameResourceId);
-        int importance = channelPriorities.get(notificationType);
+        int importance = notificationType.getImportance();
 
         // Create the channel
         NotificationChannel channel = new NotificationChannel(
@@ -288,80 +160,9 @@ public class NotificationUtil extends ContextWrapper {
      * @return                      Channel ID
      */
     public static String channelId(NotificationType notificationType) {
-        return "" + notificationType.toString().toUpperCase();
+        return notificationType.toString().toUpperCase();
     }
 
-    /**
-     * Add sound, vibration and notification LED effects based on the users preference for this type
-     * of notification
-     * @param notification      Base notification to which effects should be added
-     * @param notificationType  Type of the notification as received
-     */
-    public void addNotificationPropertiesBySettings(NotificationCompat.Builder notification, NotificationType notificationType) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Since Oreo, these things are handled by notification channels.
-            // Continuing will crash the application
-            return;
-        }
-
-        // Build a base string for the preferences we want to find
-        String basePreferenceKey = "notifications_";
-        int priority = channelPriorities.get(notificationType);
-        if(priority == 0) {
-            basePreferenceKey += "interactive_";
-        } else if(priority == 1){
-            basePreferenceKey += "general_";
-        } else if (priority == 2) {
-            basePreferenceKey += "personal_";
-        } else {
-            // We don't have settings for this
-            Log.e(getClass().toString(),
-                    "Notification priority " + priority +
-                            " does not exists on the pre-oreo channels!");
-            return;
-        }
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-
-        // Add notification sound effects
-        if(prefs.getBoolean(basePreferenceKey + "new_message", true)) {
-            String ringtoneUri = prefs.getString(basePreferenceKey + "new_message_ringtone",
-                    RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI);
-            notification.setSound(Uri.parse(ringtoneUri));
-        } else {
-            notification.setSound(null);
-        }
-
-        // Add vibration effects
-        if(prefs.getBoolean(basePreferenceKey + "new_message_vibrate", true)) {
-            VibrationPatternPreferenceHelper vibrationHelper =
-                    new VibrationPatternPreferenceHelper();
-
-            int vibrationPatternIndex = vibrationHelper.getIndexOfVibrationPatternPreference(
-                    basePreferenceKey + "vibration_pattern");
-
-            int vibrationPatternResourceId = vibrationHelper
-                    .getVibrationPatternResourceIdAtIndex(vibrationPatternIndex);
-
-            long[] vibrationPattern = vibrationHelper
-                    .getVibrationPattern(vibrationPatternResourceId);
-
-            if(vibrationPattern != null) {
-                notification.setVibrate(vibrationPattern);
-            }
-        }
-
-        // Add notification LED effects
-        if(prefs.getBoolean(basePreferenceKey + "show_light", true)) {
-            if(prefs.getBoolean(basePreferenceKey + "led_mode", true)) {
-                // Show light as just on
-                notification.setLights(Color.RED, 1000, 0);
-            } else {
-                // Blink once per second
-                notification.setLights(Color.RED, 150, 1000);
-            }
-        }
-    }
 
     /**
      * Since android oreo uses notification channels, from which no vibration pattern can be selected

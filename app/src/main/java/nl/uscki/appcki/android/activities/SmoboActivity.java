@@ -3,17 +3,22 @@ package nl.uscki.appcki.android.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.viewpager.widget.ViewPager;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.bumptech.glide.Glide;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
+
+import java.util.List;
+import java.util.Map;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
 import nl.uscki.appcki.android.fragments.adapters.SmoboViewPagerAdapter;
@@ -24,19 +29,14 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
     public static final int PERSON = 0;
     public static final int WICKI = 1;
 
-    @BindView(R.id.appbar)
     AppBarLayout appBarLayout;
-    @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.smobo_profile)
-    SimpleDraweeView profile;
+    ImageView profile;
+    private String personName;
 
-    @BindView(R.id.tabs)
     TabLayout tabLayout;
-    @BindView(R.id.smobo_viewpager)
     ViewPager viewPager;
 
     boolean collapsed = false;
@@ -45,18 +45,15 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Check if we're running on Android 5.0 or higher
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // Call some material design APIs here
-            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        } else {
-            // Implement this feature without material design
-        }*/
-
         setContentView(R.layout.activity_smobo);
-        ButterKnife.bind(this);
+        appBarLayout = findViewById(R.id.appbar);
+        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
+        toolbar = findViewById(R.id.toolbar);
+        profile = findViewById(R.id.smobo_profile);
+        tabLayout = findViewById(R.id.tabs);
+        viewPager = findViewById(R.id.smobo_viewpager);
 
-        toolbar.setTitle(" ");
+        toolbar.setTitle("");
 
         setSupportActionBar(toolbar);
 
@@ -64,13 +61,13 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
 
         if (getIntent().getIntExtra("id", 0) != 0) {
             if(getIntent().getStringExtra("name") != null) {
+                this.personName = getIntent().getStringExtra("name");
                 collapsingToolbarLayout.setTitle(" ");
-                tabLayout.addTab(tabLayout.newTab().setText(getIntent().getStringExtra("name")), PERSON);
+                tabLayout.addTab(tabLayout.newTab().setText(this.personName), PERSON);
                 collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.AppTheme_CollapsingToolbarTitle);
             }
 
             int id = getIntent().getIntExtra("id", 0);
-
 
             tabLayout.addTab(tabLayout.newTab().setText("WiCKI"), WICKI);
             viewPager.setAdapter(new SmoboViewPagerAdapter(getSupportFragmentManager(), id));
@@ -96,9 +93,30 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
         }
 
         if (getIntent().getIntExtra("photo", 0) != 0) {
-            profile.setImageURI(MediaAPI.getMediaUri(getIntent().getIntExtra("photo", 0)));
+            Glide.with(this)
+                    .load(MediaAPI.getMediaUri(getIntent().getIntExtra("photo", 0), MediaAPI.MediaSize.LARGE))
+                    .into(profile);
+            profile.setTransitionName("smobo_profile_photo");
+            profile.setOnClickListener(v -> {
+                Intent intent = new FullScreenMediaActivity
+                        .SingleImageIntentBuilder(personName, "smobo_profile_photo")
+                        .media(getIntent().getIntExtra("photo", 0))
+                        .build(SmoboActivity.this);
+
+                SmoboActivity.this.startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        SmoboActivity.this, profile, profile.getTransitionName()).toBundle());
+            });
         } else {
             appBarLayout.setExpanded(false);
+        }
+    }
+
+    @Override
+    protected void propegateMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+        if(!names.isEmpty() && names.get(0).equals("smobo_profile_photo")) {
+            sharedElements.put(names.get(0), profile);
+        } else {
+            super.propegateMapSharedElements(names, sharedElements);
         }
     }
 

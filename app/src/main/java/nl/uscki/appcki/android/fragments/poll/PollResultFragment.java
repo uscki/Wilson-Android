@@ -3,27 +3,23 @@ package nl.uscki.appcki.android.fragments.poll;
 
 import android.graphics.Canvas;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.fragments.RefreshableFragment;
 import nl.uscki.appcki.android.generated.poll.PollItem;
 import retrofit2.Response;
@@ -32,14 +28,22 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class PollResultFragment extends RefreshableFragment {
-    @BindView(R.id.poll_result_question)
     TextView question;
-    @BindView(R.id.poll_result_options)
     RecyclerView options;
 
     PollItem item;
 
     private ItemTouchHelper attachedSwipeCallback;
+
+    private Callback<PollItem> pollItemCallback = new Callback<PollItem>() {
+        @Override
+        public void onSucces(Response<PollItem> response) {
+            if(response != null && response.body() != null) {
+                item = response.body();
+                setupViews();
+            }
+        }
+    };
 
     /**
      * Handle swipe action on poll options
@@ -116,26 +120,25 @@ public class PollResultFragment extends RefreshableFragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_poll_result, container, false);
-        ButterKnife.bind(this, view);
+
+        question = view.findViewById(R.id.poll_result_question);
+        options = view.findViewById(R.id.poll_result_options);
+
         setHasOptionsMenu(true);
 
         setupSwipeContainer(view);
 
         if (getArguments() != null) {
-            MainActivity.currentScreen = MainActivity.Screen.POLL_DETAIL;
-            item = new Gson().fromJson(getArguments().getString("item"), PollItem.class);
-            setupViews();
+            int pollId = getArguments().getInt(MainActivity.PARAM_POLL_ID);
+            if(pollId >= 0) {
+                MainActivity.currentScreen = MainActivity.Screen.POLL_DETAIL;
+                Services.getInstance().pollService.get(pollId).enqueue(pollItemCallback);
+            } else {
+                Log.e(getClass().getSimpleName(), "No poll ID passed to fragment. Not showing anything");
+            }
         } else {
             MainActivity.currentScreen = MainActivity.Screen.POLL_ACTIVE;
-            Services.getInstance().pollService.active().enqueue(new Callback<PollItem>() {
-                @Override
-                public void onSucces(Response<PollItem> response) {
-                    if(response != null && response.body() != null) {
-                        item = response.body();
-                        setupViews();
-                    }
-                }
-            });
+            Services.getInstance().pollService.active().enqueue(pollItemCallback);
         }
 
         return view;
@@ -184,14 +187,14 @@ public class PollResultFragment extends RefreshableFragment {
         PollResultAdapter adapter = (PollResultAdapter) options.getAdapter();
         int optionId = adapter.getItems().get(adapterPosition).getId();
 
-        Services.getInstance().pollService.vote(optionId).enqueue(new Callback<PollItem>() {
+        Services.getInstance().pollService.vote(optionId).enqueue(new Callback<ActionResponse<PollItem>>() {
             @Override
-            public void onSucces(Response<PollItem> response) {
-                if(response != null && response.body() != null) {
-                    item = response.body();
-                    swipeContainer.setRefreshing(false);
-                    setupViews();
+            public void onSucces(Response<ActionResponse<PollItem>> response) {
+                if(response != null && response.body() != null && response.body().payload != null) {
+                    item = response.body().payload;
                 }
+                setupViews();
+                swipeContainer.setRefreshing(false);
             }
         });
     }

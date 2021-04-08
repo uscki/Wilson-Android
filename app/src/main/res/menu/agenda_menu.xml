@@ -13,19 +13,25 @@
         android:icon="@drawable/close"
         app:showAsAction="ifRoom" />
 
-    <item android:id="@+id/action_agenda_export"
+    <item
+        android:id="@+id/action_agenda_export"
+        android:icon="@drawable/ic_baseline_calendar_add_24px"
         android:title="@string/action_agenda_export"
-        android:icon="@android:drawable/stat_sys_download"
         android:visible="false"
-        app:showAsAction="ifRoom"
-        />
+        app:showAsAction="ifRoom" />
 
-    <item android:id="@+id/action_remove_from_calendar"
+    <item
+        android:id="@+id/action_remove_from_calendar"
+        android:icon="@drawable/ic_baseline_calendar_remove_24px"
         android:title="@string/action_agenda_remove_from_calendar"
-        android:icon="@android:drawable/ic_menu_delete"
         android:visible="false"
-        app:showAsAction="ifRoom"
-        />
+        app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/action_share_agenda_item"
+        android:icon="@drawable/ic_share_white_24dp"
+        android:title="@string/app_general_action_share"
+        android:visible="false"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_agenda_archive"

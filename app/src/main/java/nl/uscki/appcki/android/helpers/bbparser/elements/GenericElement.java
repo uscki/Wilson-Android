@@ -184,6 +184,10 @@ public class GenericElement {
                 return new EmbeddedVideo(c, p, true);
             case "Vimeo":
                 return new EmbeddedVideo(c, p, false);
+            case "Sub":
+                return new Sub(c, p);
+            case "Sup":
+                return new Sup(c, p);
             default:
                 return new GenericElement(c, p);
         }

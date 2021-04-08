@@ -120,4 +120,106 @@
         <item>120</item>
     </integer-array>
 
+    <string-array name="tag_collection_all_tags">
+        <item>b</item>
+        <item>code</item>
+        <item>email</item>
+        <item>h1</item>
+        <item>h2</item>
+        <item>h3</item>
+        <item>i</item>
+        <item>img</item>
+        <item>link</item>
+        <item>media</item>
+        <item>quote</item>
+        <item>s</item>
+        <item>section</item>
+        <item>spoiler</item>
+        <item>sup</item>
+        <item>sub</item>
+        <item>table</item>
+        <item>tr</item>
+        <item>td</item>
+        <item>ticket</item>
+        <item>u</item>
+        <item>ul</item>
+        <item>li</item>
+        <item>youtube</item>
+        <item>wickilink</item>
+        <item>vimeo</item>
+    </string-array>
+
+    <string-array name="tag_collection_default_tags">
+        <item>b</item>
+        <item>i</item>
+        <item>u</item>
+        <item>s</item>
+        <item>quote</item>
+        <item>email</item>
+        <item>link</item>
+        <item>img</item>
+        <item>h1</item>
+        <item>h2</item>
+        <item>h3</item>
+        <item>code</item>
+        <item>media</item>
+        <item>table</item>
+        <item>tr</item>
+        <item>td</item>
+        <item>ul</item>
+        <item>li</item>
+        <item>spoiler</item>
+        <item>sup</item>
+        <item>sub</item>
+        <item>ticket</item>
+        <item>youtube</item>
+        <item>vimeo</item>
+        <item>twitter</item>
+    </string-array>
+
+    <string-array name="tag_collection_wicki_tags">
+        <item>b</item>
+        <item>i</item>
+        <item>u</item>
+        <item>s</item>
+        <item>quote</item>
+        <item>email</item>
+        <item>link</item>
+        <item>img</item>
+        <item>h1</item>
+        <item>h2</item>
+        <item>h3</item>
+        <item>code</item>
+        <item>media</item>
+        <item>table</item>
+        <item>td</item>
+        <item>tr</item>
+        <item>ul</item>
+        <item>li</item>
+        <item>section</item>
+        <item>spoiler</item>
+        <item>sup</item>
+        <item>sub</item>
+        <item>ticket</item>
+        <item>youtube</item>
+        <item>wickilink</item>
+        <item>vimeo</item>
+        <item>twitter</item>
+    </string-array>
+
+    <string-array name="tag_collection_inline_tags">
+        <item>b</item>
+        <item>i</item>
+        <item>u</item>
+        <item>s</item>
+        <item>email</item>
+        <item>link</item>
+        <item>img</item>
+        <item>media</item>
+        <item>sup</item>
+        <item>sub</item>
+        <item>table</item>
+        <item>youtube</item>
+        <item>vimeo</item>
+    </string-array>
 </resources>

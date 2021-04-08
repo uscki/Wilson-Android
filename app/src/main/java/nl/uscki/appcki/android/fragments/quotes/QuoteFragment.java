@@ -1,10 +1,6 @@
 package nl.uscki.appcki.android.fragments.quotes;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,20 +8,26 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
+
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.MainActivity;
 import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.fragments.PageableFragment;
 import nl.uscki.appcki.android.fragments.adapters.QuoteAdapter;
 import nl.uscki.appcki.android.generated.quotes.Quote;
-import nl.uscki.appcki.android.generated.quotes.QuotesPage;
 
 /**
  * A fragment representing a list of Items.
  * <p/>
  */
-public class QuoteFragment extends PageableFragment<QuotesPage> {
+public class QuoteFragment extends PageableFragment<QuoteAdapter.ViewHolder, Quote> {
     private final int QUOTES_PAGE_SIZE = 5;
     private String[] sort = new String[]{""};
     private Menu menu;
@@ -71,8 +73,8 @@ public class QuoteFragment extends PageableFragment<QuotesPage> {
 
         MainActivity.currentScreen = MainActivity.Screen.QUOTE_OVERVIEW;
 
-        setAdapter(new QuoteAdapter(new ArrayList<Quote>()));
-        Services.getInstance().quoteService.older(page, getPageSize()).enqueue(callback);
+        setAdapter(new QuoteAdapter(new ArrayList<>()));
+        Services.getInstance().quoteService.getQuotesCollection(page, getPageSize()).enqueue(callback);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -80,14 +82,9 @@ public class QuoteFragment extends PageableFragment<QuotesPage> {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        FloatingActionButton fab = setFabEnabled(view, true);
+        FloatingActionButton fab = setFabEnabled(true);
         if (fab != null) {
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    addNewPageableItemWidget(new NewQuoteWidget(), true);
-                }
-            });
+            fab.setOnClickListener(view1 -> addNewPageableItemWidget(new NewQuoteWidget(), true));
         }
     }
 
@@ -119,11 +116,11 @@ public class QuoteFragment extends PageableFragment<QuotesPage> {
 
     @Override
     public void onScrollRefresh() {
-        Services.getInstance().quoteService.older(page, getPageSize(), sort).enqueue(callback);
+        Services.getInstance().quoteService.getQuotesCollection(page, getPageSize(), sort).enqueue(callback);
     }
 
     @Override
     public void onSwipeRefresh() {
-        Services.getInstance().quoteService.older(page, getPageSize(), sort).enqueue(callback);
+        Services.getInstance().quoteService.getQuotesCollection(page, getPageSize(), sort).enqueue(callback);
     }
 }

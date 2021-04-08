@@ -2,7 +2,7 @@ package nl.uscki.appcki.android.fragments.comments;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.Callback;
-import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
+import nl.uscki.appcki.android.api.models.ActionResponse;
 import nl.uscki.appcki.android.generated.comments.Comment;
 import nl.uscki.appcki.android.views.NewSimplePageableItem;
 import retrofit2.Call;
@@ -18,13 +18,13 @@ public class NewCommentWidget extends NewSimplePageableItem<Comment>{
     }
 
     @Override
-    protected Callback<Comment> getPostNewItemCallback() {
-        return new Callback<Comment>() {
+    protected Callback<ActionResponse<Comment>> getPostNewItemCallback() {
+        return new Callback<ActionResponse<Comment>>() {
             @Override
-            public void onSucces(Response<Comment> response) {
+            public void onSucces(Response<ActionResponse<Comment>> response) {
                 if(response != null && response.body() != null) {
                     cleanupAfterPost();
-                    commentsFragment.getAdapter().add(response.body());
+                    commentsFragment.commentPostedCallback.onSucces(response);
                     commentsFragment.scrollToEnd();
                 }
             }
@@ -37,7 +37,12 @@ public class NewCommentWidget extends NewSimplePageableItem<Comment>{
     }
 
     @Override
-    protected Call<Comment> postNewItem() {
-        return commentsFragment.sendCommentToServer(null, getMainTextInput().getText().toString());
+    protected Call<ActionResponse<Comment>> postNewItem() {
+        return commentsFragment.sendCommentToServer(-1, getMainTextInput().getText().toString());
+    }
+
+    @Override
+    protected int getTagCollection() {
+        return R.array.tag_collection_inline_tags;
     }
 }

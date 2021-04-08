@@ -1,83 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/text_margin"
+    android:layout_marginEnd="@dimen/text_margin"
+    android:orientation="vertical"
+    android:paddingBottom="4dp"
+    >
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/example_text"
         android:id="@+id/meeting_overview_title"
+        style="@style/AppTheme.TextSubHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        style="@style/AppTheme.TextHeader"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginRight="16dp"/>
+        android:text="@string/example_text" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/meeting_overview_time_text"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/meeting_overview_title"
-        android:layout_marginTop="6dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/meeting_overview_time_text"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:text="@string/example_text"
-            android:drawableLeft="@drawable/clock"
-            android:drawableStart="@drawable/clock"
-            android:drawablePadding="5dp"
-            style="@style/AppTheme.Text" />
+        android:drawableStart="@drawable/clock"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        style="@style/AppTheme.Text"
+        android:text="@string/example_text"
+        />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/meeting_overview_where_text"
-            android:layout_below="@+id/meeting_overview_time_text"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:text="@string/example_text"
-            android:drawableLeft="@drawable/earth"
-            android:drawableStart="@drawable/earth"
-            android:drawablePadding="5dp"
-            style="@style/AppTheme.Text" />
+    <TextView
+        android:id="@+id/meeting_overview_where_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/meeting_overview_time_text"
+        android:drawableStart="@drawable/earth"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        style="@style/AppTheme.Text"
+        android:text="@string/example_text" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/meeting_overview_mensen_text"
-            android:layout_below="@+id/meeting_overview_where_text"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:text="@string/example_text"
-            style="@style/AppTheme.Text"
-            android:drawableLeft="@drawable/account_multiple"
-            android:drawableStart="@drawable/account_multiple"
-            android:drawablePadding="5dp" />
+    <TextView
+        android:id="@+id/meeting_overview_mensen_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/meeting_overview_where_text"
+        android:drawableStart="@drawable/account_multiple"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        style="@style/AppTheme.Text"
+        android:text="@string/example_text"
+        />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/meeting_overview_status_text"
-            android:layout_below="@+id/meeting_overview_mensen_text"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="10dp"
-            android:text="@string/example_text"
-            android:drawableLeft="@drawable/check"
-            android:drawableStart="@drawable/check"
-            android:drawablePadding="5dp"
-            style="@style/AppTheme.Text" />
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/meeting_overview_status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/meeting_overview_mensen_text"
+        android:drawableStart="@drawable/check"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        style="@style/AppTheme.Text"
+        android:text="@string/example_text"
+        />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/meeting_overview_status_text"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginTop="@dimen/text_margin"
+        android:src="@drawable/list_divider"/>
 </RelativeLayout>

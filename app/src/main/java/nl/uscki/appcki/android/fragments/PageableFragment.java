@@ -2,19 +2,21 @@ package nl.uscki.appcki.android.fragments;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
@@ -22,6 +24,7 @@ import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.events.ContentLoadedEvent;
 import nl.uscki.appcki.android.events.ErrorEvent;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.views.NewPageableItem;
 import retrofit2.Response;
@@ -30,7 +33,7 @@ import retrofit2.Response;
  * A fragment representing a list of Items.
  * <p>
  */
-public abstract class PageableFragment<T extends Pageable> extends Fragment {
+public abstract class PageableFragment<T extends RecyclerView.ViewHolder, K extends IWilsonBaseItem> extends Fragment {
 
     public static final int NEW_ITEM_EDIT_BOX_POSITION_TOP = R.id.new_item_placeholder_top;
     public static final int NEW_ITEM_EDIT_BOX_POSITION_BOTTOM = R.id.new_item_placeholder_bottom;
@@ -38,10 +41,12 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     public static final int LAST_ON_TOP = 30;
     public static final int FIRST_ON_TOP = 31;
 
-    private BaseItemAdapter adapter;
+    private BaseItemAdapter<T, K> adapter;
     protected RecyclerView recyclerView;
     protected SwipeRefreshLayout swipeContainer;
     protected TextView emptyText;
+    protected NestedScrollView emptyTextScrollview;
+    private FloatingActionButton floatingActionButton;
 
     // The minimum amount of items to have below your current scroll position
     // before loading more.
@@ -59,9 +64,9 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     private int editBoxPosition = NEW_ITEM_EDIT_BOX_POSITION_DEFAULT;
     private int scrollDirection = LAST_ON_TOP;
 
-    protected Callback<T> callback = new Callback<T>() {
+    protected Callback<Pageable<K>> callback = new Callback<Pageable<K>>() {
         @Override
-        public void onSucces(Response<T> response) {
+        public void onSucces(Response<Pageable<K>> response) {
             if(refresh) {
                 refresh = false;
                 noMoreContent = false; // reset noMoreContent because we are loading the first page
@@ -72,11 +77,11 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                 if (response.body() != null) {
                     // empty first page meaning there are no elements at all, also not on other pages
                     if(response.body().getNumberOfElements() == 0 && response.body().getFirst()) {
-                        emptyText.setVisibility(View.VISIBLE);
+                        emptyTextScrollview.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
                         noMoreContent = true;
                     } else {
-                        emptyText.setVisibility(View.GONE);
+                        emptyTextScrollview.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                         noMoreContent = response.body().getNumberOfElements() < getPageSize();
                     }
@@ -94,14 +99,11 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                 if(response.body() != null) {
                     Log.e("pageablefragment", "totalpages: " + response.body().getTotalPages());
                     if(response.body().getNumberOfElements() == 0 && response.body().getFirst()) {
-                        emptyText.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
                         noMoreContent = true;
                     } else {
-                        emptyText.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
                         noMoreContent = response.body().getNumberOfElements() < getPageSize();
                     }
+                    updateEmptyStatus();
 
                     Log.e("pageablefragment", "adding items to the bottom");
                     getAdapter().addItems(response.body().getContent());
@@ -113,6 +115,16 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
             EventBus.getDefault().post(new ContentLoadedEvent(PageableFragment.this));
         }
     };
+
+    public void updateEmptyStatus() {
+        if(getAdapter().getItemCount() == 0) {
+            emptyText.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            emptyText.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+    }
 
 
     /**
@@ -126,16 +138,22 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_pageable, container, false);
+        View view = inflater.inflate(getLayoutResource(), container, false);
         setupSwipeContainer(view);
         setupRecyclerView(view);
 
-        emptyText = (TextView) view.findViewById(R.id.empty_text);
+        emptyTextScrollview = view.findViewById(R.id.empty_text_scrollview);
+        emptyText = view.findViewById(R.id.empty_text);
         emptyText.setText(getEmptyText());
+        floatingActionButton = view.findViewById(R.id.pageableFloatingActionButton);
 
         refresh = true; // always start with a refreshing view
         scrollLoad = false;
         return view;
+    }
+
+    protected int getLayoutResource() {
+        return R.layout.fragment_pageable;
     }
 
     public boolean scrollToItem(int id) {
@@ -161,7 +179,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     }
 
     protected void setupRecyclerView(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -189,14 +207,11 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     }
 
     protected void setupSwipeContainer(View view) {
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.refreshContainer);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                page = 0;
-                refresh = true;
-                onSwipeRefresh();
-            }
+        swipeContainer = view.findViewById(R.id.refreshContainer);
+        swipeContainer.setOnRefreshListener(() -> {
+            page = 0;
+            refresh = true;
+            onSwipeRefresh();
         });
 
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -205,6 +220,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                 android.R.color.holo_red_light);
 
         swipeContainer.setRefreshing(true);
+        swipeContainer.setNestedScrollingEnabled(getUseNestedScrolling());
     }
 
     public void refresh() {
@@ -228,11 +244,11 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         }
     }
 
-    public BaseItemAdapter getAdapter() {
+    public BaseItemAdapter<T, K> getAdapter() {
         return adapter;
     }
 
-    public void setAdapter(BaseItemAdapter adapter) {
+    public void setAdapter(BaseItemAdapter<T, K> adapter) {
         this.adapter = adapter;
     }
 
@@ -251,23 +267,23 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
         scrollDirection = direction;
     }
 
-    public FloatingActionButton setFabEnabled(@NonNull View view, boolean enabled) {
-        FloatingActionButton fab = view.findViewById(R.id.pageableFloatingActionButton);
-        if(fab == null) {
+    public FloatingActionButton setFabEnabled(boolean enabled) {
+
+        if(this.floatingActionButton == null) {
             Log.e(
                     getClass().getSimpleName(),
                     "Trying to enable Fabulous action button, but not found");
             return null;
         }
 
-        fab.setVisibility(enabled ? View.VISIBLE : View.GONE);
-        fab.setClickable(enabled);
+        this.floatingActionButton.setVisibility(enabled ? View.VISIBLE : View.GONE);
+        this.floatingActionButton.setClickable(enabled);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            fab.setFocusable(enabled);
+            this.floatingActionButton.setFocusable(enabled);
         }
 
         // Use the return value to set the onClick action
-        return fab;
+        return this.floatingActionButton;
     }
 
     /**
@@ -279,7 +295,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
      *                      invisible again and show the fab. If set to false, the fragment is
      *                      always visible and no fab is shown
      */
-    public void addNewPageableItemWidget(NewPageableItem widget, boolean onlyWhenFab) {
+    public void addNewPageableItemWidget(NewPageableItem<K> widget, boolean onlyWhenFab) {
         widget.setParent(this);
         FragmentManager fm = getChildFragmentManager();
 
@@ -293,7 +309,7 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
 
         View view = getView();
         if(onlyWhenFab && view != null) {
-            setFabEnabled(getView(), false);
+            setFabEnabled(false);
         }
     }
 
@@ -307,9 +323,11 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
                 .replace(editBoxPosition, new Fragment())
                 .commitAllowingStateLoss();
 
+        // TODO maybe here we should pop the proper backstack? Otherwise, doesn't item stay on back stack?
+
         View view = getView();
         if(view != null)
-            setFabEnabled(view, true);
+            setFabEnabled(true);
     }
 
     public abstract void onSwipeRefresh();
@@ -334,5 +352,22 @@ public abstract class PageableFragment<T extends Pageable> extends Fragment {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getAdapter() != null && getAdapter().getItemCount() > 0) {
+            swipeContainer.setRefreshing(false);
+        }
+    }
+
+    /**
+     * Override this method to return true to enable nested scrolling
+     *
+     * @return Boolean indicating if the SwipeRefreshLayout should use nested scrolling
+     */
+    protected boolean getUseNestedScrolling() {
+        return false;
     }
 }
