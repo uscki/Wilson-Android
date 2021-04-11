@@ -41,7 +41,7 @@ public class Parser {
                 GenericElement element = GenericElement.fromLinkedTreeUnit((LinkedTreeMap) object);
 
                 // Add the result of the element's toHtml function to the Stringbuilder
-                if(element != null && view != null)
+                if(element != null && element.getContent().size() > 0 && view != null)
                     output.append(element.getSpannedText(view));
             }
         }
