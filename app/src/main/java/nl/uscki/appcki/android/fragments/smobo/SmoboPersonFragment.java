@@ -68,8 +68,17 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
         @Override
         public void onSucces(Response<Pageable<MediaFileMetaData>> response) {
             if(response.body() != null) {
+                mediaGrid.setVisibility(View.VISIBLE);
+                if(getContext() != null) {
+                    mediaGridHeader.setText(getContext().getString(R.string.smobo_photos_count, p.getNumOfPhotos()));
+                }
                 mediaGridAdapter.clear();
                 mediaGridAdapter.addItems(response.body().getContent());
+            } else {
+                mediaGrid.setVisibility(View.GONE);
+                if(getContext() != null) {
+                    mediaGridHeader.setText(getContext().getString(R.string.smobo_photos_empty));
+                }
             }
         }
 
@@ -91,6 +100,7 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
     FrameLayout homepageInfo;
     RecyclerView smoboGroups;
     RecyclerView mediaGrid;
+    TextView mediaGridHeader;
     LinearLayoutManager mediaGridLayoutManager;
     SmoboMediaAdapter mediaGridAdapter;
     SwipeRefreshLayout swipeContainer;
@@ -113,7 +123,12 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
             createWebsiteInfoWidget(p);
             createCountdown();
 
-            Services.getInstance().smoboService.photos(id, 0, p.getNumOfPhotos()).enqueue(photosCallback);
+            if(p.getNumOfPhotos() > 0) {
+                Services.getInstance().smoboService.photos(id, 0, p.getNumOfPhotos()).enqueue(photosCallback);
+            } else {
+                mediaGrid.setVisibility(View.GONE);
+                mediaGridHeader.setText(getText(R.string.smobo_photos_empty));
+            }
 
             ((BaseItemAdapter) smoboGroups.getAdapter()).update(p.getGroups());
         }
@@ -297,6 +312,7 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
         homepageInfo = view.findViewById(R.id.smobo_homepage_info);
         smoboGroups = view.findViewById(R.id.smobo_groups);
         mediaGrid = view.findViewById(R.id.smobo_media_gridview);
+        mediaGridHeader = view.findViewById(R.id.smobo_media_text);
         swipeContainer = view.findViewById(R.id.smobo_swiperefresh);
         datableRangeInfo = view.findViewById(R.id.datable_range_info);
         datableRangeIcon = view.findViewById(R.id.datable_range_icon);

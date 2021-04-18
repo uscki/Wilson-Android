@@ -47,6 +47,7 @@
                     android:layout_marginBottom="@dimen/cards_margin_top"
                     android:focusable="false"
                     android:scrollbars="none"
+                    android:visibility="gone"
                     />
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
