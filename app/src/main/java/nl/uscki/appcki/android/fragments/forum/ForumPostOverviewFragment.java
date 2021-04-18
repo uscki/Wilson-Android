@@ -250,7 +250,7 @@ public class ForumPostOverviewFragment extends PageableFragment<ForumPostAdapter
             menu.findItem(sortStrings.keyAt(i)).setOnMenuItemClickListener(sortListener);
         }
 
-        if(UserHelper.getInstance().getCurrentUser().isForum_new_posts_first()) {
+        if(UserHelper.getInstance().getCurrentUser().isForum_new_posts_first() || topic != null && !topic.isRead()) {
             menu.findItem(R.id.forum_posts_sort_time_desc).setIcon(R.drawable.check);
             menu.findItem(R.id.forum_posts_sort_time_asc).setIcon(null);
         }
