@@ -9,19 +9,22 @@ import android.widget.ImageView;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityOptionsCompat;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.List;
 import java.util.Map;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.api.MediaAPI;
+import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.adapters.SmoboViewPagerAdapter;
+import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
 
 public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffsetChangedListener, SmoboInfoWidget.OnContextButtonClickListener {
@@ -37,7 +40,8 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
     private String personName;
 
     TabLayout tabLayout;
-    ViewPager viewPager;
+    ViewPager2 viewPager;
+    SmoboViewPagerAdapter adapter;
 
     boolean collapsed = false;
 
@@ -70,26 +74,21 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
             int id = getIntent().getIntExtra("id", 0);
 
             tabLayout.addTab(tabLayout.newTab().setText("WiCKI"), WICKI);
-            viewPager.setAdapter(new SmoboViewPagerAdapter(getSupportFragmentManager(), id));
+            this.adapter = new SmoboViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), id);
+            viewPager.setAdapter(this.adapter);
 
-            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-            tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                @Override
-                public void onTabSelected(TabLayout.Tab tab) {
-                    //setCurrentScreen(tab.getPosition());
-                    viewPager.setCurrentItem(tab.getPosition());
+            new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+                String tabTitle;
+                switch (position) {
+                    default:
+                    case PERSON:
+                        tabTitle = this.personName;
+                        break;
+                    case WICKI:
+                        tabTitle = getApplicationContext().getString(R.string.smobo_tab_wicki);
                 }
-
-                @Override
-                public void onTabUnselected(TabLayout.Tab tab) {
-
-                }
-
-                @Override
-                public void onTabReselected(TabLayout.Tab tab) {
-
-                }
-            });
+                tab.setText(tabTitle);
+            }).attach();
         }
 
         if (getIntent().getIntExtra("photo", 0) != 0) {
@@ -165,6 +164,12 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
             emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{mainText});
 
             startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        }
+    }
+
+    public void onEventMainThread(DetailItemUpdatedEvent<SmoboItem> item) {
+        if(this.adapter != null) {
+            this.adapter.setHasWicki(item.getUpdatedItem().getWickiPage() != null);
         }
     }
 }
