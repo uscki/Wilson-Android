@@ -57,7 +57,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.viewpager.widget.ViewPager xmlns:tools="http://schemas.android.com/tools"
+        <androidx.viewpager2.widget.ViewPager2 xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/smobo_viewpager"

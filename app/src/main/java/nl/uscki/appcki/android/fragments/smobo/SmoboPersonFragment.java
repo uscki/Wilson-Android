@@ -33,10 +33,12 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.SmoboActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
@@ -114,6 +116,8 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
         public void onSucces(Response<SmoboItem> response) {
             p = response.body();
             swipeContainer.setRefreshing(false);
+
+            EventBus.getDefault().post(new DetailItemUpdatedEvent<>(p));
 
             createAddressInfoWidget(p);
             createEmailInfoWidget(p);

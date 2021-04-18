@@ -485,6 +485,8 @@
     <string name="wilson_bb_code_preview_parse_error">Voorbeeld kon niet worden gemaakt. Controleer de BB-syntax</string>
 
     <!-- Datable range (half-your-age-plus-seven) -->
+    <string name="smobo_tab_wicki_with_cki_replace">Wi\u01de</string>
+    <string name="smobo_tab_wicki">WiCKI</string>
     <string name="smobo_photos">Laatste foto\'s</string>
     <string name="smobo_photos_count">Alle %d foto\'s</string>
     <string name="smobo_photos_empty">Geen foto\'s</string>
