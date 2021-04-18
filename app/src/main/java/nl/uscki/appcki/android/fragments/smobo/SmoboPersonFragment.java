@@ -33,10 +33,12 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.SmoboActivity;
 import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
@@ -68,8 +70,17 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
         @Override
         public void onSucces(Response<Pageable<MediaFileMetaData>> response) {
             if(response.body() != null) {
+                mediaGrid.setVisibility(View.VISIBLE);
+                if(getContext() != null) {
+                    mediaGridHeader.setText(getContext().getString(R.string.smobo_photos_count, p.getNumOfPhotos()));
+                }
                 mediaGridAdapter.clear();
                 mediaGridAdapter.addItems(response.body().getContent());
+            } else {
+                mediaGrid.setVisibility(View.GONE);
+                if(getContext() != null) {
+                    mediaGridHeader.setText(getContext().getString(R.string.smobo_photos_empty));
+                }
             }
         }
 
@@ -91,6 +102,7 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
     FrameLayout homepageInfo;
     RecyclerView smoboGroups;
     RecyclerView mediaGrid;
+    TextView mediaGridHeader;
     LinearLayoutManager mediaGridLayoutManager;
     SmoboMediaAdapter mediaGridAdapter;
     SwipeRefreshLayout swipeContainer;
@@ -105,6 +117,8 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
             p = response.body();
             swipeContainer.setRefreshing(false);
 
+            EventBus.getDefault().post(new DetailItemUpdatedEvent<>(p));
+
             createAddressInfoWidget(p);
             createEmailInfoWidget(p);
             createPhoneInfoWidget(p);
@@ -113,7 +127,12 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
             createWebsiteInfoWidget(p);
             createCountdown();
 
-            Services.getInstance().smoboService.photos(id, 0, p.getNumOfPhotos()).enqueue(photosCallback);
+            if(p.getNumOfPhotos() > 0) {
+                Services.getInstance().smoboService.photos(id, 0, p.getNumOfPhotos()).enqueue(photosCallback);
+            } else {
+                mediaGrid.setVisibility(View.GONE);
+                mediaGridHeader.setText(getText(R.string.smobo_photos_empty));
+            }
 
             ((BaseItemAdapter) smoboGroups.getAdapter()).update(p.getGroups());
         }
@@ -257,17 +276,17 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
                         int heartIcon = R.drawable.ic_outline_broken_heart_24px;
                         if (SmoboPersonFragment.this.dateRangeHelper.getLoveStatus()
                                 .equals(DateRangeHelper.DateRange.IN_RANGE)) {
-                            loveStatusString = getString(
+                            loveStatusString = context.getString(
                                     R.string.hyap7_verdict_dating_allowed,
                                     p.getPerson().getFirstname());
                             heartIcon = R.drawable.ic_outline_favorite_24px;
                         } else if (SmoboPersonFragment.this.dateRangeHelper.getLoveStatus()
                                 .equals(DateRangeHelper.DateRange.OTHER_TOO_YOUNG)) {
-                            loveStatusString = getString(
+                            loveStatusString = context.getString(
                                     R.string.hyap7_verdict_dating_other_too_young,
                                     p.getPerson().getFirstname());
                         } else {
-                            loveStatusString = getString(
+                            loveStatusString = context.getString(
                                     R.string.hyap7_verdict_dating_me_too_young,
                                     p.getPerson().getFirstname());
                         }
@@ -297,6 +316,7 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
         homepageInfo = view.findViewById(R.id.smobo_homepage_info);
         smoboGroups = view.findViewById(R.id.smobo_groups);
         mediaGrid = view.findViewById(R.id.smobo_media_gridview);
+        mediaGridHeader = view.findViewById(R.id.smobo_media_text);
         swipeContainer = view.findViewById(R.id.smobo_swiperefresh);
         datableRangeInfo = view.findViewById(R.id.datable_range_info);
         datableRangeIcon = view.findViewById(R.id.datable_range_icon);

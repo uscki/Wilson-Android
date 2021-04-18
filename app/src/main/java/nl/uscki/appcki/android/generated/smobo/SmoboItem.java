@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.organisation.Committee;
 import nl.uscki.appcki.android.generated.organisation.Person;
 
@@ -12,7 +13,7 @@ import nl.uscki.appcki.android.generated.organisation.Person;
  * Created by peter on 3/4/17.
  */
 
-public class SmoboItem {
+public class SmoboItem implements IWilsonBaseItem {
     @Expose
     @SerializedName("groups")
     List<Committee> groups;
@@ -63,5 +64,10 @@ public class SmoboItem {
 
     public int getNumOfPhotos() {
         return numOfPhotos == null ? 0 : numOfPhotos;
+    }
+
+    @Override
+    public Object getId() {
+        return person.getId();
     }
 }
