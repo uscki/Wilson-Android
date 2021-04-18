@@ -8,8 +8,8 @@ android {
         applicationId "nl.uscki.appcki.android"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 13
-        versionName "v2.3.0ω"
+        versionCode 14
+        versionName "v2.3.1ω"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
