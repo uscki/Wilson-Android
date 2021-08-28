@@ -51,12 +51,7 @@ public class SmoboInfoWidget extends Fragment {
 
         init(getArguments().getString("maintext"), getArguments().getString("subtext"), InfoType.values()[getArguments().getInt("infotype")]);
 
-        contextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onContextButtonClickListener.onClick(mainText.getText().toString(), type);
-            }
-        });
+        contextButton.setOnClickListener(v -> onContextButtonClickListener.onClick(mainText.getText().toString(), type));
 
         return view;
     }

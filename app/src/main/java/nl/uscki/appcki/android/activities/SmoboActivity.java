@@ -148,13 +148,9 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
     public void onClick(String mainText, SmoboInfoWidget.InfoType type) {
         if (type == SmoboInfoWidget.InfoType.ADRESS) {
             String address = mainText.replaceAll("\\s", "+");
-            Uri gmmIntentUri = Uri.parse(String.format("geo:0,0?q=%s", address));
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-            mapIntent.setPackage("com.google.android.apps.maps");
-
-            if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                startActivity(mapIntent);
-            }
+            Uri gmmIntentUri = Uri.parse(String.format("https://www.google.com/maps/dir/?api=1&destination=%s", address));
+            Intent intent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            startActivity(intent);
         } else if (type == SmoboInfoWidget.InfoType.PHONE) {
             Intent messagingIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + mainText));
             startActivity(Intent.createChooser(messagingIntent, "Send message..."));

@@ -51,6 +51,10 @@ public class MediaCollectionFragment extends PageableFragment<MediaCollectionAda
 
     public static final String ARG_COLLECTION_PARENTS = "PARENT_COLLECTIONS";
     public static final String ARG_COLLECTION_ID = "COLLECTION_ID";
+    public static final String ARG_COLLECTION_IS_SMOBO = "COLLECTION_IS_SMOBO";
+    public static final String ARG_COLLECTION_SMOBO_NAME = "COLLECTION_SMOBO_NAME";
+    public static final String ARG_COLLECTION_SMOBO_PERSON_ID = "COLLECTION_SMOBO_PERSON_ID";
+    public static final String ARG_COLLECTION_SMOBO_NUM_PHOTOS = "COLLECTION_SMOBO_NUM_PHOTOS";
 
     public MediaCollectionFragment() {
         // Required empty public constructor
@@ -58,6 +62,11 @@ public class MediaCollectionFragment extends PageableFragment<MediaCollectionAda
 
     private final int MEDIA_PAGE_SIZE = 10;
     private int collectionID = 0;
+    private boolean isSmobo;
+    private String smoboName;
+    private int smoboPersonId = -1;
+    private int smoboNumPhotos = -1;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +75,10 @@ public class MediaCollectionFragment extends PageableFragment<MediaCollectionAda
         if(getArguments() != null) {
             this.collectionID = getArguments().getInt(ARG_COLLECTION_ID, 0);
             this.parentCollections = getArguments().getParcelableArrayList(ARG_COLLECTION_PARENTS);
+            this.isSmobo = getArguments().getBoolean(ARG_COLLECTION_IS_SMOBO, false);
+            this.smoboName = getArguments().getString(ARG_COLLECTION_SMOBO_NAME);
+            this.smoboPersonId = getArguments().getInt(ARG_COLLECTION_SMOBO_PERSON_ID, -1);
+            this.smoboNumPhotos = getArguments().getInt(ARG_COLLECTION_SMOBO_NUM_PHOTOS, -1);
         }
 
         if(this.parentCollections == null) {
@@ -78,17 +91,33 @@ public class MediaCollectionFragment extends PageableFragment<MediaCollectionAda
 
         setHasOptionsMenu(true);
 
-        this.adapter = new MediaCollectionAdapter(getActivity(), this, this.collection, new ArrayList<>(), parentCollections);
-        setAdapter(adapter);
-
-        Services.getInstance().mediaService.getCollection(collectionID, page, MEDIA_PAGE_SIZE).enqueue(collectionCallback);
-
-        if(collection == null || collection.getNumOfPhotos() > 0) {
-            Services.getInstance().mediaService
-                    .photos(collectionID, 0, collection == null ? Integer.MAX_VALUE : collection.numOfPhotos)
-                    .enqueue(metadataCallback);
+        if(this.isSmobo) {
+            this.adapter = new MediaCollectionAdapter(
+                getActivity(),
+                this,
+                this.smoboPersonId
+            );
         } else {
-            mediaLoaded = true;
+            this.adapter = new MediaCollectionAdapter(
+                    getActivity(),
+                    this,
+                    this.collection,
+                    new ArrayList<>(), parentCollections);
+        }
+        setAdapter(this.adapter);
+
+        if(this.isSmobo) {
+            this.collectionLoaded = true;
+            Services.getInstance().smoboService.photos(collectionID, page, this.smoboNumPhotos >= 0 ? this.smoboNumPhotos : Integer.MAX_VALUE).enqueue(metadataCallback);
+        } else {
+            Services.getInstance().mediaService.getCollection(collectionID, page, MEDIA_PAGE_SIZE).enqueue(collectionCallback);
+            if(collection == null || collection.getNumOfPhotos() > 0) {
+                Services.getInstance().mediaService
+                        .photos(collectionID, 0, collection == null ? Integer.MAX_VALUE : collection.numOfPhotos)
+                        .enqueue(metadataCallback);
+            } else {
+                mediaLoaded = true;
+            }
         }
 
         setupToolbar();
@@ -101,6 +130,9 @@ public class MediaCollectionFragment extends PageableFragment<MediaCollectionAda
             if(bar != null && collection != null) {
                 bar.setTitle(collection.name);
                 bar.setSubtitle(getString(R.string.wilson_media_collection_added_date, collection.getDateAdded().toString(getString(R.string.joda_datetime_format_year_month_day))));
+            } else if (bar != null && this.isSmobo && this.smoboName != null) {
+                bar.setTitle(this.smoboName);
+                bar.setSubtitle(null);
             } else if (bar != null) {
                 bar.setTitle(R.string.wilson_media_activity_header);
                 bar.setSubtitle(null);
@@ -386,6 +418,9 @@ public class MediaCollectionFragment extends PageableFragment<MediaCollectionAda
         private int collectionID;
         private MediaCollection directParent;
         private ArrayList<MediaCollection> parents;
+        private String smoboName = null;
+        private int personId = -1;
+        private int numPhotos = -1;
 
         public IntentBuilder(int collectionID) {
             this.collectionID = collectionID;
@@ -406,6 +441,13 @@ public class MediaCollectionFragment extends PageableFragment<MediaCollectionAda
             return this;
         }
 
+        public IntentBuilder setIsSmobo(String smoboPersonName, int personId, int numPhotos) {
+            this.smoboName = smoboPersonName;
+            this.personId = personId;
+            this.numPhotos = numPhotos;
+            return this;
+        }
+
         public Intent build(Context context) {
             Intent intent = new Intent(context, MainActivity.class);
             intent.setAction(MainActivity.ACTION_VIEW_COLLECTION);
@@ -422,6 +464,16 @@ public class MediaCollectionFragment extends PageableFragment<MediaCollectionAda
             }
             if(!parents.isEmpty()) {
                 intent.putParcelableArrayListExtra(MediaCollectionFragment.ARG_COLLECTION_PARENTS, parents);
+            }
+            if(this.smoboName != null) {
+                intent.putExtra(MediaCollectionFragment.ARG_COLLECTION_IS_SMOBO, true);
+                intent.putExtra(MediaCollectionFragment.ARG_COLLECTION_SMOBO_NAME, this.smoboName);
+            }
+            if(this.personId >= 0) {
+                intent.putExtra(MediaCollectionFragment.ARG_COLLECTION_SMOBO_PERSON_ID, this.personId);
+            }
+            if(this.numPhotos >= 0) {
+                intent.putExtra(MediaCollectionFragment.ARG_COLLECTION_SMOBO_NUM_PHOTOS, this.numPhotos);
             }
             return intent;
         }

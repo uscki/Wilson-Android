@@ -48,10 +48,10 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.leanback:leanback:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'de.greenrobot:eventbus:2.4.0'
     implementation 'commons-lang:commons-lang:20030203.000129'
@@ -63,7 +63,7 @@ dependencies {
     implementation 'com.vistrav:ask:2.4'
     implementation 'io.github.inflationx:calligraphy3:3.1.1'
     implementation 'io.github.inflationx:viewpump:2.0.3'
-    implementation 'com.google.firebase:firebase-messaging:21.1.0'
+    implementation 'com.google.firebase:firebase-messaging:22.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     // Avoid error `Cannot fit requested classes in a single dex file (# methods: 66229 > 65536)`
     // See https://developer.android.com/studio/build/multidex#mdex-gradle

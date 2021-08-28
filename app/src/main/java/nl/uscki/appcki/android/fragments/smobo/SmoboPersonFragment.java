@@ -3,6 +3,8 @@ package nl.uscki.appcki.android.fragments.smobo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,6 +44,7 @@ import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
+import nl.uscki.appcki.android.fragments.media.MediaCollectionFragment;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
@@ -72,7 +75,17 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
             if(response.body() != null) {
                 mediaGrid.setVisibility(View.VISIBLE);
                 if(getContext() != null) {
-                    mediaGridHeader.setText(getContext().getString(R.string.smobo_photos_count, p.getNumOfPhotos()));
+                    SpannableString viewPhotosText = new SpannableString(getString(R.string.smobo_photos_view_n_all, p.getNumOfPhotos()));
+                    viewPhotosText.setSpan(new UnderlineSpan(), 0, viewPhotosText.length(), 0);
+                    showAllFotosButton.setText(viewPhotosText);
+                    showAllFotosButton.setVisibility(View.VISIBLE);
+                    showAllFotosButton.setOnClickListener(v -> {
+                        Intent intent = new MediaCollectionFragment.IntentBuilder(
+                                p.getPerson().getId())
+                                .setIsSmobo(p.getPerson().getPostalname(), p.getPerson().getId(), p.getNumOfPhotos())
+                                .build(getContext());
+                        startActivity(intent);
+                    });
                 }
                 mediaGridAdapter.clear();
                 mediaGridAdapter.addItems(response.body().getContent());
@@ -105,6 +118,7 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
     TextView mediaGridHeader;
     LinearLayoutManager mediaGridLayoutManager;
     SmoboMediaAdapter mediaGridAdapter;
+    TextView showAllFotosButton;
     SwipeRefreshLayout swipeContainer;
     RelativeLayout datableRangeInfo;
     ImageView datableRangeIcon;
@@ -317,6 +331,7 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
         smoboGroups = view.findViewById(R.id.smobo_groups);
         mediaGrid = view.findViewById(R.id.smobo_media_gridview);
         mediaGridHeader = view.findViewById(R.id.smobo_media_text);
+        showAllFotosButton = view.findViewById(R.id.smobo_media_viewmore_button);
         swipeContainer = view.findViewById(R.id.smobo_swiperefresh);
         datableRangeInfo = view.findViewById(R.id.datable_range_info);
         datableRangeIcon = view.findViewById(R.id.datable_range_icon);

@@ -490,6 +490,7 @@
     <string name="smobo_photos">Laatste foto\'s</string>
     <string name="smobo_photos_count">Alle %d foto\'s</string>
     <string name="smobo_photos_empty">Geen foto\'s</string>
+    <string name="smobo_photos_view_n_all">Bekijk alle %d foto\'s</string>
     <string name="smobo_half_your_age_plus_seven">Half-your-age-plus-seven</string>
     <string name="hyap7_time_since_in_range">Jullie zijn al %s oud genoeg voor elkaar.</string>
     <string name="hyap7_time_until_in_range">Jullie moeten nog %s wachten.</string>

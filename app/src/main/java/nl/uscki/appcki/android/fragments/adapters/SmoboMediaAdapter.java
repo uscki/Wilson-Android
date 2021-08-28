@@ -72,7 +72,7 @@ public class SmoboMediaAdapter extends BaseItemAdapter<SmoboMediaAdapter.ViewHol
         public void onClick(View v) {
             Intent intent = new FullScreenMediaActivity
                     .CollectionIntentBuilder(null, "smobo_image_")
-                    .initialPosition(getAdapterPosition(), items)
+                    .initialPosition(getBindingAdapterPosition(), items)
                     .collectionID(personId)
                     .isSmobo()
                     .build(activity);

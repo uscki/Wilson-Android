@@ -67,7 +67,7 @@ public class SmoboItem implements IWilsonBaseItem {
     }
 
     @Override
-    public Object getId() {
+    public Integer getId() {
         return person.getId();
     }
 }

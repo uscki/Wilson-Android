@@ -2,13 +2,14 @@ package nl.uscki.appcki.android.services;
 
 import android.content.Context;
 import android.util.Log;
+
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.installations.FirebaseInstallations;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import java.io.IOException;
+
+import org.jetbrains.annotations.NotNull;
 
 import nl.uscki.appcki.android.BuildConfig;
 import nl.uscki.appcki.android.NotificationUtil;
@@ -43,7 +44,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
     }
 
     @Override
-    public void onNewToken(String refreshedToken) {
+    public void onNewToken(@NotNull String refreshedToken) {
         if(BuildConfig.DEBUG) {
             Log.d(TAG, "Refreshed firebase Token: " + refreshedToken);
         }
@@ -99,12 +100,10 @@ public class NotificationReceiver extends FirebaseMessagingService {
             // this token with the Firebase servers. If user has not granted permission to do so,
             // this should not be done. DO NOT REMOVE THIS IF STATEMENT
 
-            Task<InstanceIdResult> instanceIdResultTask = FirebaseInstanceId.getInstance().getInstanceId();
-            instanceIdResultTask.addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+           FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
                 @Override
-                public void onSuccess(InstanceIdResult instanceIdResult) {
-                    String token = instanceIdResult.getToken();
-                    Log.d(NotificationReceiver.class.getSimpleName(), "Firebase Token: " + token);
+                public void onSuccess(String s) {
+                    Log.d(NotificationReceiver.class.getSimpleName(), "Firebase Token: " + s);
                 }
             });
         } else {
@@ -122,16 +121,9 @@ public class NotificationReceiver extends FirebaseMessagingService {
     public static void invalidateFirebaseInstanceId(boolean allowNew) {
         Log.e(NotificationReceiver.class.getSimpleName(), "Invalidating firebase instance ID");
         NotificationUtil.setFirebaseEnabled(allowNew);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FirebaseInstanceId.getInstance().deleteInstanceId();
-                    Log.d(NotificationReceiver.class.getSimpleName(), "Firebase instance ID invalidated");
-                } catch (IOException e) {
-                    Log.d(NotificationReceiver.class.getSimpleName(), e.getMessage());
-                }
-            }
+        new Thread(() -> {
+                FirebaseMessaging.getInstance().deleteToken();
+                FirebaseInstallations.getInstance().delete();
         }).start();
     }
 
