@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import nl.uscki.appcki.android.R;
 import nl.uscki.appcki.android.activities.FullScreenMediaActivity;
@@ -32,13 +32,16 @@ public class SmoboMediaAdapter extends BaseItemAdapter<SmoboMediaAdapter.ViewHol
 
     Drawable loadingDrawable;
 
-    public SmoboMediaAdapter(SmoboActivity activity, int personId, List<MediaFileMetaData> items) {
-        super(items);
+    public SmoboMediaAdapter(SmoboActivity activity) {
+        super(new ArrayList<>());
         this.activity = activity;
-        this.personId = personId;
         this.loadingDrawable = ContextCompat.getDrawable(activity, R.drawable.animated_uscki_logo_black);
         if(loadingDrawable instanceof Animatable)
             ((Animatable)this.loadingDrawable).start();
+    }
+
+    public void setPersonId(int personId) {
+        this.personId = personId;
     }
 
     @Override

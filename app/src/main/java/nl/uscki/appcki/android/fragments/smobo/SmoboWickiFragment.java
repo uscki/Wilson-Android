@@ -8,30 +8,19 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
-import nl.uscki.appcki.android.api.Callback;
-import nl.uscki.appcki.android.api.Services;
+import nl.uscki.appcki.android.activities.SmoboActivity;
+import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.views.BBTextView;
-import retrofit2.Response;
 
 /**
  * Created by peter on 4/5/17.
  */
 
 public class SmoboWickiFragment extends Fragment {
-    int id;
-
-    private Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
-        @Override
-        public void onSucces(Response<SmoboItem> response) {
-            SmoboItem p = response.body();
-            swipeContainer.setRefreshing(false);
-
-            if (p.getWickiPage() != null)
-                wickiText.setText(p.getWickiPage(), true);
-        }
-    };
+    private SmoboActivity activity;
 
     BBTextView wickiText;
     SwipeRefreshLayout swipeContainer;
@@ -42,24 +31,32 @@ public class SmoboWickiFragment extends Fragment {
         wickiText = view.findViewById(R.id.smobo_wicki_text);
         swipeContainer = view.findViewById(R.id.smobo_wicki_swiperefresh);
 
-        if (getArguments() != null) {
-            this.id = getArguments().getInt("id");
+        if(getActivity() instanceof SmoboActivity) {
+            this.activity = (SmoboActivity) getActivity();
+        }
 
+        if (this.activity != null) {
             setupSwipeContainer();
-
-            Services.getInstance().smoboService.get(id).enqueue(smoboCallback);
+            if(this.activity.getP() != null) {
+                updateItem(this.activity.getP());
+            }
         }
 
         return view;
     }
 
+    private void updateItem(SmoboItem p) {
+        if (p.getWickiPage() != null)
+            wickiText.setText(p.getWickiPage(), true);
+    }
+
+    public void onEventMainThread(DetailItemUpdatedEvent<SmoboItem> item) {
+        swipeContainer.setRefreshing(false);
+        updateItem(item.getUpdatedItem());
+    }
+
     protected void setupSwipeContainer() {
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                onSwipeRefresh();
-            }
-        });
+        swipeContainer.setOnRefreshListener(() -> this.activity.refreshSmoboItem());
 
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -69,7 +66,15 @@ public class SmoboWickiFragment extends Fragment {
         swipeContainer.setRefreshing(false);
     }
 
-    public void onSwipeRefresh() {
-        Services.getInstance().smoboService.get(id).enqueue(smoboCallback);
+    @Override
+    public void onStart() {
+        EventBus.getDefault().register(this);
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 }

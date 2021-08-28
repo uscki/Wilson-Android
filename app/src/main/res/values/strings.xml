@@ -494,11 +494,21 @@
 
     <!-- Datable range (half-your-age-plus-seven) -->
     <string name="smobo_tab_wicki_with_cki_replace">Wi\u01de</string>
+    <string name="smobo_tab_mentor_tree">Mentorboom</string>
+    <string name="smobo_mentor_tree_parents">Ouders</string>
+    <string name="smobo_mentor_tree_siblings">Zusjes en Broertjes</string>
+    <string name="smobo_mentortree_starting_year">Startjaar</string>
     <string name="smobo_tab_wicki">WiCKI</string>
     <string name="smobo_photos">Laatste foto\'s</string>
     <string name="smobo_photos_count">Alle %d foto\'s</string>
     <string name="smobo_photos_empty">Geen foto\'s</string>
     <string name="smobo_photos_view_n_all">Bekijk alle %d foto\'s</string>
+    <string name="smobo_info_home_address">Adres</string> <!-- Leave me alone automatic spellcheck. Respect The Dutch! -->
+    <string name="smobo_info_email_address">E-mailadres</string>
+    <string name="smobo_info_phone_residential">Telefoonnummer</string>
+    <string name="smobo_info_phone_mobile">Mobiel nummer</string>
+    <string name="smobo_info_birthday">Verjaardag</string>
+    <string name="smobo_info_homepage">Homepage</string>
     <string name="smobo_half_your_age_plus_seven">Half-your-age-plus-seven</string>
     <string name="hyap7_time_since_in_range">Jullie zijn al %s oud genoeg voor elkaar.</string>
     <string name="hyap7_time_until_in_range">Jullie moeten nog %s wachten.</string>

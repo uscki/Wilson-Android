@@ -7,6 +7,8 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 
+import java.util.Locale;
+
 import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 
 /**
@@ -194,6 +196,15 @@ public class Person extends PersonName implements IWilsonBaseItem {
             }
         }
         return age;
+    }
+
+    public String getBirthdayWidthAge() {
+        return String.format(
+                Locale.getDefault(),
+                "(%s) (%d)",
+                getBirthdate().toString("dd-MM-yyyy"),
+                getAge()
+        );
     }
 
     @Override
