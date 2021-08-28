@@ -496,8 +496,13 @@
     <string name="smobo_tab_wicki_with_cki_replace">Wi\u01de</string>
     <string name="smobo_tab_mentor_tree">Mentorboom</string>
     <string name="smobo_mentor_tree_parents">Ouders</string>
+    <string name="smobo_mentor_tree_partner_singular">Partner</string>
+    <string name="smobo_mentor_tree_partner_plural">Partners</string>
+    <string name="smobo_mentor_tree_was_parent_description">%s was mentorouder</string>
     <string name="smobo_mentor_tree_siblings">Zusjes en Broertjes</string>
+    <string name="smobo_mentor_tree_children">Kinderen</string>
     <string name="smobo_mentortree_starting_year">Startjaar</string>
+    <string name="smobo_mentortree_formatted_years_ago">%d jaar geleden</string>
     <string name="smobo_tab_wicki">WiCKI</string>
     <string name="smobo_photos">Laatste foto\'s</string>
     <string name="smobo_photos_count">Alle %d foto\'s</string>
