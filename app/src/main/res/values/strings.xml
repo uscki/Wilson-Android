@@ -7,6 +7,14 @@
     <string name="app_general_action_save">Opslaan</string>
     <string name="app_general_action_share_intent_text">Delen met…</string>
 
+    <string name="main_menu_news">News</string>
+    <string name="main_menu_agenda">Agenda</string>
+    <string name="main_menu_shoutbox">Roephoek</string>
+    <string name="main_menu_poll">Poll</string>
+    <string name="main_menu_quotes">Quotes</string>
+    <string name="main_menu_meeting_planner">Vergaderplanner</string>
+    <string name="main_menu_smobo">Smoelenboek</string>
+
     <string name="home_fragment_tab_header_news">Nieuws</string>
     <string name="home_fragment_tab_header_agenda">Agenda</string>
     <string name="home_fragment_tab_header_shoutbox">Roephoek</string>
