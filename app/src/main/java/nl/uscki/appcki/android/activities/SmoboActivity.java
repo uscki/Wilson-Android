@@ -3,6 +3,7 @@ package nl.uscki.appcki.android.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,17 +21,29 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.List;
 import java.util.Map;
 
+import de.greenrobot.event.EventBus;
 import nl.uscki.appcki.android.R;
+import nl.uscki.appcki.android.api.Callback;
 import nl.uscki.appcki.android.api.MediaAPI;
+import nl.uscki.appcki.android.api.Services;
 import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.adapters.SmoboViewPagerAdapter;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.views.SmoboInfoWidget;
+import retrofit2.Response;
 
 public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffsetChangedListener, SmoboInfoWidget.OnContextButtonClickListener {
 
     public static final int PERSON = 0;
-    public static final int WICKI = 1;
+    public static final int MENTOR_TREE = 1;
+    public static final int WICKI = 2;
+
+    private Integer id;
+    private SmoboItem p;
+
+    public SmoboItem getP() {
+        return p;
+    }
 
     AppBarLayout appBarLayout;
     CollapsingToolbarLayout collapsingToolbarLayout;
@@ -63,33 +76,36 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (getIntent().getIntExtra("id", 0) != 0) {
-            if(getIntent().getStringExtra("name") != null) {
-                this.personName = getIntent().getStringExtra("name");
-                collapsingToolbarLayout.setTitle(" ");
-                tabLayout.addTab(tabLayout.newTab().setText(this.personName), PERSON);
-                collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.AppTheme_CollapsingToolbarTitle);
-            }
 
-            int id = getIntent().getIntExtra("id", 0);
-
-            tabLayout.addTab(tabLayout.newTab().setText("WiCKI"), WICKI);
-            this.adapter = new SmoboViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), id);
-            viewPager.setAdapter(this.adapter);
-
-            new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-                String tabTitle;
-                switch (position) {
-                    default:
-                    case PERSON:
-                        tabTitle = this.personName;
-                        break;
-                    case WICKI:
-                        tabTitle = getApplicationContext().getString(R.string.smobo_tab_wicki);
-                }
-                tab.setText(tabTitle);
-            }).attach();
+        this.id = getIntent().getIntExtra("id", 0);
+        if(getIntent().getStringExtra("name") != null) {
+            this.personName = getIntent().getStringExtra("name");
+            collapsingToolbarLayout.setTitle(" ");
+            tabLayout.addTab(tabLayout.newTab().setText(this.personName), PERSON);
+            tabLayout.addTab(tabLayout.newTab().setText(R.string.smobo_tab_mentor_tree), MENTOR_TREE);
+            collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.AppTheme_CollapsingToolbarTitle);
         }
+
+
+        tabLayout.addTab(tabLayout.newTab().setText("WiCKI"), WICKI);
+        this.adapter = new SmoboViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
+        viewPager.setAdapter(this.adapter);
+
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            String tabTitle;
+            switch (position) {
+                default:
+                case PERSON:
+                    tabTitle = this.personName;
+                    break;
+                case MENTOR_TREE:
+                    tabTitle = getString(R.string.smobo_tab_mentor_tree);
+                    break;
+                case WICKI:
+                    tabTitle = getApplicationContext().getString(R.string.smobo_tab_wicki);
+            }
+            tab.setText(tabTitle);
+        }).attach();
 
         if (getIntent().getIntExtra("photo", 0) != 0) {
             Glide.with(this)
@@ -108,6 +124,8 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
         } else {
             appBarLayout.setExpanded(false);
         }
+
+        this.refreshSmoboItem();
     }
 
     @Override
@@ -148,13 +166,9 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
     public void onClick(String mainText, SmoboInfoWidget.InfoType type) {
         if (type == SmoboInfoWidget.InfoType.ADRESS) {
             String address = mainText.replaceAll("\\s", "+");
-            Uri gmmIntentUri = Uri.parse(String.format("geo:0,0?q=%s", address));
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-            mapIntent.setPackage("com.google.android.apps.maps");
-
-            if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                startActivity(mapIntent);
-            }
+            Uri gmmIntentUri = Uri.parse(String.format("https://www.google.com/maps/dir/?api=1&destination=%s", address));
+            Intent intent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            startActivity(intent);
         } else if (type == SmoboInfoWidget.InfoType.PHONE) {
             Intent messagingIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + mainText));
             startActivity(Intent.createChooser(messagingIntent, "Send message..."));
@@ -167,9 +181,35 @@ public class SmoboActivity extends BasicActivity implements AppBarLayout.OnOffse
         }
     }
 
-    public void onEventMainThread(DetailItemUpdatedEvent<SmoboItem> item) {
-        if(this.adapter != null) {
-            this.adapter.setHasWicki(item.getUpdatedItem().getWickiPage() != null);
+    public void refreshSmoboItem() {
+        if(this.id >= 0) {
+            Services.getInstance().smoboService.get(this.id).enqueue(smoboCallback);
+        } else {
+            Log.e(getClass().getSimpleName(), "ID not yet present");
+        }
+    }
+
+    private final Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
+        @Override
+        public void onSucces(Response<SmoboItem> response) {
+            SmoboActivity.this.p = response.body();
+            if(SmoboActivity.this.adapter != null) {
+                SmoboActivity.this.adapter.setHasWicki(response.body().getWickiPage() != null);
+            }
+            EventBus.getDefault().post(new DetailItemUpdatedEvent<>(p));
+        }
+
+        @Override
+        public void onError(Response<SmoboItem> response) {
+            super.onError(response);
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(this.p != null) {
+            EventBus.getDefault().post(new DetailItemUpdatedEvent<>(this.p));
         }
     }
 }

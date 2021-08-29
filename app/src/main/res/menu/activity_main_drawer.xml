@@ -5,15 +5,15 @@
         <item
             android:id="@+id/nav_news"
             android:icon="@drawable/newspaper"
-            android:title="News" />
+            android:title="@string/main_menu_news" />
         <item
             android:id="@+id/nav_agenda"
-            android:icon="@drawable/calendar"
-            android:title="Agenda" />
+            android:icon="@drawable/outline_calendar_today_24"
+            android:title="@string/main_menu_agenda" />
         <item
             android:id="@+id/nav_roephoek"
             android:icon="@drawable/message_text"
-            android:title="Roephoek" />
+            android:title="@string/main_menu_shoutbox" />
         <item
             android:id="@+id/nav_forum"
             android:icon="@drawable/ic_forum_black_24dp"
@@ -22,26 +22,32 @@
         <item
             android:id="@+id/nav_poll"
             android:icon="@drawable/format_list_bulleted"
-            android:title="Poll" />
+            android:title="@string/main_menu_poll"
+            />
         <item
             android:id="@+id/nav_quotes"
             android:icon="@drawable/format_quote_close"
-            android:title="Quotes" />
+            android:title="@string/main_menu_quotes"
+            />
         <item android:id="@+id/nav_media"
             android:icon="@drawable/ic_menu_camera"
-            android:title="@string/wilson_media_activity_header"/>
+            android:title="@string/wilson_media_activity_header"
+            />
         <item
             android:id="@+id/nav_shop"
             android:icon="@drawable/cash_multiple"
-            android:title="@string/shop_header" />
+            android:title="@string/shop_header"
+            />
         <item
             android:id="@+id/nav_meeting"
-            android:icon="@drawable/account_multiple"
-            android:title="Vergaderplanner" />
+            android:icon="@drawable/outline_event_24"
+            android:title="@string/main_menu_meeting_planner"
+            />
         <item
             android:id="@+id/nav_search"
-            android:icon="@drawable/account_multiple"
-            android:title="Zoeken" />
+            android:icon="@drawable/baseline_person_search_24"
+            android:title="@string/main_menu_smobo"
+            />
     </group>
 
 </menu>

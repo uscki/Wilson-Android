@@ -3,11 +3,12 @@ package nl.uscki.appcki.android.fragments.smobo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -28,7 +29,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -42,8 +42,10 @@ import nl.uscki.appcki.android.events.DetailItemUpdatedEvent;
 import nl.uscki.appcki.android.fragments.adapters.BaseItemAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboCommissieAdapter;
 import nl.uscki.appcki.android.fragments.adapters.SmoboMediaAdapter;
+import nl.uscki.appcki.android.fragments.media.MediaCollectionFragment;
 import nl.uscki.appcki.android.generated.common.Pageable;
 import nl.uscki.appcki.android.generated.media.MediaFileMetaData;
+import nl.uscki.appcki.android.generated.organisation.Person;
 import nl.uscki.appcki.android.generated.smobo.SmoboItem;
 import nl.uscki.appcki.android.helpers.ContactHelper;
 import nl.uscki.appcki.android.helpers.DateRangeHelper;
@@ -58,13 +60,7 @@ import retrofit2.Response;
 public class SmoboPersonFragment extends Fragment implements ISharedElementViewContainer {
     private final String TAG = getClass().getSimpleName();
     AppCompatActivity context;
-
-    private Integer id;
-    private SmoboItem p;
-
-    public SmoboItem getP() {
-        return p;
-    }
+    private SmoboActivity activity;
 
     private Callback<Pageable<MediaFileMetaData>> photosCallback = new Callback<Pageable<MediaFileMetaData>>() {
         @Override
@@ -72,7 +68,17 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
             if(response.body() != null) {
                 mediaGrid.setVisibility(View.VISIBLE);
                 if(getContext() != null) {
-                    mediaGridHeader.setText(getContext().getString(R.string.smobo_photos_count, p.getNumOfPhotos()));
+                    SpannableString viewPhotosText = new SpannableString(getString(R.string.smobo_photos_view_n_all, activity.getP().getNumOfPhotos()));
+                    viewPhotosText.setSpan(new UnderlineSpan(), 0, viewPhotosText.length(), 0);
+                    showAllFotosButton.setText(viewPhotosText);
+                    showAllFotosButton.setVisibility(View.VISIBLE);
+                    showAllFotosButton.setOnClickListener(v -> {
+                        Intent intent = new MediaCollectionFragment.IntentBuilder(
+                                activity.getP().getPerson().getId())
+                                .setIsSmobo(activity.getP().getPerson().getPostalname(), activity.getP().getPerson().getId(), activity.getP().getNumOfPhotos())
+                                .build(getContext());
+                        startActivity(intent);
+                    });
                 }
                 mediaGridAdapter.clear();
                 mediaGridAdapter.addItems(response.body().getContent());
@@ -105,159 +111,114 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
     TextView mediaGridHeader;
     LinearLayoutManager mediaGridLayoutManager;
     SmoboMediaAdapter mediaGridAdapter;
+    TextView showAllFotosButton;
     SwipeRefreshLayout swipeContainer;
     RelativeLayout datableRangeInfo;
     ImageView datableRangeIcon;
     TextView loveStatus;
     TextView countdownText;
 
-    private final Callback<SmoboItem> smoboCallback = new Callback<SmoboItem>() {
-        @Override
-        public void onSucces(Response<SmoboItem> response) {
-            p = response.body();
-            swipeContainer.setRefreshing(false);
+    private SmoboInfoWidget addressWidget;
+    private SmoboInfoWidget emailWidget;
+    private SmoboInfoWidget phoneWidget;
+    private SmoboInfoWidget mobileWidget;
+    private SmoboInfoWidget birthdayWidget;
+    private SmoboInfoWidget homepageWidget;
 
-            EventBus.getDefault().post(new DetailItemUpdatedEvent<>(p));
+    public void onEventMainThread(DetailItemUpdatedEvent<SmoboItem> item) {
+        swipeContainer.setRefreshing(false);
+        setupItem(item.getUpdatedItem());
+    }
 
-            createAddressInfoWidget(p);
-            createEmailInfoWidget(p);
-            createPhoneInfoWidget(p);
-            createMobileInfoWidget(p);
-            createBirthdayInfoWidget(p);
-            createWebsiteInfoWidget(p);
-            createCountdown();
+    private void setupItem(SmoboItem p) {
+        this.mediaGridAdapter.setPersonId(p.getId());
 
-            if(p.getNumOfPhotos() > 0) {
-                Services.getInstance().smoboService.photos(id, 0, p.getNumOfPhotos()).enqueue(photosCallback);
-            } else {
-                mediaGrid.setVisibility(View.GONE);
-                mediaGridHeader.setText(getText(R.string.smobo_photos_empty));
-            }
+        setupWidgets();
+        createCountdown();
 
-            ((BaseItemAdapter) smoboGroups.getAdapter()).update(p.getGroups());
+        ((BaseItemAdapter) smoboGroups.getAdapter()).update(p.getGroups());
+
+        if(p.getNumOfPhotos() > 0) {
+            Services.getInstance().smoboService.photos(p.getId(), 0, p.getNumOfPhotos()).enqueue(photosCallback);
+        } else {
+            mediaGrid.setVisibility(View.GONE);
+            mediaGridHeader.setText(getText(R.string.smobo_photos_empty));
         }
+    }
 
-        @Override
-        public void onError(Response<SmoboItem> response) {
-            super.onError(response);
-            swipeContainer.setRefreshing(false);
-        }
-    };
+    @Override
+    public void onStart() {
+        EventBus.getDefault().register(this);
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
 
     private boolean stringVisible(String s) {
         return s != null && s.trim().length() > 0;
     }
 
-    private void createAddressInfoWidget(SmoboItem p) {
-        String address = p.getPerson().getFullAddres(true);
+    private void setupWidgets() {
+        Person p = this.activity.getP().getPerson();
 
-        if(stringVisible(address)) {
-            Bundle bundle = new Bundle();
-            bundle.putString("maintext", address);
-            bundle.putString("subtext", "Home");
-            bundle.putInt("infotype", SmoboInfoWidget.InfoType.ADRESS.ordinal());
-
-            SmoboInfoWidget widget = new SmoboInfoWidget();
-            widget.setArguments(bundle);
-            context.getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.smobo_address_info, widget)
-                    .commitAllowingStateLoss();
-        } else {
-            addressInfo.setPadding(0,0,0,0);
-        }
+        this.addressWidget = createOrUpdateWidget(
+                p.getFullAddres(true), R.string.smobo_info_home_address,
+                SmoboInfoWidget.InfoType.ADRESS,
+                this.addressInfo, this.addressWidget, R.id.smobo_address_info);
+        this.emailWidget = createOrUpdateWidget(
+                p.getEmailaddress(), R.string.smobo_info_email_address,
+                SmoboInfoWidget.InfoType.EMAIL,
+                this.emailInfo, this.emailWidget, R.id.smobo_email_info);
+        this.phoneWidget = createOrUpdateWidget(
+                p.getPhonenumber(), R.string.smobo_info_phone_residential,
+                SmoboInfoWidget.InfoType.PHONE,
+                this.phoneInfo, this.phoneWidget, R.id.smobo_phone_info);
+        this.mobileWidget = createOrUpdateWidget(
+                p.getMobilenumber(), R.string.smobo_info_phone_mobile,
+                SmoboInfoWidget.InfoType.PHONE,
+                this.mobileInfo, this.mobileWidget, R.id.smobo_mobile_info);
+        this.birthdayWidget = createOrUpdateWidget(
+                p.getBirthdayWidthAge(), R.string.smobo_info_birthday,
+                SmoboInfoWidget.InfoType.BIRTHDAY,
+                this.birthdayInfo, this.birthdayWidget, R.id.smobo_birthday_info);
+        this.homepageWidget = createOrUpdateWidget(
+                this.activity.getP().getPerson().getHomepage(), R.string.smobo_info_homepage,
+                SmoboInfoWidget.InfoType.HOMEPAGE,
+                this.homepageInfo, this.homepageWidget, R.id.smobo_homepage_info);
     }
 
-    private void createEmailInfoWidget(SmoboItem p) {
-        if(stringVisible(p.getPerson().getEmailaddress())) {
-            Bundle bundle = new Bundle();
-            bundle.putString("maintext", p.getPerson().getEmailaddress());
-            bundle.putString("subtext", "Home");
-            bundle.putInt("infotype", SmoboInfoWidget.InfoType.EMAIL.ordinal());
-
-            SmoboInfoWidget widget = new SmoboInfoWidget();
-            widget.setArguments(bundle);
+    private SmoboInfoWidget createOrUpdateWidget(
+            String stringContent,
+            int widgetLabel,
+            SmoboInfoWidget.InfoType type,
+            FrameLayout frame,
+            SmoboInfoWidget widget,
+            int id
+    ) {
+        if(widget == null) {
+            widget = new SmoboInfoWidget(getString(widgetLabel), type);
             context.getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.smobo_email_info, widget)
+                    .replace(id, widget)
                     .commitAllowingStateLoss();
-        } else {
-            emailInfo.setPadding(0,0,0,0);
         }
-    }
 
-    private void createPhoneInfoWidget(SmoboItem p) {
-        if(stringVisible(p.getPerson().getPhonenumber())) {
-            Bundle bundle = new Bundle();
-            bundle.putString("maintext", p.getPerson().getPhonenumber());
-            bundle.putString("subtext", "Home");
-            bundle.putInt("infotype", SmoboInfoWidget.InfoType.PHONE.ordinal());
-
-            SmoboInfoWidget widget = new SmoboInfoWidget();
-            widget.setArguments(bundle);
-            context.getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.smobo_phone_info, widget)
-                    .commitAllowingStateLoss();
+        if(stringVisible(stringContent)) {
+            frame.setVisibility(View.VISIBLE);
+            widget.updateMaintext(stringContent);
         } else {
-            phoneInfo.setPadding(0,0,0,0);
+            frame.setVisibility(View.GONE);
         }
-    }
 
-    private void createMobileInfoWidget(SmoboItem p) {
-        if (stringVisible(p.getPerson().getMobilenumber())) {
-            Bundle bundle = new Bundle();
-            bundle.putString("maintext", p.getPerson().getMobilenumber());
-            bundle.putString("subtext", "Mobile");
-            bundle.putInt("infotype", SmoboInfoWidget.InfoType.PHONE.ordinal());
-
-            SmoboInfoWidget widget = new SmoboInfoWidget();
-            widget.setArguments(bundle);
-            context.getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.smobo_mobile_info, widget)
-                    .commitAllowingStateLoss();
-        } else {
-            mobileInfo.setPadding(0,0,0,0);
-        }
-    }
-
-    private void createBirthdayInfoWidget(SmoboItem p) {
-        if (p.getPerson().getBirthdate() != null) {
-            Bundle bundle = new Bundle();
-            String birthday = p.getPerson().getBirthdate().toString("dd-MM-yyyy");
-            birthday += String.format(Locale.getDefault(), " (%d)", p.getPerson().getAge());
-            bundle.putString("maintext", birthday);
-            bundle.putString("subtext", "Verjaardag");
-            bundle.putInt("infotype", SmoboInfoWidget.InfoType.BIRTHDAY.ordinal());
-
-            SmoboInfoWidget widget = new SmoboInfoWidget();
-            widget.setArguments(bundle);
-            context.getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.smobo_birthday_info, widget)
-                    .commitAllowingStateLoss();
-        } else {
-            birthdayInfo.setPadding(0,0,0,0);
-        }
-    }
-
-    private void createWebsiteInfoWidget(SmoboItem p) {
-        if(stringVisible(p.getPerson().getHomepage())) {
-            Bundle bundle = new Bundle();
-            String homepage = p.getPerson().getHomepage();
-            bundle.putString("maintext", homepage);
-            bundle.putString("subtext", "homepage");
-            bundle.putInt("infotype", SmoboInfoWidget.InfoType.HOMEPAGE.ordinal());
-
-            SmoboInfoWidget widget = new SmoboInfoWidget();
-            widget.setArguments(bundle);
-            context.getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.smobo_homepage_info, widget)
-                    .commitAllowingStateLoss();
-        } else {
-            homepageInfo.setPadding(0,0,0,0);
-        }
+        return widget;
     }
 
     private void createCountdown() {
         if(this.dateRangeHelper == null) {
-            this.dateRangeHelper = new DateRangeHelper(getContext(), p.getPerson());
+            this.dateRangeHelper = new DateRangeHelper(getContext(), this.activity.getP().getPerson());
         }
         if(!this.dateRangeHelper.isSuccess()) {
             this.datableRangeInfo.setVisibility(View.GONE);
@@ -278,17 +239,17 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
                                 .equals(DateRangeHelper.DateRange.IN_RANGE)) {
                             loveStatusString = context.getString(
                                     R.string.hyap7_verdict_dating_allowed,
-                                    p.getPerson().getFirstname());
+                                    activity.getP().getPerson().getFirstname());
                             heartIcon = R.drawable.ic_outline_favorite_24px;
                         } else if (SmoboPersonFragment.this.dateRangeHelper.getLoveStatus()
                                 .equals(DateRangeHelper.DateRange.OTHER_TOO_YOUNG)) {
                             loveStatusString = context.getString(
                                     R.string.hyap7_verdict_dating_other_too_young,
-                                    p.getPerson().getFirstname());
+                                    activity.getP().getPerson().getFirstname());
                         } else {
                             loveStatusString = context.getString(
                                     R.string.hyap7_verdict_dating_me_too_young,
-                                    p.getPerson().getFirstname());
+                                    activity.getP().getPerson().getFirstname());
                         }
 
                         SmoboPersonFragment.this.datableRangeIcon.setImageResource(heartIcon);
@@ -317,24 +278,24 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
         smoboGroups = view.findViewById(R.id.smobo_groups);
         mediaGrid = view.findViewById(R.id.smobo_media_gridview);
         mediaGridHeader = view.findViewById(R.id.smobo_media_text);
+        showAllFotosButton = view.findViewById(R.id.smobo_media_viewmore_button);
         swipeContainer = view.findViewById(R.id.smobo_swiperefresh);
         datableRangeInfo = view.findViewById(R.id.datable_range_info);
         datableRangeIcon = view.findViewById(R.id.datable_range_icon);
         loveStatus = view.findViewById(R.id.datable_range_love_status);
         countdownText = view.findViewById(R.id.datable_range_countdown);
 
+        setupMediaGrid();
+        setupSwipeContainer();
+        smoboGroups.setAdapter(new SmoboCommissieAdapter(new ArrayList<>()));
+
+        if(this.activity != null && this.activity.getP() != null) {
+            this.setupItem(this.activity.getP());
+        }
+
         setHasOptionsMenu(true);
 
-        if (getArguments() != null) {
-            this.id = getArguments().getInt("id");
 
-            setupMediaGrid();
-            setupSwipeContainer();
-            smoboGroups.setAdapter(new SmoboCommissieAdapter(new ArrayList<>()));
-
-            swipeContainer.setRefreshing(true);
-            Services.getInstance().smoboService.get(id).enqueue(smoboCallback);
-        }
         return view;
     }
 
@@ -349,9 +310,9 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SmoboActivity smoboActivity = (SmoboActivity)getActivity();
-        if(smoboActivity != null) {
-            boolean registered = smoboActivity.registerSharedElementCallback(this);
+        this.activity = (SmoboActivity)getActivity();
+        if(this.activity != null) {
+            boolean registered = this.activity.registerSharedElementCallback(this);
             Log.e(getTag(), "Registered " + getClass() + " for shared element stuff. Result was " + Boolean.toString(registered));
         } else {
             Log.e(getTag(), "SmoboActivity was null! Not registering callbacks on " + getClass());
@@ -383,29 +344,24 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
         inflater.inflate(R.menu.menu_smobo, menu);
 
         menu.findItem(R.id.action_save_contact)
-                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                exportContact();
-                return true;
-            }
-
-        });
+                .setOnMenuItemClickListener(item -> {
+                    exportContact();
+                    return true;
+                });
 
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void exportContact() {
-        if(p == null)
+        if(activity.getP() == null)
             return;
 
         // Initiate export via intent using contact helper
-        ContactHelper.getInstance().exportContactViaIntent(p.getPerson());
+        ContactHelper.getInstance().exportContactViaIntent(activity.getP().getPerson());
     }
 
     protected void setupSwipeContainer() {
-        swipeContainer.setOnRefreshListener(this::onSwipeRefresh);
+        swipeContainer.setOnRefreshListener(() -> this.activity.refreshSmoboItem());
 
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -418,12 +374,8 @@ public class SmoboPersonFragment extends Fragment implements ISharedElementViewC
     private void setupMediaGrid() {
         this.mediaGridLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         mediaGrid.setLayoutManager(this.mediaGridLayoutManager);
-        this.mediaGridAdapter = new SmoboMediaAdapter((SmoboActivity)getActivity(), this.id, new ArrayList<>());
+        this.mediaGridAdapter = new SmoboMediaAdapter((SmoboActivity) getActivity());
         mediaGrid.setAdapter(this.mediaGridAdapter);
-    }
-
-    public void onSwipeRefresh() {
-        Services.getInstance().smoboService.get(id).enqueue(smoboCallback);
     }
 
     @Override

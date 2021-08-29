@@ -24,6 +24,9 @@ public class SmoboInfoWidget extends Fragment {
     TextView subText;
     ImageButton contextButton;
     OnContextButtonClickListener onContextButtonClickListener;
+
+    private String mainTextContent;
+    private String subTextContent;
     InfoType type;
 
     public enum InfoType {
@@ -34,8 +37,10 @@ public class SmoboInfoWidget extends Fragment {
         HOMEPAGE
     }
 
-    public SmoboInfoWidget() {
+    public SmoboInfoWidget(String subText, InfoType type) {
         // Required empty public constructor
+        this.subTextContent = subText;
+        this.type = type;
     }
 
     @Override
@@ -49,24 +54,25 @@ public class SmoboInfoWidget extends Fragment {
         subText = view.findViewById(R.id.smobo_info_sub_text);
         contextButton = view.findViewById(R.id.smobo_info_context_button);
 
-        init(getArguments().getString("maintext"), getArguments().getString("subtext"), InfoType.values()[getArguments().getInt("infotype")]);
+        init();
 
-        contextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onContextButtonClickListener.onClick(mainText.getText().toString(), type);
-            }
-        });
+        contextButton.setOnClickListener(v -> onContextButtonClickListener.onClick(mainText.getText().toString(), type));
 
         return view;
     }
 
-    public void init(String mainText, String subText, InfoType type) {
-        this.mainText.setText(mainText);
-        this.subText.setText(subText);
+    public void updateMaintext(String mainText) {
+        this.mainTextContent = mainText;
+        if(this.mainText != null) {
+            init();
+        }
+    }
 
-        this.type = type;
-        switch (type) {
+    private void init() {
+        this.mainText.setText(this.mainTextContent);
+        this.subText.setText(this.subTextContent);
+
+        switch (this.type) {
             case PHONE:
                 this.infoIcon.setImageResource(R.drawable.phone);
                 this.contextButton.setImageResource(R.drawable.message_text_smobo);
@@ -99,10 +105,6 @@ public class SmoboInfoWidget extends Fragment {
             throw new RuntimeException("Context does not implement OnContextButtonClickListener");
         }
         super.onAttach(context);
-    }
-
-    public void setOnContextButtonClickListener(OnContextButtonClickListener onContextButtonClickListener) {
-        this.onContextButtonClickListener = onContextButtonClickListener;
     }
 
     public interface OnContextButtonClickListener {

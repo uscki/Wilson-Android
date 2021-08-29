@@ -5,13 +5,14 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import nl.uscki.appcki.android.generated.IWilsonBaseItem;
 import nl.uscki.appcki.android.generated.organisation.PersonName;
 
 /**
  * Created by peter on 3/4/17.
  */
 
-public class SmoboMentorNode {
+public class SmoboMentorNode implements IWilsonBaseItem {
     @Expose
     @SerializedName("children")
     List<PersonName> children;
@@ -44,5 +45,10 @@ public class SmoboMentorNode {
 
     public void setSubnodes(List<SmoboMentorNode> subnodes) {
         this.subnodes = subnodes;
+    }
+
+    @Override
+    public Object getId() {
+        return null;
     }
 }

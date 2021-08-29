@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/CardView.Wilson"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/cards_margin_sides"
+        >
+
+        <TextView
+            android:id="@+id/smobo_mentor_tree_child_node_mentor_group_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.TextSubHeader"
+            android:text="Naam 1 &amp; Naam 2"
+            />
+        <TextView
+            android:id="@+id/smobo_mentor_tree_child_node_was_parent_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/smobo_mentor_tree_child_node_parents_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.TextSubSubHeader"
+            android:layout_marginTop="@dimen/cards_margin_top"
+            android:text="@string/smobo_mentor_tree_partner_singular"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/smobo_mentor_tree_child_node_parents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.TextSubSubHeader"
+            android:layout_marginTop="@dimen/cards_margin_top"
+            android:text="@string/smobo_mentor_tree_children"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/smobo_mentor_tree_child_node_children"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -7,6 +7,14 @@
     <string name="app_general_action_save">Opslaan</string>
     <string name="app_general_action_share_intent_text">Delen met…</string>
 
+    <string name="main_menu_news">News</string>
+    <string name="main_menu_agenda">Agenda</string>
+    <string name="main_menu_shoutbox">Roephoek</string>
+    <string name="main_menu_poll">Poll</string>
+    <string name="main_menu_quotes">Quotes</string>
+    <string name="main_menu_meeting_planner">Vergaderplanner</string>
+    <string name="main_menu_smobo">Smoelenboek</string>
+
     <string name="home_fragment_tab_header_news">Nieuws</string>
     <string name="home_fragment_tab_header_agenda">Agenda</string>
     <string name="home_fragment_tab_header_shoutbox">Roephoek</string>
@@ -486,10 +494,26 @@
 
     <!-- Datable range (half-your-age-plus-seven) -->
     <string name="smobo_tab_wicki_with_cki_replace">Wi\u01de</string>
+    <string name="smobo_tab_mentor_tree">Mentorboom</string>
+    <string name="smobo_mentor_tree_parents">Ouders</string>
+    <string name="smobo_mentor_tree_partner_singular">Partner</string>
+    <string name="smobo_mentor_tree_partner_plural">Partners</string>
+    <string name="smobo_mentor_tree_was_parent_description">%s was mentorouder</string>
+    <string name="smobo_mentor_tree_siblings">Zusjes en Broertjes</string>
+    <string name="smobo_mentor_tree_children">Kinderen</string>
+    <string name="smobo_mentortree_starting_year">Startjaar</string>
+    <string name="smobo_mentortree_formatted_years_ago">%d jaar geleden</string>
     <string name="smobo_tab_wicki">WiCKI</string>
     <string name="smobo_photos">Laatste foto\'s</string>
     <string name="smobo_photos_count">Alle %d foto\'s</string>
     <string name="smobo_photos_empty">Geen foto\'s</string>
+    <string name="smobo_photos_view_n_all">Bekijk alle %d foto\'s</string>
+    <string name="smobo_info_home_address">Adres</string> <!-- Leave me alone automatic spellcheck. Respect The Dutch! -->
+    <string name="smobo_info_email_address">E-mailadres</string>
+    <string name="smobo_info_phone_residential">Telefoonnummer</string>
+    <string name="smobo_info_phone_mobile">Mobiel nummer</string>
+    <string name="smobo_info_birthday">Verjaardag</string>
+    <string name="smobo_info_homepage">Homepage</string>
     <string name="smobo_half_your_age_plus_seven">Half-your-age-plus-seven</string>
     <string name="hyap7_time_since_in_range">Jullie zijn al %s oud genoeg voor elkaar.</string>
     <string name="hyap7_time_until_in_range">Jullie moeten nog %s wachten.</string>

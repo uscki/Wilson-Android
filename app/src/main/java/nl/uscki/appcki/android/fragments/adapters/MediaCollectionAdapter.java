@@ -22,6 +22,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -45,16 +46,50 @@ public class MediaCollectionAdapter extends BaseItemAdapter<MediaCollectionAdapt
     private List<MediaFileMetaData> childMediaFiles = new ArrayList<>();
 
     private boolean inTransition = false;
+    private boolean isSmobo = false;
+    private int smoboPersonId = -1;
 
     private List<MediaCollection> parentCollections;
 
-    public MediaCollectionAdapter(Activity activity, MediaCollectionFragment fragment, MediaCollection currentCollection, List<MediaCollection> items, List<MediaCollection> parentCollections) {
+    /**
+     * Constructor for media collections
+     *
+     * @param activity
+     * @param fragment
+     * @param currentCollection
+     * @param items
+     * @param parentCollections
+     */
+    public MediaCollectionAdapter(
+            Activity activity,
+            MediaCollectionFragment fragment,
+            MediaCollection currentCollection,
+            List<MediaCollection> items,
+            List<MediaCollection> parentCollections
+    ) {
         super(new ArrayList<>());
         this.activity = activity;
         this.fragment = fragment;
         this.currentCollection = currentCollection;
         this.childCollections = items;
         this.parentCollections = parentCollections;
+    }
+
+    /**
+     * Constructor for tagged collections from smobo
+     */
+    public MediaCollectionAdapter(
+        Activity activity,
+        MediaCollectionFragment fragment,
+        int smoboPersonId
+    ) {
+        super(new ArrayList<>());
+        this.activity = activity;
+        this.fragment = fragment;
+        this.childCollections = Collections.emptyList();
+        this.parentCollections = Collections.emptyList();
+        this.isSmobo = true;
+        this.smoboPersonId = smoboPersonId;
     }
 
     public void addChildCollections(List<MediaCollection> mediaCollectionList) {
@@ -168,11 +203,21 @@ public class MediaCollectionAdapter extends BaseItemAdapter<MediaCollectionAdapt
             if(inTransition) return;
 
             inTransition = true;
-            Intent intent = new FullScreenMediaActivity
-                    .CollectionIntentBuilder(currentCollection.name, "media_browser_")
-                    .collectionID(currentCollection.getId())
-                    .initialPosition(getMediaFileItemPosition(photoData.getId()), childMediaFiles)
-                    .build(itemView.getContext());
+            Intent intent;
+            if(MediaCollectionAdapter.this.isSmobo) {
+                intent = new FullScreenMediaActivity
+                        .CollectionIntentBuilder("SMOBO Foto", "media_browser_")
+                        .initialPosition(getMediaFileItemPosition(photoData.getId()), childMediaFiles)
+                        .collectionID(MediaCollectionAdapter.this.smoboPersonId)
+                        .isSmobo()
+                        .build(itemView.getContext());
+            } else {
+                intent = new FullScreenMediaActivity
+                        .CollectionIntentBuilder(currentCollection.name, "media_browser_")
+                        .collectionID(currentCollection.getId())
+                        .initialPosition(getMediaFileItemPosition(photoData.getId()), childMediaFiles)
+                        .build(itemView.getContext());
+            }
 
             if(activity instanceof BasicActivity) {
                 ((MainActivity)activity).registerSharedElementCallback(fragment);

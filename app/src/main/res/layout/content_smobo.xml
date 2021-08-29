@@ -43,11 +43,24 @@
                     android:layout_below="@id/smobo_media_text"
                     android:orientation="horizontal"
                     android:layout_marginTop="@dimen/cards_margin_top"
-                    android:layout_marginBottom="@dimen/cards_margin_top"
                     android:focusable="false"
                     android:scrollbars="none"
                     android:visibility="gone"
                     />
+
+                <TextView
+                    android:id="@+id/smobo_media_viewmore_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/smobo_media_gridview"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="@dimen/text_margin"
+                    android:layout_marginBottom="@dimen/cards_margin_top"
+                    android:textColor="@color/colorPrimary"
+                    android:visibility="gone"
+                    >
+                </TextView>
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
